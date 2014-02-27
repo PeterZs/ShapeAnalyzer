@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ShapeAnalyzer</class>
+ <widget class="QMainWindow" name="ShapeAnalyzer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1028</width>
+    <height>668</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QVTKWidget" name="qvtkWidget">
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>500</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="radioButtonTransformScene">
+          <property name="text">
+           <string>transform scene</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="radioButtonTransformActors">
+          <property name="text">
+           <string>transform actors separately</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="radioButtonAddCorrespondences">
+          <property name="text">
+           <string>add shape correspondences</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>538</width>
+          <height>77</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="openFileButton">
+        <property name="text">
+         <string>Open OFF file...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="clearButton">
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1028</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpenFile"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionClear"/>
+    <addaction name="actionResetCamera"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+  </widget>
+  <action name="actionOpenFile">
+   <property name="text">
+    <string>Open OFF file...</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionResetCamera">
+   <property name="text">
+    <string>Reset camera</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QVTKWidget</class>
+   <extends>QWidget</extends>
+   <header>QVTKWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
+</ui>

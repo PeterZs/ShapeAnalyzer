@@ -84,25 +84,26 @@ private slots:
     virtual void resetCamera();
     virtual void clear();
 private:
-    void setupVTK();
+    void    setupVTK();
+    void    addShapeToVTK(QString fileName);
 
-    int getActorId(vtkActor* actor);
-    bool eventFilter(QObject *object, QEvent *event);
+    int     getActorId(vtkActor* actor);
+    bool    eventFilter(QObject *object, QEvent *event);
     
-    vtkSmartPointer<vtkActor> actors[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkBoxWidget> boxWidgets[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkPolyData> data[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkPoints> points[MAX_NUM_ACTORS];
+    vtkSmartPointer<vtkActor>       actors[MAX_NUM_ACTORS];
+    vtkSmartPointer<vtkBoxWidget>   boxWidgets[MAX_NUM_ACTORS];
+    vtkSmartPointer<vtkPolyData>    data[MAX_NUM_ACTORS];
+    vtkSmartPointer<vtkPoints>      points[MAX_NUM_ACTORS];
     
-    vtkSmartPointer<vtkDataSetMapper> selectedMapper;
-    vtkSmartPointer<vtkActor> selectedActor;
-    vtkSmartPointer<vtkRenderer> renderer;
-    vtkSmartPointer<vtkEventQtSlotConnect> connections;
+    vtkSmartPointer<vtkDataSetMapper>       selectedMapper;
+    vtkSmartPointer<vtkActor>               selectedActor;
+    vtkSmartPointer<vtkRenderer>            renderer;
+    vtkSmartPointer<vtkEventQtSlotConnect>  connections;
     
-    std::vector<vtkSmartPointer<vtkActor> > lines;
-    std::vector<vtkSmartPointer<vtkLineSource> > correspondences;
-    std::vector<std::pair<int, vtkIdType> > sources;
-    std::vector<std::pair<int, vtkIdType> > targets;
+    std::vector<vtkSmartPointer<vtkActor> >         lines;
+    std::vector<vtkSmartPointer<vtkLineSource> >    correspondences;
+    std::vector<std::pair<int, vtkIdType> >         sources;
+    std::vector<std::pair<int, vtkIdType> >         targets;
 
     int numberOfActors = 0;
     int actorId = -1;

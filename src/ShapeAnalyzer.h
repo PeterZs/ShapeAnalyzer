@@ -78,14 +78,22 @@ public:
 
 private slots:
     virtual void exit();
-    virtual void openShape();
-    virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
-    virtual void toggleBoxWidgets();
     virtual void resetCamera();
     virtual void clear();
+
+    virtual void openShape();
+
+    virtual void showContextMenu(const QPoint&);
+
+    virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
+    virtual void toggleBoxWidgets();
+    virtual void toggleCurrent();
+
 private:
     void    setupVTK();
     void    addShapeToVTK(QString fileName);
+
+    void    deleteShape(int i);
 
     int     getActorId(vtkActor* actor);
     bool    eventFilter(QObject *object, QEvent *event);

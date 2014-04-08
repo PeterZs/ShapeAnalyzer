@@ -5,15 +5,29 @@
 ShapeAnalyzer::ShapeAnalyzer() {
     this->setupUi(this);
 
+    this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
+
     // Set up action signals and slots
-    connect(this->actionExit, SIGNAL(triggered()), this, SLOT(exit()));
-    connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(resetCamera()));
-    connect(this->actionClear, SIGNAL(triggered()), this, SLOT(clear()));
-    connect(this->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(this->openFileButton, SIGNAL(clicked()), this, SLOT(openShape()));
-    connect(this->radioButtonTransformActors, SIGNAL(clicked()), this, SLOT(toggleBoxWidgets()));
-    connect(this->radioButtonAddCorrespondences, SIGNAL(clicked()), this, SLOT(toggleBoxWidgets()));
-    connect(this->radioButtonTransformScene, SIGNAL(clicked()), this, SLOT(toggleBoxWidgets()));
+    connect(this->actionExit,                       SIGNAL(triggered()),
+            this,                                   SLOT(exit()));
+    connect(this->actionResetCamera,                SIGNAL(triggered()),
+            this,                                   SLOT(resetCamera()));
+    connect(this->actionClear,                      SIGNAL(triggered()),
+            this,                                   SLOT(clear()));
+    connect(this->clearButton,                      SIGNAL(clicked()),
+            this,                                   SLOT(clear()));
+    connect(this->openFileButton,                   SIGNAL(clicked()),
+            this,                                   SLOT(openShape()));
+    connect(this->radioButtonTransformActors,       SIGNAL(clicked()),
+            this,                                   SLOT(toggleBoxWidgets()));
+    connect(this->radioButtonAddCorrespondences,    SIGNAL(clicked()),
+            this,                                   SLOT(toggleBoxWidgets()));
+    connect(this->radioButtonTransformScene,        SIGNAL(clicked()),
+            this,                                   SLOT(toggleBoxWidgets()));
+    connect(this->listShapes,                       SIGNAL(itemSelectionChanged()),
+            this,                                   SLOT(toggleCurrent()));
+    connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(showContextMenu(const QPoint&)));
     
     this->setupVTK();
 }
@@ -27,7 +41,8 @@ void ShapeAnalyzer::setupVTK() {
     this->connections->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
                                vtkCommand::LeftButtonPressEvent,
                                this,
-                               SLOT(vtkClickHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)), NULL, 1.0);
+                               SLOT(vtkClickHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                               NULL, 1.0);
     
     renderer = vtkSmartPointer<vtkRenderer>::New();
     
@@ -36,11 +51,6 @@ void ShapeAnalyzer::setupVTK() {
     
     selectedMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     selectedActor = vtkSmartPointer<vtkActor>::New();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::exit() {
-    qApp->exit();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,6 +84,10 @@ void ShapeAnalyzer::resetCamera() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
+    // qt
+    this->listShapes->clear();
+
+    // vtk
     for(int i = 0; i < numberOfActors; i++) {
 
         renderer->RemoveActor(actors[i]);
@@ -87,8 +101,6 @@ void ShapeAnalyzer::clear() {
     for(std::vector<vtkSmartPointer<vtkActor> >::iterator i = lines.begin(); i != lines.end(); i++) {
         renderer->RemoveActor(*i);
     }
-
-    // vtk
     lines.clear();
     correspondences.clear();
     sources.clear();
@@ -99,10 +111,61 @@ void ShapeAnalyzer::clear() {
     
     renderer->RemoveActor(selectedActor);
     this->qvtkWidget->GetRenderWindow()->Render();
+}
+
+void ShapeAnalyzer::deleteShape(int i) {
+    printf("%d \n", i);
 
     // qt
-    this->listShapes->clear();
+    this->listShapes->takeItem(i);
+
+    // vtk
+        renderer->RemoveActor(actors[i]);
+        this->boxWidgets[i]->SetInteractor(NULL);
+        this->boxWidgets[i]->SetProp3D(NULL);
+        this->data[i] = NULL;
+        this->actors[i] = NULL;
+        this->boxWidgets[i] = NULL;
+
+        // TODO delete correspondences with this shape
+        //for(std::vector<vtkSmartPointer<vtkActor> >::iterator i = lines.begin(); i != lines.end(); i++) {
+        //    renderer->RemoveActor(*i);
+        //}
+
+    this->numberOfActors--;
+
+    // not sure if this makes sense
+    this->actorId = -1;
+
+    //renderer->RemoveActor(selectedActor);
+    this->qvtkWidget->GetRenderWindow()->Render();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::exit() {
+    qApp->exit();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief ShapeAnalyzer::showContextMenu
+/// opens menu for shapes
+void ShapeAnalyzer::showContextMenu(const QPoint& pos) {
+    // for most widgets
+        QPoint globalPos = this->listShapes->mapToGlobal(pos);
+        // for QAbstractScrollArea and derived classes you would use:
+        // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
+
+        QMenu myMenu;
+        myMenu.addAction("Delete");
+        // ...
+
+        QAction* selectedItem = myMenu.exec(globalPos);
+        if (selectedItem)
+        {
+            deleteShape(this->listShapes->currentRow());
+        }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::openShape() {
@@ -123,6 +186,22 @@ void ShapeAnalyzer::openShape() {
     std::string name = "Shape ";
     name.append(std::to_string(this->listShapes->count() + 1));
     this->listShapes->addItem(QString(name.c_str()));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::toggleCurrent() {
+    if(this->radioButtonTransformActors->isChecked()) {
+        int index = this->listShapes->currentRow();
+
+        // one might optimize that...
+        for(int i = 0; i < numberOfActors; i++) {
+            this->boxWidgets[i]->Off();
+        }
+
+        // if a row is selected
+        if(index >= 0)
+                this->boxWidgets[index]->On();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

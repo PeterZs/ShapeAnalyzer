@@ -1,28 +1,28 @@
 #ifndef ShapeAnalyzer_H
 #define ShapeAnalyzer_H
 
-#include <vtkSmartPointer.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
+#include <vtkBoxWidget.h>
+#include <vtkCellPicker.h>
+#include <vtkCommand.h>
+#include <vtkEventQtSlotConnect.h>
+#include <vtkExtractSelection.h>
+#include <vtkDataSetMapper.h>
+#include <vtkLineSource.h>
+#include <vtkObject.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkEventQtSlotConnect.h>
-#include <vtkCommand.h>
-#include <vtkObject.h>
-#include <vtkCellPicker.h>
-#include <vtkSphereSource.h>
-#include <vtkTriangleFilter.h>
 #include <vtkSelectionNode.h>
 #include <vtkSelection.h>
-#include <vtkExtractSelection.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkDataSetMapper.h>
-#include <vtkProperty.h>
-#include <vtkRendererCollection.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
 #include <vtkTransform.h>
-#include <vtkBoxWidget.h>
-#include <vtkLineSource.h>
+#include <vtkTriangleFilter.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <QMainWindow>
 #include <QString>
@@ -30,14 +30,21 @@
 
 #include <vector>
 
+#include "Shape.h"
+#include "Correspondence.h"
+
 #include "ui_ShapeAnalyzer.h"
 #include "vtkOFFReader.h"
 
 #define MAX_NUM_ACTORS 10
 
+using namespace std;
+
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
 
+    // manages click responses for correspondence setting
+    // TODO ist doch so manu? :D
     class vtkBoxWidgetCallback : public vtkCommand {
     public:
         ShapeAnalyzer *sa;
@@ -60,12 +67,12 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
 
             for(int i = 0; i < sa->correspondences.size(); i++) {
                 if((sa->sources)[i].first == aid) {
-                    sa->correspondences[i]->SetPoint1(t->TransformPoint(sa->points[aid]->GetPoint(sa->sources[i].second)));
+                    sa->correspondences[i]->SetPoint1(t->TransformPoint(sa->shapes_[aid].getPoints()->GetPoint(sa->sources[i].second)));
                     sa->correspondences[i]->Update();
                 }
                 
                 if((sa->targets)[i].first == aid) {
-                    sa->correspondences[i]->SetPoint2(t->TransformPoint(sa->points[aid]->GetPoint(sa->targets[i].second)));
+                    sa->correspondences[i]->SetPoint2(t->TransformPoint(sa->shapes_[aid].getPoints()->GetPoint(sa->targets[i].second)));
                     sa->correspondences[i]->Update();
                 }
             }
@@ -85,7 +92,14 @@ private slots:
 
     virtual void showContextMenu(const QPoint&);
 
-    virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
+    virtual void vtkClickHandler
+                (
+                    vtkObject *caller, 
+                    unsigned long vtkEvent, 
+                    void *clientData, 
+                    void *callData, 
+                    vtkCommand *command
+                );
     virtual void toggleBoxWidgets();
     virtual void toggleCurrent();
 
@@ -97,21 +111,20 @@ private:
 
     int     getActorId(vtkActor* actor);
     bool    eventFilter(QObject *object, QEvent *event);
-    
-    vtkSmartPointer<vtkActor>       actors[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkBoxWidget>   boxWidgets[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkPolyData>    data[MAX_NUM_ACTORS];
-    vtkSmartPointer<vtkPoints>      points[MAX_NUM_ACTORS];
+
+    vector<Shape>               shapes_;
+    // TODO go with more efficient data structure here
+    vector<Correspondence>      correspondences_; 
     
     vtkSmartPointer<vtkDataSetMapper>       selectedMapper;
     vtkSmartPointer<vtkActor>               selectedActor;
     vtkSmartPointer<vtkRenderer>            renderer;
     vtkSmartPointer<vtkEventQtSlotConnect>  connections;
     
-    std::vector<vtkSmartPointer<vtkActor> >         lines;
-    std::vector<vtkSmartPointer<vtkLineSource> >    correspondences;
-    std::vector<std::pair<int, vtkIdType> >         sources;
-    std::vector<std::pair<int, vtkIdType> >         targets;
+    vector<vtkSmartPointer<vtkActor> >         lines;
+    vector<vtkSmartPointer<vtkLineSource> >    correspondences;
+    vector<pair<int, vtkIdType> >         sources;
+    vector<pair<int, vtkIdType> >         targets;
 
     int numberOfActors = 0;
     int actorId = -1;

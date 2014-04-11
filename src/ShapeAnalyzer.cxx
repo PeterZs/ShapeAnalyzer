@@ -28,6 +28,8 @@ ShapeAnalyzer::ShapeAnalyzer() {
             this,                                   SLOT(toggleCurrent()));
     connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(showContextMenu(const QPoint&)));
+    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+            this,                                   SLOT(deleteMarkedCorrespondence()));
     
     this->setupVTK();
 }
@@ -67,10 +69,14 @@ void ShapeAnalyzer::toggleBoxWidgets() {
 
 ///////////////////////////////////////////////////////////////////////////////
 int ShapeAnalyzer::getActorId(vtkActor *actor) {
-    for(int i = 0; i < numberOfActors; i++) {
-        if(shapes_[i].getActor() == actor) {
+    int i = 0;
+    for(vector<Shape>::iterator it = shapes_.begin();
+        it != shapes_.end();
+        ++it) {
+        if(it->getActor() == actor) {
             return i;
         }
+        i++;
     }
     return -1;
 }
@@ -86,26 +92,40 @@ void ShapeAnalyzer::clear() {
     // qt
     this->listShapes->clear();
 
+    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
+        it != correspondences_.end(); 
+        ++it) {
+
+        renderer->RemoveActor(it->getActor());
+    }
+
+    correspondences_.clear();
+
     // delete all shapes
-    for(int i = 0; i < numberOfActors; i++) {
-        deleteShape(i);
+    for(vector<Shape>::iterator it = shapes_.begin(); 
+        it != shapes_.end(); 
+        ++it) {
+            renderer->RemoveActor(it->getActor());
+            it->getBoxWidget()->SetInteractor(NULL);
+            it->getBoxWidget()->SetProp3D(NULL);
     }
-    
-    for(std::vector<vtkSmartPointer<vtkActor> >::iterator i = lines.begin(); i != lines.end(); i++) {
-        renderer->RemoveActor(*i);
-    }
-    lines.clear();
-    correspondences.clear();
-    sources.clear();
-    targets.clear();
+
+    shapes_.clear();
     
     this->numberOfActors = 0;
     this->actorId = -1;
     
-    renderer->RemoveActor(selectedActor);
+    //renderer->RemoveActor(selectedActor);
     this->qvtkWidget->GetRenderWindow()->Render();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteShape(Shape shape) {
+    int i = getActorId(shape.getActor());
+    deleteShape(i);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteShape(int i) {
     printf("%d \n", i);
 
@@ -113,20 +133,32 @@ void ShapeAnalyzer::deleteShape(int i) {
     this->listShapes->takeItem(i);
 
     // vtk
+
+    // delete correspondences on i
+    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
+        it != correspondences_.end(); ) {
+        if(shapes_[i].getActor() == it->getShape1().getActor() || 
+            shapes_[i].getActor() == it->getShape2().getActor()) {
+
+                renderer->RemoveActor(it->getActor());
+                it = correspondences_.erase(it);
+        } else {
+            it++;
+        }
+    }
+
+    // delete shape
     renderer->RemoveActor(shapes_[i].getActor());
     shapes_[i].getBoxWidget()->SetInteractor(NULL);
     shapes_[i].getBoxWidget()->SetProp3D(NULL);
     shapes_.erase(shapes_.begin() + i);
 
-    // TODO delete correspondences with this shape
-    //for(std::vector<vtkSmartPointer<vtkActor> >::iterator i = lines.begin(); i != lines.end(); i++) {
-    //    renderer->RemoveActor(*i);
-    //}
-
     this->numberOfActors--;
 
     // TODO not sure if this makes sense
-    this->actorId = -1;
+    //this->actorId = -1;
+
+    //renderer->RemoveActor(selectedActor);
 
     this->qvtkWidget->GetRenderWindow()->Render();
 }
@@ -192,7 +224,10 @@ void ShapeAnalyzer::toggleCurrent() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
+bool ShapeAnalyzer::eventFilter(
+    QObject     *object, 
+    QEvent      *event
+) {
     if (object == qvtkWidget && event->type() == QEvent::Wheel) {
         return true;
     }
@@ -245,7 +280,8 @@ void ShapeAnalyzer::addShapeToVTK(QString fileName) {
 
     shapes_[numberOfActors].getBoxWidget()->AddObserver
                             (
-                                vtkCommand::InteractionEvent, callback
+                                vtkCommand::InteractionEvent, 
+                                callback
                             );
 
     qvtkWidget->GetRenderWindow()->Render();
@@ -262,36 +298,53 @@ void ShapeAnalyzer::addShapeToVTK(QString fileName) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command) {
+void ShapeAnalyzer::deleteMarkedCorrespondence() {
+    set_ = false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkClickHandler(
+    vtkObject       *caller, 
+    unsigned long   vtkEvent, 
+    void            *clientData, 
+    void            *callData, 
+    vtkCommand      *command
+) {
 
     if(this->radioButtonAddCorrespondences->isChecked()) {
-        cout << "clicked left" <<endl;
+        //cout << "clicked left" <<endl;
 
-        vtkRenderWindowInteractor* interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
+        vtkRenderWindowInteractor* interactor = 
+            vtkRenderWindowInteractor::SafeDownCast(caller);
 
         // Get the location of the click (in window coordinates)
         int* pos =interactor->GetEventPosition();
         //command->AbortFlagOn();
 
-        vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+        vtkSmartPointer<vtkCellPicker> picker = 
+                vtkSmartPointer<vtkCellPicker>::New();
         picker->SetTolerance(0.0005);
 
         // Pick from this location.
         picker->Pick(pos[0], pos[1], 0, renderer);
 
-        double* worldPosition = picker->GetPickPosition();
-        std::cout << "Cell id is: " << picker->GetCellId() << std::endl;
+        // double* worldPosition = picker->GetPickPosition();
+        // std::cout << "Cell id is: " << picker->GetCellId() << std::endl;
 
         this->actorId = getActorId(picker->GetActor());
-        if(picker->GetCellId() != -1 && this->actorId != -1) {
-            std::cout << "Pick position is: " << worldPosition[0] << " " << worldPosition[1]
-            << " " << worldPosition[2] << endl;
 
+        // check if pick was valid
+        if(picker->GetCellId() != -1 && this->actorId != -1) {
+            // std::cout << "Pick position is: " << worldPosition[0] << " " << worldPosition[1]
+            // << " " << worldPosition[2] << endl;
+
+            // create new Id object for this pick
             vtkSmartPointer<vtkIdTypeArray> ids = 
                         vtkSmartPointer<vtkIdTypeArray>::New();
             ids->SetNumberOfComponents(1);
             ids->InsertNextValue(picker->GetCellId());
 
+            // mark picked node as selected
             vtkSmartPointer<vtkSelectionNode> selectionNode = 
                         vtkSmartPointer<vtkSelectionNode>::New();
             selectionNode->SetFieldType(vtkSelectionNode::CELL);
@@ -309,7 +362,7 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
             extractSelection->SetInputData(1, selection);
             extractSelection->Update();
 
-            // In selection
+            // In selection 
             vtkSmartPointer<vtkUnstructuredGrid> selected = 
                         vtkSmartPointer<vtkUnstructuredGrid>::New();
             selected->ShallowCopy(extractSelection->GetOutput());
@@ -320,6 +373,7 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
             // << " cells in the selection." << std::endl;
 
 
+            // visual response for picked node
             selectedMapper->SetInputData(selected);
 
             selectedActor->SetMapper(selectedMapper);
@@ -333,77 +387,84 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
 
             renderer->AddActor(selectedActor);
 
+            // depending on whether there was a selection before or not
+            if(set_ == false) {
+                // set source_ to current point and wait
+                source_.first = shapes_[actorId];
 
-            if(sources.size() == targets.size()) {
-                std::pair<int, vtkIdType> source;
-                source.first = actorId;
-
-                shapes_[actorId].getPoints()->InsertNextPoint(
-                        shapes_[actorId].getData()->GetCell(
-                            picker->GetCellId())->GetPoints()->GetPoint(0)
-                        );
-                source.second = 
-                    shapes_[actorId].getPoints()->GetNumberOfPoints() - 1;
-
-                this->sources.push_back(source);
+                source_.second = vtkSmartPointer<vtkPoints>::New();
+                source_.second->InsertNextPoint(shapes_[actorId].getData()->GetCell(
+                             picker->GetCellId())->GetPoints()->GetPoint(0));
+                set_ = true;
             } else {
-                std::pair<int, vtkIdType> source = sources[sources.size() - 1];
-                std::pair<int, vtkIdType> target;
-                target.first = actorId;
+                // combine source_ and current pick to a correspondence
 
-                vtkSmartPointer<vtkPoints> points = 
-                                shapes_[actorId].getPoints();
-                if(source.first == target.first) {
-                    points->SetPoint(points->GetNumberOfPoints() - 1,
-                            shapes_[actorId].getData()->GetCell(
-                            picker->GetCellId())->GetPoints()->GetPoint(0)
-                        );
+                pair<Shape, vtkSmartPointer<vtkPoints> > target;
+                target.first = shapes_[actorId];
+                target.second = vtkSmartPointer<vtkPoints>::New();
+                target.second->InsertNextPoint(shapes_[actorId].getData()->GetCell(
+                             picker->GetCellId())->GetPoints()->GetPoint(0));
+
+                // if picked node is on the same shape as the source, 
+                // update and return
+                if(source_.first.getActor() == target.first.getActor()) {
+                    source_ = target;
+
                     return;
                 }
-
-                points->InsertNextPoint(
-                    shapes_[actorId].getData()->GetCell(picker->GetCellId())->GetPoints()->GetPoint(0)
-                    );
-                target.second = shapes_[actorId].getPoints()->GetNumberOfPoints() - 1;
-
-                this->targets.push_back(target);
 
                 vtkSmartPointer<vtkLineSource> lineSource = 
                         vtkSmartPointer<vtkLineSource>::New();
 
-                if(shapes_[source.first].getActor()->GetUserTransform() == NULL)
-                    lineSource->SetPoint1(
-                        shapes_[source.first].getPoints()->GetPoint(source.second)
-                        );
-                else
-                    lineSource->SetPoint1(
-                        shapes_[source.first].getActor()->GetUserTransform()->TransformPoint(shapes_[source.first].getPoints()->GetPoint(source.second))
-                        );
-
-                if(shapes_[target.first].getActor()->GetUserTransform() == NULL)
+                
+                // set points in line source, transform if user transformation happend
+                if(source_.first.getActor()->GetUserTransform() == NULL) {
+                    lineSource->SetPoint1(source_.second->GetPoint(0));
+                }
+                 else {
+                     lineSource->SetPoint1(
+                         source_.first.getActor()->GetUserTransform()->TransformPoint
+                             (
+                                 source_.second->GetPoint(0)
+                             )
+                         );
+                 }
+                 
+                 if(target.first.getActor()->GetUserTransform() == NULL) {
+                    lineSource->SetPoint2(target.second->GetPoint(0));
+                }
+                 else {
                     lineSource->SetPoint2(
-                        shapes_[target.first].getPoints()->GetPoint(target.second)
+                        target.first.getActor()->GetUserTransform()->TransformPoint
+                            (
+                                target.second->GetPoint(0)
+                            )
                         );
-                else
-                    lineSource->SetPoint2(
-                        shapes_[target.first].getActor()->GetUserTransform()->TransformPoint(shapes_[target.first].getPoints()->GetPoint(target.second))
-                        );
+                 }
 
                 lineSource->Update();
 
-                correspondences.push_back(lineSource);
+                // create correspondence
+                Correspondence *correspondence = new Correspondence();
+                correspondence->setCorrespondence(lineSource);
+                correspondence->setShape1(source_.first);
+                correspondence->setShape2(target.first);
+                correspondences_.push_back(*correspondence);
+
+                set_ = false;
 
                 // Visualize
                 vtkSmartPointer<vtkPolyDataMapper> mapper =
                 vtkSmartPointer<vtkPolyDataMapper>::New();
                 mapper->SetInputConnection(lineSource->GetOutputPort());
 
-                vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+                vtkSmartPointer<vtkActor> actor = 
+                    vtkSmartPointer<vtkActor>::New();
                 actor->SetMapper(mapper);
                 actor->GetProperty()->SetLineWidth(1);
                 actor->GetProperty()->SetColor(0, 1, 0);
                 renderer->AddActor(actor);
-                lines.push_back(actor);
+                correspondences_.back().setActor(actor);
                 renderer->RemoveActor(selectedActor);
             }
         }

@@ -7,6 +7,7 @@
 #include <vtkCommand.h>
 #include <vtkEventQtSlotConnect.h>
 #include <vtkExtractSelection.h>
+#include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
 #include <vtkLineSource.h>
 #include <vtkObject.h>
@@ -43,8 +44,7 @@ using namespace std;
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
 
-    // manages click responses for correspondence setting
-    // TODO ist doch so manu? :D
+    // manages update of correspondences after scene transformation
     class vtkBoxWidgetCallback : public vtkCommand {
     public:
         ShapeAnalyzer *sa;
@@ -65,15 +65,17 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
                 sa->selectedActor->SetUserTransform(t);
             }
 
-            for(int i = 0; i < sa->correspondences.size(); i++) {
-                if((sa->sources)[i].first == aid) {
-                    sa->correspondences[i]->SetPoint1(t->TransformPoint(sa->shapes_[aid].getPoints()->GetPoint(sa->sources[i].second)));
-                    sa->correspondences[i]->Update();
+            for(int i = 0; i < sa->correspondences_.size(); i++) {
+                int shape1Id = sa->getActorId(sa->correspondences_[i].getShape1().getActor());
+                int shape2Id = sa->getActorId(sa->correspondences_[i].getShape2().getActor());
+                if(shape1Id == aid) {
+                    sa->correspondences_[i].setPoint1(t->TransformPoint(sa->correspondences_[i].getPoint1()));
+                    sa->correspondences_[i].updateLine();
                 }
                 
-                if((sa->targets)[i].first == aid) {
-                    sa->correspondences[i]->SetPoint2(t->TransformPoint(sa->shapes_[aid].getPoints()->GetPoint(sa->targets[i].second)));
-                    sa->correspondences[i]->Update();
+                if(shape2Id == aid) {
+                    sa->correspondences_[i].setPoint2(t->TransformPoint(sa->correspondences_[i].getPoint2()));
+                    sa->correspondences_[i].updateLine();
                 }
             }
         }
@@ -92,6 +94,7 @@ private slots:
 
     virtual void showContextMenu(const QPoint&);
 
+    virtual void deleteMarkedCorrespondence();
     virtual void vtkClickHandler
                 (
                     vtkObject *caller, 
@@ -108,6 +111,7 @@ private:
     void    addShapeToVTK(QString fileName);
 
     void    deleteShape(int i);
+    void    deleteShape(Shape shape);
 
     int     getActorId(vtkActor* actor);
     bool    eventFilter(QObject *object, QEvent *event);
@@ -116,15 +120,19 @@ private:
     // TODO go with more efficient data structure here
     vector<Correspondence>      correspondences_; 
     
-    vtkSmartPointer<vtkDataSetMapper>       selectedMapper;
-    vtkSmartPointer<vtkActor>               selectedActor;
-    vtkSmartPointer<vtkRenderer>            renderer;
-    vtkSmartPointer<vtkEventQtSlotConnect>  connections;
+    vtkSmartPointer<vtkDataSetMapper>           selectedMapper;
+    vtkSmartPointer<vtkActor>                   selectedActor;
+    vtkSmartPointer<vtkRenderer>                renderer;
+    vtkSmartPointer<vtkEventQtSlotConnect>      connections;
+    // used to remember wheter a node was already selected previously when
+    // selecting correspondences
+    pair<Shape, vtkSmartPointer<vtkPoints> >    source_;
+    bool                                        set_;
     
-    vector<vtkSmartPointer<vtkActor> >         lines;
-    vector<vtkSmartPointer<vtkLineSource> >    correspondences;
-    vector<pair<int, vtkIdType> >         sources;
-    vector<pair<int, vtkIdType> >         targets;
+    // vector<vtkSmartPointer<vtkActor> >          lines;
+    // vector<vtkSmartPointer<vtkLineSource> >     correspondences;
+    // vector<pair<int, vtkIdType> >               sources;
+    // vector<pair<int, vtkIdType> >               targets;
 
     int numberOfActors = 0;
     int actorId = -1;

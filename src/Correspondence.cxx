@@ -4,3 +4,7 @@
 Correspondence::Correspondence() {
 
 }
+
+void Correspondence::updateLine() {
+    correspondence_->Update();
+}

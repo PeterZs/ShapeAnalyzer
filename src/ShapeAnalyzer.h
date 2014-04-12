@@ -92,7 +92,8 @@ private slots:
 
     virtual void openShape();
 
-    virtual void showContextMenu(const QPoint&);
+    virtual void showContextMenuShapes(const QPoint&);
+    virtual void showContextMenuCorrespondences(const QPoint&);
 
     virtual void deleteMarkedCorrespondence();
     virtual void vtkClickHandler
@@ -110,14 +111,16 @@ private:
     void    setupVTK();
     void    addShapeToVTK(QString fileName);
 
+    void    deleteCorrespondence(int i);
     void    deleteShape(int i);
     void    deleteShape(Shape shape);
 
     int     getActorId(vtkActor* actor);
     bool    eventFilter(QObject *object, QEvent *event);
 
-    vector<Shape>               shapes_;
     // TODO go with more efficient data structure here
+    // the indices of an actor in the vectors are not static
+    vector<Shape>               shapes_;
     vector<Correspondence>      correspondences_; 
     
     vtkSmartPointer<vtkDataSetMapper>           selectedMapper;
@@ -128,13 +131,14 @@ private:
     // selecting correspondences
     pair<Shape, vtkSmartPointer<vtkPoints> >    source_;
     bool                                        set_;
-    
-    // vector<vtkSmartPointer<vtkActor> >          lines;
-    // vector<vtkSmartPointer<vtkLineSource> >     correspondences;
-    // vector<pair<int, vtkIdType> >               sources;
-    // vector<pair<int, vtkIdType> >               targets;
 
+    // only used for naming in qt
+    // this is NOT the real number of actors/correspondences
+    // use the vector size instead
+    // TODO might think of a better way for naming
     int numberOfActors = 0;
+    int numberOfCorrespondences = 0;
+
     int actorId = -1;
 };
 

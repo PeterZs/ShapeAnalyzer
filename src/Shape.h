@@ -20,7 +20,6 @@ class Shape {
 		vtkSmartPointer<vtkActor> 		getActor() 		{ return actor_; };
 		vtkSmartPointer<vtkBoxWidget> 	getBoxWidget() 	{ return boxWidget_; };
 		vtkSmartPointer<vtkPolyData>	getData() 		{ return data_; };
-		vtkSmartPointer<vtkPoints>		getPoints() 	{ return points_; };
 
 		// setters
 		void setActor(vtkSmartPointer<vtkActor> pActor) 	
@@ -29,14 +28,11 @@ class Shape {
 							{ boxWidget_ = pBoxWidget; };
 		void setData(vtkSmartPointer<vtkPolyData> pData) 	
 							{ data_ = pData; };
-		void setPoints(vtkSmartPointer<vtkPoints> pPoints)	
-							{ points_ = pPoints; };
 
 	private: 
 		vtkSmartPointer<vtkActor> 		actor_;
 		vtkSmartPointer<vtkBoxWidget> 	boxWidget_;
 		vtkSmartPointer<vtkPolyData>	data_;
-		vtkSmartPointer<vtkPoints>		points_;
 
 };
 

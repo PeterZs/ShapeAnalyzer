@@ -31,11 +31,12 @@
 
 #include <vector>
 
-#include "Shape.h"
 #include "Correspondence.h"
-
-#include "ui_ShapeAnalyzer.h"
+#include "Shape.h"
 #include "vtkOFFReader.h"
+
+#include "ui_help.h"
+#include "ui_ShapeAnalyzer.h"
 
 #define MAX_NUM_ACTORS 10
 
@@ -92,6 +93,7 @@ private slots:
 
     virtual void openShape();
 
+    virtual void openHelpWindow();
     virtual void showContextMenuShapes(const QPoint&);
     virtual void showContextMenuCorrespondences(const QPoint&);
 
@@ -104,8 +106,11 @@ private slots:
                     void *callData, 
                     vtkCommand *command
                 );
+
     virtual void toggleBoxWidgets();
     virtual void toggleCurrent();
+
+    virtual void setCurrentCorrespondenceColor();
 
 private:
     void    setupVTK();

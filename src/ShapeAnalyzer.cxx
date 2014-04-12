@@ -33,169 +33,101 @@ ShapeAnalyzer::ShapeAnalyzer() {
             this,                                   SLOT(showContextMenuCorrespondences(const QPoint&)));
     connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
             this,                                   SLOT(deleteMarkedCorrespondence()));
+    connect(this->listCorrespondences,              SIGNAL(currentRowChanged (int)),
+            this,                                   SLOT(setCurrentCorrespondenceColor()));
+    connect(this->actionHelp,                         SIGNAL(triggered()),
+            this,                                   SLOT(openHelpWindow()));
     
     this->setupVTK();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::setupVTK() {
-    this->qvtkWidget->installEventFilter(this);
-    
-    //Connect qvtk widgets with this object
-    this->connections = vtkSmartPointer<vtkEventQtSlotConnect>::New();
-    this->connections->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
-                               vtkCommand::LeftButtonPressEvent,
-                               this,
-                               SLOT(vtkClickHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
-                               NULL, 1.0);
-    
-    renderer = vtkSmartPointer<vtkRenderer>::New();
-    
-    this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
-    
-    selectedMapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    selectedActor = vtkSmartPointer<vtkActor>::New();
-}
+// Functions handling QT 
+///////////////////////////////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::toggleBoxWidgets() {
-    if(this->radioButtonTransformActors->isChecked()) {
-        for(vector<Shape>::iterator it = shapes_.begin(); 
-            it != shapes_.end(); 
-            ++it) {
-            it->getBoxWidget()->On();
-        }
-    } else {
-        for(vector<Shape>::iterator it = shapes_.begin(); 
-            it != shapes_.end(); 
-            ++it) {
-            it->getBoxWidget()->Off();
-        }
+bool ShapeAnalyzer::eventFilter(
+    QObject     *object, 
+    QEvent      *event
+) {
+    if (object == qvtkWidget && event->type() == QEvent::Wheel) {
+        return true;
     }
+    return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-int ShapeAnalyzer::getActorId(vtkActor *actor) {
-    int i = 0;
-    for(vector<Shape>::iterator it = shapes_.begin();
-        it != shapes_.end();
-        ++it) {
-        if(it->getActor() == actor) {
-            return i;
-        }
-        i++;
-    }
-    return -1;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::resetCamera() {
-    renderer->ResetCamera();
-    qvtkWidget->GetRenderWindow()->Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::clear() {
-    // qt
-    this->listShapes->clear();
-    this->listCorrespondences->clear();
-
-    // vtk
-
-    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
-        it != correspondences_.end(); 
-        ++it) {
-
-        renderer->RemoveActor(it->getActor());
-    }
-
-    correspondences_.clear();
-
-    // delete all shapes
-    for(vector<Shape>::iterator it = shapes_.begin(); 
-        it != shapes_.end(); 
-        ++it) {
-            renderer->RemoveActor(it->getActor());
-            it->getBoxWidget()->SetInteractor(NULL);
-            it->getBoxWidget()->SetProp3D(NULL);
-    }
-
-    shapes_.clear();
-    
-    numberOfActors = 0;
-    numberOfCorrespondences = 0;
-
-    actorId = -1;
-    
-    //renderer->RemoveActor(selectedActor);
-    this->qvtkWidget->GetRenderWindow()->Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::deleteShape(Shape shape) {
-    int i = getActorId(shape.getActor());
-    deleteShape(i);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::deleteShape(int i) {
-
-    // qt
-    this->listShapes->takeItem(i);
-
-    // vtk
-
-    // delete correspondences on i
-    // TODO total ugly with the j counter, think of smth better
-    int j = 0;
-    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
-        it != correspondences_.end(); ) {
-        if(shapes_[i].getActor() == it->getShape1().getActor() || 
-            shapes_[i].getActor() == it->getShape2().getActor()) {
-
-                renderer->RemoveActor(it->getActor());
-                it = correspondences_.erase(it);
-
-                // qt
-                this->listCorrespondences->takeItem(j);
-        } else {
-            it++;
-            j++;
-        }
-    }
-
-    // delete shape
-    renderer->RemoveActor(shapes_[i].getActor());
-    shapes_[i].getBoxWidget()->SetInteractor(NULL);
-    shapes_[i].getBoxWidget()->SetProp3D(NULL);
-    shapes_.erase(shapes_.begin() + i);
-
-    this->numberOfActors--;
-
-    // TODO not sure if this makes sense
-    //this->actorId = -1;
-
-    //renderer->RemoveActor(selectedActor);
-
-    this->qvtkWidget->GetRenderWindow()->Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::deleteCorrespondence(int i) {
-    // qt
-    this->listCorrespondences->takeItem(i);
-
-    // vtk
-    renderer->RemoveActor(correspondences_[i].getActor());
-    correspondences_.erase(correspondences_.begin() + i);
-
-    this->qvtkWidget->GetRenderWindow()->Render();
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::exit() {
     qApp->exit();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteMarkedCorrespondence() {
+    set_ = false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::openHelpWindow() {
+    
+    QDialog* help = new QDialog(0,0);
+
+    Ui_Dialog helpUi;
+    helpUi.setupUi(help);
+
+    help->show();
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::openShape() {
+    
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    "",
+                                                    tr("Files (*.off)"));
+    
+    if(fileName.count() == 0)
+        return;
+    
+    addShapeToVTK(fileName);
+
+    numberOfActors++;
+
+    // add shape to qt list widget
+    std::string name = "Shape ";
+    name.append(std::to_string(numberOfActors));
+    this->listShapes->addItem(QString(name.c_str()));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::showContextMenuCorrespondences(const QPoint& pos) {
+    int currentRow = this->listCorrespondences->currentRow();
+
+    // menu appears only if item was selected
+    if(currentRow >= 0) {
+
+        QPoint globalPos = this->listCorrespondences->mapToGlobal(pos);
+        // for QAbstractScrollArea and derived classes you would use:
+        // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
+
+        QMenu myMenu;
+        myMenu.addAction("Delete");
+        // ...
+
+        QAction* selectedItem = myMenu.exec(globalPos);
+        if (selectedItem)
+        {
+            deleteCorrespondence(this->listCorrespondences->currentRow());
+        }
+
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief ShapeAnalyzer::showContextMenu
@@ -223,50 +155,24 @@ void ShapeAnalyzer::showContextMenuShapes(const QPoint& pos) {
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::showContextMenuCorrespondences(const QPoint& pos) {
-    int currentRow = this->listCorrespondences->currentRow();
-
-    // menu appears only if item was selected
-    if(currentRow >= 0) {
-
-        QPoint globalPos = this->listCorrespondences->mapToGlobal(pos);
-        // for QAbstractScrollArea and derived classes you would use:
-        // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-
-        QMenu myMenu;
-        myMenu.addAction("Delete");
-        // ...
-
-        QAction* selectedItem = myMenu.exec(globalPos);
-        if (selectedItem)
-        {
-            deleteCorrespondence(this->listShapes->currentRow());
+void ShapeAnalyzer::toggleBoxWidgets() {
+    if(this->radioButtonTransformActors->isChecked()) {
+        for(vector<Shape>::iterator it = shapes_.begin(); 
+            it != shapes_.end(); 
+            ++it) {
+            it->getBoxWidget()->On();
         }
-
+    } else {
+        for(vector<Shape>::iterator it = shapes_.begin(); 
+            it != shapes_.end(); 
+            ++it) {
+            it->getBoxWidget()->Off();
+        }
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::openShape() {
-    
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                    "",
-                                                    tr("Files (*.off)"));
-    
-    if(fileName.count() == 0)
-        return;
-    
-    addShapeToVTK(fileName);
-
-    numberOfActors++;
-
-    // add shape to qt list widget
-    std::string name = "Shape ";
-    name.append(std::to_string(numberOfActors));
-    this->listShapes->addItem(QString(name.c_str()));
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::toggleCurrent() {
@@ -286,16 +192,11 @@ void ShapeAnalyzer::toggleCurrent() {
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
-bool ShapeAnalyzer::eventFilter(
-    QObject     *object, 
-    QEvent      *event
-) {
-    if (object == qvtkWidget && event->type() == QEvent::Wheel) {
-        return true;
-    }
-    return false;
-}
+// Functions handling VTK
+///////////////////////////////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::addShapeToVTK(QString fileName) {
@@ -357,10 +258,59 @@ void ShapeAnalyzer::addShapeToVTK(QString fileName) {
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::deleteMarkedCorrespondence() {
-    set_ = false;
+void ShapeAnalyzer::resetCamera() {
+    renderer->ResetCamera();
+    qvtkWidget->GetRenderWindow()->Render();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::setCurrentCorrespondenceColor() {
+    int currentRow = this->listCorrespondences->currentRow();
+
+    // only change color if there is a correspondenece
+    if(currentRow >= 0) {
+
+        // set all correspondences green
+        // TODO might find out which one was selected prev and only change that
+        for(vector<Correspondence>::iterator it = correspondences_.begin(); 
+            it != correspondences_.end();
+            it++) {
+                it->getActor()->GetProperty()->SetColor(0, 1, 0);
+        }
+
+
+        // set current correspondence red
+        correspondences_[currentRow].getActor()->GetProperty()->SetColor(1, 0, 0);
+
+        // update
+        this->qvtkWidget->GetRenderWindow()->Render();
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::setupVTK() {
+    this->qvtkWidget->installEventFilter(this);
+    
+    //Connect qvtk widgets with this object
+    this->connections = vtkSmartPointer<vtkEventQtSlotConnect>::New();
+    this->connections->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
+                               vtkCommand::LeftButtonPressEvent,
+                               this,
+                               SLOT(vtkClickHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                               NULL, 1.0);
+    
+    renderer = vtkSmartPointer<vtkRenderer>::New();
+    
+    this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
+    
+    selectedMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    selectedActor = vtkSmartPointer<vtkActor>::New();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkClickHandler(
@@ -539,4 +489,127 @@ void ShapeAnalyzer::vtkClickHandler(
         }
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Functions managing data structures
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::clear() {
+    // qt
+    this->listShapes->clear();
+    this->listCorrespondences->clear();
+
+    // vtk
+
+    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
+        it != correspondences_.end(); 
+        ++it) {
+
+        renderer->RemoveActor(it->getActor());
+    }
+
+    correspondences_.clear();
+
+    // delete all shapes
+    for(vector<Shape>::iterator it = shapes_.begin(); 
+        it != shapes_.end(); 
+        ++it) {
+            renderer->RemoveActor(it->getActor());
+            it->getBoxWidget()->SetInteractor(NULL);
+            it->getBoxWidget()->SetProp3D(NULL);
+    }
+
+    shapes_.clear();
+    
+    numberOfActors = 0;
+    numberOfCorrespondences = 0;
+
+    actorId = -1;
+    
+    //renderer->RemoveActor(selectedActor);
+    this->qvtkWidget->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteCorrespondence(int i) {
+    // qt
+    this->listCorrespondences->takeItem(i);
+
+    // vtk
+    renderer->RemoveActor(correspondences_[i].getActor());
+    correspondences_.erase(correspondences_.begin() + i);
+
+    this->qvtkWidget->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteShape(Shape shape) {
+    int i = getActorId(shape.getActor());
+    deleteShape(i);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteShape(int i) {
+
+    // qt
+    this->listShapes->takeItem(i);
+
+    // vtk
+
+    // delete correspondences on i
+    // TODO total ugly with the j counter, think of smth better
+    int j = 0;
+    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
+        it != correspondences_.end(); ) {
+        if(shapes_[i].getActor() == it->getShape1().getActor() || 
+            shapes_[i].getActor() == it->getShape2().getActor()) {
+
+                renderer->RemoveActor(it->getActor());
+                it = correspondences_.erase(it);
+
+                // qt
+                this->listCorrespondences->takeItem(j);
+        } else {
+            it++;
+            j++;
+        }
+    }
+
+    // delete shape
+    renderer->RemoveActor(shapes_[i].getActor());
+    shapes_[i].getBoxWidget()->SetInteractor(NULL);
+    shapes_[i].getBoxWidget()->SetProp3D(NULL);
+    shapes_.erase(shapes_.begin() + i);
+
+    this->numberOfActors--;
+
+    // TODO not sure if this makes sense
+    //this->actorId = -1;
+
+    //renderer->RemoveActor(selectedActor);
+
+    this->qvtkWidget->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+int ShapeAnalyzer::getActorId(vtkActor *actor) {
+    int i = 0;
+    for(vector<Shape>::iterator it = shapes_.begin();
+        it != shapes_.end();
+        ++it) {
+        if(it->getActor() == actor) {
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}
+
 

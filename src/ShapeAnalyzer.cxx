@@ -1,6 +1,5 @@
 #include "ShapeAnalyzer.h"
 
-
 // Constructor
 ShapeAnalyzer::ShapeAnalyzer() {
     this->setupUi(this);
@@ -19,26 +18,56 @@ ShapeAnalyzer::ShapeAnalyzer() {
             this,                                   SLOT(clear()));
     connect(this->openFileButton,                   SIGNAL(clicked()),
             this,                                   SLOT(openShape()));
-    connect(this->radioButtonTransformActors,       SIGNAL(clicked()),
-            this,                                   SLOT(toggleBoxWidgets()));
-    connect(this->radioButtonAddCorrespondences,    SIGNAL(clicked()),
-            this,                                   SLOT(toggleBoxWidgets()));
-    connect(this->radioButtonTransformScene,        SIGNAL(clicked()),
-            this,                                   SLOT(toggleBoxWidgets()));
-    connect(this->listShapes,                       SIGNAL(itemSelectionChanged()),
-            this,                                   SLOT(toggleCurrent()));
-    connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
-            this,                                   SLOT(showContextMenuShapes(const QPoint&)));
-    connect(this->listCorrespondences,              SIGNAL(customContextMenuRequested(const QPoint&)),
-            this,                                   SLOT(showContextMenuCorrespondences(const QPoint&)));
+    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+            this,                                   SLOT(toggleBoxWidget()));
+    connect(this->radioButtonAddCorrespondences,    SIGNAL(toggled(bool)),
+            this,                                   SLOT(toggleBoxWidget()));
+    connect(this->radioButtonTransformScene,        SIGNAL(toggled(bool)),
+            this,                                   SLOT(toggleBoxWidget()));
+    
+    //delete marked correspondence triangle if mode was changed. This triggers box widget to show up on shape if shape has been selected.
     connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
             this,                                   SLOT(deleteMarkedCorrespondence()));
-    connect(this->listCorrespondences,              SIGNAL(currentRowChanged (int)),
-            this,                                   SLOT(setCurrentCorrespondenceColor()));
-    connect(this->actionHelp,                         SIGNAL(triggered()),
+    connect(this->radioButtonAddCorrespondences,       SIGNAL(toggled(bool)),
+            this,                                   SLOT(deleteMarkedCorrespondence()));
+    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+            this,                                   SLOT(deleteMarkedCorrespondence()));
+    
+    connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(openHelpWindow()));
     
+    //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
+    connectListCorrespondences();
+    connectListShapes();
     this->setupVTK();
+}
+
+
+void ShapeAnalyzer::connectListCorrespondences() {
+    
+    int currentRow = listCorrespondences->currentRow();
+    
+    listCorrespondences->setCurrentRow(-1);
+    connect(this->listCorrespondences,              SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(setCurrentCorrespondenceColor(QListWidgetItem*, QListWidgetItem*)));
+    connect(this->listCorrespondences,              SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(showContextMenuCorrespondences(const QPoint&)));
+
+    //trigger SIGNAL currentItemChanged
+    listCorrespondences->setCurrentRow(currentRow);
+}
+
+void ShapeAnalyzer::connectListShapes() {
+    int currentRow = listShapes->currentRow();
+    listShapes->setCurrentRow(-1);
+
+    connect(this->listShapes,                       SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(setCurrentBoxWidget(QListWidgetItem*, QListWidgetItem*)));
+    connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(showContextMenuShapes(const QPoint&)));
+
+    //trigger SIGNAL currentItemChanged
+    listShapes->setCurrentRow(currentRow);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,13 +76,12 @@ ShapeAnalyzer::ShapeAnalyzer() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-bool ShapeAnalyzer::eventFilter(
-    QObject     *object, 
-    QEvent      *event
-) {
+//catch mouse wheel events since they cause strange behavior on macs
+bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
     if (object == qvtkWidget && event->type() == QEvent::Wheel) {
         return true;
     }
+    
     return false;
 }
 
@@ -66,7 +94,8 @@ void ShapeAnalyzer::exit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteMarkedCorrespondence() {
-    set_ = false;
+    renderer->RemoveActor(selectedActor);
+    selected_ = false;
 }
 
 
@@ -93,14 +122,19 @@ void ShapeAnalyzer::openShape() {
     if(fileName.count() == 0)
         return;
     
-    addShapeToVTK(fileName);
+    Shape* shape = addShapeToVTK(fileName);
 
-    numberOfActors++;
+    lastInsertShapeID_++;
 
     // add shape to qt list widget
-    std::string name = "Shape ";
-    name.append(std::to_string(numberOfActors));
-    this->listShapes->addItem(QString(name.c_str()));
+    string name = "Shape ";
+    name.append(std::to_string(lastInsertShapeID_));
+    
+    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+    listShapes->addItem(item);
+    
+    //make sure that there always is exactly one item selected if there exists at least one item
+    listShapes->setCurrentRow(listShapes->count()-1);
 }
 
 
@@ -120,8 +154,7 @@ void ShapeAnalyzer::showContextMenuCorrespondences(const QPoint& pos) {
         // ...
 
         QAction* selectedItem = myMenu.exec(globalPos);
-        if (selectedItem)
-        {
+        if (selectedItem) {
             deleteCorrespondence(this->listCorrespondences->currentRow());
         }
 
@@ -147,48 +180,36 @@ void ShapeAnalyzer::showContextMenuShapes(const QPoint& pos) {
         // ...
 
         QAction* selectedItem = myMenu.exec(globalPos);
-        if (selectedItem)
-        {
-            deleteShape(this->listShapes->currentRow());
-        }
-
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::toggleBoxWidgets() {
-    if(this->radioButtonTransformActors->isChecked()) {
-        for(vector<Shape>::iterator it = shapes_.begin(); 
-            it != shapes_.end(); 
-            ++it) {
-            it->getBoxWidget()->On();
-        }
-    } else {
-        for(vector<Shape>::iterator it = shapes_.begin(); 
-            it != shapes_.end(); 
-            ++it) {
-            it->getBoxWidget()->Off();
+        if (selectedItem) {
+            deleteShape(currentRow);
         }
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::toggleCurrent() {
-    if(this->radioButtonTransformActors->isChecked()) {
-        int index = this->listShapes->currentRow();
-
-        // one might optimize that...
-        for(vector<Shape>::iterator it = shapes_.begin(); 
-            it != shapes_.end(); 
-            ++it) {
-            it->getBoxWidget()->Off();
+void ShapeAnalyzer::toggleBoxWidget() {
+    if(listShapes->count() > 0) {
+        Shape* selectedShape = dynamic_cast<ShapeListItem*>(listShapes->currentItem())->getShape();
+        if(this->radioButtonTransformActors->isChecked()) {
+            selectedShape->getBoxWidget()->On();
+        } else {
+            selectedShape->getBoxWidget()->Off();
         }
+    }
+}
 
-        // if a row is selected
-        if(index >= 0)
-                shapes_[index].getBoxWidget()->On();
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::setCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous) {
+    if(this->radioButtonTransformActors->isChecked()) {
+        if(current != nullptr) {
+            dynamic_cast<ShapeListItem*>(current)->getShape()->getBoxWidget()->On();
+            
+            if(previous != nullptr) {
+                dynamic_cast<ShapeListItem*>(previous)->getShape()->getBoxWidget()->Off();
+            }
+        }
     }
 }
 
@@ -199,63 +220,55 @@ void ShapeAnalyzer::toggleCurrent() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::addShapeToVTK(QString fileName) {
-    int index = shapes_.size();
-
-    Shape *shape = new Shape();
-    shapes_.push_back(*shape);
+Shape* ShapeAnalyzer::addShapeToVTK(QString fileName) {
+    Shape* shape = new Shape;
 
     // read .off file
-    vtkSmartPointer<vtkOFFReader> reader =
-            vtkSmartPointer<vtkOFFReader>::New();
+    vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
     reader->SetFileName(fileName.toUtf8().constData());
-    shapes_[index].setData(reader->GetOutput());
+    shape->setData(reader->GetOutput());
 
+    //make shure that shape consists of triangles
+    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+    triangleFilter->SetInputConnection(reader->GetOutputPort());
+    triangleFilter->Update();
+    
     // get vtk actor and add to renderer
-    vtkSmartPointer<vtkPolyDataMapper> mapper =
-            vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputConnection(reader->GetOutputPort());
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(triangleFilter->GetOutputPort());
 
-    shapes_[index].setActor(vtkSmartPointer<vtkActor>::New());
-    shapes_[index].getActor()->SetMapper(mapper);
+    shape->setActor(vtkSmartPointer<vtkActor>::New());
+    shape->getActor()->SetMapper(mapper);
 
-    renderer->AddActor(shapes_[index].getActor());
+    renderer->AddActor(shape->getActor());
 
-    if(index == 0)
+    if(shapes_.size() == 0)
         renderer->ResetCamera();
 
     // set up box widget
-    shapes_[index].setBoxWidget(vtkSmartPointer<vtkBoxWidget>::New());
-    shapes_[index].getBoxWidget()->SetProp3D
-                            (
-                                shapes_[numberOfActors].getActor()
-                            );
-    shapes_[index].getBoxWidget()->SetInteractor
-                            (
-                                qvtkWidget->GetRenderWindow()->GetInteractor()
-                            );
-    shapes_[index].getBoxWidget()->SetPlaceFactor(1.25);
+    shape->setBoxWidget(vtkSmartPointer<vtkBoxWidget>::New());
+    shape->getBoxWidget()->SetProp3D(shape->getActor());
+    shape->getBoxWidget()->SetInteractor(qvtkWidget->GetRenderWindow()->GetInteractor());
+    shape->getBoxWidget()->SetPlaceFactor(1.25);
 
-    shapes_[index].getBoxWidget()->PlaceWidget();
-    vtkSmartPointer<vtkBoxWidgetCallback> callback =
-            vtkSmartPointer<vtkBoxWidgetCallback>::New();
+    shape->getBoxWidget()->PlaceWidget();
+    vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
 
-    shapes_[index].getBoxWidget()->AddObserver
-                            (
-                                vtkCommand::InteractionEvent, 
-                                callback
-                            );
+    shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
 
     qvtkWidget->GetRenderWindow()->Render();
 
     // turn box widget on if in transform mode
     // TODO not if other shape is selected
     if(this->radioButtonTransformActors->isChecked()) {
-        shapes_[index].getBoxWidget()->On();
+        shape->getBoxWidget()->On();
     } else {
-        shapes_[index].getBoxWidget()->Off();
+        shape->getBoxWidget()->Off();
     }
+    
+    shapes_.push_back(shape);
+    return shape;
 }
 
 
@@ -267,29 +280,32 @@ void ShapeAnalyzer::resetCamera() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::setCurrentCorrespondenceColor() {
-    int currentRow = this->listCorrespondences->currentRow();
-
-    // only change color if there is a correspondenece
-    if(currentRow >= 0) {
-
-        // set all correspondences green
-        // TODO might find out which one was selected prev and only change that
-        for(vector<Correspondence>::iterator it = correspondences_.begin(); 
-            it != correspondences_.end();
-            it++) {
-                it->getActor()->GetProperty()->SetColor(0, 1, 0);
-        }
-
-
+void ShapeAnalyzer::setCurrentCorrespondenceColor(QListWidgetItem* current, QListWidgetItem* previous) {
+    // only change color if there is a selection
+    if(current != nullptr) {
         // set current correspondence red
-        correspondences_[currentRow].getActor()->GetProperty()->SetColor(1, 0, 0);
-
+        dynamic_cast<CorrespondenceListItem*>(current)->getCorrespondence()->getActor()->GetProperty()->SetColor(1, 0, 0);
+        
+        //if there exists a previous selection set previous correspondence to green
+        if(previous != nullptr) {
+            dynamic_cast<CorrespondenceListItem*>(previous)->getCorrespondence()->getActor()->GetProperty()->SetColor(0, 1, 0);
+        }
+        
         // update
         this->qvtkWidget->GetRenderWindow()->Render();
     }
 }
 
+
+Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
+    for(list<Shape*>::iterator it = shapes_.begin(); it != shapes_.end(); it++) {
+        if(actor == (*it)->getActor()) {
+            return *it;
+        }
+    }
+    
+    return nullptr;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::setupVTK() {
@@ -301,7 +317,7 @@ void ShapeAnalyzer::setupVTK() {
                                vtkCommand::LeftButtonPressEvent,
                                this,
                                SLOT(vtkClickHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
-                               NULL, 1.0);
+                               nullptr, 1.0);
     
     renderer = vtkSmartPointer<vtkRenderer>::New();
     
@@ -313,181 +329,138 @@ void ShapeAnalyzer::setupVTK() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkClickHandler(
-    vtkObject       *caller, 
-    unsigned long   vtkEvent, 
-    void            *clientData, 
-    void            *callData, 
-    vtkCommand      *command
-) {
-
-    if(this->radioButtonAddCorrespondences->isChecked()) {
-        //cout << "clicked left" <<endl;
-
-        vtkRenderWindowInteractor* interactor = 
-            vtkRenderWindowInteractor::SafeDownCast(caller);
-
-        // Get the location of the click (in window coordinates)
-        int* pos =interactor->GetEventPosition();
-        //command->AbortFlagOn();
-
-        vtkSmartPointer<vtkCellPicker> picker = 
-                vtkSmartPointer<vtkCellPicker>::New();
-        picker->SetTolerance(0.0005);
-
-        // Pick from this location.
-        picker->Pick(pos[0], pos[1], 0, renderer);
-
-        // double* worldPosition = picker->GetPickPosition();
-        // std::cout << "Cell id is: " << picker->GetCellId() << std::endl;
-
-        this->actorId = getActorId(picker->GetActor());
-
-        // check if pick was valid
-        if(picker->GetCellId() != -1 && this->actorId != -1) {
-            // std::cout << "Pick position is: " << worldPosition[0] << " " << worldPosition[1]
-            // << " " << worldPosition[2] << endl;
-
-            // create new Id object for this pick
-            vtkSmartPointer<vtkIdTypeArray> ids = 
-                        vtkSmartPointer<vtkIdTypeArray>::New();
-            ids->SetNumberOfComponents(1);
-            ids->InsertNextValue(picker->GetCellId());
-
-            // mark picked node as selected
-            vtkSmartPointer<vtkSelectionNode> selectionNode = 
-                        vtkSmartPointer<vtkSelectionNode>::New();
-            selectionNode->SetFieldType(vtkSelectionNode::CELL);
-            selectionNode->SetContentType(vtkSelectionNode::INDICES);
-            selectionNode->SetSelectionList(ids);
-
-            vtkSmartPointer<vtkSelection> selection = 
-                        vtkSmartPointer<vtkSelection>::New();
-            selection->AddNode(selectionNode);
-
-            vtkSmartPointer<vtkExtractSelection> extractSelection = 
-                        vtkSmartPointer<vtkExtractSelection>::New();
-
-            extractSelection->SetInputData(0, shapes_[actorId].getData());
+void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command) {
+    //cout << "clicked left" <<endl;
+    
+    vtkRenderWindowInteractor* interactor =
+    vtkRenderWindowInteractor::SafeDownCast(caller);
+    
+    // Get the location of the click (in window coordinates)
+    int* pos =interactor->GetEventPosition();
+    //command->AbortFlagOn();
+    
+    vtkSmartPointer<vtkCellPicker> picker =
+    vtkSmartPointer<vtkCellPicker>::New();
+    picker->SetTolerance(0.0005);
+    
+    // Pick from this location.
+    picker->Pick(pos[0], pos[1], 0, renderer);
+    
+     double* worldPosition = picker->GetPickPosition();
+     std::cout << "Cell id is: " << picker->GetCellId() << std::endl;
+    
+    // check if pick was valid
+    
+    
+    if(picker->GetCellId() != -1) {
+        std::cout << "Pick position is: " << worldPosition[0] << " " << worldPosition[1] << " " << worldPosition[2] << endl;
+        
+        // create new Id object for this pick
+        vtkSmartPointer<vtkIdTypeArray> ids =
+        vtkSmartPointer<vtkIdTypeArray>::New();
+        ids->SetNumberOfComponents(1);
+        ids->InsertNextValue(picker->GetCellId());
+        
+        // mark picked node as selected
+        vtkSmartPointer<vtkSelectionNode> selectionNode =
+        vtkSmartPointer<vtkSelectionNode>::New();
+        selectionNode->SetFieldType(vtkSelectionNode::CELL);
+        selectionNode->SetContentType(vtkSelectionNode::INDICES);
+        selectionNode->SetSelectionList(ids);
+        
+        vtkSmartPointer<vtkSelection> selection =
+        vtkSmartPointer<vtkSelection>::New();
+        selection->AddNode(selectionNode);
+        
+       
+        selectedShape = findShapeByActor(picker->GetActor());
+        if(selectedShape != nullptr) {
+            vtkSmartPointer<vtkExtractSelection> extractSelection =
+            vtkSmartPointer<vtkExtractSelection>::New();
+            extractSelection->SetInputData(0, selectedShape->getData());
             extractSelection->SetInputData(1, selection);
             extractSelection->Update();
-
-            // In selection 
-            vtkSmartPointer<vtkUnstructuredGrid> selected = 
-                        vtkSmartPointer<vtkUnstructuredGrid>::New();
+            
+            // In selection
+            vtkSmartPointer<vtkUnstructuredGrid> selected =
+            vtkSmartPointer<vtkUnstructuredGrid>::New();
             selected->ShallowCopy(extractSelection->GetOutput());
-
-            // std::cout << "There are " << selected->GetNumberOfPoints()
-            // << " points in the selection." << std::endl;
-            // std::cout << "There are " << selected->GetNumberOfCells()
-            // << " cells in the selection." << std::endl;
-
-
-            // visual response for picked node
-            selectedMapper->SetInputData(selected);
-
-            selectedActor->SetMapper(selectedMapper);
-            selectedActor->GetProperty()->EdgeVisibilityOn();
-            selectedActor->GetProperty()->SetEdgeColor(0, 1, 0);
-            selectedActor->GetProperty()->SetLineWidth(3);
-
-            selectedActor->SetUserTransform(
-                            shapes_[actorId].getActor()->GetUserTransform()
-                            );
-
-            renderer->AddActor(selectedActor);
-
-            // depending on whether there was a selection before or not
-            if(set_ == false) {
-                // set source_ to current point and wait
-                source_.first = shapes_[actorId];
-
-                source_.second = vtkSmartPointer<vtkPoints>::New();
-                source_.second->InsertNextPoint(shapes_[actorId].getData()->GetCell(
-                             picker->GetCellId())->GetPoints()->GetPoint(0));
-                set_ = true;
-            } else {
-                // combine source_ and current pick to a correspondence
-
-                pair<Shape, vtkSmartPointer<vtkPoints> > target;
-                target.first = shapes_[actorId];
-                target.second = vtkSmartPointer<vtkPoints>::New();
-                target.second->InsertNextPoint(shapes_[actorId].getData()->GetCell(
-                             picker->GetCellId())->GetPoints()->GetPoint(0));
-
-                // if picked node is on the same shape as the source, 
-                // update and return
-                if(source_.first.getActor() == target.first.getActor()) {
-                    source_ = target;
-
-                    return;
-                }
-
-                vtkSmartPointer<vtkLineSource> lineSource = 
-                        vtkSmartPointer<vtkLineSource>::New();
-
+            
+            std::cout << "There are " << selected->GetNumberOfPoints() << " points in the selection." << std::endl;
+            std::cout << "There are " << selected->GetNumberOfCells() << " cells in the selection." << std::endl;
+            cout << selected->GetCell(0)->GetClassName()<<endl;
+            
+            if(this->radioButtonAddCorrespondences->isChecked()) {
+                // visual response for picked node
+                selectedMapper->SetInputData(selected);
                 
-                // set points in line source, transform if user transformation happend
-                if(source_.first.getActor()->GetUserTransform() == NULL) {
-                    lineSource->SetPoint1(source_.second->GetPoint(0));
+                selectedActor->SetMapper(selectedMapper);
+                selectedActor->GetProperty()->EdgeVisibilityOn();
+                selectedActor->GetProperty()->SetEdgeColor(0, 1, 0);
+                selectedActor->GetProperty()->SetLineWidth(3);
+                
+                selectedActor->SetUserTransform(selectedShape->getActor()->GetUserTransform());
+                
+                renderer->AddActor(selectedActor);
+                
+                // depending on whether there was a selection before or not
+                if(selected_ == false) {
+                    // set source_ to current point and wait
+                    source_.first = selectedShape;
+                    
+                    source_.second = vtkSmartPointer<vtkPoints>::New();
+                    source_.second->InsertNextPoint(selectedShape->getData()->GetCell(picker->GetCellId())->GetPoints()->GetPoint(0));
+                    selected_ = true;
+                } else {
+                    // combine source_ and current pick to a correspondence
+                    
+                    pair<Shape*, vtkSmartPointer<vtkPoints> > target;
+                    target.first = selectedShape;
+                    target.second = vtkSmartPointer<vtkPoints>::New();
+                    target.second->InsertNextPoint(selectedShape->getData()->GetCell(picker->GetCellId())->GetPoints()->GetPoint(0));
+                    
+                    // if picked node is on the same shape as the source,
+                    // update and return
+                    if(source_.first == target.first) {
+                        return;
+                    }
+                    
+                    
+                    // create correspondence
+                    Correspondence *correspondence = addCorrespondenceToVTK(source_.first, target.first, source_.second->GetPoint(0), target.second->GetPoint(0), source_.first->getActor()->GetUserTransform(), target.first->getActor()->GetUserTransform());
+                    
+                    selected_ = false;
+                    renderer->RemoveActor(selectedActor);
+                    
+                    // add to qt
+                    // add shape to qt list widget
+                    lastInsertCorresondenceID_++;
+                    std::string name = "Correspondence ";
+                    name.append(std::to_string(lastInsertCorresondenceID_));
+                    
+                    CorrespondenceListItem *item = new CorrespondenceListItem(QString(name.c_str()), correspondence);
+                    this->listCorrespondences->addItem(item);
                 }
-                 else {
-                     lineSource->SetPoint1(
-                         source_.first.getActor()->GetUserTransform()->TransformPoint
-                             (
-                                 source_.second->GetPoint(0)
-                             )
-                         );
-                 }
-                 
-                 if(target.first.getActor()->GetUserTransform() == NULL) {
-                    lineSource->SetPoint2(target.second->GetPoint(0));
+            } else {
+                //select item in list if clicked on shape
+                for(int i = 0; i < listShapes->count(); i++) {
+                    if(dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape() == selectedShape) {
+                        listShapes->setCurrentItem(listShapes->item(i));
+                    }
                 }
-                 else {
-                    lineSource->SetPoint2(
-                        target.first.getActor()->GetUserTransform()->TransformPoint
-                            (
-                                target.second->GetPoint(0)
-                            )
-                        );
-                 }
-
-                lineSource->Update();
-
-                // create correspondence
-                Correspondence *correspondence = new Correspondence();
-                correspondence->setCorrespondence(lineSource);
-                correspondence->setShape1(source_.first);
-                correspondence->setShape2(target.first);
-                correspondences_.push_back(*correspondence);
-
-                set_ = false;
-
-                // Visualize
-                vtkSmartPointer<vtkPolyDataMapper> mapper =
-                vtkSmartPointer<vtkPolyDataMapper>::New();
-                mapper->SetInputConnection(lineSource->GetOutputPort());
-
-                vtkSmartPointer<vtkActor> actor = 
-                    vtkSmartPointer<vtkActor>::New();
-                actor->SetMapper(mapper);
-                actor->GetProperty()->SetLineWidth(1);
-                actor->GetProperty()->SetColor(0, 1, 0);
-                renderer->AddActor(actor);
-                correspondences_.back().setActor(actor);
-                renderer->RemoveActor(selectedActor);
-
-                // add to qt
-
-                // add shape to qt list widget
-                numberOfCorrespondences++;
-
-                std::string name = "Correspondence ";
-                name.append(std::to_string(numberOfCorrespondences));
-                this->listCorrespondences->addItem(QString(name.c_str()));
             }
         }
     }
+}
+
+Correspondence* ShapeAnalyzer::addCorrespondenceToVTK(Shape* shape1, Shape* shape2, double* point1, double* point2, vtkLinearTransform* t1, vtkLinearTransform* t2) {
+    // create correspondence
+    Correspondence *correspondence = new Correspondence(shape1, shape2, point1, point2, t1, t2);
+    correspondences_.push_back(correspondence);
+    
+    renderer->AddActor(correspondence->getActor());
+    
+    return correspondence;
 }
 
 
@@ -499,117 +472,123 @@ void ShapeAnalyzer::vtkClickHandler(
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
     // qt
-    this->listShapes->clear();
-    this->listCorrespondences->clear();
-
-    // vtk
-
-    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
-        it != correspondences_.end(); 
-        ++it) {
-
-        renderer->RemoveActor(it->getActor());
+    listShapes->disconnect();
+    listCorrespondences->disconnect();
+    
+    //delete all correspondences
+    for(int i = listCorrespondences->count()-1; i > -1; i--) {
+        //get correspondence
+        CorrespondenceListItem *item = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i));
+        Correspondence *correspondence = item->getCorrespondence();
+        
+        renderer->RemoveActor(correspondence->getActor());
+        correspondences_.remove(correspondence);
+        delete item;
+        delete correspondence;
     }
 
-    correspondences_.clear();
 
     // delete all shapes
-    for(vector<Shape>::iterator it = shapes_.begin(); 
-        it != shapes_.end(); 
-        ++it) {
-            renderer->RemoveActor(it->getActor());
-            it->getBoxWidget()->SetInteractor(NULL);
-            it->getBoxWidget()->SetProp3D(NULL);
+    for(int i = listShapes->count()-1; i > -1; i--) {
+        //get shape
+        ShapeListItem *item = dynamic_cast<ShapeListItem*>(listShapes->item(i));
+        Shape *shape = item->getShape();
+        
+        renderer->RemoveActor(shape->getActor());
+        shape->getBoxWidget()->SetInteractor(nullptr);
+        shape->getBoxWidget()->SetProp3D(nullptr);
+        
+        shapes_.remove(shape);
+        delete item;
+        delete shape;
     }
 
-    shapes_.clear();
     
-    numberOfActors = 0;
-    numberOfCorrespondences = 0;
+    lastInsertShapeID_ = 0;
+    lastInsertCorresondenceID_ = 0;
 
-    actorId = -1;
+    renderer->RemoveActor(selectedActor);
+    selected_ = false;
     
-    //renderer->RemoveActor(selectedActor);
+    
     this->qvtkWidget->GetRenderWindow()->Render();
+    
+    connectListCorrespondences();
+    connectListShapes();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteCorrespondence(int i) {
     // qt
-    this->listCorrespondences->takeItem(i);
+    listCorrespondences->disconnect();
+    
+    CorrespondenceListItem *item = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i));
 
     // vtk
-    renderer->RemoveActor(correspondences_[i].getActor());
-    correspondences_.erase(correspondences_.begin() + i);
-
+    renderer->RemoveActor(item->getCorrespondence()->getActor());
+    correspondences_.remove(item->getCorrespondence());
+    
+    delete item->getCorrespondence();
+    delete item;
+    
     this->qvtkWidget->GetRenderWindow()->Render();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::deleteShape(Shape shape) {
-    int i = getActorId(shape.getActor());
-    deleteShape(i);
+    
+    connectListCorrespondences();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteShape(int i) {
-
+    listCorrespondences->disconnect();
+    listShapes->disconnect();
+    
     // qt
-    this->listShapes->takeItem(i);
+    ShapeListItem *item = dynamic_cast<ShapeListItem*>(this->listShapes->item(i));
+    Shape* shape = item->getShape();
+    
+    //if selected remove green triangle
+    if(selectedShape == shape) {
+        renderer->RemoveActor(selectedActor);
+        selected_ = false;
+        
+    }
+    
+    //first remove shape from list
+    delete item;
 
-    // vtk
-
-    // delete correspondences on i
-    // TODO total ugly with the j counter, think of smth better
-    int j = 0;
-    for(vector<Correspondence>::iterator it = correspondences_.begin(); 
-        it != correspondences_.end(); ) {
-        if(shapes_[i].getActor() == it->getShape1().getActor() || 
-            shapes_[i].getActor() == it->getShape2().getActor()) {
-
-                renderer->RemoveActor(it->getActor());
-                it = correspondences_.erase(it);
-
-                // qt
-                this->listCorrespondences->takeItem(j);
-        } else {
-            it++;
-            j++;
+    //iterate through the correspondence list BACKWARDS from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete. Then remove items from list
+    for(int j = listCorrespondences->count()-1; j > -1; j--) {
+        //get correspondence
+        Correspondence *correspondence = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(j))->getCorrespondence();
+        
+        //check whether left or right shape of correspondence equals our shape that we want to delete
+        if(shape == correspondence->getShape1() || shape == correspondence->getShape2()) {
+            //remove actor from qvtk widget
+            renderer->RemoveActor(correspondence->getActor());
+            
+            //destroy widgetItem object
+            delete listCorrespondences->item(j);
+            
+            //remove correspondence from list
+            correspondences_.remove(correspondence);
+            
+            //destroy correspondence object
+            delete correspondence;
         }
     }
-
+    
     // delete shape
-    renderer->RemoveActor(shapes_[i].getActor());
-    shapes_[i].getBoxWidget()->SetInteractor(NULL);
-    shapes_[i].getBoxWidget()->SetProp3D(NULL);
-    shapes_.erase(shapes_.begin() + i);
-
-    this->numberOfActors--;
-
-    // TODO not sure if this makes sense
-    //this->actorId = -1;
-
-    //renderer->RemoveActor(selectedActor);
+    renderer->RemoveActor(shape->getActor());
+    shape->getBoxWidget()->SetInteractor(nullptr);
+    shape->getBoxWidget()->SetProp3D(nullptr);
+    shapes_.remove(shape);
+    delete shape;
 
     this->qvtkWidget->GetRenderWindow()->Render();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-int ShapeAnalyzer::getActorId(vtkActor *actor) {
-    int i = 0;
-    for(vector<Shape>::iterator it = shapes_.begin();
-        it != shapes_.end();
-        ++it) {
-        if(it->getActor() == actor) {
-            return i;
-        }
-        i++;
-    }
-    return -1;
+    
+    connectListCorrespondences();
+    connectListShapes();
 }
 
 

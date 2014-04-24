@@ -29,16 +29,16 @@
 #include <QString>
 #include <QFileDialog>
 
-#include <vector>
+#include <list>
 
 #include "Correspondence.h"
 #include "Shape.h"
+#include "ShapeListItem.h"
+#include "CorrespondenceListItem.h"
 #include "vtkOFFReader.h"
 
 #include "ui_help.h"
 #include "ui_ShapeAnalyzer.h"
-
-#define MAX_NUM_ACTORS 10
 
 using namespace std;
 
@@ -60,23 +60,19 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             widget->GetTransform(t);
             widget->GetProp3D()->SetUserTransform(t);
             
-            int aid = sa->getActorId(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
+            Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
             
-            if(sa->numberOfActors != 0 && aid == sa->actorId) {
+            if(shape == sa->selectedShape) {
                 sa->selectedActor->SetUserTransform(t);
             }
 
-            for(int i = 0; i < sa->correspondences_.size(); i++) {
-                int shape1Id = sa->getActorId(sa->correspondences_[i].getShape1().getActor());
-                int shape2Id = sa->getActorId(sa->correspondences_[i].getShape2().getActor());
-                if(shape1Id == aid) {
-                    sa->correspondences_[i].setPoint1(t->TransformPoint(sa->correspondences_[i].getPoint1()));
-                    sa->correspondences_[i].updateLine();
+            for(list<Correspondence*>::iterator it = sa->correspondences_.begin(); it != sa->correspondences_.end(); it++) {
+                if((*it)->getShape1() == shape) {
+                    (*it)->transformPoint1(t);
                 }
                 
-                if(shape2Id == aid) {
-                    sa->correspondences_[i].setPoint2(t->TransformPoint(sa->correspondences_[i].getPoint2()));
-                    sa->correspondences_[i].updateLine();
+                if((*it)->getShape2() == shape) {
+                    (*it)->transformPoint2(t);
                 }
             }
         }
@@ -98,53 +94,48 @@ private slots:
     virtual void showContextMenuCorrespondences(const QPoint&);
 
     virtual void deleteMarkedCorrespondence();
-    virtual void vtkClickHandler
-                (
-                    vtkObject *caller, 
-                    unsigned long vtkEvent, 
-                    void *clientData, 
-                    void *callData, 
-                    vtkCommand *command
-                );
+    virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
 
-    virtual void toggleBoxWidgets();
-    virtual void toggleCurrent();
-
-    virtual void setCurrentCorrespondenceColor();
+    virtual void toggleBoxWidget();
+    
+    virtual void setCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous);
+    virtual void setCurrentCorrespondenceColor(QListWidgetItem* current, QListWidgetItem* previous);
 
 private:
-    void    setupVTK();
-    void    addShapeToVTK(QString fileName);
-
-    void    deleteCorrespondence(int i);
-    void    deleteShape(int i);
-    void    deleteShape(Shape shape);
-
-    int     getActorId(vtkActor* actor);
-    bool    eventFilter(QObject *object, QEvent *event);
-
-    // TODO go with more efficient data structure here
-    // the indices of an actor in the vectors are not static
-    vector<Shape>               shapes_;
-    vector<Correspondence>      correspondences_; 
+    void setupVTK();
+    void connectListCorrespondences();
+    void connectListShapes();
     
-    vtkSmartPointer<vtkDataSetMapper>           selectedMapper;
-    vtkSmartPointer<vtkActor>                   selectedActor;
-    vtkSmartPointer<vtkRenderer>                renderer;
-    vtkSmartPointer<vtkEventQtSlotConnect>      connections;
-    // used to remember wheter a node was already selected previously when
-    // selecting correspondences
-    pair<Shape, vtkSmartPointer<vtkPoints> >    source_;
-    bool                                        set_;
+    Shape* findShapeByActor(vtkActor* actor);
+    Shape* addShapeToVTK(QString fileName);
+    Correspondence* addCorrespondenceToVTK(Shape* shape1, Shape* shape2, double* point1, double* point2, vtkLinearTransform* t1, vtkLinearTransform* t2);
+    
+    void deleteCorrespondence(int i);
+    void deleteShape(int i);
+    bool eventFilter(QObject *object, QEvent *event);
 
+    list<Shape*> shapes_;
+    list<Correspondence*> correspondences_;
+    
+    
+    //Correspondence selection stuff
+    bool selected_; //flag indicating that a triangle has been selected on first shape. Wait for selection of corresponding triangle on another shape
+    Shape* selectedShape; //Pointer to shape that was selected in add-matches-mode
+    vtkSmartPointer<vtkDataSetMapper> selectedMapper; // mapper of green triangle that corresponds to selected triangle of selected shape
+    vtkSmartPointer<vtkActor> selectedActor; // actor representing green triangle that corresponds to selected triangle of selected shape
+    pair<Shape*, vtkSmartPointer<vtkPoints> > source_; // used to remember wheter a node was already selected previously when selecting correspondences
+    
+    
+    
+    //vtk stuff
+    vtkSmartPointer<vtkRenderer> renderer;
+    vtkSmartPointer<vtkEventQtSlotConnect> connections;
+    
+    
+    
     // only used for naming in qt
-    // this is NOT the real number of actors/correspondences
-    // use the vector size instead
-    // TODO might think of a better way for naming
-    int numberOfActors = 0;
-    int numberOfCorrespondences = 0;
-
-    int actorId = -1;
+    int lastInsertShapeID_ = 0;
+    int lastInsertCorresondenceID_ = 0;
 };
 
 #endif

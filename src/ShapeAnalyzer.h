@@ -62,17 +62,17 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             
             Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
             
-            if(shape == sa->selectedShape) {
-                sa->selectedActor->SetUserTransform(t);
+            if(sa->waitForTriangleSelection_ == true && shape == sa->selectedTriangleShape_) {
+                sa->selectedTriangleActor_->SetUserTransform(t);
             }
 
             for(list<Correspondence*>::iterator it = sa->correspondences_.begin(); it != sa->correspondences_.end(); it++) {
                 if((*it)->getShape1() == shape) {
-                    (*it)->transformPoint1(t);
+                    (*it)->transformTriangleCenter1(t);
                 }
                 
                 if((*it)->getShape2() == shape) {
-                    (*it)->transformPoint2(t);
+                    (*it)->transformTriangleCenter2(t);
                 }
             }
         }
@@ -93,7 +93,7 @@ private slots:
     virtual void showContextMenuShapes(const QPoint&);
     virtual void showContextMenuCorrespondences(const QPoint&);
 
-    virtual void deleteMarkedCorrespondence();
+    virtual void deleteSelectedTriangle();
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
 
     virtual void toggleBoxWidget();
@@ -108,7 +108,7 @@ private:
     
     Shape* findShapeByActor(vtkActor* actor);
     Shape* addShapeToVTK(QString fileName);
-    Correspondence* addCorrespondenceToVTK(Shape* shape1, Shape* shape2, double* point1, double* point2, vtkLinearTransform* t1, vtkLinearTransform* t2);
+    Correspondence* addCorrespondenceToVTK(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> triangle1, vtkSmartPointer<vtkTriangle> triangle2);
     
     void deleteCorrespondence(int i);
     void deleteShape(int i);
@@ -118,18 +118,17 @@ private:
     list<Correspondence*> correspondences_;
     
     
-    //Correspondence selection stuff
-    bool selected_; //flag indicating that a triangle has been selected on first shape. Wait for selection of corresponding triangle on another shape
-    Shape* selectedShape; //Pointer to shape that was selected in add-matches-mode
-    vtkSmartPointer<vtkDataSetMapper> selectedMapper; // mapper of green triangle that corresponds to selected triangle of selected shape
-    vtkSmartPointer<vtkActor> selectedActor; // actor representing green triangle that corresponds to selected triangle of selected shape
-    pair<Shape*, vtkSmartPointer<vtkPoints> > source_; // used to remember wheter a node was already selected previously when selecting correspondences
-    
-    
+    //Correspondence creation stuff
+    bool waitForTriangleSelection_; //flag indicating that a triangle has been selected on first shape. Wait for selection of corresponding triangle on another shape
+    Shape* selectedTriangleShape_; //Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the green triangle on it. Required to be declared in the class to delete green triangle in case the selected shape is deleted in method deleteShape(int i)
+    vtkSmartPointer<vtkDataSetMapper> selectedTriangleMapper_; // mapper of green triangle of correspondence selection that maps the triangle data to the triangle actor
+    vtkSmartPointer<vtkActor> selectedTriangleActor_; // actor representing green triangle of selected shape
+    vtkSmartPointer<vtkTriangle> triangle1_; //Remember first selection.
+    Shape* shape1_; //Remember first selection. Be careful: shape1 is not necessarily equal to selectedShape which holds the shape that is currently selected.
     
     //vtk stuff
-    vtkSmartPointer<vtkRenderer> renderer;
-    vtkSmartPointer<vtkEventQtSlotConnect> connections;
+    vtkSmartPointer<vtkRenderer> renderer_;
+    vtkSmartPointer<vtkEventQtSlotConnect> connections_;
     
     
     

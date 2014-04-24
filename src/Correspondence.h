@@ -4,6 +4,7 @@
 #include <vtkActor.h>
 #include <vtkLineSource.h>
 #include <vtkSmartPointer.h>
+#include <vtkTriangle.h>
 #include <vtkLinearTransform.h>
 #include <vtkProperty.h>
 
@@ -16,29 +17,29 @@ using namespace std;
 class Correspondence {
 
 public:
-    Correspondence(Shape* shape1, Shape* shape2, double* point1, double* point2, vtkLinearTransform* t1, vtkLinearTransform* t2);
+    Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> triangle1, vtkSmartPointer<vtkTriangle> triangle2);
     
     Correspondence(const Correspondence& c);
     
     ~Correspondence();
     
-    //apply current user-transformation t to original point1_ and update line source with the transformed point
-    void transformPoint1(vtkLinearTransform* t);
+    //apply current user-transformation t to original triangle center point1_ and update line source with the transformed point
+    void transformTriangleCenter1(vtkLinearTransform* t);
     
-    //apply current user-transformation t to original point2_ and update line source with the transformed point
-    void transformPoint2(vtkLinearTransform* t);
+    //apply current user-transformation t to original triangle center point2_ and update line source with the transformed point
+    void transformTriangleCenter2(vtkLinearTransform* t);
     
     // getters
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
     }
     
-    double* getPoint1() {
-        return point1_;
+    vtkSmartPointer<vtkTriangle> getTriangle1() {
+        return triangle1_;
     }
     
-    double* getPoint2() {
-        return point2_;
+    vtkSmartPointer<vtkTriangle> getTriangle2() {
+        return triangle2_;
     }
     
     Shape* getShape1() {
@@ -48,20 +49,7 @@ public:
     Shape* getShape2() {
         return shape2_;
     }
-    
 private:
-    //private setters.
-    void setPoint1(double* point) {
-        point1_[0] = point[0];
-        point1_[1] = point[1];
-        point1_[2] = point[2];
-    }
-    
-    void setPoint2(double* point) {
-        point2_[0] = point[0];
-        point2_[1] = point[1];
-        point2_[2] = point[2];
-    }
     
     vtkSmartPointer<vtkLineSource> line_;
     vtkSmartPointer<vtkActor> actor_;
@@ -69,10 +57,11 @@ private:
     // point1 in the line source belongs to shape1 and the same with 2
     Shape* shape1_;
     Shape* shape2_;
-    
-    //point1 point2 hold the original 3d-coordinates of the corresponding points and NOT the transformed coordinates
-    double* point1_;
-    double* point2_;
+
+    vtkSmartPointer<vtkTriangle> triangle1_;
+    vtkSmartPointer<vtkTriangle> triangle2_;
+    double* triangleCenter1_;
+    double* triangleCenter2_;
 };
 
 #endif

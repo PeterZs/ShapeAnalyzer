@@ -1,7 +1,12 @@
 #include "Correspondence.h"
 
 // Constructor
-Correspondence::Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> triangle1, vtkSmartPointer<vtkTriangle> triangle2) {
+Correspondence::Correspondence(
+                               Shape* shape1,
+                               Shape* shape2,
+                               vtkSmartPointer<vtkTriangle> triangle1,
+                               vtkSmartPointer<vtkTriangle> triangle2
+) {
 
     triangle1_ = triangle1;
     triangle2_ = triangle2;

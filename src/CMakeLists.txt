@@ -22,10 +22,10 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-file(GLOB UI_FILES *.ui)
-file(GLOB QT_WRAP *.h)
-file(GLOB CXX_FILES *.cxx)
-file(GLOB CPP_FILES *.cpp)
+file(GLOB_RECURSE UI_FILES *.ui)
+file(GLOB_RECURSE QT_WRAP *.h)
+file(GLOB_RECURSE CXX_FILES *.cxx)
+file(GLOB_RECURSE CPP_FILES *.cpp)
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )

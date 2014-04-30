@@ -7,6 +7,8 @@
 #include <vtkTriangle.h>
 #include <vtkLinearTransform.h>
 #include <vtkProperty.h>
+#include <vtkCellArray.h>
+#include <vtkLine.h>
 
 #include "Shape.h"
 
@@ -19,15 +21,11 @@ class Correspondence {
 public:
     Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> triangle1, vtkSmartPointer<vtkTriangle> triangle2);
     
-    Correspondence(const Correspondence& c);
-    
-    ~Correspondence();
-    
     //apply current user-transformation t to original triangle center point1_ and update line source with the transformed point
-    void transformTriangleCenter1(vtkLinearTransform* t);
+    void transformPoint1(vtkLinearTransform* t);
     
     //apply current user-transformation t to original triangle center point2_ and update line source with the transformed point
-    void transformTriangleCenter2(vtkLinearTransform* t);
+    void transformPoint2(vtkLinearTransform* t);
     
     // getters
     vtkSmartPointer<vtkActor> getActor() {
@@ -50,18 +48,18 @@ public:
         return shape2_;
     }
 private:
-    
-    vtkSmartPointer<vtkLineSource> line_;
+    //vtk visualization stuff
+    vtkSmartPointer<vtkPolyData> polyData_; //polydata that is visualized
     vtkSmartPointer<vtkActor> actor_;
     
-    // point1 in the line source belongs to shape1 and the same with 2
     Shape* shape1_;
     Shape* shape2_;
 
+    // point1 and triangle1 in the line source belongs to shape1 and the same with 2
     vtkSmartPointer<vtkTriangle> triangle1_;
     vtkSmartPointer<vtkTriangle> triangle2_;
-    double* triangleCenter1_;
-    double* triangleCenter2_;
+    double point1_[3];
+    double point2_[3];
 };
 
 #endif

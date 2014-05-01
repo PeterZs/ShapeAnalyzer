@@ -25,12 +25,6 @@ public:
     // calculate geodesic from a random point to all other points and visualize them
     void visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget);
     
-private:
-    // converts a (0, 1)-double value into a r/g/b value
-    int convertDoubleToR(double v);
-    int convertDoubleToG(double v);
-    int convertDoubleToB(double v);
-    
 };
 
 #endif

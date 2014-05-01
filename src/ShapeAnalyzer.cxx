@@ -102,8 +102,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
     } else if (selectedItem == geodesicAction) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
         vtkGeodesic *geodesic = new vtkGeodesic();
-        geodesic->visualizeGeodesic((*(shapesByActor_.begin())).second, qvtkWidget);
+        geodesic->visualizeGeodesic(item->getShape(), qvtkWidget);
     }
 }
 

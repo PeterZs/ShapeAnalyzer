@@ -48,7 +48,7 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
         vtkPoints->GetPoint(i, point);
         points[i * 3] = point[0];
         points[i * 3 + 1] = point[1];
-        points[i + 3 + 2] = point[2];
+        points[i * 3 + 2] = point[2];
     }
     
     free(point);
@@ -77,7 +77,7 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     //unsigned source_vertex_index = 5;
     
 	SurfacePoint source(&mesh.vertices()[source_vertex_index]);		//create source
-	std::vector<geodesic::SurfacePoint> all_sources(1,source);
+	std::vector<geodesic::SurfacePoint> all_sources(1, source);
     
     algorithm.propagate(all_sources);	//cover the whole mesh
     
@@ -121,8 +121,9 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
         if(dist > distances[ids->GetId(2)])
             dist = distances[ids->GetId(2)];
         
-        //unsigned char color[3] = {convertDoubleToR(dist / max) * 255, convertDoubleToG(dist / max) * 255, convertDoubleToB(dist / max) * 255};
-        unsigned char color[1] = {dist};
+//        double dist = (distances[ids->GetId(0)] + distances[ids->GetId(1)] + distances[ids->GetId(2)] ) / 3;
+        
+        unsigned char color[1] = {(dist / max) * 255};
         colors->InsertNextTupleValue(color);
     }
     
@@ -140,52 +141,4 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     
     qvtkWidget->GetRenderWindow()->Render();
     
-}
-
-int vtkGeodesic::convertDoubleToR(double value) {
-    if (0 <= value && value <= 1/8) {
-        return 0;
-    } else if (1/8 < value && value <= 3/8) {
-        return 0;
-    } else if (3/8 < value && value <= 5/8) {
-        return (4*value - 1.5) * 255;
-    } else if (5/8 < value && value <= 7/8) {
-        return 1;
-    } else if (7/8 < value && value <= 1) {
-        return (-4*value + 4.5) * 255;
-    } else {    // should never happen - value > 1
-        return 0;
-    }
-}
-
-int vtkGeodesic::convertDoubleToG(double value) {
-    if (0 <= value && value <= 1/8) {
-        return 0;
-    } else if (1/8 < value && value <= 3/8) {
-        return (4*value - 0.5) * 255;
-    } else if (3/8 < value && value <= 5/8) {
-        return 1;
-    } else if (5/8 < value && value <= 7/8) {
-        return (-4*value + 3.5) * 255;
-    } else if (7/8 < value && value <= 1) {
-        return 0;
-    } else {    // should never happen - value > 1
-        return 0;
-    }
-}
-
-int vtkGeodesic::convertDoubleToB(double value) {
-    if (0 <= value && value <= 1/8) {
-        return (4*value + .5) * 255;
-    } else if (1/8 < value && value <= 3/8) {
-        return 1;
-    } else if (3/8 < value && value <= 5/8) {
-        return (-4*value - 1.5) * 255;
-    } else if (5/8 < value && value <= 7/8) {
-        return 0;
-    } else if (7/8 < value && value <= 1) {
-        return 0;
-    } else {    // should never happen - value > 1
-        return 0;
-    }
 }

@@ -92,13 +92,18 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 }
 
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
-    QMenu menu;
-    menu.addAction("Delete");
+    
+    QMenu myMenu;
+    QAction* deleteAction   = myMenu.addAction("Delete");
+    QAction* geodesicAction = myMenu.addAction("Show Geodesics");
     // ...
     
-    QAction* selectedItem = menu.exec(pos);
-    if (selectedItem) {
+    QAction* selectedItem = myMenu.exec(pos);
+    if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
+    } else if (selectedItem == geodesicAction) {
+        vtkGeodesic *geodesic = new vtkGeodesic();
+        geodesic->visualizeGeodesic((*(shapesByActor_.begin())).second, qvtkWidget);
     }
 }
 
@@ -268,7 +273,7 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
     reader->SetFileName(fileName.toUtf8().constData());
 
-    //make shure that shape consists of triangles
+    //make sure that shape consists of triangles
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triangleFilter->SetInputConnection(reader->GetOutputPort());
     triangleFilter->Update();

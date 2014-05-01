@@ -28,10 +28,12 @@
 #include <unordered_map>
 
 #include "Correspondence.h"
+#include "CorrespondenceListItem.h"
 #include "Shape.h"
 #include "ShapeListItem.h"
 #include "CorrespondenceListItem.h"
 #include "CorrespondencePicker.h"
+#include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
 
 #include "ui_help.h"

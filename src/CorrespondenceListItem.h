@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// used to handle QT interaction with Correspondence Objects
 class CorrespondenceListItem : public QListWidgetItem {
 public:
     CorrespondenceListItem(const QString &text, Correspondence* correspondence, QListWidget *view = 0, int type = Type) : QListWidgetItem(text, view, type), correspondence_(correspondence) {};

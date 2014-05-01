@@ -14,13 +14,12 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
     
     // visual response for picked node
     vtkSmartPointer<vtkUnstructuredGrid> selection = getSelectedNodeGrid(shape, cellId);
+
     selectedNodeMapper_->SetInputData(selection);
-    
     selectedNodeActor_->SetMapper(selectedNodeMapper_);
     selectedNodeActor_->GetProperty()->EdgeVisibilityOn();
-    selectedNodeActor_->GetProperty()->SetEdgeColor(0, 1, 0);
+    selectedNodeActor_->GetProperty()->SetEdgeColor(1, 1, 0);
     selectedNodeActor_->GetProperty()->SetLineWidth(3);
-    
     selectedNodeActor_->SetUserTransform(shape->getActor()->GetUserTransform());
     
     renderer_->AddActor(selectedNodeActor_);
@@ -63,14 +62,15 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
     
     lineActor_->SetMapper(lineMapper_);
     lineActor_->GetProperty()->SetLineWidth(1);
-    lineActor_->GetProperty()->SetColor(0, 1, 0);
+    lineActor_->GetProperty()->SetColor(1, 1, 0);
     lineActor_->SetPickable(0);
     renderer_->AddActor(lineActor_);
-    
+
     // depending on whether there was a selection before or not
     if(waitForSelection_ == false) {
         // set source to current triangle and wait for selection of corresponding triangle
         triangle1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
+        triangle1Actor_ = createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform());
         shape1_ = shape;
         waitForSelection_ = true;
         return false;
@@ -81,11 +81,12 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
         // update and return
         if(shape1_ == shape) {
             triangle1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
+            triangle1Actor_ = createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform());
             return false;
         }
         
         // create correspondence
-        *correspondence = new Correspondence(shape1_, shape, triangle1_, vtkTriangle::SafeDownCast(selection->GetCell(0)));
+        *correspondence = new Correspondence(shape1_, shape, triangle1_, vtkTriangle::SafeDownCast(selection->GetCell(0)), triangle1Actor_, createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform()));
         renderer_->AddActor((*correspondence)->getActor());
         //remove green triangle and set flag to false again
         waitForSelection_ = false;
@@ -108,6 +109,18 @@ void CorrespondencePicker::mouseMoveHandler(int x, int y) {
         linePolyData_->Modified();
         renderer_->GetRenderWindow()->Render();
     }
+}
+
+vtkSmartPointer<vtkActor> CorrespondencePicker::createTriangleActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t) {
+    vtkSmartPointer<vtkDataSetMapper> triangleMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    triangleMapper->SetInputData(grid);
+    vtkSmartPointer<vtkActor> triangleActor = vtkSmartPointer<vtkActor>::New();
+    triangleActor->SetMapper(triangleMapper);
+    triangleActor->GetProperty()->EdgeVisibilityOn();
+    triangleActor->GetProperty()->SetEdgeColor(1, 0, 0);
+    triangleActor->GetProperty()->SetLineWidth(3);
+    triangleActor->SetUserTransform(t);
+    return triangleActor;
 }
 
 vtkSmartPointer<vtkUnstructuredGrid> CorrespondencePicker::getSelectedNodeGrid(Shape *shape, vtkIdType cellId) {

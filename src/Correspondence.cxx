@@ -5,11 +5,16 @@ Correspondence::Correspondence(
                                Shape* shape1,
                                Shape* shape2,
                                vtkSmartPointer<vtkTriangle> triangle1,
-                               vtkSmartPointer<vtkTriangle> triangle2
+                               vtkSmartPointer<vtkTriangle> triangle2,
+                               vtkSmartPointer<vtkActor> triangle1Actor,
+                               vtkSmartPointer<vtkActor> triangle2Actor
 ) {
 
     triangle1_ = triangle1;
     triangle2_ = triangle2;
+    
+    triangle1Actor_ = triangle1Actor;
+    triangle2Actor_ = triangle2Actor;
     
     //initialize point1 to center of triangle1
     //method TriangleCenter is static therefore call it as vtkTriangle::TriangleCenter
@@ -73,9 +78,11 @@ Correspondence::Correspondence(
 void Correspondence::transformPoint1(vtkLinearTransform* t) {
     polyData_->GetPoints()->SetPoint(0, t->TransformPoint(point1_));
     polyData_->Modified();
+    triangle1Actor_->SetUserTransform(t);
 }
 
 void Correspondence::transformPoint2(vtkLinearTransform* t) {
     polyData_->GetPoints()->SetPoint(1, t->TransformPoint(point2_));
     polyData_->Modified();
+    triangle2Actor_->SetUserTransform(t);
 }

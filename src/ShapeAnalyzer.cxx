@@ -1,6 +1,5 @@
 #include "ShapeAnalyzer.h"
 
-#include <map>
 // Constructor
 ShapeAnalyzer::ShapeAnalyzer() {
     this->setupUi(this);
@@ -236,11 +235,19 @@ void ShapeAnalyzer::slotSetCurrentCorrespondenceColor(QListWidgetItem* current, 
     // only change color if there is a selection
     if(current != nullptr) {
         // set current correspondence red
-        dynamic_cast<CorrespondenceListItem*>(current)->getCorrespondence()->getActor()->GetProperty()->SetColor(1, 0, 0);
+        Correspondence* currentCorrespondence = dynamic_cast<CorrespondenceListItem*>(current)->getCorrespondence();
+        currentCorrespondence->getActor()->GetProperty()->SetColor(1, 0, 0);
+        currentCorrespondence->getTriangle1Actor()->GetProperty()->SetColor(1, 0, 0);
+        renderer_->AddActor(currentCorrespondence->getTriangle1Actor());
+        currentCorrespondence->getTriangle2Actor()->GetProperty()->SetColor(1, 0, 0);
+        renderer_->AddActor(currentCorrespondence->getTriangle2Actor());
         
         //if there exists a previous selection set previous correspondence to green
         if(previous != nullptr) {
-            dynamic_cast<CorrespondenceListItem*>(previous)->getCorrespondence()->getActor()->GetProperty()->SetColor(0, 1, 0);
+            Correspondence* previousCorrespondence = dynamic_cast<CorrespondenceListItem*>(previous)->getCorrespondence();
+            previousCorrespondence->getActor()->GetProperty()->SetColor(0, 1, 0);
+            renderer_->RemoveActor(previousCorrespondence->getTriangle1Actor());
+            renderer_->RemoveActor(previousCorrespondence->getTriangle2Actor());
         }
         
         // update
@@ -353,13 +360,13 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
 
     // check if pick was valid
     if(picker->GetCellId() != -1) {
-        unordered_map<vtkActor*, Correspondence*>::iterator it = correspondencesByActor_.find(picker->GetActor());
-        if(it != correspondencesByActor_.end()) {
-            vtkCorrespondenceClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
+        unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(picker->GetActor());
+        if(it != shapesByActor_.end()) {
+            vtkShapeClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
         } else {
-            unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(picker->GetActor());
-            if(it != shapesByActor_.end()) {
-                vtkShapeClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
+            unordered_map<vtkActor*, Correspondence*>::iterator it = correspondencesByActor_.find(picker->GetActor());
+            if(it != correspondencesByActor_.end()) {
+                vtkCorrespondenceClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
             }
         }
     }
@@ -433,6 +440,9 @@ void ShapeAnalyzer::clear() {
         Correspondence *correspondence = item->getCorrespondence();
         
         renderer_->RemoveActor(correspondence->getActor());
+        renderer_->RemoveActor(correspondence->getTriangle1Actor());
+        renderer_->RemoveActor(correspondence->getTriangle2Actor());
+        
         correspondencesByActor_.erase(correspondence->getActor());
         delete item;
         delete correspondence;
@@ -476,6 +486,8 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
 
     // vtk
     renderer_->RemoveActor(item->getCorrespondence()->getActor());
+    renderer_->RemoveActor(item->getCorrespondence()->getTriangle1Actor());
+    renderer_->RemoveActor(item->getCorrespondence()->getTriangle2Actor());
     correspondencesByActor_.erase(item->getCorrespondence()->getActor());
     
     delete item->getCorrespondence();
@@ -511,6 +523,8 @@ void ShapeAnalyzer::deleteShape(int i) {
         if(shape == correspondence->getShape1() || shape == correspondence->getShape2()) {
             //remove actor from qvtk widget
             renderer_->RemoveActor(correspondence->getActor());
+            renderer_->RemoveActor(correspondence->getTriangle1Actor());
+            renderer_->RemoveActor(correspondence->getTriangle2Actor());
             
             //destroy widgetItem object
             delete listCorrespondences->item(j);

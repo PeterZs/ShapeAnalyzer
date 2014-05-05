@@ -142,3 +142,8 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     qvtkWidget->GetRenderWindow()->Render();
     
 }
+
+void vtkGeodesic::calculateGeodesic_gpu(Shape *shape) {
+    float d;
+    //cudaMalloc(&d, sizeof(float));
+}

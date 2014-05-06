@@ -1,7 +1,7 @@
 #include "ShapeAnalyzer.h"
 
 // Constructor
-ShapeAnalyzer::ShapeAnalyzer() {
+ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceID_(0) {
     this->setupUi(this);
 
     this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -243,17 +243,17 @@ void ShapeAnalyzer::slotSetCurrentCorrespondenceColor(QListWidgetItem* current, 
         // set current correspondence red
         Correspondence* currentCorrespondence = dynamic_cast<CorrespondenceListItem*>(current)->getCorrespondence();
         currentCorrespondence->getActor()->GetProperty()->SetColor(1, 0, 0);
-        currentCorrespondence->getTriangle1Actor()->GetProperty()->SetColor(1, 0, 0);
-        renderer_->AddActor(currentCorrespondence->getTriangle1Actor());
-        currentCorrespondence->getTriangle2Actor()->GetProperty()->SetColor(1, 0, 0);
-        renderer_->AddActor(currentCorrespondence->getTriangle2Actor());
+        currentCorrespondence->getFace1Actor()->GetProperty()->SetColor(1, 0, 0);
+        renderer_->AddActor(currentCorrespondence->getFace1Actor());
+        currentCorrespondence->getFace2Actor()->GetProperty()->SetColor(1, 0, 0);
+        renderer_->AddActor(currentCorrespondence->getFace2Actor());
         
         //if there exists a previous selection set previous correspondence to green
         if(previous != nullptr) {
             Correspondence* previousCorrespondence = dynamic_cast<CorrespondenceListItem*>(previous)->getCorrespondence();
             previousCorrespondence->getActor()->GetProperty()->SetColor(0, 1, 0);
-            renderer_->RemoveActor(previousCorrespondence->getTriangle1Actor());
-            renderer_->RemoveActor(previousCorrespondence->getTriangle2Actor());
+            renderer_->RemoveActor(previousCorrespondence->getFace1Actor());
+            renderer_->RemoveActor(previousCorrespondence->getFace2Actor());
         }
         
         // update
@@ -274,21 +274,45 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
     reader->SetFileName(fileName.toUtf8().constData());
 
-    //make sure that shape consists of triangles
+    //make sure that all faces are triangles
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triangleFilter->SetInputConnection(reader->GetOutputPort());
     triangleFilter->Update();
-    shape->setData(triangleFilter->GetOutput());
+
+    //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
+    vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+    connectivityFilter->SetInputConnection(triangleFilter->GetOutputPort());
+    connectivityFilter->SetExtractionModeToLargestRegion();
+    connectivityFilter->Update();
+    
+    //Remove all isolated points.
+    vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
+    cleanPolyData->SetInputConnection(connectivityFilter->GetOutputPort());
+    cleanPolyData->Update();
+
+    vtkSmartPointer<vtkPolyDataNormals> polyDataNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+    polyDataNormals->SetInputConnection(cleanPolyData->GetOutputPort());
+    polyDataNormals->ComputeCellNormalsOn();
+    polyDataNormals->Update();
     
     // get vtk actor and add to renderer_
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputConnection(triangleFilter->GetOutputPort());
-
+    mapper->SetInputConnection(polyDataNormals->GetOutputPort());
+    
+    
+    shape->setPolyData(cleanPolyData->GetOutput());
+    shape->setPolyDataNormals(polyDataNormals->GetOutput());
     shape->setActor(vtkSmartPointer<vtkActor>::New());
     shape->getActor()->SetMapper(mapper);
 
+    shape->getActor()->GetProperty()->SetInterpolationToPhong();
+    shape->getActor()->GetProperty()->SetLighting(200);
+    shape->getActor()->GetProperty()->SetInterpolation(1);
+    
     renderer_->AddActor(shape->getActor());
 
+
+    
     if(shapesByActor_.size() == 0)
         renderer_->ResetCamera();
 
@@ -366,13 +390,13 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
 
     // check if pick was valid
     if(picker->GetCellId() != -1) {
-        unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(picker->GetActor());
-        if(it != shapesByActor_.end()) {
-            vtkShapeClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
+        Shape* shape = findShapeByActor(picker->GetActor());
+        if(shape != nullptr) {
+            vtkShapeClicked(shape, picker->GetCellId(), globalPos, vtkEvent, command);
         } else {
-            unordered_map<vtkActor*, Correspondence*>::iterator it = correspondencesByActor_.find(picker->GetActor());
-            if(it != correspondencesByActor_.end()) {
-                vtkCorrespondenceClicked(it->second, picker->GetCellId(), globalPos, vtkEvent, command);
+            Correspondence* correspondence = findCorrespondenceByActor(picker->GetActor());
+            if(correspondence != nullptr) {
+                vtkCorrespondenceClicked(correspondence, picker->GetCellId(), globalPos, vtkEvent, command);
             }
         }
     }
@@ -399,8 +423,8 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 
 void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->radioButtonAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
-        //initialized by correspondencePicker
-        Correspondence* correspondence;
+        
+        Correspondence* correspondence; //initialized by correspondencePicker
         
         // if two corresponding nodes have been picked
         if(correspondencePicker_->pick(&correspondence, shape, cellId)) {
@@ -425,6 +449,30 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
                 }
             }
         }
+        
+        
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Functions accessing data structures
+///////////////////////////////////////////////////////////////////////////////
+
+Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
+    unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(actor);
+    if(it != shapesByActor_.end()) {
+        return it->second;
+    } else {
+        return nullptr;
+    }
+}
+
+Correspondence* ShapeAnalyzer::findCorrespondenceByActor(vtkActor *actor) {
+    unordered_map<vtkActor*, Correspondence*>::iterator it = correspondencesByActor_.find(actor);
+    if(it != correspondencesByActor_.end()) {
+        return it->second;
+    } else {
+        return nullptr;
     }
 }
 
@@ -446,8 +494,8 @@ void ShapeAnalyzer::clear() {
         Correspondence *correspondence = item->getCorrespondence();
         
         renderer_->RemoveActor(correspondence->getActor());
-        renderer_->RemoveActor(correspondence->getTriangle1Actor());
-        renderer_->RemoveActor(correspondence->getTriangle2Actor());
+        renderer_->RemoveActor(correspondence->getFace1Actor());
+        renderer_->RemoveActor(correspondence->getFace2Actor());
         
         correspondencesByActor_.erase(correspondence->getActor());
         delete item;
@@ -492,8 +540,8 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
 
     // vtk
     renderer_->RemoveActor(item->getCorrespondence()->getActor());
-    renderer_->RemoveActor(item->getCorrespondence()->getTriangle1Actor());
-    renderer_->RemoveActor(item->getCorrespondence()->getTriangle2Actor());
+    renderer_->RemoveActor(item->getCorrespondence()->getFace1Actor());
+    renderer_->RemoveActor(item->getCorrespondence()->getFace2Actor());
     correspondencesByActor_.erase(item->getCorrespondence()->getActor());
     
     delete item->getCorrespondence();
@@ -529,8 +577,8 @@ void ShapeAnalyzer::deleteShape(int i) {
         if(shape == correspondence->getShape1() || shape == correspondence->getShape2()) {
             //remove actor from qvtk widget
             renderer_->RemoveActor(correspondence->getActor());
-            renderer_->RemoveActor(correspondence->getTriangle1Actor());
-            renderer_->RemoveActor(correspondence->getTriangle2Actor());
+            renderer_->RemoveActor(correspondence->getFace1Actor());
+            renderer_->RemoveActor(correspondence->getFace2Actor());
             
             //destroy widgetItem object
             delete listCorrespondences->item(j);

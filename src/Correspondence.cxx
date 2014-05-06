@@ -4,33 +4,33 @@
 Correspondence::Correspondence(
                                Shape* shape1,
                                Shape* shape2,
-                               vtkSmartPointer<vtkTriangle> triangle1,
-                               vtkSmartPointer<vtkTriangle> triangle2,
-                               vtkSmartPointer<vtkActor> triangle1Actor,
-                               vtkSmartPointer<vtkActor> triangle2Actor
+                               vtkSmartPointer<vtkTriangle> face1,
+                               vtkSmartPointer<vtkTriangle> face2,
+                               vtkSmartPointer<vtkActor> face1Actor,
+                               vtkSmartPointer<vtkActor> face2Actor
 ) {
 
-    triangle1_ = triangle1;
-    triangle2_ = triangle2;
+    face1_ = face1;
+    face2_ = face2;
     
-    triangle1Actor_ = triangle1Actor;
-    triangle2Actor_ = triangle2Actor;
+    face1Actor_ = face1Actor;
+    face2Actor_ = face2Actor;
     
-    //initialize point1 to center of triangle1
+    //initialize point1 to center of face1
     //method TriangleCenter is static therefore call it as vtkTriangle::TriangleCenter
-    //For some strange reason stated in the vtk doc we have to use triangle1_->GetPoints()->GetPoint(0, p1) with locally initialized p1 instead of p1 = triangle1_->GetPoints()->GetPoint(0)
+    //For some strange reason stated in the vtk doc we have to use face1_->GetPoints()->GetPoint(0, p1) with locally initialized p1 instead of p1 = face1_->GetPoints()->GetPoint(0)
     double p1[3];
     double p2[3];
     double p3[3];
-    triangle1_->GetPoints()->GetPoint(0, p1);
-    triangle1_->GetPoints()->GetPoint(1, p2);
-    triangle1_->GetPoints()->GetPoint(2, p3);
+    face1_->GetPoints()->GetPoint(0, p1);
+    face1_->GetPoints()->GetPoint(1, p2);
+    face1_->GetPoints()->GetPoint(2, p3);
     vtkTriangle::TriangleCenter(p1, p2, p3, point1_);
     
-    //initialize point2 to center of triangle2
-    triangle2_->GetPoints()->GetPoint(0, p1);
-    triangle2_->GetPoints()->GetPoint(1, p2);
-    triangle2_->GetPoints()->GetPoint(2, p3);
+    //initialize point2 to center of face2
+    face2_->GetPoints()->GetPoint(0, p1);
+    face2_->GetPoints()->GetPoint(1, p2);
+    face2_->GetPoints()->GetPoint(2, p3);
     vtkTriangle::TriangleCenter(p1, p2, p3, point2_);
 
     
@@ -78,11 +78,11 @@ Correspondence::Correspondence(
 void Correspondence::transformPoint1(vtkLinearTransform* t) {
     polyData_->GetPoints()->SetPoint(0, t->TransformPoint(point1_));
     polyData_->Modified();
-    triangle1Actor_->SetUserTransform(t);
+    face1Actor_->SetUserTransform(t);
 }
 
 void Correspondence::transformPoint2(vtkLinearTransform* t) {
     polyData_->GetPoints()->SetPoint(1, t->TransformPoint(point2_));
     polyData_->Modified();
-    triangle2Actor_->SetUserTransform(t);
+    face2Actor_->SetUserTransform(t);
 }

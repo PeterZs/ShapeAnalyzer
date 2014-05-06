@@ -6,8 +6,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 
-#include <vector>
-
 using namespace std;
 
 class Shape {
@@ -25,8 +23,12 @@ public:
         return boxWidget_;
     }
     
-    vtkSmartPointer<vtkPolyData> getData() {
-        return data_;
+    vtkSmartPointer<vtkPolyData> getPolyData() {
+        return polyData_;
+    }
+
+    vtkSmartPointer<vtkPolyData> getPolyDataNormals() {
+        return polyDataNormals_;
     }
     
     // setters
@@ -38,14 +40,19 @@ public:
         boxWidget_ = boxWidget;
     }
     
-    void setData(vtkSmartPointer<vtkPolyData> data) {
-        data_ = data;
+    void setPolyData(vtkSmartPointer<vtkPolyData> polyData) {
+        polyData_ = polyData;
+    }
+
+    void setPolyDataNormals(vtkSmartPointer<vtkPolyData> polyDataNormals) {
+        polyDataNormals_ = polyDataNormals;
     }
     
 private:
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
-    vtkSmartPointer<vtkPolyData> data_;
+    vtkSmartPointer<vtkPolyData> polyData_;
+    vtkSmartPointer<vtkPolyData> polyDataNormals_;
 
 };
 

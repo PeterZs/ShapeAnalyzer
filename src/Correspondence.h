@@ -19,12 +19,12 @@ using namespace std;
 class Correspondence {
 
 public:
-    Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> triangle1, vtkSmartPointer<vtkTriangle> triangle2, vtkSmartPointer<vtkActor> triangle1Actor, vtkSmartPointer<vtkActor> triangle2Actor);
+    Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> face1, vtkSmartPointer<vtkTriangle> face2, vtkSmartPointer<vtkActor> face1Actor, vtkSmartPointer<vtkActor> face2Actor);
     
-    //apply current user-transformation t to original triangle center point1_ and update line source with the transformed point
+    //apply current user-transformation t to original face center point1_ and update line source with the transformed point
     void transformPoint1(vtkLinearTransform* t);
     
-    //apply current user-transformation t to original triangle center point2_ and update line source with the transformed point
+    //apply current user-transformation t to original face center point2_ and update line source with the transformed point
     void transformPoint2(vtkLinearTransform* t);
     
     // getters
@@ -32,20 +32,20 @@ public:
         return actor_;
     }
     
-    vtkSmartPointer<vtkTriangle> getTriangle1() {
-        return triangle1_;
+    vtkSmartPointer<vtkTriangle> getFace1() {
+        return face1_;
     }
     
-    vtkSmartPointer<vtkTriangle> getTriangle2() {
-        return triangle2_;
+    vtkSmartPointer<vtkTriangle> getFace2() {
+        return face2_;
     }
 
-    vtkSmartPointer<vtkActor> getTriangle1Actor() {
-        return triangle1Actor_;
+    vtkSmartPointer<vtkActor> getFace1Actor() {
+        return face1Actor_;
     }
     
-    vtkSmartPointer<vtkActor> getTriangle2Actor() {
-        return triangle2Actor_;
+    vtkSmartPointer<vtkActor> getFace2Actor() {
+        return face2Actor_;
     }
     
     Shape* getShape1() {
@@ -63,11 +63,11 @@ private:
     Shape* shape1_;
     Shape* shape2_;
 
-    // point1 and triangle1 in the line source belongs to shape1 and the same with 2
-    vtkSmartPointer<vtkTriangle> triangle1_;
-    vtkSmartPointer<vtkTriangle> triangle2_;
-    vtkSmartPointer<vtkActor> triangle1Actor_;
-    vtkSmartPointer<vtkActor> triangle2Actor_;
+    // point1 and face1 in the line source belongs to shape1 and the same with 2
+    vtkSmartPointer<vtkTriangle> face1_;
+    vtkSmartPointer<vtkTriangle> face2_;
+    vtkSmartPointer<vtkActor> face1Actor_;
+    vtkSmartPointer<vtkActor> face2Actor_;
     double point1_[3];
     double point2_[3];
 };

@@ -21,6 +21,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkPointPlacer.h>
 
+#include <assert.h>
+
 #include "Shape.h"
 #include "Correspondence.h"
 
@@ -28,8 +30,8 @@
 class CorrespondencePicker {
 public:
     CorrespondencePicker(vtkRenderer* renderer) : renderer_(renderer) {
-        selectedNodeActor_ = vtkSmartPointer<vtkActor>::New();
-        selectedNodeMapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
+        selectedFaceActor_ = vtkSmartPointer<vtkActor>::New();
+        selectedFaceMapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
         lineActor_ = vtkSmartPointer<vtkActor>::New();
         lineMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
     }
@@ -38,18 +40,18 @@ public:
     void clearSelection(Shape* shape);
     void clearSelection();
 private:
-    vtkSmartPointer<vtkUnstructuredGrid> getSelectedNodeGrid(Shape *shape, vtkIdType cellId);
-    vtkSmartPointer<vtkActor> createTriangleActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t);
+    vtkSmartPointer<vtkUnstructuredGrid> getSelectionGrid(Shape *shape, vtkIdType cellId);
+    vtkSmartPointer<vtkActor> createFaceActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t);
     
     
-    bool waitForSelection_; //flag indicating that a triangle has been selected on first shape. Wait for selection of corresponding triangle on another shape
-    Shape* selectedShape_; //Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the green triangle on it. Required to be declared in the class to delete green triangle in case the selected shape is deleted in method deleteShape(int i)
+    bool waitForSelection_; //flag indicating that a face has been selected on first shape. Wait for selection of corresponding face on another shape
+    Shape* selectedShape_; //Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the green triangle on it. Required to be declared at class level to delete green triangle in case the selected shape is deleted in method deleteShape(int i)
     
-    vtkSmartPointer<vtkActor> selectedNodeActor_; // actor representing green triangle on selected shape
-    vtkSmartPointer<vtkDataSetMapper> selectedNodeMapper_;
-    vtkSmartPointer<vtkTriangle> triangle1_; //Remember first selection.
+    vtkSmartPointer<vtkActor> selectedFaceActor_; // actor representing green triangle on selected shape
+    vtkSmartPointer<vtkDataSetMapper> selectedFaceMapper_;
+    vtkSmartPointer<vtkTriangle> face1_; //Remember first selection.
     Shape* shape1_; //Remember first selection.
-    vtkSmartPointer<vtkActor> triangle1Actor_;
+    vtkSmartPointer<vtkActor> face1Actor_;
     
     //vtk visualization stuff
     vtkSmartPointer<vtkPolyData> linePolyData_; //polydata that is visualized

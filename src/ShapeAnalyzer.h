@@ -20,11 +20,13 @@
 #include <vtkTransform.h>
 #include <vtkTriangleFilter.h>
 #include <vtkSelectionNode.h>
+#include <vtkPolyDataConnectivityFilter.h>
+#include <vtkCleanPolyData.h>
+#include <vtkPolyDataNormals.h>
 
 #include <QMainWindow>
 #include <QString>
 #include <QFileDialog>
-
 #include <unordered_map>
 
 #include "Correspondence.h"
@@ -58,12 +60,8 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
             widget->GetTransform(t);
             widget->GetProp3D()->SetUserTransform(t);
-            
-            unordered_map<vtkActor*, Shape*>::iterator it = sa->shapesByActor_.find(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
-            Shape* shape = nullptr;
-            if(it != sa->shapesByActor_.end()) {
-                shape = it->second;
-            }
+
+            Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
 
             for(unordered_map<vtkActor*, Correspondence*>::iterator it = sa->correspondencesByActor_.begin(); it != sa->correspondencesByActor_.end(); it++) {
                 if(it->second->getShape1() == shape) {
@@ -120,18 +118,25 @@ private:
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
-    
     void vtkSetup();
-    
     Shape* vtkAddShape(QString fileName);
+    
+    
+    Correspondence* findCorrespondenceByActor(vtkActor* actor);
+    Shape* findShapeByActor(vtkActor* actor);
+    
     
     void clear();
     void deleteCorrespondence(int i);
     void deleteShape(int i);
 
+    //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time usually.
     unordered_map<vtkActor*, Shape*> shapesByActor_;
     unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
 
+    //index correspondences by their left and right triangles (represented by the respective cell ids)
+    unordered_multimap<int, Correspondence*> correspondencesByCellId_;
+    
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;
     vtkSmartPointer<vtkEventQtSlotConnect> connections_;
@@ -141,8 +146,8 @@ private:
     
     
     // only used for naming in qt
-    int lastInsertShapeID_ = 0;
-    int lastInsertCorresondenceID_ = 0;
+    int lastInsertShapeID_;
+    int lastInsertCorresondenceID_;
 };
 
 #endif

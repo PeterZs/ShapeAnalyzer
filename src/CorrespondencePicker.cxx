@@ -12,17 +12,17 @@
 bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, vtkIdType cellId) {
     selectedShape_ = shape;
     
-    // visual response for picked node
-    vtkSmartPointer<vtkUnstructuredGrid> selection = getSelectedNodeGrid(shape, cellId);
+    // visual response for picked face
+    vtkSmartPointer<vtkUnstructuredGrid> selection = getSelectionGrid(shape, cellId);
 
-    selectedNodeMapper_->SetInputData(selection);
-    selectedNodeActor_->SetMapper(selectedNodeMapper_);
-    selectedNodeActor_->GetProperty()->EdgeVisibilityOn();
-    selectedNodeActor_->GetProperty()->SetEdgeColor(1, 1, 0);
-    selectedNodeActor_->GetProperty()->SetLineWidth(3);
-    selectedNodeActor_->SetUserTransform(shape->getActor()->GetUserTransform());
+    selectedFaceMapper_->SetInputData(selection);
+    selectedFaceActor_->SetMapper(selectedFaceMapper_);
+    selectedFaceActor_->GetProperty()->EdgeVisibilityOn();
+    selectedFaceActor_->GetProperty()->SetEdgeColor(1, 1, 0);
+    selectedFaceActor_->GetProperty()->SetLineWidth(3);
+    selectedFaceActor_->SetUserTransform(shape->getActor()->GetUserTransform());
     
-    renderer_->AddActor(selectedNodeActor_);
+    renderer_->AddActor(selectedFaceActor_);
     
     //initialize poly data and required data structures
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -36,11 +36,11 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
     double p3[3];
     double point1[3];
     
-    vtkSmartPointer<vtkTriangle> triangle1 = vtkTriangle::SafeDownCast(selection->GetCell(0));
+    vtkSmartPointer<vtkTriangle> face1 = vtkTriangle::SafeDownCast(selection->GetCell(0));
     
-    triangle1->GetPoints()->GetPoint(0, p1);
-    triangle1->GetPoints()->GetPoint(1, p2);
-    triangle1->GetPoints()->GetPoint(2, p3);
+    face1->GetPoints()->GetPoint(0, p1);
+    face1->GetPoints()->GetPoint(1, p2);
+    face1->GetPoints()->GetPoint(2, p3);
     vtkTriangle::TriangleCenter(p1, p2, p3, point1);
     
     points->InsertNextPoint(point1);
@@ -69,8 +69,8 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
     // depending on whether there was a selection before or not
     if(waitForSelection_ == false) {
         // set source to current triangle and wait for selection of corresponding triangle
-        triangle1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
-        triangle1Actor_ = createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform());
+        face1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
+        face1Actor_ = createFaceActorFromGrid(selection, shape->getActor()->GetUserTransform());
         shape1_ = shape;
         waitForSelection_ = true;
         return false;
@@ -80,17 +80,17 @@ bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, v
         // if picked node is on the same shape as the source,
         // update and return
         if(shape1_ == shape) {
-            triangle1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
-            triangle1Actor_ = createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform());
+            face1_ = vtkTriangle::SafeDownCast(selection->GetCell(0));
+            face1Actor_ = createFaceActorFromGrid(selection, shape->getActor()->GetUserTransform());
             return false;
         }
         
         // create correspondence
-        *correspondence = new Correspondence(shape1_, shape, triangle1_, vtkTriangle::SafeDownCast(selection->GetCell(0)), triangle1Actor_, createTriangleActorFromGrid(selection, shape->getActor()->GetUserTransform()));
+        *correspondence = new Correspondence(shape1_, shape, face1_, vtkTriangle::SafeDownCast(selection->GetCell(0)), face1Actor_, createFaceActorFromGrid(selection, shape->getActor()->GetUserTransform()));
         renderer_->AddActor((*correspondence)->getActor());
         //remove green triangle and set flag to false again
         waitForSelection_ = false;
-        renderer_->RemoveActor(selectedNodeActor_);
+        renderer_->RemoveActor(selectedFaceActor_);
         renderer_->RemoveActor(lineActor_);
         return true;
     }
@@ -111,7 +111,7 @@ void CorrespondencePicker::mouseMoveHandler(int x, int y) {
     }
 }
 
-vtkSmartPointer<vtkActor> CorrespondencePicker::createTriangleActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t) {
+vtkSmartPointer<vtkActor> CorrespondencePicker::createFaceActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t) {
     vtkSmartPointer<vtkDataSetMapper> triangleMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     triangleMapper->SetInputData(grid);
     vtkSmartPointer<vtkActor> triangleActor = vtkSmartPointer<vtkActor>::New();
@@ -123,7 +123,7 @@ vtkSmartPointer<vtkActor> CorrespondencePicker::createTriangleActorFromGrid(vtkS
     return triangleActor;
 }
 
-vtkSmartPointer<vtkUnstructuredGrid> CorrespondencePicker::getSelectedNodeGrid(Shape *shape, vtkIdType cellId) {
+vtkSmartPointer<vtkUnstructuredGrid> CorrespondencePicker::getSelectionGrid(Shape *shape, vtkIdType cellId) {
     // create new Id object for this pick
     vtkSmartPointer<vtkIdTypeArray> ids =
     vtkSmartPointer<vtkIdTypeArray>::New();
@@ -141,26 +141,19 @@ vtkSmartPointer<vtkUnstructuredGrid> CorrespondencePicker::getSelectedNodeGrid(S
     vtkSmartPointer<vtkSelection>::New();
     selection->AddNode(selectionNode);
     vtkSmartPointer<vtkExtractSelection> extractSelection = vtkSmartPointer<vtkExtractSelection>::New();
-    extractSelection->SetInputData(0, shape->getData());
+    extractSelection->SetInputData(0, shape->getPolyData());
     extractSelection->SetInputData(1, selection);
     extractSelection->Update();
     
     // In selection
-    vtkSmartPointer<vtkUnstructuredGrid> selected = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    selected->ShallowCopy(extractSelection->GetOutput());
+    vtkSmartPointer<vtkUnstructuredGrid> selectionGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+    selectionGrid->ShallowCopy(extractSelection->GetOutput());
     
-    //TODO find a better way of throwing exceptions. Maybe use the methods of vtk or QT or Exceptions?
-    if(selected->GetNumberOfCells() != 1) {
-        cerr << "Fatal error: selection should contain exactly one cell. Instead it contains '"<< selected->GetNumberOfCells() <<"' cells" << endl;
-        ::exit(-1);
-    }
+    assert(selectionGrid->GetNumberOfCells() == 1);
+
+    assert(selectionGrid->GetCellType(0) == VTK_TRIANGLE);
     
-    if(selected->GetCellType(0) != VTK_TRIANGLE) {
-        cerr << "Fatal error: selection is not a triangle (type "<< VTK_TRIANGLE <<"'). Instead it is of type "<< selected->GetCellType(0) <<endl;
-        ::exit(-1);
-    }
-    
-    return selected;
+    return selectionGrid;
 }
 
 void CorrespondencePicker::clearSelection(Shape* shape) {
@@ -171,7 +164,7 @@ void CorrespondencePicker::clearSelection(Shape* shape) {
 
 void CorrespondencePicker::clearSelection() {
     if(waitForSelection_ == true) {
-        renderer_->RemoveActor(selectedNodeActor_);
+        renderer_->RemoveActor(selectedFaceActor_);
         renderer_->RemoveActor(lineActor_);
         renderer_->GetRenderWindow()->Render();
         waitForSelection_ = false;

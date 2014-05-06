@@ -8,6 +8,8 @@
 
 #include "vtkGeodesic.h"
 
+#include <math.h>
+
 #include <vtkCellData.h>
 #include <vtkIdList.h>
 #include <vtkPoints.h>
@@ -105,7 +107,7 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     // list of colors for vtk
     vtkSmartPointer<vtkUnsignedCharArray> colors =
     vtkSmartPointer<vtkUnsignedCharArray>::New();
-    colors->SetNumberOfComponents(1);
+    colors->SetNumberOfComponents(3);
     colors->SetName("Colors");
     
     for(int i = 0; i < polydata->GetNumberOfPolys(); i++) {
@@ -123,7 +125,11 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
         
 //        double dist = (distances[ids->GetId(0)] + distances[ids->GetId(1)] + distances[ids->GetId(2)] ) / 3;
         
-        unsigned char color[1] = {(dist / max) * 255};
+        vtkGeodesic::COLOUR c = GetColour(dist,0,max);
+        
+        //unsigned char color[1] = {(dist / max) * 255};
+        unsigned char color[3] = {c.r, c.g, c.b};
+        
         colors->InsertNextTupleValue(color);
     }
     
@@ -141,6 +147,42 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     
     qvtkWidget->GetRenderWindow()->Render();
     
+}
+
+/*
+ Return a RGB colour value given a scalar v in the range [vmin,vmax]
+ In this case each colour component ranges from 0 (no contribution) to
+ 1 (fully saturated), modifications for other ranges is trivial.
+ The colour is clipped at the end of the scales if v is outside
+ the range [vmin,vmax]
+ */
+
+vtkGeodesic::COLOUR vtkGeodesic::GetColour(double v,double vmin,double vmax)
+{
+    vtkGeodesic::COLOUR c = {255,255,255}; // white
+    double dv;
+    
+    if (v < vmin)
+        v = vmin;
+    if (v > vmax)
+        v = vmax;
+    dv = vmax - vmin;
+    
+    if (v < (vmin + 0.25 * dv)) {
+        c.r = 0;
+        c.g = (int) 255 * (4 * (v - vmin) / dv);
+    } else if (v < (vmin + 0.5 * dv)) {
+        c.r = 0;
+        c.b = (int) 255 * (1 + 4 * (vmin + 0.25 * dv - v) / dv);
+    } else if (v < (vmin + 0.75 * dv)) {
+        c.r = (int) 255 * (4 * (v - vmin - 0.5 * dv) / dv);
+        c.b = 0;
+    } else {
+        c.g = (int) 255 * (1 + 4 * (vmin + 0.75 * dv - v) / dv);
+        c.b = 0;
+    }
+    
+    return(c);
 }
 
 void vtkGeodesic::calculateGeodesic_gpu(Shape *shape) {

@@ -37,7 +37,6 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotOpenHelpWindow()));
     
     //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
-    
     qtConnectListCorrespondences();
     qtConnectListShapes();
     this->vtkSetup();
@@ -290,6 +289,7 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     cleanPolyData->SetInputConnection(connectivityFilter->GetOutputPort());
     cleanPolyData->Update();
 
+    //Visualize with normals. Looks smoother ;)
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
     polyDataNormals->SetInputConnection(cleanPolyData->GetOutputPort());
     polyDataNormals->ComputeCellNormalsOn();
@@ -304,10 +304,6 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     shape->setPolyDataNormals(polyDataNormals->GetOutput());
     shape->setActor(vtkSmartPointer<vtkActor>::New());
     shape->getActor()->SetMapper(mapper);
-
-    shape->getActor()->GetProperty()->SetInterpolationToPhong();
-    shape->getActor()->GetProperty()->SetLighting(200);
-    shape->getActor()->GetProperty()->SetInterpolation(1);
     
     renderer_->AddActor(shape->getActor());
 
@@ -329,14 +325,6 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
 
     qvtkWidget->GetRenderWindow()->Render();
-
-    // turn box widget on if in transform mode
-    // TODO not if other shape is selected
-    if(this->radioButtonTransformActors->isChecked()) {
-        shape->getBoxWidget()->On();
-    } else {
-        shape->getBoxWidget()->Off();
-    }
     
     shapesByActor_.insert(pair<vtkActor*, Shape*>(shape->getActor(), shape));
     return shape;

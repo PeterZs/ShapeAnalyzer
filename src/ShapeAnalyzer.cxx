@@ -14,23 +14,28 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotResetCamera()));
     connect(this->actionClear,                      SIGNAL(triggered()),
             this,                                   SLOT(slotClear()));
-    connect(this->clearButton,                      SIGNAL(clicked()),
-            this,                                   SLOT(slotClear()));
-    connect(this->openFileButton,                   SIGNAL(clicked()),
+    connect(this->actionOpenFile,                   SIGNAL(triggered()),
             this,                                   SLOT(slotOpenShape()));
-    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+    connect(this->actionAdd_Correspondences,        SIGNAL(triggered()),
+            this,                                   SLOT(slotModusCorrespondences()));
+    connect(this->actionTransform_Scene,            SIGNAL(triggered()),
+            this,                                   SLOT(slotModusScene()));
+    connect(this->actionTransform_Actors,           SIGNAL(triggered()),
+            this,                                   SLOT(slotModusActors()));
+    
+    connect(this->actionTransform_Actors,           SIGNAL(toggled(bool)),
             this,                                   SLOT(slotToggleBoxWidget()));
-    connect(this->radioButtonAddCorrespondences,    SIGNAL(toggled(bool)),
+    connect(this->actionAdd_Correspondences,        SIGNAL(toggled(bool)),
             this,                                   SLOT(slotToggleBoxWidget()));
-    connect(this->radioButtonTransformScene,        SIGNAL(toggled(bool)),
+    connect(this->actionTransform_Scene,            SIGNAL(toggled(bool)),
             this,                                   SLOT(slotToggleBoxWidget()));
     
     //delete selected correspondence triangle if mode was changed. This triggers box widget to show up on shape if shape has been selected.
-    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+    connect(this->actionTransform_Scene,            SIGNAL(toggled(bool)),
             this,                                   SLOT(slotClearCurrentSelection()));
-    connect(this->radioButtonAddCorrespondences,       SIGNAL(toggled(bool)),
+    connect(this->actionAdd_Correspondences,        SIGNAL(toggled(bool)),
             this,                                   SLOT(slotClearCurrentSelection()));
-    connect(this->radioButtonTransformActors,       SIGNAL(toggled(bool)),
+    connect(this->actionTransform_Actors,           SIGNAL(toggled(bool)),
             this,                                   SLOT(slotClearCurrentSelection()));
     
     connect(this->actionHelp,                       SIGNAL(triggered()),
@@ -39,6 +44,33 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
     qtConnectListCorrespondences();
     qtConnectListShapes();
+    
+    // define shortcuts
+    QShortcut* shortcutClear = new QShortcut(QKeySequence(tr("Ctrl+X")), this->menubar);
+    connect(shortcutClear,                  SIGNAL(activated()),
+            this,                           SLOT(slotClear()));
+    this->actionClear->setShortcut(shortcutClear->key());
+    
+    QShortcut* shortcutOpenShape = new QShortcut(QKeySequence(tr("Ctrl+O")), this->menubar);
+    connect(shortcutOpenShape,              SIGNAL(activated()),
+            this,                           SLOT(slotOpenShape()));
+    this->actionOpenFile->setShortcut(shortcutOpenShape->key());
+    
+    QShortcut* shortcutModusScene = new QShortcut(QKeySequence(tr("Ctrl+T")), this->menubar);
+    connect(shortcutModusScene,             SIGNAL(activated()),
+            this,                           SLOT(slotModusScene()));
+    this->actionTransform_Scene->setShortcut(shortcutModusScene->key());
+    
+    QShortcut* shortcutModusActors = new QShortcut(QKeySequence(tr("Ctrl+A")), this->menubar);
+    connect(shortcutModusActors,            SIGNAL(activated()),
+            this,                           SLOT(slotModusActors()));
+    this->actionTransform_Actors->setShortcut(shortcutModusActors->key());
+    
+    QShortcut* shortcutModusCorrespondences = new QShortcut(QKeySequence(tr("Ctrl+C")), this->menubar);
+    connect(shortcutModusCorrespondences,   SIGNAL(activated()),
+            this,                           SLOT(slotModusCorrespondences()));
+    this->actionAdd_Correspondences->setShortcut(shortcutModusCorrespondences->key());
+    
     this->vtkSetup();
 }
 
@@ -93,8 +125,9 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* geodesicAction = myMenu.addAction("Show Geodesics");
+    QAction* renameAction   = myMenu.addAction("Rename");
+    QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -120,6 +153,27 @@ void ShapeAnalyzer::slotExit() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotClearCurrentSelection() {
     correspondencePicker_->clearSelection();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotModusActors() {
+    this->actionTransform_Scene->setChecked(false);
+    this->actionTransform_Actors->setChecked(true);
+    this->actionAdd_Correspondences->setChecked(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotModusCorrespondences() {
+    this->actionTransform_Scene->setChecked(false);
+    this->actionTransform_Actors->setChecked(false);
+    this->actionAdd_Correspondences->setChecked(true);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotModusScene() {
+    this->actionTransform_Scene->setChecked(true);
+    this->actionTransform_Actors->setChecked(false);
+    this->actionAdd_Correspondences->setChecked(false);
 }
 
 
@@ -199,7 +253,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
 void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
         Shape* selectedShape = dynamic_cast<ShapeListItem*>(listShapes->currentItem())->getShape();
-        if(this->radioButtonTransformActors->isChecked()) {
+        if(this->actionTransform_Actors->isChecked()) {
             selectedShape->getBoxWidget()->On();
         } else {
             selectedShape->getBoxWidget()->Off();
@@ -210,7 +264,7 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous) {
-    if(this->radioButtonTransformActors->isChecked()) {
+    if(this->actionTransform_Actors->isChecked()) {
         if(current != nullptr) {
             dynamic_cast<ShapeListItem*>(current)->getShape()->getBoxWidget()->On();
             
@@ -410,7 +464,7 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 }
 
 void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
-    if(this->radioButtonAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
+    if(this->actionAdd_Correspondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
         Correspondence* correspondence; //initialized by correspondencePicker
         
@@ -431,7 +485,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
         for(int i = 0; i < listShapes->count(); i++) {
             if(dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape() == shape) {
                 listShapes->setCurrentRow(i);
-                if(vtkEvent == vtkCommand::RightButtonPressEvent && !this->radioButtonTransformActors->isChecked()) {
+                if(vtkEvent == vtkCommand::RightButtonPressEvent && !this->actionTransform_Actors->isChecked()) {
                     command->AbortFlagOn();
                     qtShowContextMenuShapes(pos);
                 }

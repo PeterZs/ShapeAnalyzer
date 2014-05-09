@@ -88,74 +88,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButtonTransformScene">
-          <property name="text">
-           <string>transform scene</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-          <attribute name="buttonGroup">
-           <string notr="true">buttonGroup</string>
-          </attribute>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="radioButtonTransformActors">
-          <property name="text">
-           <string>transform actors separately</string>
-          </property>
-          <attribute name="buttonGroup">
-           <string notr="true">buttonGroup</string>
-          </attribute>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QRadioButton" name="radioButtonAddCorrespondences">
-          <property name="text">
-           <string>add shape correspondences</string>
-          </property>
-          <attribute name="buttonGroup">
-           <string notr="true">buttonGroup</string>
-          </attribute>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>538</width>
-          <height>77</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="openFileButton">
-        <property name="text">
-         <string>Open OFF file...</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="clearButton">
-        <property name="text">
-         <string>Clear</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -178,6 +110,8 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenFile"/>
+    <addaction name="actionLoad_Scene"/>
+    <addaction name="actionSave_Scene"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -191,7 +125,7 @@
     <property name="geometry">
      <rect>
       <x>431</x>
-      <y>100</y>
+      <y>101</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -201,8 +135,17 @@
     </property>
     <addaction name="actionHelp"/>
    </widget>
+   <widget class="QMenu" name="menuChoose_Modus">
+    <property name="title">
+     <string>Choose Modus</string>
+    </property>
+    <addaction name="actionTransform_Scene"/>
+    <addaction name="actionTransform_Actors"/>
+    <addaction name="actionAdd_Correspondences"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuChoose_Modus"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpenFile">
@@ -228,6 +171,43 @@
   <action name="actionHelp">
    <property name="text">
     <string>Open Help Menu</string>
+   </property>
+  </action>
+  <action name="actionTransform_Scene">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Transform Scene</string>
+   </property>
+  </action>
+  <action name="actionTransform_Actors">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Transform Actors</string>
+   </property>
+  </action>
+  <action name="actionAdd_Correspondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Correspondences</string>
+   </property>
+  </action>
+  <action name="actionLoad_Scene">
+   <property name="text">
+    <string>Load Scene...</string>
+   </property>
+  </action>
+  <action name="actionSave_Scene">
+   <property name="text">
+    <string>Save Scene</string>
    </property>
   </action>
  </widget>

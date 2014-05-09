@@ -10,10 +10,19 @@ using namespace std;
 
 class ShapeListItem : public QListWidgetItem {
 public:
-    ShapeListItem(const QString &text, Shape* shape, QListWidget *view = 0, int type = Type) : QListWidgetItem(text, view, type), shape_(shape) {};
+    ShapeListItem(
+                  const QString         &text,
+                        Shape*          shape,
+                        QListWidget     *view   = 0,
+                        int             type    = Type
+    ) : QListWidgetItem(text, view, type), shape_(shape) {};
     
     Shape* getShape() {
         return shape_;
+    }
+    
+    void setName(char* name) {
+        setText(*(new QString(name)));
     }
 private:
     Shape* shape_;

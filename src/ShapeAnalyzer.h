@@ -24,17 +24,18 @@
 #include <vtkCleanPolyData.h>
 #include <vtkPolyDataNormals.h>
 
+#include <QKeySequence>
 #include <QMainWindow>
+#include <QShortcut>
 #include <QString>
 #include <QFileDialog>
 #include <unordered_map>
 
 #include "Correspondence.h"
 #include "CorrespondenceListItem.h"
+#include "CorrespondencePicker.h"
 #include "Shape.h"
 #include "ShapeListItem.h"
-#include "CorrespondenceListItem.h"
-#include "CorrespondencePicker.h"
 #include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
 
@@ -89,6 +90,10 @@ private slots:
     virtual void slotClear();
 
     virtual void slotOpenShape();
+    
+    virtual void slotModusScene();
+    virtual void slotModusActors();
+    virtual void slotModusCorrespondences();
 
     virtual void slotOpenHelpWindow();
     virtual void slotShowContextMenuShapes(const QPoint& pos);

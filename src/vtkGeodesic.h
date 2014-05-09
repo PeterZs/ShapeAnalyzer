@@ -66,20 +66,22 @@ class vtkGeodesic {
     };
     
 public:
-    vtkGeodesic() {};
+    vtkGeodesic(Shape *shape);
+    vtkGeodesic(Shape *shape, unsigned source);
     ~vtkGeodesic() {};
     
     // calculate geodesic from a random point to all other points and visualize them
-    void visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget);
-    void calculateGeodesic_gpu(Shape *shape);
+    void    calculateGeodesic_gpu();
+    void    changeSourcePoint(unsigned source);
+    void    visualizeGeodesic(QVTKWidget *qvtkWidget);
     
 private:
+    void    initialize();
     
-    struct COLOUR {
-        int r,g,b;
-    };
-    
-    COLOUR GetColour(double v, double vmin, double vmax);
+    Shape*                              shape_;
+    geodesic::Mesh                      mesh_;
+    geodesic::GeodesicAlgorithmExact*   algorithm_;
+    unsigned                            source_;
     
 };
 

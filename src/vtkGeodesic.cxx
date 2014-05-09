@@ -8,40 +8,75 @@
 
 #include "vtkGeodesic.h"
 
+#include <math.h>
+
+#include <vtkCellData.h>
+#include <vtkIdList.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindow.h>
+#include <vtkSmartPointer.h>
+#include <vtkUnsignedCharArray.h>
+
 using namespace geodesic;
 using namespace std;
 
-void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
+vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
+    // create random starting point
+	source_ = std::rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
+    
+    GeodesicAlgorithmExact* algorithm_;
+    
+    initialize();
+}
+
+vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape), source_(s) {
+    GeodesicAlgorithmExact* algorithm_;
+    
+    initialize();
+}
+
+void vtkGeodesic::initialize() {
     
     //initialize wrapper classes defined in vtkGeodesic.h instead of initializing vectors
-    geodesicPoints points(shape->getPolyData());
-    geodesicFaces faces(shape->getPolyData());
+    geodesicPoints* points = new geodesicPoints(shape_->getPolyData());
+    geodesicFaces* faces = new geodesicFaces(shape_->getPolyData());
     
-    Mesh mesh;
-	mesh.initialize_mesh_data(points, faces);		//create internal mesh data structure including edges
+	mesh_.initialize_mesh_data(*points, *faces);		//create internal mesh data structure including edges
+
+    algorithm_ = new GeodesicAlgorithmExact(&mesh_);
     
-	GeodesicAlgorithmExact algorithm(&mesh);	//create exact algorithm for the mesh
-    
-    // create random starting point
-	unsigned source_vertex_index = std::rand() % shape->getPolyData()->GetNumberOfPoints();
-    //unsigned source_vertex_index = 5;
-    
-	SurfacePoint source(&mesh.vertices()[source_vertex_index]);		//create source
+    SurfacePoint source(&mesh_.vertices()[source_]);		//create source
 	std::vector<geodesic::SurfacePoint> all_sources(1, source);
     
-    algorithm.propagate(all_sources);	//cover the whole mesh
+    algorithm_->propagate(all_sources);	//cover the whole mesh
+    
+}
+
+void vtkGeodesic::changeSourcePoint(unsigned s) {
+    source_ = s;
+    
+    SurfacePoint source(&mesh_.vertices()[source_]);		//create source
+	std::vector<geodesic::SurfacePoint> all_sources(1, source);
+    
+    algorithm_->propagate(all_sources);	//cover the whole mesh
+}
+
+
+void vtkGeodesic::visualizeGeodesic(QVTKWidget *qvtkWidget) {
     
     // vector of all distances
     std::vector<double> distances;
-    distances.resize(mesh.vertices().size());
+    distances.resize(mesh_.vertices().size());
     
     double max = 0;
     
-    for(unsigned i = 0; i < mesh.vertices().size(); ++i) {
-        SurfacePoint p(&mesh.vertices()[i]);
+    for(unsigned i = 0; i < mesh_.vertices().size(); ++i) {
+        SurfacePoint p(&mesh_.vertices()[i]);
         
         double distance;
-        algorithm.best_source(p, distance); //for a given surface point, find closets source and distance to this source
+        algorithm_->best_source(p, distance); //for a given surface point, find closets source and distance to this source
         
         // keep track of distances and max distance
         distances[i] = distance;
@@ -49,8 +84,6 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
             max = distance;
         
     }
-    
-    
     
     vtkSmartPointer<vtkLookupTable> colorLookupTable =
     vtkSmartPointer<vtkLookupTable>::New();
@@ -63,11 +96,11 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     colors->SetNumberOfComponents(3);
     colors->SetName("Colors");
     
-    for(int i = 0; i < shape->getPolyData()->GetNumberOfCells(); i++) {
+    for(int i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
         vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
         
         // each cell has three id references to the corresponding points
-        shape->getPolyData()->GetCellPoints(i, ids);
+        shape_->getPolyData()->GetCellPoints(i, ids);
         
         // assign the distance of the closest point
         double dist = distances[ids->GetId(0)];
@@ -88,15 +121,17 @@ void vtkGeodesic::visualizeGeodesic(Shape *shape, QVTKWidget *qvtkWidget) {
     }
     
     // update vtk
-    shape->getPolyDataNormals()->GetCellData()->SetScalars(colors);
-    shape->getPolyDataNormals()->Modified();
+    shape_->getPolyData()->GetCellData()->SetScalars(colors);
+    shape_->getPolyData()->Modified();
     
+    vtkSmartPointer<vtkPolyDataMapper> mapper = (vtkPolyDataMapper *) shape_->getActor()->GetMapper();
+    mapper->SetInputData(shape_->getPolyData());
     
     qvtkWidget->GetRenderWindow()->Render();
     
 }
 
-void vtkGeodesic::calculateGeodesic_gpu(Shape *shape) {
+void vtkGeodesic::calculateGeodesic_gpu() {
     //float d;
     //cudaMalloc(&d, sizeof(float));
 }

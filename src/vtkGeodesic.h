@@ -28,7 +28,7 @@
 class vtkGeodesic {
     class geodesicPoints {
     public:
-        geodesicPoints(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {};
+        geodesicPoints(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {}
         
         vtkIdType size() {
             return polyData_->GetNumberOfPoints() * 3;
@@ -47,7 +47,7 @@ class vtkGeodesic {
     
     class geodesicFaces {
     public:
-        geodesicFaces(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {};
+        geodesicFaces(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {}
         
         vtkIdType size() {
             return polyData_->GetNumberOfCells() * 3;
@@ -68,7 +68,7 @@ class vtkGeodesic {
 public:
     vtkGeodesic(Shape *shape);
     vtkGeodesic(Shape *shape, unsigned source);
-    ~vtkGeodesic() {};
+    ~vtkGeodesic();
     
     // calculate geodesic from a random point to all other points and visualize them
     void    calculateGeodesic_gpu();
@@ -82,7 +82,8 @@ private:
     geodesic::Mesh                      mesh_;
     geodesic::GeodesicAlgorithmExact*   algorithm_;
     unsigned                            source_;
-    
+    geodesicPoints*                     points_;
+    geodesicFaces*                      faces_;
 };
 
 #endif

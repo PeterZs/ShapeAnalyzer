@@ -22,29 +22,35 @@
 using namespace geodesic;
 using namespace std;
 
+//Always provide a destructor that deletes all objects that are created somewhere somewhen in the class.
+//Every new requires a delete.
+vtkGeodesic::~vtkGeodesic() {
+    delete points_;
+    delete faces_;
+    delete algorithm_;
+}
+
 vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
     // create random starting point
 	source_ = std::rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
     
-    GeodesicAlgorithmExact* algorithm_;
-    
+
     initialize();
 }
 
 vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape), source_(s) {
-    GeodesicAlgorithmExact* algorithm_;
-    
+
     initialize();
 }
 
 void vtkGeodesic::initialize() {
     
     //initialize wrapper classes defined in vtkGeodesic.h instead of initializing vectors
-    geodesicPoints* points = new geodesicPoints(shape_->getPolyData());
-    geodesicFaces* faces = new geodesicFaces(shape_->getPolyData());
+    points_ = new geodesicPoints(shape_->getPolyData());
+    faces_ = new geodesicFaces(shape_->getPolyData());
     
-	mesh_.initialize_mesh_data(*points, *faces);		//create internal mesh data structure including edges
-
+	mesh_.initialize_mesh_data(*points_, *faces_);		//create internal mesh data structure including edges
+    
     algorithm_ = new GeodesicAlgorithmExact(&mesh_);
     
     SurfacePoint source(&mesh_.vertices()[source_]);		//create source
@@ -124,11 +130,10 @@ void vtkGeodesic::visualizeGeodesic(QVTKWidget *qvtkWidget) {
     shape_->getPolyData()->GetCellData()->SetScalars(colors);
     shape_->getPolyData()->Modified();
     
-    vtkSmartPointer<vtkPolyDataMapper> mapper = (vtkPolyDataMapper *) shape_->getActor()->GetMapper();
-    mapper->SetInputData(shape_->getPolyData());
+    shape_->getPolyDataNormals()->GetCellData()->SetScalars(colors);
+    shape_->getPolyDataNormals()->Modified();
     
     qvtkWidget->GetRenderWindow()->Render();
-    
 }
 
 void vtkGeodesic::calculateGeodesic_gpu() {

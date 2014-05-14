@@ -21,44 +21,62 @@
 #include <vtkRenderWindow.h>
 #include <vtkPointPlacer.h>
 
-#include <assert.h>
-
 #include "Shape.h"
 #include "Correspondence.h"
+#include "FaceCorrespondence.h"
 
 //Class responsible for creating a correspondence
 class CorrespondencePicker {
 public:
-    CorrespondencePicker(vtkRenderer* renderer) : renderer_(renderer) {
-        selectedFaceActor_ = vtkSmartPointer<vtkActor>::New();
-        selectedFaceMapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
-        lineActor_ = vtkSmartPointer<vtkActor>::New();
-        lineMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    virtual ~CorrespondencePicker() {
+        clearSelection();
     }
-    bool pick(Correspondence** correspondence, Shape *shape, vtkIdType cellId);
-    void mouseMoveHandler(int x, int y);
+    
+    //abstract function: to override in subclass
+    bool pick(Correspondence** correspondence, Shape *shape, vtkIdType);
+    
+    
+    void updateLine(int x, int y);
     void clearSelection(Shape* shape);
     void clearSelection();
+
+protected:
+    //protected contructor: abstract class
+    CorrespondencePicker(vtkRenderer* renderer) : waitForSelection_(false), renderer_(renderer) {
+        lineActor_ = vtkSmartPointer<vtkActor>::New();
+        lineMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+        selectionActor_ = vtkSmartPointer<vtkActor>::New();
+        selectionMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    }
+
+    virtual vtkSmartPointer<vtkPolyData> getSelectionPolyData(Shape* shape, vtkIdType selectionId) = 0;
+    virtual void getSelectionPoint(Shape* shape, vtkIdType selectionId, double point[3]) = 0;
+    
+    virtual Correspondence* createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType lastSelectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) = 0;
+    virtual void createActor(vtkActor* actor, vtkPolyDataMapper* mapper, vtkPolyData* polyData, vtkLinearTransform* t) = 0;
+    
+    
+    vtkIdType id1_; // id of point or cell that was selected first.
 private:
-    vtkSmartPointer<vtkUnstructuredGrid> getSelectionGrid(Shape *shape, vtkIdType cellId);
-    vtkSmartPointer<vtkActor> createFaceActorFromGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, vtkLinearTransform* t);
+    void initializeLine(double point1[3]);
+    vtkSmartPointer<vtkActor> createActor(vtkPolyData* polyData, vtkLinearTransform* t);
     
-    
-    bool waitForSelection_; //flag indicating that a face has been selected on first shape. Wait for selection of corresponding face on another shape
-    Shape* selectedShape_; //Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the green triangle on it. Required to be declared at class level to delete green triangle in case the selected shape is deleted in method deleteShape(int i)
-    
-    vtkSmartPointer<vtkActor> selectedFaceActor_; // actor representing green triangle on selected shape
-    vtkSmartPointer<vtkDataSetMapper> selectedFaceMapper_;
-    vtkSmartPointer<vtkTriangle> face1_; //Remember first selection.
-    Shape* shape1_; //Remember first selection.
-    vtkSmartPointer<vtkActor> face1Actor_;
-    
-    //vtk visualization stuff
-    vtkSmartPointer<vtkPolyData> linePolyData_; //polydata that is visualized
-    vtkSmartPointer<vtkActor> lineActor_;
-    vtkSmartPointer<vtkPolyDataMapper> lineMapper_;
+    bool waitForSelection_; // flag indicating that a face or a point has been selected on first shape. Wait for selection of corresponding face or point on another shape
     
     vtkRenderer* renderer_;
+    Shape* selectedShape_; // Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the yellow triangle/point on it. Required to be declared at class level to delete yellow triangle/point in case the selected shape is deleted in method deleteShape(int i)
+    
+    vtkSmartPointer<vtkActor> selectionActor_; // actor representing green triangle on selected shape
+    vtkSmartPointer<vtkPolyDataMapper> selectionMapper_;
+    
+    // Remember first selection.
+    Shape* shape1_;
+    vtkSmartPointer<vtkActor> actor1_; // actor representing first point or triangle that was selected
+    
+    // visualization stuff
+    vtkSmartPointer<vtkPolyData> linePolyData_; // line polydata that is visualized as a visual response for selection of a face or a point
+    vtkSmartPointer<vtkActor> lineActor_;
+    vtkSmartPointer<vtkPolyDataMapper> lineMapper_;
 };
 
 #endif /* defined(CorrespondencePicker_H) */

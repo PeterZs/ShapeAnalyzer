@@ -9,8 +9,10 @@
 #include <vtkProperty.h>
 #include <vtkCellArray.h>
 #include <vtkLine.h>
+#include <vtkRenderer.h>
 
 #include "Shape.h"
+#include "CorrespondenceData.h"
 
 #include <vector>
 
@@ -19,35 +21,17 @@ using namespace std;
 class Correspondence {
 
 public:
-    Correspondence(Shape* shape1, Shape* shape2, vtkSmartPointer<vtkTriangle> face1, vtkSmartPointer<vtkTriangle> face2, vtkSmartPointer<vtkActor> face1Actor, vtkSmartPointer<vtkActor> face2Actor);
+    virtual ~Correspondence() {
+        delete data_;
+    };
     
-    //apply current user-transformation t to original face center point1_ and update line source with the transformed point
-    void transformPoint1(vtkLinearTransform* t);
+    //apply current user transformation t to original point1_ and update line source with the transformed point
+    void transform1(vtkLinearTransform* t);
     
-    //apply current user-transformation t to original face center point2_ and update line source with the transformed point
-    void transformPoint2(vtkLinearTransform* t);
+    //apply current user transformation t to original point2_ and update line source with the transformed point
+    void transform2(vtkLinearTransform* t);
     
     // getters
-    vtkSmartPointer<vtkActor> getActor() {
-        return actor_;
-    }
-    
-    vtkSmartPointer<vtkTriangle> getFace1() {
-        return face1_;
-    }
-    
-    vtkSmartPointer<vtkTriangle> getFace2() {
-        return face2_;
-    }
-
-    vtkSmartPointer<vtkActor> getFace1Actor() {
-        return face1Actor_;
-    }
-    
-    vtkSmartPointer<vtkActor> getFace2Actor() {
-        return face2Actor_;
-    }
-    
     Shape* getShape1() {
         return shape1_;
     }
@@ -55,19 +39,37 @@ public:
     Shape* getShape2() {
         return shape2_;
     }
+    
+    vtkSmartPointer<vtkActor> getLineActor() {
+        return lineActor_;
+    }
+    
+    void setSelected(bool selected);
+    
+    void remove();
+protected:
+    //protected contructor
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
+    
+    
+    void visualize(double point1[3], double point[3]);
+
+    vtkSmartPointer<vtkRenderer> renderer_;
+    
+    CorrespondenceData* data_;
+    
 private:
     //vtk visualization stuff
-    vtkSmartPointer<vtkPolyData> polyData_; //polydata that is visualized
-    vtkSmartPointer<vtkActor> actor_;
+    vtkSmartPointer<vtkPolyData> linePolyData_; //line polydata that is visualized
+    vtkSmartPointer<vtkActor> lineActor_; // line actor
     
+    vtkSmartPointer<vtkActor> actor1_;
+    vtkSmartPointer<vtkActor> actor2_;
+    
+
     Shape* shape1_;
     Shape* shape2_;
 
-    // point1 and face1 in the line source belongs to shape1 and the same with 2
-    vtkSmartPointer<vtkTriangle> face1_;
-    vtkSmartPointer<vtkTriangle> face2_;
-    vtkSmartPointer<vtkActor> face1Actor_;
-    vtkSmartPointer<vtkActor> face2Actor_;
     double point1_[3];
     double point2_[3];
 };

@@ -29,6 +29,8 @@
 #include <QShortcut>
 #include <QString>
 #include <QFileDialog>
+#include <QActionGroup>
+
 #include <unordered_map>
 
 #include "Correspondence.h"
@@ -36,6 +38,8 @@
 #include "CorrespondencePicker.h"
 #include "Shape.h"
 #include "ShapeListItem.h"
+#include "FaceCorrespondencePicker.h"
+#include "PointCorrespondencePicker.h"
 #include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
 
@@ -66,11 +70,11 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
 
             for(unordered_map<vtkActor*, Correspondence*>::iterator it = sa->correspondencesByActor_.begin(); it != sa->correspondencesByActor_.end(); it++) {
                 if(it->second->getShape1() == shape) {
-                    it->second->transformPoint1(t);
+                    it->second->transform1(t);
                 }
                 
                 if(it->second->getShape2() == shape) {
-                    it->second->transformPoint2(t);
+                    it->second->transform2(t);
                 }
             }
             sa->qvtkWidget->GetRenderWindow()->Render();
@@ -90,10 +94,6 @@ private slots:
     virtual void slotClear();
 
     virtual void slotOpenShape();
-    
-    virtual void slotModusScene();
-    virtual void slotModusActors();
-    virtual void slotModusCorrespondences();
 
     virtual void slotOpenHelpWindow();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
@@ -102,9 +102,14 @@ private slots:
     virtual void slotClearCurrentSelection();
 
     virtual void slotToggleBoxWidget();
+    virtual void slotAddCorrespondencesMode();
+    
     
     virtual void slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous);
-    virtual void slotSetCurrentCorrespondenceColor(QListWidgetItem* current, QListWidgetItem* previous);
+    virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
+    
+    virtual void slotSetShapeDisplayMode();
+    virtual void slotSetCorrespondenceType();
     
     
     //vtk widget slots
@@ -132,6 +137,7 @@ private:
     
     
     void clear();
+    void clearCorrespondences();
     void deleteCorrespondence(int i);
     void deleteShape(int i);
 
@@ -139,9 +145,6 @@ private:
     unordered_map<vtkActor*, Shape*> shapesByActor_;
     unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
 
-    //index correspondences by their left and right triangles (represented by the respective cell ids)
-    unordered_multimap<int, Correspondence*> correspondencesByCellId_;
-    
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;
     vtkSmartPointer<vtkEventQtSlotConnect> connections_;
@@ -150,7 +153,12 @@ private:
     CorrespondencePicker* correspondencePicker_;
     
     
-    // only used for naming in qt
+    //QT
+    QActionGroup* actionGroupCorrespondenceType;
+    QActionGroup* actionGroupMode;
+    QActionGroup* actionGroupShapeDisplayMode;
+    
+    //counter for ids
     int lastInsertShapeID_;
     int lastInsertCorresondenceID_;
 };

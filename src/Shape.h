@@ -5,15 +5,17 @@
 #include <vtkBoxWidget.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
+#include <vtkType.h>
+#include <vtkRenderer.h>
+#include <vtkPolyData.h>
+#include <vtkRenderWindow.h>
 
 using namespace std;
 
 class Shape {
 public:
-    Shape();
-    ~Shape() {
-    };
-    
+    Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkPolyData> polyDataNormals, vtkSmartPointer<vtkRenderer> renderer);
+
     // getters
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
@@ -31,29 +33,26 @@ public:
         return polyDataNormals_;
     }
     
-    // setters
-    void setActor(vtkSmartPointer<vtkActor> actor) {
-        actor_ = actor;
+    vtkSmartPointer<vtkPolyDataMapper> getMapper() {
+        return mapper_;
     }
     
-    void setBoxWidget(vtkSmartPointer<vtkBoxWidget> boxWidget) {
-        boxWidget_ = boxWidget;
+    vtkIdType getId() {
+        return shapeId_;
     }
     
-    void setPolyData(vtkSmartPointer<vtkPolyData> polyData) {
-        polyData_ = polyData;
-    }
-
-    void setPolyDataNormals(vtkSmartPointer<vtkPolyData> polyDataNormals) {
-        polyDataNormals_ = polyDataNormals;
-    }
+    void remove();
     
 private:
+    vtkIdType shapeId_;
+    
     vtkSmartPointer<vtkActor> actor_;
+    vtkSmartPointer<vtkPolyDataMapper> mapper_;
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyData> polyDataNormals_;
-
+    
+    vtkSmartPointer<vtkRenderer> renderer_;
 };
 
 #endif

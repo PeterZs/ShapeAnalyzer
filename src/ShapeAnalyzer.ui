@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>997</width>
-    <height>647</height>
+    <width>1054</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QVTKWidget" name="qvtkWidget" native="true">
+       <widget class="QVTKWidget" name="qvtkWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -34,57 +34,65 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="leftMargin">
-         <number>10</number>
+       <widget class="QSplitter" name="splitter">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-        <item>
-         <widget class="QLabel" name="labelShapes">
-          <property name="text">
-           <string>Shapes</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="listShapes">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>200</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelCorrespondences">
-          <property name="text">
-           <string>Correspondences</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="listCorrespondences">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-            <horstretch>150</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
+        <widget class="QWidget" name="layoutWidget">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="labelShapes">
+            <property name="text">
+             <string>Shapes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="listShapes">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="labelCorrespondences">
+            <property name="text">
+             <string>Point correspondences (displayed)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="listCorrespondences">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>150</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </item>
      </layout>
     </item>
@@ -95,7 +103,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>997</width>
+     <width>1054</width>
      <height>22</height>
     </rect>
    </property>
@@ -110,22 +118,29 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenFile"/>
-    <addaction name="actionLoad_Scene"/>
-    <addaction name="actionSave_Scene"/>
+    <addaction name="actionStoreScene"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionClear"/>
+    <addaction name="actionTransformScene"/>
+    <addaction name="actionTransformShapes"/>
+    <addaction name="actionAddCorrespondences"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowTriangulatedMesh"/>
+    <addaction name="actionShowSurfaceNormals"/>
+    <addaction name="separator"/>
     <addaction name="actionResetCamera"/>
+    <addaction name="actionClear"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>431</x>
-      <y>101</y>
+      <x>384</x>
+      <y>109</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -135,32 +150,49 @@
     </property>
     <addaction name="actionHelp"/>
    </widget>
-   <widget class="QMenu" name="menuChoose_Modus">
+   <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>Choose Modus</string>
+     <string>View</string>
     </property>
-    <addaction name="actionTransform_Scene"/>
-    <addaction name="actionTransform_Actors"/>
-    <addaction name="actionAdd_Correspondences"/>
+    <addaction name="actionPointCorrespondences"/>
+    <addaction name="actionFaceCorrespondences"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionWindowPointCorrespondences"/>
+    <addaction name="actionWindowFaceCorrespondences"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
-   <addaction name="menuChoose_Modus"/>
+   <addaction name="menuView"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpenFile">
    <property name="text">
-    <string>Open OFF file...</string>
+    <string>Open File...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+O</string>
    </property>
   </action>
   <action name="actionClear">
    <property name="text">
     <string>Clear</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
   </action>
   <action name="actionResetCamera">
    <property name="text">
-    <string>Reset camera</string>
+    <string>Reset Camera</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionExit">
@@ -170,10 +202,10 @@
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>Open Help Menu</string>
+    <string>Open Help Window</string>
    </property>
   </action>
-  <action name="actionTransform_Scene">
+  <action name="actionTransformScene">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -183,31 +215,95 @@
    <property name="text">
     <string>Transform Scene</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
   </action>
-  <action name="actionTransform_Actors">
+  <action name="actionTransformShapes">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Transform Actors</string>
+    <string>Transform Shapes (Show Box Widget)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionAdd_Correspondences">
+  <action name="actionAddCorrespondences">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
     <string>Add Correspondences</string>
    </property>
-  </action>
-  <action name="actionLoad_Scene">
-   <property name="text">
-    <string>Load Scene...</string>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionSave_Scene">
+  <action name="actionFaceCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Save Scene</string>
+    <string>Face Correspondences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionPointCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Point Correspondences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionWindowPointCorrespondences">
+   <property name="text">
+    <string>All Point Correspondences</string>
+   </property>
+  </action>
+  <action name="actionWindowFaceCorrespondences">
+   <property name="text">
+    <string>All Face Correspondences</string>
+   </property>
+  </action>
+  <action name="actionShowSurfaceNormals">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Surface Normals Interpolation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionStoreScene">
+   <property name="text">
+    <string>Store Scene...</string>
+   </property>
+  </action>
+  <action name="actionShowTriangulatedMesh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Triangulated Mesh</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>
@@ -220,7 +316,4 @@
  </customwidgets>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

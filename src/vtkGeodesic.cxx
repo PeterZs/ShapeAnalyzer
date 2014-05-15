@@ -32,20 +32,36 @@ vtkGeodesic::~vtkGeodesic() {
 
 vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
     // create random starting point
-	source_ = std::rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
+	unsigned s = std::rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
     
-
-    initialize();
+    vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
+    list->InsertNextId(s);
+    
+    GeodesicAlgorithmExact* algorithm_;
+    
+    initialize(list);
 }
 
-vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape), source_(s) {
-
-    initialize();
+vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape) {
+    GeodesicAlgorithmExact* algorithm_;
+    
+    vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
+    list->InsertNextId(s);
+    
+    initialize(list);
+    
 }
 
-void vtkGeodesic::initialize() {
+vtkGeodesic::vtkGeodesic(Shape *shape, vtkSmartPointer<vtkIdList> list) : shape_(shape) {
+    GeodesicAlgorithmExact* algorithm_;
     
-    //initialize wrapper classes defined in vtkGeodesic.h instead of initializing vectors
+    initialize(list);
+    
+}
+
+void vtkGeodesic::initialize(vtkSmartPointer<vtkIdList> s) {
+    sourceList_ = s;
+    
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
     
@@ -53,22 +69,63 @@ void vtkGeodesic::initialize() {
     
     algorithm_ = new GeodesicAlgorithmExact(&mesh_);
     
-    SurfacePoint source(&mesh_.vertices()[source_]);		//create source
-	std::vector<geodesic::SurfacePoint> all_sources(1, source);
+    std::vector<geodesic::SurfacePoint> sources_;
+    sources_.resize(s->GetNumberOfIds());
     
-    algorithm_->propagate(all_sources);	//cover the whole mesh
+    for(int i = 0; i < s->GetNumberOfIds(); i++) {
+        SurfacePoint source(&mesh_.vertices()[s->GetId(i)]); //create source
+        sources_[i] = source;
+    }
     
+    algorithm_->propagate(sources_);	//cover the whole mesh
 }
+
+// property functions
 
 void vtkGeodesic::changeSourcePoint(unsigned s) {
-    source_ = s;
-    
-    SurfacePoint source(&mesh_.vertices()[source_]);		//create source
-	std::vector<geodesic::SurfacePoint> all_sources(1, source);
-    
-    algorithm_->propagate(all_sources);	//cover the whole mesh
+    vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
+    list->InsertNextId(s);
+
+    changeSourcePoints(list);
 }
 
+void vtkGeodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
+    sourceList_ = s;
+    
+    sources_.resize(s->GetNumberOfIds());
+    
+    for(int i = 0; i < s->GetNumberOfIds(); i++) {
+        SurfacePoint source(&mesh_.vertices()[s->GetId(i)]); //create source
+        sources_[i] = source;
+    }
+    
+    algorithm_->propagate(sources_);	//cover the whole mesh
+}
+
+unsigned vtkGeodesic::findPointFurthestToAllSources() {
+    
+    unsigned id = 0;
+    double distance = 0.0;
+    
+    // iterate over all points
+    for(int i = 0; i < mesh_.vertices().size(); i++) {
+        SurfacePoint target(&mesh_.vertices()[i]); //create source
+            
+        // calculate shortest distance to one source
+        double dist;
+        algorithm_->best_source(target, dist);
+            
+        if(dist > distance) {
+            distance = dist;
+            id = i;
+        }
+        
+    }
+    
+    return id;
+}
+
+// vtk functions
 
 void vtkGeodesic::visualizeGeodesic(QVTKWidget *qvtkWidget) {
     

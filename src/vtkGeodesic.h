@@ -25,6 +25,8 @@
 #ifndef vtkGeodesic_h
 #define vtkGeodesic_h
 
+using namespace geodesic;
+
 class vtkGeodesic {
     class geodesicPoints {
     public:
@@ -68,22 +70,29 @@ class vtkGeodesic {
 public:
     vtkGeodesic(Shape *shape);
     vtkGeodesic(Shape *shape, unsigned source);
+    vtkGeodesic(Shape *shape, vtkSmartPointer<vtkIdList> source);
     ~vtkGeodesic();
     
     // calculate geodesic from a random point to all other points and visualize them
     void    calculateGeodesic_gpu();
-    void    changeSourcePoint(unsigned source);
     void    visualizeGeodesic(QVTKWidget *qvtkWidget);
     
+    void        changeSourcePoint(unsigned source);
+    void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
+    unsigned    findPointFurthestToAllSources();
+    
 private:
-    void    initialize();
+    void    initialize(unsigned s);
+    void    initialize(vtkSmartPointer<vtkIdList> s);
     
     Shape*                              shape_;
-    geodesic::Mesh                      mesh_;
-    geodesic::GeodesicAlgorithmExact*   algorithm_;
-    unsigned                            source_;
+    Mesh                                mesh_;
+    GeodesicAlgorithmExact*             algorithm_;
     geodesicPoints*                     points_;
     geodesicFaces*                      faces_;
+    std::vector<SurfacePoint>           sources_;
+    vtkSmartPointer<vtkIdList>          sourceList_;
+    
 };
 
 #endif

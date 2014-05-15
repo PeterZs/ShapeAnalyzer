@@ -27,6 +27,8 @@ file(GLOB QT_WRAP *.h)
 file(GLOB CXX_FILES *.cxx)
 file(GLOB CPP_FILES *.cpp)
 file(GLOB GEODESICS ${CMAKE_CURRENT_SOURCE_DIR}/geodesics/*)
+file(GLOB CORRESPONDENCES *Correspondence*)
+file(GLOB VTK vtk*)
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )
@@ -49,4 +51,8 @@ else()
     target_link_libraries(ShapeAnalyzer vtkHybrid QVTK vtkViews ${QT_LIBRARIES})
   endif()
 endif()
+
+source_group("Geodesics" FILES ${GEODESICS})
+source_group("Correspondences" FILES ${CORRESPONDENCES})
+source_group("VTK" FILES ${VTK})
 

@@ -2,10 +2,12 @@
 
 #include "vtkGeodesic.h"
 
+#include <tgmath.h>
+
 #include <vtkGlyph3D.h>
 #include <vtkSphereSource.h>
 
-// Constructor
+// Constructor and Destructor
 Shape::Shape(
              vtkIdType                      shapeId,
              vtkSmartPointer<vtkPolyData>   polyData,
@@ -46,12 +48,97 @@ void Shape::remove() {
     boxWidget_->SetProp3D(nullptr);
 }
 
+// Property Functions
+
+double Shape::getEuclideanDistances(int start, std::vector<double> &distances) {
+    
+    double max = 0.0;
+    distances.resize(polyData_->GetPoints()->GetNumberOfPoints());
+    
+    double reference[3], current[3];
+    polyData_->GetPoints()->GetPoint(start, reference);
+    
+    // calculate all distances
+    for(unsigned i = 0; i < polyData_->GetPoints()->GetNumberOfPoints(); ++i) {
+        polyData_->GetPoints()->GetPoint(i, current);
+        
+        // keep track of distances and max distance
+        distances[i] = std::sqrt(
+                                 pow(reference[0] - current[0], 2) +
+                                 pow(reference[1] - current[1], 2) +
+                                 pow(reference[2] - current[2], 2)
+                                 );
+        if(distances[i] > max)
+            max = distances[i];
+        
+    }
+    
+    return max;
+}
+
+// Visualization
+
+void Shape::visualizeEuclidean(int start) {
+    // random start if none was chosen
+    if (start == -1)
+        start = std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
+    
+    // initialize
+    std::vector<double> distances;
+    double max = getEuclideanDistances(start, distances);
+    
+    vtkSmartPointer<vtkLookupTable> colorLookupTable =
+    vtkSmartPointer<vtkLookupTable>::New();
+    colorLookupTable->SetTableRange(0, max);
+    colorLookupTable->Build();
+    
+    // list of colors for vtk
+    vtkSmartPointer<vtkUnsignedCharArray> colors =
+    vtkSmartPointer<vtkUnsignedCharArray>::New();
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    
+    for(int i = 0; i < this->getPolyData()->GetNumberOfCells(); i++) {
+        vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+        
+        // each cell has three id references to the corresponding points
+        polyData_->GetCellPoints(i, ids);
+        
+        // assign the distance of the closest point
+        double dist = distances[ids->GetId(0)];
+        if(dist > distances[ids->GetId(1)])
+            dist = distances[ids->GetId(1)];
+        if(dist > distances[ids->GetId(2)])
+            dist = distances[ids->GetId(2)];
+        
+        double dcolor[3];
+        colorLookupTable->GetColor(dist, dcolor);
+        
+        unsigned char color[3];
+        for(unsigned int j = 0; j < 3; j++) {
+            color[j] = static_cast<unsigned char>(255.0 * dcolor[j]);
+        }
+        
+        colors->InsertNextTupleValue(color);
+    }
+    
+    // update vtk
+    polyData_->GetCellData()->SetScalars(colors);
+    polyData_->Modified();
+    
+    polyDataNormals_->GetCellData()->SetScalars(colors);
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
 // FPS functions
 
 // fps with given starting point
 vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
+    // random start if none was chosen
     if(start == -1)
-        start =std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
+        start = std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
     
     // initialize id list with starting point
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();

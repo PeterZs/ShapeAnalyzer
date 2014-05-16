@@ -26,6 +26,9 @@ public:
     Shape();
     ~Shape() { };
     
+    void       visualizeEuclidean(int start = -1);
+    double     getEuclideanDistances(int start, std::vector<double> &result);
+    
     vtkSmartPointer<vtkIdList>  getFPS(unsigned numberSamples, int start = -1);
     void                        setFPS(unsigned numberSamples, int start = -1);
     void                        transformFPS(vtkLinearTransform* t);

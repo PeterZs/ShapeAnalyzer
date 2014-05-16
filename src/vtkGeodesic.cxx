@@ -125,6 +125,20 @@ unsigned vtkGeodesic::findPointFurthestToAllSources() {
     return id;
 }
 
+vtkSmartPointer<vtkIdList> vtkGeodesic::getVoronoiCells() {
+    vtkSmartPointer<vtkIdList> voronoi = vtkSmartPointer<vtkIdList>::New();
+    voronoi->SetNumberOfIds(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
+    
+    double distance;
+    
+    for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
+        SurfacePoint p(&mesh_.vertices()[i]);
+        voronoi->SetId(i, algorithm_->best_source(p, distance));
+    }
+    
+    return voronoi;
+}
+
 // vtk functions
 
 void vtkGeodesic::visualizeGeodesic(QVTKWidget *qvtkWidget) {

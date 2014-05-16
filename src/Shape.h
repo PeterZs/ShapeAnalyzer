@@ -14,6 +14,7 @@
 #include <vtkType.h>
 #include <vtkVertexGlyphFilter.h>
 
+
 using namespace std;
 
 class Shape {
@@ -26,8 +27,12 @@ public:
     Shape();
     ~Shape() { };
     
-    void       visualizeEuclidean(int start = -1);
-    double     getEuclideanDistances(int start, std::vector<double> &result);
+    double      getEuclideanDistances(int start, std::vector<double> &result);
+    void        visualizeEuclidean(int start = -1);
+    
+    vtkSmartPointer<vtkIdList>  getVoronoiCells(vtkSmartPointer<vtkIdList> points);
+    void                        visualizeVoronoiCells();
+    void                        visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points);
     
     vtkSmartPointer<vtkIdList>  getFPS(unsigned numberSamples, int start = -1);
     void                        setFPS(unsigned numberSamples, int start = -1);
@@ -42,7 +47,7 @@ public:
         return boxWidget_;
     }
     
-    vtkSmartPointer<vtkIdList> getFPS() {
+    vtkSmartPointer<vtkIdList> getCurrentFPS() {
         return fps_;
     }
     
@@ -80,6 +85,9 @@ private:
     
     vtkSmartPointer<vtkIdList>          fps_;
     vtkSmartPointer<vtkActor>           fpsActor_;
+    
+    vtkSmartPointer<vtkIdList>          voronoiCells_;
+    vtkSmartPointer<vtkActor>           voronoiCellsActor_;
 
 };
 

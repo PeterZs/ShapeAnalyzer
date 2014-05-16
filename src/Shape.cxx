@@ -132,6 +132,79 @@ void Shape::visualizeEuclidean(int start) {
     renderer_->GetRenderWindow()->Render();
 }
 
+void Shape::visualizeVoronoiCells() {
+    if (fps_->GetNumberOfIds() > 0) {
+        visualizeVoronoiCells(fps_);
+    } else {
+        visualizeVoronoiCells(getFPS(10));
+    }
+}
+
+void Shape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
+    // initialize
+    vtkSmartPointer<vtkIdList> voronoi = getVoronoiCells(points);
+    double max = points->GetNumberOfIds();
+    
+    vtkSmartPointer<vtkLookupTable> colorLookupTable =
+    vtkSmartPointer<vtkLookupTable>::New();
+    colorLookupTable->SetTableRange(0, max - 1);
+    colorLookupTable->SetNumberOfColors(12);
+    colorLookupTable->SetScaleToLinear();
+    //colorLookupTable->SetRampToLinear();
+    colorLookupTable->SetSaturationRange(0.5, 1.0);
+    colorLookupTable->SetHueRange(0, 1.0);
+    colorLookupTable->SetValueRange(0.8, 1);
+    colorLookupTable->Build();
+    
+    // list of colors for vtk
+    vtkSmartPointer<vtkUnsignedCharArray> colors =
+    vtkSmartPointer<vtkUnsignedCharArray>::New();
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    
+    for(int i = 0; i < this->getPolyData()->GetNumberOfCells(); i++) {
+        vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+        
+        // each cell has three id references to the corresponding points
+        polyData_->GetCellPoints(i, ids);
+        
+        // assign the id that at least 2 points share, 0 otherwise
+        double id;
+        if(voronoi->GetId(ids->GetId(1)) == voronoi->GetId(ids->GetId(2))) {
+            id = voronoi->GetId(ids->GetId(1));
+        } else {
+            id = voronoi->GetId(ids->GetId(0));
+        }
+        
+        double dcolor[3];
+        colorLookupTable->GetColor(id, dcolor);
+        
+        unsigned char color[3];
+        for(unsigned int j = 0; j < 3; j++) {
+            color[j] = static_cast<unsigned char>(255.0 * dcolor[j]);
+        }
+        
+        colors->InsertNextTupleValue(color);
+    }
+    
+    // update vtk
+    polyData_->GetCellData()->SetScalars(colors);
+    polyData_->Modified();
+    
+    polyDataNormals_->GetCellData()->SetScalars(colors);
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
+// Voronoi Cells
+
+vtkSmartPointer<vtkIdList> Shape::getVoronoiCells(vtkSmartPointer<vtkIdList> points) {
+    vtkGeodesic geodesic = vtkGeodesic(this, points);
+    
+    return geodesic.getVoronoiCells();
+}
+
 // FPS functions
 
 // fps with given starting point

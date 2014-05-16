@@ -81,6 +81,8 @@ public:
     void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
     unsigned    findPointFurthestToAllSources();
     
+    vtkSmartPointer<vtkIdList>  getVoronoiCells();
+    
 private:
     void    initialize(unsigned s);
     void    initialize(vtkSmartPointer<vtkIdList> s);

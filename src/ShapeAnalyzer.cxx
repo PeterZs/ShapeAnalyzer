@@ -123,6 +123,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* euklideanAction = metricMenu.addAction("Euclidean");
     QAction* geodesicAction = metricMenu.addAction("Geodesics");
     QAction* fpsAction      = myMenu.addAction("FPS");
+    QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
@@ -143,6 +144,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     } else if (selectedItem == fpsAction) {
         ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
         item->getShape()->setFPS(10);
+    } else if (selectedItem == voronoiAction) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->visualizeVoronoiCells();
     }
 }
 

@@ -118,6 +118,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
     QAction* geodesicAction = myMenu.addAction("Show Geodesics");
+    QAction* fpsAction      = myMenu.addAction("FPS");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
@@ -132,6 +133,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         geodesic.visualizeGeodesic(qvtkWidget);
     } else if (selectedItem == renameAction) {
         ;
+    } else if (selectedItem == fpsAction) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->setFPS(10);
     }
 }
 

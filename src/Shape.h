@@ -4,12 +4,15 @@
 #include <vtkActor.h>
 #include <vtkBoxWidget.h>
 #include <vtkIdList.h>
+#include <vtkLinearTransform.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
-#include <vtkRenderer.h>
-#include <vtkPolyData.h>
-#include <vtkRenderWindow.h>
+#include <vtkVertexGlyphFilter.h>
 
 using namespace std;
 
@@ -23,8 +26,9 @@ public:
     Shape();
     ~Shape() { };
     
-    vtkSmartPointer<vtkIdList> getFPS(unsigned numberSamples);
-    vtkSmartPointer<vtkIdList> getFPS(unsigned numberSamples, unsigned start);
+    vtkSmartPointer<vtkIdList>  getFPS(unsigned numberSamples, int start = -1);
+    void                        setFPS(unsigned numberSamples, int start = -1);
+    void                        transformFPS(vtkLinearTransform* t);
     
     // getters
     vtkSmartPointer<vtkActor> getActor() {
@@ -37,6 +41,10 @@ public:
     
     vtkSmartPointer<vtkIdList> getFPS() {
         return fps_;
+    }
+    
+    vtkSmartPointer<vtkActor> getFPSActor() {
+        return fpsActor_;
     }
     
     vtkSmartPointer<vtkPolyData> getPolyData() {

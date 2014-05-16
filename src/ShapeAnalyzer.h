@@ -68,6 +68,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
 
             Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
 
+            // transform correspondences
             for(unordered_map<vtkActor*, Correspondence*>::iterator it = sa->correspondencesByActor_.begin(); it != sa->correspondencesByActor_.end(); it++) {
                 if(it->second->getShape1() == shape) {
                     it->second->transform1(t);
@@ -77,6 +78,12 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
                     it->second->transform2(t);
                 }
             }
+            
+            // transform fps
+            for(unordered_map<vtkActor*, Shape*>::iterator it = sa->shapesByActor_.begin(); it != sa->shapesByActor_.end(); it++) {
+                it->second->transformFPS(t);
+            }
+            
             sa->qvtkWidget->GetRenderWindow()->Render();
         }
     };

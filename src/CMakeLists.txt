@@ -25,10 +25,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB UI_FILES *.ui)
 file(GLOB QT_WRAP *.h)
 file(GLOB CXX_FILES *.cxx)
-file(GLOB CPP_FILES *.cpp)
+file(GLOB AUTO_GENERATED (*.cpp)|(ui_*.h))
+
 file(GLOB GEODESICS ${CMAKE_CURRENT_SOURCE_DIR}/geodesics/*)
-file(GLOB CORRESPONDENCES *Correspondence*)
-file(GLOB VTK vtk*)
+file(GLOB CORRESPONDENCES_HEADER *Correspondence*.h)
+file(GLOB CORRESPONDENCES_SOURCE *Correspondence*.cxx)
+file(GLOB VTK_HEADER vtk*.h)
+file(GLOB VTK_SOURCE vtk*.cxx)
+
+
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )
@@ -53,6 +58,9 @@ else()
 endif()
 
 source_group("Geodesics" FILES ${GEODESICS})
-source_group("Correspondences" FILES ${CORRESPONDENCES})
-source_group("VTK" FILES ${VTK})
+source_group("qt_auto_generated" FILES ${AUTO_GENERATED})
+source_group("Correspondences\\Header Files" FILES ${CORRESPONDENCES_HEADER})
+source_group("Correspondences\\Source Files" FILES ${CORRESPONDENCES_SOURCE})
+source_group("VTK\\Header Files" FILES ${VTK_HEADER})
+source_group("VTK\\Source Files" FILES ${VTK_SOURCE})
 

@@ -1,7 +1,5 @@
 #include "ShapeAnalyzer.h"
 
-#include <qinputdialog.h>
-
 // Constructor
 ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceID_(0) {
     this->setupUi(this);
@@ -40,7 +38,13 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotClear()));
     
     connect(this->actionOpenFile,                   SIGNAL(triggered()),
-            this,                                   SLOT(slotOpenShape()));
+            this,                                   SLOT(slotOpenFile()));
+    
+    connect(this->actionSaveScene,                  SIGNAL(triggered()),
+            this,                                   SLOT(slotSaveScene()));
+
+    connect(this->actionExportScene,                SIGNAL(triggered()),
+            this,                                   SLOT(slotExportScene()));
     
     //delete correspondence picker visual response if mode was changed. This triggers box widget to show up on shape if shape has been selected.
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
@@ -69,6 +73,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtConnectListCorrespondences() {
     listCorrespondences->setCurrentRow(-1);
     connect(this->listCorrespondences,              SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
@@ -81,6 +86,8 @@ void ShapeAnalyzer::qtConnectListCorrespondences() {
     slotSetSelectedCurrentCorrespondence(listCorrespondences->currentItem(), nullptr);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtConnectListShapes() {
     connect(this->listShapes,                       SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this,                                   SLOT(slotSetCurrentBoxWidget(QListWidgetItem*, QListWidgetItem*)));
@@ -96,8 +103,8 @@ void ShapeAnalyzer::qtConnectListShapes() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//catch mouse wheel events since they cause strange behavior on Mac OSX
 bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
+    //catch mouse wheel events since they cause strange behavior on Mac OSX
     if (object == qvtkWidget && event->type() == QEvent::Wheel) {
         return true;
     }
@@ -105,69 +112,25 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
     return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtInputDialogFPS() {
-    bool ok;
-    int samples = QInputDialog::getInt (
-                                        this,
-                                        tr("FPS"),
-                                        tr("Number of Samples"),
-                                        10, // value
-                                        1, // min
-                                        100, // max
-                                        1, // step size
-                                        &ok
-                                        );
-    // calculate fps if ok was given
-    if (ok) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->setFPS(samples);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
-    bool ok;
-    QString label = QInputDialog::getText (
-                                        this,
-                                        tr("Rename"),
-                                        tr("New Name"),
-                                        QLineEdit::Normal,
-                                        item->text(),
-                                        &ok
-                                        );
-    // calculate fps if ok was given
-    if (ok) {
-        item->setText(label);
-    }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     QMenu menu;
-    QAction* renameAction   = menu.addAction("Rename");
-    QAction* deleteAction   = menu.addAction("Delete");
+    menu.addAction("Delete");
     // ...
     
     QAction* selectedItem = menu.exec(pos);
-    if (selectedItem == deleteAction) {
+    if (selectedItem) {
         deleteCorrespondence(this->listCorrespondences->currentRow());
-    } else if (selectedItem == renameAction) {
-        qtInputDialogRename(this->listCorrespondences->currentItem());
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    QMenu metricMenu;
-    metricMenu.setTitle("Visualize Metric");
-    myMenu.addMenu(&metricMenu);
-    QAction* euklideanAction = metricMenu.addAction("Euclidean");
-    QAction* geodesicAction = metricMenu.addAction("Geodesics");
-    QAction* fpsAction      = myMenu.addAction("FPS");
-    QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
+    QAction* geodesicAction = myMenu.addAction("Show Geodesics");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
@@ -180,16 +143,8 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         vtkGeodesic geodesic(item->getShape());
         geodesic.visualizeGeodesic(qvtkWidget);
-    } else if (selectedItem == euklideanAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->visualizeEuclidean();
     } else if (selectedItem == renameAction) {
-        qtInputDialogRename(this->listShapes->currentItem());
-    } else if (selectedItem == fpsAction) {
-        qtInputDialogFPS();
-    } else if (selectedItem == voronoiAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->visualizeVoronoiCells();
+        ;
     }
 }
 
@@ -235,7 +190,7 @@ void ShapeAnalyzer::slotSetShapeDisplayMode() {
         }
     } else {
         for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getMapper()->SetInputData(it->second->getPolyDataNormals());
+            it->second->getMapper()->SetInputData(it->second->getPolyDataNormals()->GetOutput());
             it->second->getActor()->Modified();
         }
     }
@@ -257,30 +212,41 @@ void ShapeAnalyzer::slotOpenHelpWindow() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotOpenShape() {
+void ShapeAnalyzer::slotOpenFile() {
     
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                    "",
-                                                    tr("Files (*.off)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    tr(""),
+                                                    tr("Files (*.off *.scene *.txt)"));
     
-    if(fileName.count() == 0)
-        return;
+    if(filename.count() == 0)
+        return; //TODO Error handling...
     
-    Shape* shape = vtkAddShape(fileName);
-
-    lastInsertShapeID_++;
-
-    // add shape to qt list widget
-    string name = "Shape ";
-    name.append(std::to_string(lastInsertShapeID_));
-    
-    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
-    listShapes->addItem(item);
-    
-    //make sure that there always is exactly one item selected if there exists at least one item
-    listShapes->setCurrentRow(listShapes->count()-1);
+    if(filename.endsWith(tr(".off"))) {
+        vtkOpenShape(filename.toStdString());
+    } else if(filename.endsWith(tr(".scene"))) {
+        vtkOpenScene(filename.toStdString());
+    } else if(filename.endsWith(".txt")) {
+        vtkImportScene(filename.toStdString());
+    } else {
+        //TODO Error handling
+        ;
+    }
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotSaveScene() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.scene)"));
+    
+    vtkSaveScene(filename.toStdString());
+}
+
+void ShapeAnalyzer::slotExportScene() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Scene Files (*.txt)"));
+    
+    vtkExportScene(filename.toStdString());
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowContextMenuCorrespondences(const QPoint& pos) {
@@ -327,6 +293,8 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotAddCorrespondencesMode() {
     if(this->actionAddCorrespondences->isChecked()) {
         this->actionShowTriangulatedMesh->setChecked(true);
@@ -416,38 +384,9 @@ void ShapeAnalyzer::vtkSetup() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
-    // read .off file
-    vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
-    reader->SetFileName(fileName.toUtf8().constData());
-
-    //make sure that all faces are triangles
-    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-    triangleFilter->SetInputConnection(reader->GetOutputPort());
-    triangleFilter->Update();
-
-    //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
-    vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
-    connectivityFilter->SetInputConnection(triangleFilter->GetOutputPort());
-    connectivityFilter->SetExtractionModeToLargestRegion();
-    connectivityFilter->Update();
-    
-    //Remove all isolated points.
-    vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
-    cleanPolyData->SetInputConnection(connectivityFilter->GetOutputPort());
-    cleanPolyData->Update();
-
-    //Visualize with normals. Looks smoother ;)
-    vtkSmartPointer<vtkPolyDataNormals> polyDataNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
-    polyDataNormals->SetInputConnection(cleanPolyData->GetOutputPort());
-    polyDataNormals->ComputeCellNormalsOn();
-    polyDataNormals->Update();
-    
-    // get vtk actor and add to renderer_
-    Shape* shape = new Shape(lastInsertShapeID_, cleanPolyData->GetOutput(), polyDataNormals->GetOutput(), renderer_);
-    
+void ShapeAnalyzer::vtkAddShape(Shape* shape) {
     if(actionShowSurfaceNormals->isChecked()) {
-        shape->getMapper()->SetInputData(polyDataNormals->GetOutput());
+        shape->getMapper()->SetInputData(shape->getPolyDataNormals()->GetOutput());
     }
     
     if(shapesByActor_.size() == 0)
@@ -458,12 +397,173 @@ Shape* ShapeAnalyzer::vtkAddShape(QString fileName) {
     callback->sa = this;
 
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
-
-    qvtkWidget->GetRenderWindow()->Render();
     
     //triggers boxwidget to show up on new shape
     shapesByActor_.insert(pair<vtkActor*, Shape*>(shape->getActor(), shape));
-    return shape;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkOpenShape(string filename) {
+    // read .off file
+    vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
+    reader->SetFileName(filename.c_str());
+    
+    //make sure that all faces are triangles
+    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+    triangleFilter->SetInputConnection(reader->GetOutputPort());
+    triangleFilter->Update();
+    
+    //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
+    vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+    connectivityFilter->SetInputConnection(triangleFilter->GetOutputPort());
+    connectivityFilter->SetExtractionModeToLargestRegion();
+    connectivityFilter->Update();
+    
+    //Remove all isolated points.
+    vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
+    cleanPolyData->SetInputConnection(connectivityFilter->GetOutputPort());
+    cleanPolyData->Update();
+    
+    // get vtk actor and add to renderer_
+    Shape* shape = new Shape(lastInsertShapeID_, cleanPolyData->GetOutput(), renderer_);
+    
+    vtkAddShape(shape);
+    
+    // add shape to qt list widget
+    lastInsertShapeID_++;
+    string name = "Shape ";
+    name.append(to_string(lastInsertShapeID_));
+    
+    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+    listShapes->addItem(item);
+    
+    //make sure that there always is exactly one item selected if there exists at least one item
+    listShapes->setCurrentRow(listShapes->count()-1);
+    
+    
+    qvtkWidget->GetRenderWindow()->Render();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkOpenScene(string filename) {
+    clear();
+    
+    //open input file stream in binary mode
+    ifstream is(filename, ios::binary);
+    
+    //read number of shapes
+    int64_t numberOfShapes;
+    is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+    
+    
+    //read last insert shape ID
+    int64_t lastInsertShapeID;
+    is.read(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
+    lastInsertShapeID_ = lastInsertShapeID;
+    
+    //read shapes
+    for(unsigned int i = 0; i < numberOfShapes; i++) {
+        Shape* shape = new Shape(renderer_);
+
+        shape->read(is);
+        
+        vtkAddShape(shape);
+        
+        
+        // add shape to qt list widget
+        string name = "Shape ";
+        name.append(to_string(shape->getId()+1));
+        
+        ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+        listShapes->addItem(item);
+        
+        //make sure that there always is exactly one item selected if there exists at least one item
+        listShapes->setCurrentRow(listShapes->count()-1);
+        
+    }
+    
+    is.close();
+    
+    renderer_->ResetCamera();
+    qvtkWidget->GetRenderWindow()->Render();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkImportScene(string filename) {
+    clear();
+    ifstream is(filename);
+
+    string line;
+    
+    unsigned int numberOfShapes;
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> numberOfShapes;
+    }
+    
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> lastInsertShapeID_;
+    }
+    
+    for(unsigned int i = 0; i < numberOfShapes; i++) {
+        Shape* shape = new Shape(renderer_);
+        is >> *shape;
+        vtkAddShape(shape);
+        
+        
+        // add shape to qt list widget
+        string name = "Shape ";
+        name.append(to_string(shape->getId()+1));
+        
+        ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+        listShapes->addItem(item);
+        
+        //make sure that there always is exactly one item selected if there exists at least one item
+        listShapes->setCurrentRow(listShapes->count()-1);
+        
+    }
+    
+    is.close();
+    
+    renderer_->ResetCamera();
+    qvtkWidget->GetRenderWindow()->Render();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkSaveScene(string filename) {
+    ofstream os(filename, ios::binary);
+    int64_t numberOfShapes = (int64_t) shapesByActor_.size();
+    os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+
+    int64_t lastInsertShapeID = (int64_t) lastInsertShapeID_;
+    os.write(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
+    
+    
+    for(int i = 0; i < listShapes->count(); i++) {
+        dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape()->write(os);
+    }
+    
+    
+    os.close();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkExportScene(string filename) {
+    ofstream os(filename);
+    
+    os << shapesByActor_.size() << endl;
+    os << lastInsertShapeID_ << endl;
+    for(int i = 0; i < listShapes->count(); i++) {
+        os << *(dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape());
+    }
+    os.close();
 }
 
 
@@ -488,6 +588,7 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
     if(picker->GetPointId() != -1) {
         Shape* shape = findShapeByActor(picker->GetActor());
         if(shape != nullptr) {
+            // depending on whether we want to add face or point correspondences provide picker->GetCellId or picker->GetPointId to vtkShapeClicked method
             vtkShapeClicked(shape, (actionFaceCorrespondences->isChecked() ? picker->GetCellId() : picker->GetPointId()), globalPos, vtkEvent, command);
         } else {
             Correspondence* correspondence = findCorrespondenceByActor(picker->GetActor());
@@ -508,6 +609,7 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
     correspondencePicker_->updateLine(pos[0], pos[1]);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     command->AbortFlagOn();
@@ -521,6 +623,7 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->actionAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
@@ -533,7 +636,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
             
             // add to qt
             lastInsertCorresondenceID_++;
-            std::string name = "Correspondence ";
+            string name = "Correspondence ";
             name.append(std::to_string(lastInsertCorresondenceID_));
             // add shape to qt list widget
             CorrespondenceListItem *item = new CorrespondenceListItem(QString(name.c_str()), correspondence);
@@ -559,6 +662,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
 // Functions accessing data structures
 ///////////////////////////////////////////////////////////////////////////////
 
+
 ///////////////////////////////////////////////////////////////////////////////
 Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
     unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(actor);
@@ -568,6 +672,7 @@ Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
         return nullptr;
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence* ShapeAnalyzer::findCorrespondenceByActor(vtkActor *actor) {
@@ -628,6 +733,7 @@ void ShapeAnalyzer::clear() {
     qtConnectListCorrespondences();
     qtConnectListShapes();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clearCorrespondences() {

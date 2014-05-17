@@ -201,7 +201,7 @@ void vtkGeodesic::visualizeGeodesic(QVTKWidget *qvtkWidget) {
     shape_->getPolyData()->GetCellData()->SetScalars(colors);
     shape_->getPolyData()->Modified();
     
-    shape_->getPolyDataNormals()->GetCellData()->SetScalars(colors);
+    shape_->getPolyDataNormals()->Update();
     shape_->getPolyDataNormals()->Modified();
     
     qvtkWidget->GetRenderWindow()->Render();

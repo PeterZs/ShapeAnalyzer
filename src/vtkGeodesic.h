@@ -6,6 +6,9 @@
 //
 //
 
+#ifndef vtkGeodesic_h
+#define vtkGeodesic_h
+
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkCellData.h>
@@ -22,8 +25,8 @@
 #include "QVTKWidget.h"
 #include "Shape.h"
 
-#ifndef vtkGeodesic_h
-#define vtkGeodesic_h
+//forward declaration due to circular includes
+class Shape;
 
 using namespace geodesic;
 

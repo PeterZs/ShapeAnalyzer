@@ -100,7 +100,7 @@ private slots:
     virtual void slotResetCamera();
     virtual void slotClear();
 
-    virtual void slotOpenShape();
+    virtual void slotOpenFile();
 
     virtual void slotOpenHelpWindow();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
@@ -118,6 +118,8 @@ private slots:
     virtual void slotSetShapeDisplayMode();
     virtual void slotSetCorrespondenceType();
     
+    virtual void slotSaveScene();
+    virtual void slotExportScene();
     
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
@@ -139,8 +141,12 @@ private:
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
-    Shape* vtkAddShape(QString fileName);
-    
+    void vtkAddShape(Shape* shape);
+    void vtkOpenShape(string filename);
+    void vtkOpenScene(string filename);
+    void vtkSaveScene(string filename);
+    void vtkImportScene(string filename);
+    void vtkExportScene(string filename);
     
     Correspondence* findCorrespondenceByActor(vtkActor* actor);
     Shape* findShapeByActor(vtkActor* actor);
@@ -151,7 +157,7 @@ private:
     void deleteCorrespondence(int i);
     void deleteShape(int i);
 
-    //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time usually.
+    //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     unordered_map<vtkActor*, Shape*> shapesByActor_;
     unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
 

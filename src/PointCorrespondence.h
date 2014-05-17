@@ -10,7 +10,7 @@
 #define PointCorrespondence_H
 
 #include "Correspondence.h"
-#include "PointCorrespondeceData.h"
+#include "PointCorrespondenceData.h"
 
 class PointCorrespondence : public Correspondence {
 public:

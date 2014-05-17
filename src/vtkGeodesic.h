@@ -29,6 +29,7 @@
 class Shape;
 
 using namespace geodesic;
+using namespace std;
 
 class vtkGeodesic {
     class geodesicPoints {
@@ -95,7 +96,7 @@ private:
     GeodesicAlgorithmExact*             algorithm_;
     geodesicPoints*                     points_;
     geodesicFaces*                      faces_;
-    std::vector<SurfacePoint>           sources_;
+    vector<SurfacePoint>                sources_;
     vtkSmartPointer<vtkIdList>          sourceList_;
     
 };

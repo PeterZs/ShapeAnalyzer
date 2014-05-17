@@ -216,13 +216,21 @@ void ShapeAnalyzer::slotOpenFile() {
     
     QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     tr(""),
-                                                    tr("Files (*.off *.scene *.txt)"));
+                                                    tr("Files (*.off *.vert *.scene *.txt)"));
     
     if(filename.count() == 0)
         return; //TODO Error handling...
     
     if(filename.endsWith(tr(".off"))) {
-        vtkOpenShape(filename.toStdString());
+        // read .off file
+        vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
+        reader->SetFileName(filename.toStdString().c_str());
+        vtkOpenShape(reader);
+    } else if(filename.endsWith(tr(".vert"))) {
+        // read .tri .vert files
+        vtkSmartPointer<vtkToscaASCIIReader> reader = vtkSmartPointer<vtkToscaASCIIReader>::New();
+        reader->SetFileName(filename.toStdString().c_str());
+        vtkOpenShape(reader);
     } else if(filename.endsWith(tr(".scene"))) {
         vtkOpenScene(filename.toStdString());
     } else if(filename.endsWith(".txt")) {
@@ -404,11 +412,7 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkOpenShape(string filename) {
-    // read .off file
-    vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
-    reader->SetFileName(filename.c_str());
-    
+void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
     //make sure that all faces are triangles
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triangleFilter->SetInputConnection(reader->GetOutputPort());

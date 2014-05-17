@@ -32,19 +32,15 @@ vtkGeodesic::~vtkGeodesic() {
 
 vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
     // create random starting point
-	unsigned s = std::rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
+	unsigned s = rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
     
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
-    
-    GeodesicAlgorithmExact* algorithm_;
     
     initialize(list);
 }
 
 vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape) {
-    GeodesicAlgorithmExact* algorithm_;
-    
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
     
@@ -53,10 +49,7 @@ vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape) {
 }
 
 vtkGeodesic::vtkGeodesic(Shape *shape, vtkSmartPointer<vtkIdList> list) : shape_(shape) {
-    GeodesicAlgorithmExact* algorithm_;
-    
     initialize(list);
-    
 }
 
 void vtkGeodesic::initialize(vtkSmartPointer<vtkIdList> s) {

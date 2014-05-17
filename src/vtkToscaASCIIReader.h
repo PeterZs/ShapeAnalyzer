@@ -1,5 +1,5 @@
-#ifndef vtkOFFReader_h
-#define vtkOFFReader_h
+#ifndef vtkToscaASCIIReader_h
+#define vtkToscaASCIIReader_h
 
 #include <vtkObjectFactory.h>
 #include <vtkInformationVector.h>
@@ -15,30 +15,33 @@
 #include <vtkPolyData.h>
 #include <vtkTriangle.h>
 
+
+#include <regex>
 #include <sstream>
 #include <fstream>
 
-class vtkOFFReader : public vtkPolyDataAlgorithm {
+class vtkToscaASCIIReader : public vtkPolyDataAlgorithm {
 public:
-    vtkTypeMacro(vtkOFFReader, vtkPolyDataAlgorithm);
+    vtkTypeMacro(vtkToscaASCIIReader, vtkPolyDataAlgorithm);
     
     void PrintSelf(ostream& os, vtkIndent indent);
     
-    static vtkOFFReader *New();
+    static vtkToscaASCIIReader *New();
     
     vtkSetStringMacro(FileName);
     
     vtkGetStringMacro(FileName);
 protected:
-    vtkOFFReader();
-    ~vtkOFFReader();
+    vtkToscaASCIIReader();
+    ~vtkToscaASCIIReader();
     int FillOutputPortInformation(int port, vtkInformation* info);
     int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 private:
-    vtkOFFReader(const vtkOFFReader&);  // Not implemented.
-    void operator=(const vtkOFFReader&);  // Not implemented.
+    vtkToscaASCIIReader(const vtkToscaASCIIReader&);  // Not implemented.
+    void operator=(const vtkToscaASCIIReader&);  // Not implemented.
     
     char* FileName;
 };
 
 #endif
+

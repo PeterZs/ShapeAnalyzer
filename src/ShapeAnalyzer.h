@@ -42,6 +42,7 @@
 #include "PointCorrespondencePicker.h"
 #include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
+#include "vtkToscaASCIIReader.h"
 
 #include "ui_help.h"
 #include "ui_ShapeAnalyzer.h"
@@ -142,7 +143,7 @@ private:
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
     void vtkAddShape(Shape* shape);
-    void vtkOpenShape(string filename);
+    void vtkOpenShape(vtkPolyDataAlgorithm* reader);
     void vtkOpenScene(string filename);
     void vtkSaveScene(string filename);
     void vtkImportScene(string filename);

@@ -25,7 +25,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB UI_FILES *.ui)
 file(GLOB QT_WRAP *.h)
 file(GLOB CXX_FILES *.cxx)
-file(GLOB AUTO_GENERATED (*.cpp)|(ui_*.h))
+file(GLOB AUTO_GENERATED (ui_*.h) | (*.cpp) )
+
 
 file(GLOB GEODESICS ${CMAKE_CURRENT_SOURCE_DIR}/geodesics/*)
 file(GLOB CORRESPONDENCES_HEADER *Correspondence*.h)
@@ -58,7 +59,7 @@ else()
 endif()
 
 source_group("Geodesics" FILES ${GEODESICS})
-source_group("qt_auto_generated" FILES ${AUTO_GENERATED})
+source_group("auto_generated" FILES ${AUTO_GENERATED})
 source_group("Correspondences\\Header Files" FILES ${CORRESPONDENCES_HEADER})
 source_group("Correspondences\\Source Files" FILES ${CORRESPONDENCES_SOURCE})
 source_group("VTK\\Header Files" FILES ${VTK_HEADER})

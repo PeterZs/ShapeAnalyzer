@@ -220,7 +220,7 @@ vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
     //vtkGeodesic* geodesics = new vtkGeodesic(this, list);
     vtkGeodesic geodesics(this, list);
     
-    for(int i = 0; i < numberSamples; i++) {
+    for(int i = 1; i < numberSamples; i++) {
         
         list->InsertNextId(geodesics.findPointFurthestToAllSources());
         

@@ -132,6 +132,9 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
+    void qtInputDialogFPS();
+    void qtInputDialogRename(QListWidgetItem* item);
+    
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);

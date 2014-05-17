@@ -1,5 +1,7 @@
 #include "ShapeAnalyzer.h"
 
+#include <qinputdialog.h>
+
 // Constructor
 ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceID_(0) {
     this->setupUi(this);
@@ -103,17 +105,59 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
     return false;
 }
 
-void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
-    QMenu menu;
-    menu.addAction("Delete");
-    // ...
-    
-    QAction* selectedItem = menu.exec(pos);
-    if (selectedItem) {
-        deleteCorrespondence(this->listCorrespondences->currentRow());
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtInputDialogFPS() {
+    bool ok;
+    int samples = QInputDialog::getInt (
+                                        this,
+                                        tr("FPS"),
+                                        tr("Number of Samples"),
+                                        10, // value
+                                        1, // min
+                                        100, // max
+                                        1, // step size
+                                        &ok
+                                        );
+    // calculate fps if ok was given
+    if (ok) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->setFPS(samples);
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
+    bool ok;
+    QString label = QInputDialog::getText (
+                                        this,
+                                        tr("Rename"),
+                                        tr("New Name"),
+                                        QLineEdit::Normal,
+                                        item->text(),
+                                        &ok
+                                        );
+    // calculate fps if ok was given
+    if (ok) {
+        item->setText(label);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
+    QMenu menu;
+    QAction* renameAction   = menu.addAction("Rename");
+    QAction* deleteAction   = menu.addAction("Delete");
+    // ...
+    
+    QAction* selectedItem = menu.exec(pos);
+    if (selectedItem == deleteAction) {
+        deleteCorrespondence(this->listCorrespondences->currentRow());
+    } else if (selectedItem == renameAction) {
+        qtInputDialogRename(this->listCorrespondences->currentItem());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
@@ -140,10 +184,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
         item->getShape()->visualizeEuclidean();
     } else if (selectedItem == renameAction) {
-        ;
+        qtInputDialogRename(this->listShapes->currentItem());
     } else if (selectedItem == fpsAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->setFPS(10);
+        qtInputDialogFPS();
     } else if (selectedItem == voronoiAction) {
         ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
         item->getShape()->visualizeVoronoiCells();
@@ -455,6 +498,8 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command) {
     vtkRenderWindowInteractor* interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
     // Get the location of the click (in window coordinates)
@@ -463,6 +508,7 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
     correspondencePicker_->updateLine(pos[0], pos[1]);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     command->AbortFlagOn();
     for(int i = 0; i < listCorrespondences->count(); i++) {
@@ -475,6 +521,7 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->actionAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
@@ -512,6 +559,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
 // Functions accessing data structures
 ///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
     unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(actor);
     if(it != shapesByActor_.end()) {
@@ -521,6 +569,7 @@ Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
 Correspondence* ShapeAnalyzer::findCorrespondenceByActor(vtkActor *actor) {
     unordered_map<vtkActor*, Correspondence*>::iterator it = correspondencesByActor_.find(actor);
     if(it != correspondencesByActor_.end()) {
@@ -580,6 +629,7 @@ void ShapeAnalyzer::clear() {
     qtConnectListShapes();
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clearCorrespondences() {
     listCorrespondences->disconnect();
     

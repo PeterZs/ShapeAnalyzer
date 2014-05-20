@@ -112,25 +112,70 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
     return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtInputDialogFPS() {
+    bool ok;
+    int samples = QInputDialog::getInt (
+                                        this,
+                                        tr("FPS"),
+                                        tr("Number of Samples"),
+                                        10, // value
+                                        1, // min
+                                        100, // max
+                                        1, // step size
+                                        &ok
+                                        );
+    // calculate fps if ok was given
+    if (ok) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->setFPS(samples);
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
-    QMenu menu;
-    menu.addAction("Delete");
-    // ...
-    
-    QAction* selectedItem = menu.exec(pos);
-    if (selectedItem) {
-        deleteCorrespondence(this->listCorrespondences->currentRow());
+void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
+    bool ok;
+    QString label = QInputDialog::getText (
+                                        this,
+                                        tr("Rename"),
+                                        tr("New Name"),
+                                        QLineEdit::Normal,
+                                        item->text(),
+                                        &ok
+                                        );
+    // calculate fps if ok was given
+    if (ok) {
+        item->setText(label);
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
+    QMenu menu;
+    QAction* renameAction   = menu.addAction("Rename");
+    QAction* deleteAction   = menu.addAction("Delete");
+    // ...
+    
+    QAction* selectedItem = menu.exec(pos);
+    if (selectedItem == deleteAction) {
+        deleteCorrespondence(this->listCorrespondences->currentRow());
+    } else if (selectedItem == renameAction) {
+        qtInputDialogRename(this->listCorrespondences->currentItem());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    QAction* geodesicAction = myMenu.addAction("Show Geodesics");
+    QMenu metricMenu;
+    metricMenu.setTitle("Visualize Metric");
+    myMenu.addMenu(&metricMenu);
+    QAction* euklideanAction = metricMenu.addAction("Euclidean");
+    QAction* geodesicAction = metricMenu.addAction("Geodesics");
+    QAction* fpsAction      = myMenu.addAction("FPS");
+    QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
@@ -143,8 +188,16 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         vtkGeodesic geodesic(item->getShape());
         geodesic.visualizeGeodesic(qvtkWidget);
+    } else if (selectedItem == euklideanAction) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->visualizeEuclidean();
     } else if (selectedItem == renameAction) {
-        ;
+        qtInputDialogRename(this->listShapes->currentItem());
+    } else if (selectedItem == fpsAction) {
+        qtInputDialogFPS();
+    } else if (selectedItem == voronoiAction) {
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        item->getShape()->visualizeVoronoiCells();
     }
 }
 

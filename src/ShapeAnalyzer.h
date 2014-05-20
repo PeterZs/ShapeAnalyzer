@@ -30,6 +30,8 @@
 #include <QString>
 #include <QFileDialog>
 #include <QActionGroup>
+#include <qinputdialog.h>
+
 
 #include <unordered_map>
 

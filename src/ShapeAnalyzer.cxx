@@ -237,12 +237,12 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetShapeDisplayMode() {
     if(this->actionShowTriangulatedMesh->isChecked()) {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
+        for(unordered_map<vtkActor*, vtkSmartPointer<vtkShape> >::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
             it->second->getMapper()->SetInputData(it->second->getPolyData());
             it->second->getActor()->Modified();
         }
     } else {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
+        for(unordered_map<vtkActor*, vtkSmartPointer<vtkShape> >::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
             it->second->getMapper()->SetInputData(it->second->getPolyDataNormals()->GetOutput());
             it->second->getActor()->Modified();
         }
@@ -345,7 +345,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
-        Shape* selectedShape = dynamic_cast<ShapeListItem*>(listShapes->currentItem())->getShape();
+        vtkSmartPointer<vtkShape> selectedShape = dynamic_cast<ShapeListItem*>(listShapes->currentItem())->getShape();
         if(this->actionTransformShapes->isChecked()) {
             selectedShape->getBoxWidget()->On();
         } else {
@@ -445,7 +445,7 @@ void ShapeAnalyzer::vtkSetup() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkAddShape(Shape* shape) {
+void ShapeAnalyzer::vtkAddShape(vtkSmartPointer<vtkShape> shape) {
     if(actionShowSurfaceNormals->isChecked()) {
         shape->getMapper()->SetInputData(shape->getPolyDataNormals()->GetOutput());
     }
@@ -460,7 +460,7 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
     
     //triggers boxwidget to show up on new shape
-    shapesByActor_.insert(pair<vtkActor*, Shape*>(shape->getActor(), shape));
+    shapesByActor_.insert(pair<vtkActor*, vtkSmartPointer<vtkShape> >(shape->getActor(), shape));
 }
 
 
@@ -483,7 +483,10 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
     cleanPolyData->Update();
     
     // get vtk actor and add to renderer_
-    Shape* shape = new Shape(lastInsertShapeID_, cleanPolyData->GetOutput(), renderer_);
+    vtkSmartPointer<vtkShape> shape = vtkSmartPointer<vtkShape>::New();
+    shape->setId(lastInsertShapeID_);
+    shape->setRenderer(renderer_);
+    shape->setPolyData(cleanPolyData->GetOutput());
     
     vtkAddShape(shape);
     
@@ -521,7 +524,8 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
     
     //read shapes
     for(unsigned int i = 0; i < numberOfShapes; i++) {
-        Shape* shape = new Shape(renderer_);
+        vtkSmartPointer<vtkShape> shape = vtkSmartPointer<vtkShape>::New();
+        shape->setRenderer(renderer_);
 
         shape->read(is);
         
@@ -569,7 +573,8 @@ void ShapeAnalyzer::vtkImportScene(string filename) {
     }
     
     for(unsigned int i = 0; i < numberOfShapes; i++) {
-        Shape* shape = new Shape(renderer_);
+        vtkSmartPointer<vtkShape> shape = vtkSmartPointer<vtkShape>::New();
+        shape->setRenderer(renderer_);
         is >> *shape;
         vtkAddShape(shape);
         
@@ -643,7 +648,7 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
 
     // check if pick was valid
     if(picker->GetPointId() != -1) {
-        Shape* shape = findShapeByActor(picker->GetActor());
+        vtkSmartPointer<vtkShape> shape = findShapeByActor(picker->GetActor());
         if(shape != nullptr) {
             // depending on whether we want to add face or point correspondences provide picker->GetCellId or picker->GetPointId to vtkShapeClicked method
             vtkShapeClicked(shape, (actionFaceCorrespondences->isChecked() ? picker->GetCellId() : picker->GetPointId()), globalPos, vtkEvent, command);
@@ -682,7 +687,7 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
+void ShapeAnalyzer::vtkShapeClicked(vtkSmartPointer<vtkShape> shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->actionAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
         Correspondence* correspondence; //initialized by correspondencePicker
@@ -721,12 +726,12 @@ void ShapeAnalyzer::vtkShapeClicked(Shape *shape, vtkIdType cellId, QPoint &pos,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
-    unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(actor);
+vtkSmartPointer<vtkShape> ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
+    unordered_map<vtkActor*, vtkSmartPointer<vtkShape> >::iterator it = shapesByActor_.find(actor);
     if(it != shapesByActor_.end()) {
         return it->second;
     } else {
-        return nullptr;
+        return vtkSmartPointer<vtkShape>::New();
     }
 }
 
@@ -770,12 +775,11 @@ void ShapeAnalyzer::clear() {
     for(int i = listShapes->count()-1; i > -1; i--) {
         //get shape
         ShapeListItem *item = dynamic_cast<ShapeListItem*>(listShapes->item(i));
-        Shape *shape = item->getShape();
+        vtkSmartPointer<vtkShape> shape = item->getShape();
         shape->remove();
 
         shapesByActor_.erase(shape->getActor());
         delete item;
-        delete shape;
     }
     
     
@@ -841,7 +845,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     // qt
     ShapeListItem *item = dynamic_cast<ShapeListItem*>(this->listShapes->item(i));
-    Shape* shape = item->getShape();
+    vtkSmartPointer<vtkShape> shape = item->getShape();
     
     //if selected remove green triangle
     correspondencePicker_->clearSelection(shape);
@@ -871,7 +875,6 @@ void ShapeAnalyzer::deleteShape(int i) {
     // delete shape
     shape->remove();
     shapesByActor_.erase(shape->getActor());
-    delete shape;
 
     this->qvtkWidget->GetRenderWindow()->Render();
     

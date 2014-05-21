@@ -1,7 +1,7 @@
 #include "Correspondence.h"
 
 // Constructor
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, vtkShape* shape1, vtkShape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
     shape1_ = shape1;
     shape2_ = shape2;
 

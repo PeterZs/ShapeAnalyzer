@@ -11,7 +11,7 @@
 #include <vtkLine.h>
 #include <vtkRenderer.h>
 
-#include "Shape.h"
+#include "vtkShape.h"
 #include "CorrespondenceData.h"
 
 #include <vector>
@@ -32,11 +32,11 @@ public:
     void transform2(vtkLinearTransform* t);
     
     // getters
-    Shape* getShape1() {
+    vtkShape* getShape1() {
         return shape1_;
     }
     
-    Shape* getShape2() {
+    vtkShape* getShape2() {
         return shape2_;
     }
     
@@ -49,7 +49,7 @@ public:
     void remove();
 protected:
     //protected contructor
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, vtkShape* shape1, vtkShape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
     
     
     void visualize(double point1[3], double point[3]);
@@ -67,8 +67,8 @@ private:
     vtkSmartPointer<vtkActor> actor2_;
     
 
-    Shape* shape1_;
-    Shape* shape2_;
+    vtkShape* shape1_;
+    vtkShape* shape2_;
 
     double point1_[3];
     double point2_[3];

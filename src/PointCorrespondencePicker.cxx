@@ -8,7 +8,7 @@
 
 #include "PointCorrespondencePicker.h"
 
-vtkSmartPointer<vtkPolyData> PointCorrespondencePicker::getSelectionPolyData(Shape* shape, vtkIdType pointId) {
+vtkSmartPointer<vtkPolyData> PointCorrespondencePicker::getSelectionPolyData(vtkSmartPointer<vtkShape> shape, vtkIdType pointId) {
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     
@@ -25,11 +25,11 @@ vtkSmartPointer<vtkPolyData> PointCorrespondencePicker::getSelectionPolyData(Sha
     return glyphFilter->GetOutput();
 }
 
-void PointCorrespondencePicker::getSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) {
+void PointCorrespondencePicker::getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType pointId, double point[3]) {
     shape->getPolyData()->GetPoint(pointId, point);
 }
 
-Correspondence* PointCorrespondencePicker::createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
+Correspondence* PointCorrespondencePicker::createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
 
     return new PointCorrespondence(renderer, shape1, shape2, id1_, selectionId, actor1, actor2);
 }

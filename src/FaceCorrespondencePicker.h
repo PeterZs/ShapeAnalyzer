@@ -18,13 +18,13 @@ public:
 
     }
     
-    virtual vtkSmartPointer<vtkPolyData> getSelectionPolyData(Shape* shape, vtkIdType faceId);
+    virtual vtkSmartPointer<vtkPolyData> getSelectionPolyData(vtkSmartPointer<vtkShape> shape, vtkIdType faceId);
     
-    virtual void getSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]);
+    virtual void getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType faceId, double point[3]);
      
     virtual void createActor(vtkActor* actor, vtkPolyDataMapper* mapper, vtkPolyData* polyData, vtkLinearTransform* t);
     
-    virtual Correspondence* createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
+    virtual Correspondence* createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
     
     virtual ~FaceCorrespondencePicker() {}
 };

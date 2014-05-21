@@ -33,6 +33,8 @@ file(GLOB CORRESPONDENCES_HEADER *Correspondence*.h)
 file(GLOB CORRESPONDENCES_SOURCE *Correspondence*.cxx)
 file(GLOB VTK_HEADER vtk*.h)
 file(GLOB VTK_SOURCE vtk*.cxx)
+file(GLOB SHAPE_HEADER *Shape*.h)
+file(GLOB SHAPE_SOURCE *Shape*.cxx)
 
 
 
@@ -64,4 +66,8 @@ source_group("Correspondences\\Header Files" FILES ${CORRESPONDENCES_HEADER})
 source_group("Correspondences\\Source Files" FILES ${CORRESPONDENCES_SOURCE})
 source_group("VTK\\Header Files" FILES ${VTK_HEADER})
 source_group("VTK\\Source Files" FILES ${VTK_SOURCE})
+source_group("UI Files" FILES  ${UI_FILES})
+source_group("Shapes\\Header Files" FILES ${SHAPE_HEADER})
+source_group("Shapes\\Source Files" FILES ${SHAPE_SOURCE})
+source_group("ShapeAnalyzer" FILES ShapeAnalyzer.h ShapeAnalyzer.cxx)
 

@@ -8,7 +8,7 @@
 
 #include "FaceCorrespondencePicker.h"
 
-vtkSmartPointer<vtkPolyData> FaceCorrespondencePicker::getSelectionPolyData(Shape* shape, vtkIdType faceId) {
+vtkSmartPointer<vtkPolyData> FaceCorrespondencePicker::getSelectionPolyData(vtkSmartPointer<vtkShape> shape, vtkIdType faceId) {
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
     vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -36,7 +36,7 @@ vtkSmartPointer<vtkPolyData> FaceCorrespondencePicker::getSelectionPolyData(Shap
     return polyData;
 }
 
-void FaceCorrespondencePicker::getSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) {
+void FaceCorrespondencePicker::getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType faceId, double point[3]) {
     double p1[3];
     double p2[3];
     double p3[3];
@@ -56,7 +56,7 @@ void FaceCorrespondencePicker::createActor(vtkActor *actor, vtkPolyDataMapper *m
     actor->SetUserTransform(t);
 }
 
-Correspondence* FaceCorrespondencePicker::createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
+Correspondence* FaceCorrespondencePicker::createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
     
     return new FaceCorrespondence(renderer, shape1, shape2, id1_, selectionId, actor1, actor2);
 }

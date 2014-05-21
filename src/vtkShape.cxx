@@ -1,14 +1,8 @@
-#include "Shape.h"
+#include "vtkShape.h"
 
 // Constructor
-Shape::Shape(vtkIdType shapeId, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer) : shapeId_(shapeId), polyData_(polyData), renderer_(renderer) {
-    
-    initialize();
-}
 
-Shape::Shape(vtkSmartPointer<vtkRenderer> renderer) : renderer_(renderer) {/* do not call initialize here! Poly data is not yet initialized! */}
-
-void Shape::initialize() {
+void vtkShape::initialize() {
     //Visualize with normals. Looks smoother ;)
     polyDataNormals_ = vtkSmartPointer<vtkPolyDataNormals>::New();
     polyDataNormals_->SetInputData(polyData_);
@@ -36,14 +30,14 @@ void Shape::initialize() {
     fpsActor_ = vtkSmartPointer<vtkActor>::New();
 }
 
-void Shape::remove() {
+void vtkShape::remove() {
     renderer_->RemoveActor(fpsActor_);
     renderer_->RemoveActor(actor_);
     boxWidget_->SetInteractor(nullptr);
     boxWidget_->SetProp3D(nullptr);
 }
 
-double Shape::getEuclideanDistances(int start, vector<double> &distances) {
+double vtkShape::getEuclideanDistances(int start, vector<double> &distances) {
     
     double max = 0.0;
     distances.resize(polyData_->GetPoints()->GetNumberOfPoints());
@@ -71,7 +65,7 @@ double Shape::getEuclideanDistances(int start, vector<double> &distances) {
 
 // Visualization
 
-void Shape::visualizeEuclidean(int start) {
+void vtkShape::visualizeEuclidean(int start) {
     // random start if none was chosen
     if (start == -1)
         start = rand() % polyData_->GetPoints()->GetNumberOfPoints();
@@ -125,7 +119,7 @@ void Shape::visualizeEuclidean(int start) {
     renderer_->GetRenderWindow()->Render();
 }
 
-void Shape::visualizeVoronoiCells() {
+void vtkShape::visualizeVoronoiCells() {
     if (fps_->GetNumberOfIds() > 0) {
         visualizeVoronoiCells(fps_);
     } else {
@@ -133,7 +127,7 @@ void Shape::visualizeVoronoiCells() {
     }
 }
 
-void Shape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
+void vtkShape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
     // initialize
     vtkSmartPointer<vtkIdList> voronoi = getVoronoiCells(points);
     double max = points->GetNumberOfIds();
@@ -192,7 +186,7 @@ void Shape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
 
 // Voronoi Cells
 
-vtkSmartPointer<vtkIdList> Shape::getVoronoiCells(vtkSmartPointer<vtkIdList> points) {
+vtkSmartPointer<vtkIdList> vtkShape::getVoronoiCells(vtkSmartPointer<vtkIdList> points) {
     vtkGeodesic geodesic = vtkGeodesic(this, points);
     
     return geodesic.getVoronoiCells();
@@ -201,7 +195,7 @@ vtkSmartPointer<vtkIdList> Shape::getVoronoiCells(vtkSmartPointer<vtkIdList> poi
 // FPS functions
 
 // fps with given starting point
-vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
+vtkSmartPointer<vtkIdList> vtkShape::getFPS(unsigned numberSamples, int start) {
     // random start if none was chosen
     if(start == -1)
         start = std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
@@ -224,7 +218,7 @@ vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
     return list;
 }
 
-void Shape::setFPS(unsigned numberSamples, int start) {
+void vtkShape::setFPS(unsigned numberSamples, int start) {
     fps_ = getFPS(numberSamples, start);
     
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -254,18 +248,18 @@ void Shape::setFPS(unsigned numberSamples, int start) {
     renderer_->GetRenderWindow()->Render();
 }
 
-void Shape::transformFPS(vtkLinearTransform *t) {
+void vtkShape::transformFPS(vtkLinearTransform *t) {
     fpsActor_->SetUserTransform(t);
 }
 
-//write shape binary
-ostream& Shape::write(ostream& os) {
-    //write shape ID.
-    int64_t shapeId = (int64_t) shapeId_;
-    os.write(reinterpret_cast<const char*>(&shapeId), sizeof(int64_t));
+//write vtkShape binary
+ostream& vtkShape::write(ostream& os) {
+    //write vtkShape ID.
+    int64_t vtkShapeId = (int64_t) shapeId_;
+    os.write(reinterpret_cast<const char*>(&vtkShapeId), sizeof(int64_t));
 
     vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
-    //if user has not transformed shape write identity.
+    //if user has not transformed vtkShape write identity.
     if(transform == nullptr) {
         transform = vtkSmartPointer<vtkMatrix4x4>::New();
         transform->Identity();
@@ -308,10 +302,10 @@ ostream& Shape::write(ostream& os) {
 }
 
 //write as ascii txt
-ostream& operator<<(ostream& os, const Shape& shape) {
-    os << shape.shapeId_<< endl;
+ostream& operator<<(ostream& os, const vtkShape& vtkShape) {
+    os << vtkShape.shapeId_<< endl;
     
-    vtkSmartPointer<vtkMatrix4x4> transform = shape.actor_->GetUserMatrix();
+    vtkSmartPointer<vtkMatrix4x4> transform = vtkShape.actor_->GetUserMatrix();
     if(transform == nullptr) {
         transform = vtkSmartPointer<vtkMatrix4x4>::New();
         transform->Identity();
@@ -324,29 +318,29 @@ ostream& operator<<(ostream& os, const Shape& shape) {
         os << endl;
     }
     
-    os << shape.polyData_->GetNumberOfPoints() << "\t" << shape.polyData_->GetNumberOfCells() << endl;
+    os << vtkShape.polyData_->GetNumberOfPoints() << "\t" << vtkShape.polyData_->GetNumberOfCells() << endl;
     
-    for(vtkIdType i = 0; i < shape.polyData_->GetNumberOfPoints(); i++) {
+    for(vtkIdType i = 0; i < vtkShape.polyData_->GetNumberOfPoints(); i++) {
         double point[3];
-        shape.polyData_->GetPoints()->GetPoint(i, point);
+        vtkShape.polyData_->GetPoints()->GetPoint(i, point);
         os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
     }
     
-    for(vtkIdType i = 0; i < shape.polyData_->GetNumberOfCells(); i++) {
-        os << shape.polyData_->GetCell(i)->GetPointId(0) << "\t" << shape.polyData_->GetCell(i)->GetPointId(1) << "\t" << shape.polyData_->GetCell(i)->GetPointId(2) << endl;
+    for(vtkIdType i = 0; i < vtkShape.polyData_->GetNumberOfCells(); i++) {
+        os << vtkShape.polyData_->GetCell(i)->GetPointId(0) << "\t" << vtkShape.polyData_->GetCell(i)->GetPointId(1) << "\t" << vtkShape.polyData_->GetCell(i)->GetPointId(2) << endl;
     }
     
     return os;
 }
 
-//read shape binary
-istream& Shape::read(istream& is) {
-    //read shape ID
-    int64_t shapeId;
-    is.read(reinterpret_cast<char*>(&shapeId), sizeof(int64_t));
-    shapeId_ = shapeId;
+//read vtkShape binary
+istream& vtkShape::read(istream& is) {
+    //read vtkShape ID
+    int64_t vtkShapeId;
+    is.read(reinterpret_cast<char*>(&vtkShapeId), sizeof(int64_t));
+    shapeId_ = vtkShapeId;
     
-    //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
+    //read user transform. Set user transform in actor after poly data has been read and vtkShape has been initialized and therefore actor_ != nullptr
     vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(int i = 0; i < 4; i++) {
         for(int j = 0; j < 4; j++) {
@@ -398,16 +392,16 @@ istream& Shape::read(istream& is) {
     return is;
 }
 
-//read shape as ascii txt
-istream& operator>>(istream& is, Shape& shape) {
+//read vtkShape as ascii txt
+istream& operator>>(istream& is, vtkShape& vtkShape) {
     string line;
     
-    //read shape ID.
+    //read vtkShape ID.
     {
         getline(is, line);
         stringstream ss;
         ss << line;
-        ss >> shape.shapeId_;
+        ss >> vtkShape.shapeId_;
     }
 
     //read user transform.
@@ -462,16 +456,16 @@ istream& operator>>(istream& is, Shape& shape) {
         polys->InsertNextCell(face);
     }
     
-    shape.polyData_ = vtkSmartPointer<vtkPolyData>::New();
-    shape.polyData_->SetPoints(points);
-    shape.polyData_->SetPolys(polys);
+    vtkShape.polyData_ = vtkSmartPointer<vtkPolyData>::New();
+    vtkShape.polyData_->SetPoints(points);
+    vtkShape.polyData_->SetPolys(polys);
     
-    shape.initialize();
+    vtkShape.initialize();
     
-    shape.actor_->SetUserMatrix(matrix);
+    vtkShape.actor_->SetUserMatrix(matrix);
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->SetMatrix(matrix);
-    shape.boxWidget_->SetTransform(transform);
+    vtkShape.boxWidget_->SetTransform(transform);
     
     return is;
 }

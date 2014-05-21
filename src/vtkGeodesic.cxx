@@ -30,7 +30,7 @@ vtkGeodesic::~vtkGeodesic() {
     delete algorithm_;
 }
 
-vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
+vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape) : shape_(shape) {
     // create random starting point
 	unsigned s = rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
     
@@ -40,7 +40,7 @@ vtkGeodesic::vtkGeodesic(Shape *shape) : shape_(shape) {
     initialize(list);
 }
 
-vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape) {
+vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape, unsigned s) : shape_(shape) {
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
     
@@ -48,7 +48,7 @@ vtkGeodesic::vtkGeodesic(Shape *shape, unsigned s) : shape_(shape) {
     
 }
 
-vtkGeodesic::vtkGeodesic(Shape *shape, vtkSmartPointer<vtkIdList> list) : shape_(shape) {
+vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape, vtkSmartPointer<vtkIdList> list) : shape_(shape) {
     initialize(list);
 }
 

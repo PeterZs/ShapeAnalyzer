@@ -8,7 +8,15 @@
 
 #include "PointCorrespondence.h"
 
-PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType point1Id, vtkIdType point2Id, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
+PointCorrespondence::PointCorrespondence(
+                                         vtkSmartPointer<vtkRenderer> renderer,
+                                         vtkSmartPointer<vtkShape> shape1,
+                                         vtkSmartPointer<vtkShape> shape2,
+                                         vtkIdType point1Id,
+                                         vtkIdType point2Id,
+                                         vtkSmartPointer<vtkActor> actor1,
+                                         vtkSmartPointer<vtkActor> actor2
+                                         ) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
     
     data_ = new PointCorrespondenceData(shape1->getId(), shape2->getId(), point1Id, point2Id);
     

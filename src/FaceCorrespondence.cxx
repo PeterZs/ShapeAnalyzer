@@ -8,7 +8,14 @@
 
 #include "FaceCorrespondence.h"
 
-FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, Shape* shape1, Shape* shape2, vtkIdType face1Id, vtkIdType face2Id, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
+FaceCorrespondence::FaceCorrespondence(
+                                       vtkSmartPointer<vtkRenderer> renderer,
+                                       vtkSmartPointer<vtkShape> shape1,
+                                       vtkSmartPointer<vtkShape> shape2,
+                                       vtkIdType face1Id, vtkIdType face2Id,
+                                       vtkSmartPointer<vtkActor> actor1,
+                                       vtkSmartPointer<vtkActor> actor2
+                                       ) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
     
     data_ = new FaceCorrespondenceData(shape1->getId(), shape2->getId(), face1Id, face2Id);
 

@@ -9,7 +9,7 @@
 #include "CorrespondencePicker.h"
 
 
-bool CorrespondencePicker::pick(Correspondence **correspondence, Shape *shape, vtkIdType selectionId) {
+bool CorrespondencePicker::pick(Correspondence **correspondence, vtkSmartPointer<vtkShape> shape, vtkIdType selectionId) {
     selectedShape_ = shape;
     
     // visual response for picked face
@@ -110,7 +110,7 @@ void CorrespondencePicker::updateLine(int x, int y) {
     }
 }
 
-void CorrespondencePicker::clearSelection(Shape* shape) {
+void CorrespondencePicker::clearSelection(vtkSmartPointer<vtkShape> shape) {
     if(shape == selectedShape_) {
         clearSelection();
     }

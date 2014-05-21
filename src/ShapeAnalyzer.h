@@ -38,7 +38,7 @@
 #include "Correspondence.h"
 #include "CorrespondenceListItem.h"
 #include "CorrespondencePicker.h"
-#include "Shape.h"
+#include "vtkShape.h"
 #include "ShapeListItem.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
@@ -69,7 +69,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             widget->GetTransform(t);
             widget->GetProp3D()->SetUserTransform(t);
 
-            Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
+            vtkSmartPointer<vtkShape> shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
 
             // transform correspondences
             for(unordered_map<vtkActor*, Correspondence*>::iterator it = sa->correspondencesByActor_.begin(); it != sa->correspondencesByActor_.end(); it++) {
@@ -83,7 +83,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             }
             
             // transform fps
-            for(unordered_map<vtkActor*, Shape*>::iterator it = sa->shapesByActor_.begin(); it != sa->shapesByActor_.end(); it++) {
+            for(unordered_map<vtkActor*, vtkSmartPointer<vtkShape> >::iterator it = sa->shapesByActor_.begin(); it != sa->shapesByActor_.end(); it++) {
                 it->second->transformFPS(t);
             }
             
@@ -142,9 +142,9 @@ private:
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
-    void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
+    void vtkShapeClicked(vtkSmartPointer<vtkShape> shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
-    void vtkAddShape(Shape* shape);
+    void vtkAddShape(vtkSmartPointer<vtkShape> shape);
     void vtkOpenShape(vtkPolyDataAlgorithm* reader);
     void vtkOpenScene(string filename);
     void vtkSaveScene(string filename);
@@ -152,7 +152,7 @@ private:
     void vtkExportScene(string filename);
     
     Correspondence* findCorrespondenceByActor(vtkActor* actor);
-    Shape* findShapeByActor(vtkActor* actor);
+    vtkSmartPointer<vtkShape> findShapeByActor(vtkActor* actor);
     
     
     void clear();
@@ -161,7 +161,7 @@ private:
     void deleteShape(int i);
 
     //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
-    unordered_map<vtkActor*, Shape*> shapesByActor_;
+    unordered_map<vtkActor*, vtkSmartPointer<vtkShape> > shapesByActor_;
     unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
 
     //vtk stuff

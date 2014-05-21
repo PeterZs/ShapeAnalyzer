@@ -3,28 +3,25 @@
 
 #include <vtkActor.h>
 #include <vtkBoxWidget.h>
+#include <vtkCell.h>
+#include <vtkCellArray.h>
+#include <vtkGlyph3D.h>
 #include <vtkIdList.h>
 #include <vtkLinearTransform.h>
+#include <vtkMatrix4x4.h>
+#include <vtkObjectBase.h>
+#include <vtkPoints.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkSmartPointer.h>
-#include <vtkType.h>
-#include <vtkRenderer.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkRenderWindow.h>
-#include <vtkCell.h>
-#include <vtkPoints.h>
-#include <vtkCellArray.h>
-#include <vtkLinearTransform.h>
-#include <vtkTransform.h>
-#include <vtkMatrix4x4.h>
-#include <vtkTriangle.h>
-#include <vtkGlyph3D.h>
 #include <vtkSphereSource.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
+#include <vtkTriangle.h>
+#include <vtkType.h>
 
 #include <math.h>
 #include <iostream>
@@ -36,11 +33,14 @@
 
 using namespace std;
 
-class Shape {
+class vtkShape : public vtkObjectBase {
+protected:
+    vtkShape() {};
+    ~vtkShape() {}
+    
 public:
-    Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
-
-    Shape(vtkSmartPointer<vtkRenderer> renderer);
+    static vtkShape* New() { return new vtkShape(); } // needed for vtkSmartPointer
+    void remove();
     
     double      getEuclideanDistances(int start, std::vector<double> &result);
     void        visualizeEuclidean(int start = -1);
@@ -86,27 +86,38 @@ public:
         return shapeId_;
     }
     
-    void remove();
+    // setters
+    void setPolyData(vtkSmartPointer<vtkPolyData> polyData) {
+        polyData_ = polyData;
+        initialize();
+    }
     
+    void setRenderer(vtkSmartPointer<vtkRenderer> renderer) {
+        renderer_ = renderer;
+    }
+    
+    void setId(vtkIdType i) {
+        shapeId_ = i;
+    }
+    
+    // overwrite input und output stream operators
     ostream& write(ostream& os);
-    
-    friend ostream& operator<<(ostream& os, const Shape& shape);
-    
+    friend ostream& operator<<(ostream& os, const vtkShape& shape);
     istream& read(istream& is);
+    friend istream& operator>>(istream& is, vtkShape& shape);
     
-    friend istream& operator>>(istream& is, Shape& shape);
 private:
     void initialize();
     
     
     vtkIdType shapeId_;
     
-    vtkSmartPointer<vtkActor> actor_;
-    vtkSmartPointer<vtkPolyDataMapper> mapper_;
-    vtkSmartPointer<vtkBoxWidget> boxWidget_;
-    vtkSmartPointer<vtkPolyData> polyData_;
-    vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
-    vtkSmartPointer<vtkRenderer>        renderer_;
+    vtkSmartPointer<vtkActor>               actor_;
+    vtkSmartPointer<vtkPolyDataMapper>      mapper_;
+    vtkSmartPointer<vtkBoxWidget>           boxWidget_;
+    vtkSmartPointer<vtkPolyData>            polyData_;
+    vtkSmartPointer<vtkPolyDataNormals>     polyDataNormals_;
+    vtkSmartPointer<vtkRenderer>            renderer_;
     
     vtkSmartPointer<vtkIdList>          fps_;
     vtkSmartPointer<vtkActor>           fpsActor_;

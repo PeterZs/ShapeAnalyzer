@@ -23,10 +23,10 @@
 #include "geodesics/geodesic_algorithm_exact.h"
 
 #include "QVTKWidget.h"
-#include "Shape.h"
+#include "vtkShape.h"
 
 //forward declaration due to circular includes
-class Shape;
+class vtkShape;
 
 using namespace geodesic;
 using namespace std;
@@ -72,9 +72,9 @@ class vtkGeodesic {
     };
     
 public:
-    vtkGeodesic(Shape *shape);
-    vtkGeodesic(Shape *shape, unsigned source);
-    vtkGeodesic(Shape *shape, vtkSmartPointer<vtkIdList> source);
+    vtkGeodesic(vtkSmartPointer<vtkShape> shape);
+    vtkGeodesic(vtkSmartPointer<vtkShape> shape, unsigned source);
+    vtkGeodesic(vtkSmartPointer<vtkShape> shape, vtkSmartPointer<vtkIdList> source);
     ~vtkGeodesic();
     
     // calculate geodesic from a random point to all other points and visualize them
@@ -91,7 +91,7 @@ private:
     void    initialize(unsigned s);
     void    initialize(vtkSmartPointer<vtkIdList> s);
     
-    Shape*                              shape_;
+    vtkSmartPointer<vtkShape>           shape_;
     Mesh                                mesh_;
     GeodesicAlgorithmExact*             algorithm_;
     geodesicPoints*                     points_;

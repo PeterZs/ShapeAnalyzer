@@ -24,13 +24,15 @@
 #include <vtkCleanPolyData.h>
 #include <vtkPolyDataNormals.h>
 
+#include <QActionGroup>
+#include <QInputDialog>
 #include <QKeySequence>
+#include <QList>
+#include <QListWidget>
 #include <QMainWindow>
 #include <QShortcut>
 #include <QString>
 #include <QFileDialog>
-#include <QActionGroup>
-#include <qinputdialog.h>
 
 
 #include <unordered_map>
@@ -38,11 +40,15 @@
 #include "Correspondence.h"
 #include "CorrespondenceListItem.h"
 #include "CorrespondencePicker.h"
-#include "vtkShape.h"
-#include "ShapeListItem.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
+
+#include "qt/qtShapeInfoTab.h"
+
+#include "ShapeListItem.h"
 #include "vtkGeodesic.h"
+#include "vtkShape.h"
+
 #include "vtkOFFReader.h"
 #include "vtkToscaASCIIReader.h"
 
@@ -97,6 +103,8 @@ public:
         delete correspondencePicker_;
     };
     
+    QList<QListWidgetItem *> getShapes();
+    
 private slots:
     //QT slots
     virtual void slotExit();
@@ -123,6 +131,8 @@ private slots:
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
+    
+    virtual void slotTabShapeInfo(bool);
     
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
@@ -180,6 +190,7 @@ private:
     //counter for ids
     int lastInsertShapeID_;
     int lastInsertCorresondenceID_;
+
 };
 
 #endif

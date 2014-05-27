@@ -87,7 +87,8 @@ public:
     }
     
     // setters
-    void setPolyData(vtkSmartPointer<vtkPolyData> polyData) {
+    void setData(vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer) {
+        setRenderer(renderer);
         polyData_ = polyData;
         initialize();
     }

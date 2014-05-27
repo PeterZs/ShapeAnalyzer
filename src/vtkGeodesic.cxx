@@ -8,28 +8,17 @@
 
 #include "vtkGeodesic.h"
 
-#include <math.h>
-
-#include <vtkCellData.h>
-#include <vtkIdList.h>
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderWindow.h>
-#include <vtkSmartPointer.h>
-#include <vtkUnsignedCharArray.h>
-
 using namespace geodesic;
 using namespace std;
 
-//Always provide a destructor that deletes all objects that are created somewhere somewhen in the class.
-//Every new requires a delete.
+// destructor
 vtkGeodesic::~vtkGeodesic() {
     delete points_;
     delete faces_;
     delete algorithm_;
 }
 
+// Calculate Geodesics from random source
 vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape) : shape_(shape) {
     // create random starting point
 	unsigned s = rand() % shape->getPolyData()->GetPoints()->GetNumberOfPoints();
@@ -40,6 +29,7 @@ vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape) : shape_(shape) {
     initialize(list);
 }
 
+// Calculate Geodesics from source with given id
 vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape, unsigned s) : shape_(shape) {
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
@@ -48,10 +38,12 @@ vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape, unsigned s) : shape_(s
     
 }
 
+// Calculate Geodesics from all sources with ids given in list
 vtkGeodesic::vtkGeodesic(vtkSmartPointer<vtkShape> shape, vtkSmartPointer<vtkIdList> list) : shape_(shape) {
     initialize(list);
 }
 
+// creates data structure and precomputes distances
 void vtkGeodesic::initialize(vtkSmartPointer<vtkIdList> s) {
     sourceList_ = s;
     
@@ -75,6 +67,8 @@ void vtkGeodesic::initialize(vtkSmartPointer<vtkIdList> s) {
 
 // property functions
 
+// changes the source to points with id s
+// other already computed distances will be lost
 void vtkGeodesic::changeSourcePoint(unsigned s) {
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
@@ -82,6 +76,8 @@ void vtkGeodesic::changeSourcePoint(unsigned s) {
     changeSourcePoints(list);
 }
 
+// changes the source to points with ids in s
+// other already computed distances will be lost
 void vtkGeodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
     sourceList_ = s;
     
@@ -95,6 +91,7 @@ void vtkGeodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
     algorithm_->propagate(sources_);	//cover the whole mesh
 }
 
+// returns id of points furthest to all sources
 unsigned vtkGeodesic::findPointFurthestToAllSources() {
     
     unsigned id = 0;
@@ -104,10 +101,11 @@ unsigned vtkGeodesic::findPointFurthestToAllSources() {
     for(int i = 0; i < mesh_.vertices().size(); i++) {
         SurfacePoint target(&mesh_.vertices()[i]); //create source
             
-        // calculate shortest distance to one source
+        // calculate shortest distance to some source
         double dist;
         algorithm_->best_source(target, dist);
-            
+        
+        // check if shortest distance is the greatest so far
         if(dist > distance) {
             distance = dist;
             id = i;

@@ -11,14 +11,14 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Shape Analyzer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QVTKWidget" name="qvtkWidget">
+       <widget class="QVTKWidget" name="qvtkWidget" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -41,26 +41,42 @@
         <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="labelShapes">
-            <property name="text">
-             <string>Shapes</string>
+           <widget class="QTabWidget" name="tabWidget">
+            <property name="currentIndex">
+             <number>1</number>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListWidget" name="listShapes">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
+            <widget class="QWidget" name="tabShapes">
+             <attribute name="title">
+              <string>Shapes</string>
+             </attribute>
+             <widget class="QListWidget" name="listShapes">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>216</width>
+                <height>291</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>200</height>
+               </size>
+              </property>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="tab_2">
+             <attribute name="title">
+              <string>Shapes Info</string>
+             </attribute>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -140,8 +156,8 @@
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>384</x>
-      <y>109</y>
+      <x>585</x>
+      <y>101</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -166,10 +182,21 @@
     <addaction name="actionWindowPointCorrespondences"/>
     <addaction name="actionWindowFaceCorrespondences"/>
    </widget>
+   <widget class="QMenu" name="menuPlug_Ins">
+    <property name="title">
+     <string>Tabs</string>
+    </property>
+    <addaction name="actionShapes"/>
+    <addaction name="actionShape_Info"/>
+    <addaction name="separator"/>
+    <addaction name="actionCorrespondences"/>
+    <addaction name="actionFace_Correspondences"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuWindow"/>
+   <addaction name="menuPlug_Ins"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpenFile">
@@ -310,6 +337,55 @@
   <action name="actionExportScene">
    <property name="text">
     <string>Export Scene (ASCII)...</string>
+   </property>
+  </action>
+  <action name="actionShapeInfo">
+   <property name="text">
+    <string>Test</string>
+   </property>
+  </action>
+  <action name="actionShapes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Shapes</string>
+   </property>
+  </action>
+  <action name="actionShape_Info">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Shape Info</string>
+   </property>
+  </action>
+  <action name="actionCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Point Correspondences</string>
+   </property>
+  </action>
+  <action name="actionFace_Correspondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Face Correspondences</string>
    </property>
   </action>
  </widget>

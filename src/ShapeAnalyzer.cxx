@@ -26,6 +26,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
     this->listCorrespondences->setContextMenuPolicy(Qt::CustomContextMenu);
+    
+    this->tabWidget->removeTab(1);
+    
 
     // Set up action signals and slots
     connect(this->actionExit,                       SIGNAL(triggered()),
@@ -65,6 +68,10 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotOpenHelpWindow()));
     
+    // tab signals
+    connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotTabShapeInfo(bool)));
+    
     //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
     qtConnectListCorrespondences();
     qtConnectListShapes();
@@ -96,6 +103,18 @@ void ShapeAnalyzer::qtConnectListShapes() {
 
     slotSetCurrentBoxWidget(listShapes->currentItem(), nullptr);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Public Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+QList<QListWidgetItem *> ShapeAnalyzer::getShapes() {
+    return this->listShapes->findItems(QString("*"), Qt::MatchWildcard);
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions handling QT 
@@ -341,6 +360,19 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
+    if (checked && this->listShapes->currentRow() >= 0) {
+        this->tabWidget->addTab( new qtShapeInfoTab((ShapeListItem*) this->listShapes->currentItem()), "Shape Info");
+    } else {
+        for(int i = 0; i < this->tabWidget->count(); i++) {
+            if(this->tabWidget->tabText(i) == "Shape Info") {
+                this->tabWidget->removeTab(i);
+            }
+        }
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
@@ -485,8 +517,7 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
     // get vtk actor and add to renderer_
     vtkSmartPointer<vtkShape> shape = vtkSmartPointer<vtkShape>::New();
     shape->setId(lastInsertShapeID_);
-    shape->setRenderer(renderer_);
-    shape->setPolyData(cleanPolyData->GetOutput());
+    shape->setData(cleanPolyData->GetOutput(), renderer_);
     
     vtkAddShape(shape);
     

@@ -13,16 +13,17 @@
 #include <vtkSmartPointer.h>
 #include <vtkCellData.h>
 #include <vtkIdList.h>
+#include <vtkLookupTable.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
 #include <vtkUnsignedCharArray.h>
-#include <vtkLookupTable.h>
 
 #include "geodesics/geodesic_algorithm_exact.h"
 
 #include "QVTKWidget.h"
+
 #include "vtkShape.h"
 
 //forward declaration due to circular includes
@@ -32,6 +33,8 @@ using namespace geodesic;
 using namespace std;
 
 class vtkGeodesic {
+    
+    // for using vtkPolyData in the geodesic algorithm
     class geodesicPoints {
     public:
         geodesicPoints(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {}
@@ -51,6 +54,7 @@ class vtkGeodesic {
         vtkSmartPointer<vtkPolyData> polyData_;
     };
     
+    // for using vtkPolyData in the geodesic algorithm
     class geodesicFaces {
     public:
         geodesicFaces(vtkSmartPointer<vtkPolyData> polyData) : polyData_(polyData) {}

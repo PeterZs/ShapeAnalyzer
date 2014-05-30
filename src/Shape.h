@@ -33,14 +33,11 @@
 
 using namespace std;
 
-class vtkShape : public vtkObjectBase {
-protected:
-    vtkShape() {};
-    ~vtkShape() {}
-    
+class Shape {
 public:
-    static vtkShape* New() { return new vtkShape(); } // needed for vtkSmartPointer
-    void remove();
+    Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
+
+    Shape(vtkSmartPointer<vtkRenderer> renderer);
     
     double      getEuclideanDistances(int start, std::vector<double> &result);
     void        visualizeEuclidean(int start = -1);
@@ -86,39 +83,27 @@ public:
         return shapeId_;
     }
     
-    // setters
-    void setData(vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer) {
-        setRenderer(renderer);
-        polyData_ = polyData;
-        initialize();
-    }
+    void remove();
     
-    void setRenderer(vtkSmartPointer<vtkRenderer> renderer) {
-        renderer_ = renderer;
-    }
-    
-    void setId(vtkIdType i) {
-        shapeId_ = i;
-    }
-    
-    // overwrite input und output stream operators
     ostream& write(ostream& os);
-    friend ostream& operator<<(ostream& os, const vtkShape& shape);
-    istream& read(istream& is);
-    friend istream& operator>>(istream& is, vtkShape& shape);
     
+    friend ostream& operator<<(ostream& os, const Shape& shape);
+    
+    istream& read(istream& is);
+    
+    friend istream& operator>>(istream& is, Shape& shape);
 private:
     void initialize();
     
     
     vtkIdType shapeId_;
     
-    vtkSmartPointer<vtkActor>               actor_;
-    vtkSmartPointer<vtkPolyDataMapper>      mapper_;
-    vtkSmartPointer<vtkBoxWidget>           boxWidget_;
-    vtkSmartPointer<vtkPolyData>            polyData_;
-    vtkSmartPointer<vtkPolyDataNormals>     polyDataNormals_;
-    vtkSmartPointer<vtkRenderer>            renderer_;
+    vtkSmartPointer<vtkActor> actor_;
+    vtkSmartPointer<vtkPolyDataMapper> mapper_;
+    vtkSmartPointer<vtkBoxWidget> boxWidget_;
+    vtkSmartPointer<vtkPolyData> polyData_;
+    vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
+    vtkSmartPointer<vtkRenderer>        renderer_;
     
     vtkSmartPointer<vtkIdList>          fps_;
     vtkSmartPointer<vtkActor>           fpsActor_;

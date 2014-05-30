@@ -19,14 +19,12 @@ public:
     PointCorrespondencePicker(vtkRenderer* renderer) : CorrespondencePicker(renderer) {
     
     }
+private:
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]);
     
-    virtual vtkSmartPointer<vtkPolyData> getSelectionPolyData(vtkSmartPointer<vtkShape> shape, vtkIdType pointId);
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType pointId);
     
-    virtual void getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType pointId, double point[3]);
-    
-    virtual void createActor(vtkActor* actor, vtkPolyDataMapper* mapper, vtkPolyData* polyData, vtkLinearTransform* t);
-    
-    virtual Correspondence* createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
+    virtual Correspondence* createCorrespondence();
 
     virtual ~PointCorrespondencePicker() {}
 };

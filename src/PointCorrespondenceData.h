@@ -13,22 +13,15 @@
 
 class PointCorrespondenceData : public CorrespondenceData {
 public:
-    PointCorrespondenceData(vtkIdType shape1Id, vtkIdType shape2Id, vtkIdType point1Id, vtkIdType point2Id) : CorrespondenceData(shape1Id, shape2Id) {
-        point1Id_ = point1Id;
-        point2Id_ = point2Id;
+    PointCorrespondenceData() {
     }
     
-    vtkIdType getPoint1Id() {
-        return point1Id_;
-    }
-    
-    vtkIdType getPoint2Id() {
-        return point2Id_;
+    vector<vtkIdType>& getPointIds() {
+        return pointIds_;
     }
     
 private:
-    vtkIdType point1Id_;
-    vtkIdType point2Id_;
+    vector<vtkIdType> pointIds_;
 };
 
 #endif /* defined(PointCorrespondeceData_H) */

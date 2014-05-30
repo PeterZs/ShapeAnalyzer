@@ -1,97 +1,114 @@
 #include "Correspondence.h"
 
-// Constructor
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, vtkShape* shape1, vtkShape* shape2, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
-    shape1_ = shape1;
-    shape2_ = shape2;
-
-    actor1_ = actor1;
-    actor2_ = actor2;
-    renderer_ = renderer;
-}
 
 //
-void Correspondence::visualize(double point1[3], double point2[3]) {
-    //copy points
-    point1_[0] = point1[0];
-    point1_[1] = point1[1];
-    point1_[2] = point1[2];
-
-    point2_[0] = point2[0];
-    point2_[1] = point2[1];
-    point2_[2] = point2[2];
-
-    
-    //Visualize in vtk:
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    
-    vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data) : renderer_(renderer), data_(data) {
+    lineReferencePoints_ = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkPoints> linePoints = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkCellArray> lineCells = vtkSmartPointer<vtkCellArray>::New();
     
-    // create poly data by setting points and inserting cells and putting them both into polydata.
-    points->InsertNextPoint(point1_);
-    points->InsertNextPoint(point2_);
-    line->GetPointIds()->SetId(0, 0);
-    line->GetPointIds()->SetId(1, 1);
-    lineCells->InsertNextCell(line);
-    
+    linesPolyData_ = vtkSmartPointer<vtkPolyData>::New();
     //initialize poly data
-    linePolyData_ = vtkSmartPointer<vtkPolyData>::New();
-    linePolyData_->SetPoints(points);
-    linePolyData_->SetLines(lineCells);
+    linesPolyData_->SetPoints(linePoints);
+    linesPolyData_->SetLines(lineCells);
+    
     
     //create mapper and actor. mapper maps the poly data to the line actor
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(linePolyData_);
-    
-    vtkLinearTransform* t1 = shape1_->getActor()->GetUserTransform();
-    if(t1 != nullptr) {
-        transform1(t1);
+    linesMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    linesMapper_->SetInputData(linesPolyData_);
+    linesActor_ = vtkSmartPointer<vtkActor>::New();
+    linesActor_->SetMapper(linesMapper_);
+    linesActor_->GetProperty()->SetLineWidth(1);
+    linesActor_->GetProperty()->SetColor(0, 1, 0);
+    renderer_->AddActor(linesActor_);
+}
+
+int Correspondence::add(Shape* shape, vtkIdType id) {
+    if(shapes_.size() > 0 && shapes_[shapes_.size()-1] == shape) {
+        // in case shape is equal to last added shape replace point
+        //get coordinates of line target
+        double point[3];
+        getCorrespondencePoint(point, shape, id);
+        
+        // shape is equal to the last inserted shape. Replace id and shape
+        lineReferencePoints_->SetPoint(lineReferencePoints_->GetNumberOfPoints()-1, point);
+        linesPolyData_->GetPoints()->SetPoint(linesPolyData_->GetPoints()->GetNumberOfPoints()-1, point);
+        linesPolyData_->Modified();
+        
+        initializeActor(actors_[actors_.size()-1], shape, id);
+        transform(shape);
+        return 0;
     }
     
-    vtkLinearTransform* t2 = shape2_->getActor()->GetUserTransform();
-    if(t2 != nullptr) {
-        transform2(t2);
+    if(find(shapes_.begin(), shapes_.end(), shape) != shapes_.end()) {
+        //shape is already part of correspondence and not equal to the last added
+        return -1;
     }
     
-    lineActor_ = vtkSmartPointer<vtkActor>::New();
-    lineActor_->SetMapper(mapper);
-    lineActor_->GetProperty()->SetLineWidth(1);
-    lineActor_->GetProperty()->SetColor(0, 1, 0);
-    renderer_->AddActor(lineActor_);
+    //shape has not yet been added
+    shapes_.push_back(shape);
+    double point[3];
+    getCorrespondencePoint(point, shape, id);
+    lineReferencePoints_->InsertNextPoint(point);
+    linesPolyData_->GetPoints()->InsertNextPoint(point);
+    linesPolyData_->Modified();
+    actors_.push_back(vtkSmartPointer<vtkActor>::New());
+    initializeActor(actors_[actors_.size()-1], shape, id);
+    transform(shape);
+    
+    if(shapes_.size() > 1) {
+        //Visualize in vtk
+        //vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
+        
+        // create new line cell out of the two points inserted last
+        vtkSmartPointer<vtkIdList> line = vtkSmartPointer<vtkIdList>::New();
+        line->InsertId(0, linesPolyData_->GetPoints()->GetNumberOfPoints()-2);
+        line->InsertId(1, linesPolyData_->GetPoints()->GetNumberOfPoints()-1);
+        linesPolyData_->InsertNextCell(VTK_LINE, line);
+        
+        linesPolyData_->Modified();
+    }
+    
+    return 1;
 }
 
 void Correspondence::remove() {
-    renderer_->RemoveActor(actor1_);
-    renderer_->RemoveActor(actor2_);
+    for(int i = 0; i < actors_.size(); i++) {
+        renderer_->RemoveActor(actors_[i]);
+    }
     
-    renderer_->RemoveActor(lineActor_);
+    renderer_->RemoveActor(linesActor_);
 }
 
 void Correspondence::setSelected(bool selected) {
     if(selected) {
-        lineActor_->GetProperty()->SetColor(1, 0, 0);
-        actor1_->GetProperty()->SetColor(1, 0, 0);
-        actor1_->GetProperty()->SetEdgeColor(1, 0, 0);
-        renderer_->AddActor(actor1_);
-        actor2_->GetProperty()->SetColor(1, 0, 0);
-        actor2_->GetProperty()->SetEdgeColor(1, 0, 0);
-        renderer_->AddActor(actor2_);
+        linesActor_->GetProperty()->SetColor(1, 0, 0);
+        for(int i = 0; i < actors_.size(); i++) {
+            actors_[i]->GetProperty()->SetColor(1, 0, 0);
+            actors_[i]->GetProperty()->SetEdgeColor(1, 0, 0);
+            renderer_->AddActor(actors_[i]);
+        }
     } else {
-        lineActor_->GetProperty()->SetColor(0, 1, 0);
-        renderer_->RemoveActor(actor1_);
-        renderer_->RemoveActor(actor2_);
+        linesActor_->GetProperty()->SetColor(0, 1, 0);
+        for(int i = 0; i < actors_.size(); i++) {
+            renderer_->RemoveActor(actors_[i]);
+        }
     }
 }
 
-void Correspondence::transform1(vtkLinearTransform* t) {
-    linePolyData_->GetPoints()->SetPoint(0, t->TransformPoint(point1_));
-    linePolyData_->Modified();
-    actor1_->SetUserTransform(t);
+void Correspondence::transform(Shape* shape) {
+    for(int i = 0; i < shapes_.size(); i++) {
+        if(shapes_[i] == shape) {
+            vtkLinearTransform* t = shape->getActor()->GetUserTransform();
+            if(t != nullptr) {
+                double point[3];
+                lineReferencePoints_->GetPoint(i, point);
+                linesPolyData_->GetPoints()->SetPoint(i, t->TransformPoint(point));
+                linesPolyData_->Modified();
+                actors_[i]->SetUserTransform(t);
+            }
+        }
+    }
 }
 
-void Correspondence::transform2(vtkLinearTransform* t) {
-    linePolyData_->GetPoints()->SetPoint(1, t->TransformPoint(point2_));
-    linePolyData_->Modified();
-    actor2_->SetUserTransform(t);
-}
+

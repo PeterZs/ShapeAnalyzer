@@ -11,25 +11,21 @@
 
 #include <vtkType.h>
 
+#include <vector>
+
 class CorrespondenceData {
 public:
-    vtkIdType getShape1Id() {
-        return shape1Id_;
-    }
-    
-    vtkIdType getShape2Id() {
-        return shape2Id_;
-    }
+
     
 protected:
-    CorrespondenceData(vtkIdType shape1Id, vtkIdType shape2Id) {
-        shape1Id_ = shape1Id;
-        shape2Id_ = shape2Id;
+    CorrespondenceData() {}
+    
+    vector<vtkIdType>& getShapeIds() {
+        return shapeIds_;
     }
     
 private:
-    vtkIdType shape1Id_;
-    vtkIdType shape2Id_;
+    vector<vtkIdType> shapeIds_;
 };
 
 #endif /* defined(CorrespondenceData_H) */

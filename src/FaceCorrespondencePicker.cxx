@@ -8,7 +8,19 @@
 
 #include "FaceCorrespondencePicker.h"
 
-vtkSmartPointer<vtkPolyData> FaceCorrespondencePicker::getSelectionPolyData(vtkSmartPointer<vtkShape> shape, vtkIdType faceId) {
+
+void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) {
+    double p1[3];
+    double p2[3];
+    double p3[3];
+    vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
+    face->GetPoints()->GetPoint(0, p1);
+    face->GetPoints()->GetPoint(1, p2);
+    face->GetPoints()->GetPoint(2, p3);
+    vtkTriangle::TriangleCenter(p1, p2, p3, point);
+}
+
+void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) {
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
     vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -32,32 +44,19 @@ vtkSmartPointer<vtkPolyData> FaceCorrespondencePicker::getSelectionPolyData(vtkS
     
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
+
+    currentSelectionMapper_->SetInputData(polyData);
+    currentSelectionActor_->SetMapper(currentSelectionMapper_);
+    currentSelectionActor_->GetProperty()->EdgeVisibilityOn();
+    currentSelectionActor_->GetProperty()->SetEdgeColor(0, 1, 1);
+    currentSelectionActor_->GetProperty()->SetLineWidth(3);
+    currentSelectionActor_->SetUserTransform(shape->getActor()->GetUserTransform());
     
-    return polyData;
+    renderer_->AddActor(currentSelectionActor_);
+    renderer_->Render();
 }
 
-void FaceCorrespondencePicker::getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType faceId, double point[3]) {
-    double p1[3];
-    double p2[3];
-    double p3[3];
-    vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
-    face->GetPoints()->GetPoint(0, p1);
-    face->GetPoints()->GetPoint(1, p2);
-    face->GetPoints()->GetPoint(2, p3);
-    vtkTriangle::TriangleCenter(p1, p2, p3, point);
-}
-
-void FaceCorrespondencePicker::createActor(vtkActor *actor, vtkPolyDataMapper *mapper, vtkPolyData *polyData, vtkLinearTransform *t) {
-    mapper->SetInputData(polyData);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->EdgeVisibilityOn();
-    actor->GetProperty()->SetEdgeColor(0, 1, 1);
-    actor->GetProperty()->SetLineWidth(3);
-    actor->SetUserTransform(t);
-}
-
-Correspondence* FaceCorrespondencePicker::createCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType selectionId, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2) {
-    
-    return new FaceCorrespondence(renderer, shape1, shape2, id1_, selectionId, actor1, actor2);
+Correspondence* FaceCorrespondencePicker::createCorrespondence() {
+    return new FaceCorrespondence(renderer_, new FaceCorrespondenceData());
 }
 

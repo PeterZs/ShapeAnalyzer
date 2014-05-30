@@ -8,23 +8,35 @@
 
 #include "PointCorrespondence.h"
 
-PointCorrespondence::PointCorrespondence(
-                                         vtkSmartPointer<vtkRenderer> renderer,
-                                         vtkSmartPointer<vtkShape> shape1,
-                                         vtkSmartPointer<vtkShape> shape2,
-                                         vtkIdType point1Id,
-                                         vtkIdType point2Id,
-                                         vtkSmartPointer<vtkActor> actor1,
-                                         vtkSmartPointer<vtkActor> actor2
-                                         ) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
-    
-    data_ = new PointCorrespondenceData(shape1->getId(), shape2->getId(), point1Id, point2Id);
-    
-    double point1[3];
-    shape1->getPolyData()->GetPoint(point1Id, point1);
+PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data) : Correspondence(renderer, data) {
+}
 
-    double point2[3];
-    shape2->getPolyData()->GetPoint(point2Id, point2);
+// create actor that visualizes selected point on shape
+void PointCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType pointId) {
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     
-    Correspondence::visualize(point1, point2);
+    double p[3];
+    shape->getPolyData()->GetPoint(pointId, p);
+    points->InsertNextPoint(p);
+    
+    polyData->SetPoints(points);
+    
+    vtkSmartPointer<vtkVertexGlyphFilter> glyphFilter = vtkSmartPointer<vtkVertexGlyphFilter>::New();
+    glyphFilter->SetInputData(polyData);
+    glyphFilter->Update();
+    
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+
+    mapper->SetInputData(glyphFilter->GetOutput());
+    actor->SetMapper(mapper);
+    actor->GetProperty()->SetPointSize(5);
+    actor->GetProperty()->SetRepresentationToPoints();
+    actor->GetProperty()->SetColor(0, 1, 0);
+    actor->SetUserTransform(shape->getActor()->GetUserTransform());
+}
+
+// returns point that serves as source or target of correspondence line
+void PointCorrespondence::getCorrespondencePoint(double point[3], Shape* shape, vtkIdType pointId) {
+    shape->getPolyData()->GetPoints()->GetPoint(pointId, point);
 }

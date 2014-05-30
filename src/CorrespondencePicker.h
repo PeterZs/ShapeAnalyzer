@@ -22,9 +22,11 @@
 #include <vtkPointPlacer.h>
 #include <vtkSmartPointer.h>
 
-#include "vtkShape.h"
+#include <list>
+#include <algorithm>
+
+#include "Shape.h"
 #include "Correspondence.h"
-#include "FaceCorrespondence.h"
 
 //Class responsible for creating a correspondence
 class CorrespondencePicker {
@@ -33,69 +35,49 @@ public:
         clearSelection();
     }
     
-    //abstract function: to override in subclass
-    bool pick(
-              Correspondence**              correspondence,
-              vtkSmartPointer<vtkShape>     shape,
-              vtkIdType);
+    //add face (or vertex) ID + shape pair to correspondence. Returns true if id+shape pair has successfully been added (i.e. if shape has not been added twice).
+    int add(Shape* shape, vtkIdType selectionId);
     
+    //returns true in case at least two shapes have been added to correspondence and returns new correspondence via argument. Otherwise returns false.
+    bool pick(Correspondence** correspondence);
     
-    void updateLine(int x, int y);
-    void clearSelection(vtkSmartPointer<vtkShape> shape);
+    void updateMouseLine(int x, int y);
     void clearSelection();
 
 protected:
     //protected contructor: abstract class
-    CorrespondencePicker(vtkRenderer* renderer) : waitForSelection_(false), renderer_(renderer) {
-        lineActor_ = vtkSmartPointer<vtkActor>::New();
-        lineMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
-        selectionActor_ = vtkSmartPointer<vtkActor>::New();
-        selectionMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    CorrespondencePicker(vtkRenderer* renderer) : renderer_(renderer), counter_(0) {
+        currentSelectionActor_ = vtkSmartPointer<vtkActor>::New();
+        currentSelectionMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+        
+        mouseLineActor_ = vtkSmartPointer<vtkActor>::New();
+        mouseLineMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
     }
+    
+    //returns point coordinates of current selection (center of selected triangle in case of FaceCorrespondence) to draw line between this point and mouse coordinates
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) = 0;
 
-    virtual vtkSmartPointer<vtkPolyData> getSelectionPolyData(
-                                                              vtkSmartPointer<vtkShape>    shape,
-                                                              vtkIdType                     selectionId
-                                                              ) = 0;
-    virtual void getSelectionPoint(vtkSmartPointer<vtkShape> shape, vtkIdType selectionId, double point[3]) = 0;
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType) = 0;
+
+    virtual Correspondence* createCorrespondence() = 0;
     
-    virtual Correspondence* createCorrespondence(
-                                                 vtkSmartPointer<vtkRenderer>   renderer,
-                                                 vtkSmartPointer<vtkShape>      shape1,
-                                                 vtkSmartPointer<vtkShape>      shape2,
-                                                 vtkIdType                      lastSelectionId,
-                                                 vtkSmartPointer<vtkActor>      actor1,
-                                                 vtkSmartPointer<vtkActor>      actor2
-                                                 ) = 0;
-    virtual void createActor(
-                             vtkActor*              actor,
-                             vtkPolyDataMapper*     mapper,
-                             vtkPolyData*           polyData,
-                             vtkLinearTransform*    t
-                             ) = 0;
-    
-    
-    vtkIdType id1_; // id of point or cell that was selected first.
-private:
-    void initializeLine(double point1[3]);
-    vtkSmartPointer<vtkActor> createActor(vtkPolyData* polyData, vtkLinearTransform* t);
-    
-    bool waitForSelection_; // flag indicating that a face or a point has been selected on first shape. Wait for selection of corresponding face or point on another shape
+    vtkSmartPointer<vtkActor> currentSelectionActor_; // actor responsible for visualizing selected vertex or selected face on selected shape
+    vtkSmartPointer<vtkPolyDataMapper> currentSelectionMapper_;
     
     vtkRenderer* renderer_;
-    vtkSmartPointer<vtkShape> selectedShape_; // Pointer to shape that was selected in add-Correspondeces-Mode and therefore has the yellow triangle/point on it. Required to be declared at class level to delete yellow triangle/point in case the selected shape is deleted in method deleteShape(int i)
+private:
+    void visualizeMouseLine(Shape* shape, double point[3]);
     
-    vtkSmartPointer<vtkActor> selectionActor_; // actor representing green triangle on selected shape
-    vtkSmartPointer<vtkPolyDataMapper> selectionMapper_;
     
-    // Remember first selection.
-    vtkSmartPointer<vtkShape> shape1_;
-    vtkSmartPointer<vtkActor> actor1_; // actor representing first point or triangle that was selected
+    Correspondence* correspondence_;
+    int counter_;
     
+
     // visualization stuff
-    vtkSmartPointer<vtkPolyData> linePolyData_; // line polydata that is visualized as a visual response for selection of a face or a point
-    vtkSmartPointer<vtkActor> lineActor_;
-    vtkSmartPointer<vtkPolyDataMapper> lineMapper_;
+    
+    // moving line between last selected point and mouse coordinates
+    vtkSmartPointer<vtkActor> mouseLineActor_;
+    vtkSmartPointer<vtkPolyDataMapper> mouseLineMapper_;
 };
 
 #endif /* defined(CorrespondencePicker_H) */

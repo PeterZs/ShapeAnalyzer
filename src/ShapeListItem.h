@@ -6,7 +6,7 @@
 #include <QString>
 #include <QListWidgetItem>
 
-#include "vtkShape.h"
+#include "Shape.h"
 
 using namespace std;
 
@@ -14,12 +14,12 @@ class ShapeListItem : public QListWidgetItem {
 public:
     ShapeListItem(
                   const QString                     &text,
-                        vtkSmartPointer<vtkShape>   shape,
+                        Shape*   shape,
                         QListWidget                 *view   = 0,
                         int                         type    = Type
     ) : QListWidgetItem(text, view, type), shape_(shape) {};
     
-    vtkSmartPointer<vtkShape> getShape() {
+    Shape* getShape() {
         return shape_;
     }
     
@@ -27,7 +27,7 @@ public:
         setText(*(new QString(name)));
     }
 private:
-    vtkSmartPointer<vtkShape>shape_;
+    Shape*shape_;
 };
 
 #endif

@@ -9,13 +9,19 @@
 #ifndef PointCorrespondence_H
 #define PointCorrespondence_H
 
+#include <vtkVertexGlyphFilter.h>
+
 #include "Correspondence.h"
 #include "PointCorrespondenceData.h"
 
 class PointCorrespondence : public Correspondence {
 public:
-    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkShape> shape1, vtkSmartPointer<vtkShape> shape2, vtkIdType point1Id, vtkIdType point2Id, vtkSmartPointer<vtkActor> actor1, vtkSmartPointer<vtkActor> actor2);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);
     
-};
+private:
+    virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType pointId);
+    
+    virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType);
 
+};
 #endif /* defined(PointCorrespondence_H) */

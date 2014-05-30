@@ -8,38 +8,57 @@
 
 #include "FaceCorrespondence.h"
 
-FaceCorrespondence::FaceCorrespondence(
-                                       vtkSmartPointer<vtkRenderer> renderer,
-                                       vtkSmartPointer<vtkShape> shape1,
-                                       vtkSmartPointer<vtkShape> shape2,
-                                       vtkIdType face1Id, vtkIdType face2Id,
-                                       vtkSmartPointer<vtkActor> actor1,
-                                       vtkSmartPointer<vtkActor> actor2
-                                       ) : Correspondence(renderer, shape1, shape2, actor1, actor2) {
-    
-    data_ = new FaceCorrespondenceData(shape1->getId(), shape2->getId(), face1Id, face2Id);
+FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data) : Correspondence(renderer, data) {
+}
 
+// create actor that visualizes selected point on shape
+void FaceCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType faceId) {
+    vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
+    vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+    
+    double p[3];
+    face->GetPoints()->GetPoint(0, p);
+    points->InsertNextPoint(p);
+    face->GetPoints()->GetPoint(1, p);
+    points->InsertNextPoint(p);
+    face->GetPoints()->GetPoint(2, p);
+    points->InsertNextPoint(p);
+    
+    vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
+    triangle->GetPointIds()->SetId(0, 0);
+    triangle->GetPointIds()->SetId(1, 1);
+    triangle->GetPointIds()->SetId(2, 2);
+    
+    polys->InsertNextCell(triangle);
+    
+    
+    polyData->SetPoints(points);
+    polyData->SetPolys(polys);
+    
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    
+    mapper->SetInputData(polyData);
+    actor->SetMapper(mapper);
+    actor->GetProperty()->EdgeVisibilityOn();
+    actor->GetProperty()->SetEdgeColor(0, 1, 0);
+    actor->GetProperty()->SetLineWidth(3);
+    actor->SetUserTransform(shape->getActor()->GetUserTransform());
+}
+
+// returns point that serves as source or target of correspondence line
+void FaceCorrespondence::getCorrespondencePoint(double point[3], Shape* shape, vtkIdType faceId) {
     double p1[3];
     double p2[3];
     double p3[3];
     
-    vtkSmartPointer<vtkTriangle> face1 = vtkTriangle::SafeDownCast(shape1->getPolyData()->GetCell(face1Id));
-    face1->GetPoints()->GetPoint(0, p1);
-    face1->GetPoints()->GetPoint(1, p2);
-    face1->GetPoints()->GetPoint(2, p3);
+    vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
+    face->GetPoints()->GetPoint(0, p1);
+    face->GetPoints()->GetPoint(1, p2);
+    face->GetPoints()->GetPoint(2, p3);
     
-    double point1[3];
-    vtkTriangle::TriangleCenter(p1, p2, p3, point1);
-    
-    //initialize point2 to center of face2
-    vtkSmartPointer<vtkTriangle> face2 = vtkTriangle::SafeDownCast(shape2->getPolyData()->GetCell(face2Id));
-    face2->GetPoints()->GetPoint(0, p1);
-    face2->GetPoints()->GetPoint(1, p2);
-    face2->GetPoints()->GetPoint(2, p3);
-    
-    double point2[3];
-    vtkTriangle::TriangleCenter(p1, p2, p3, point2);
-    
-    Correspondence::visualize(point1, point2);
+    vtkTriangle::TriangleCenter(p1, p2, p3, point);
 }
+
 

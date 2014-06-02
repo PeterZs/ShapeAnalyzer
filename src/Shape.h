@@ -22,6 +22,7 @@
 #include <vtkTransform.h>
 #include <vtkTriangle.h>
 #include <vtkType.h>
+#include <vtkVertexGlyphFilter.h>
 
 #include <math.h>
 #include <iostream>
@@ -103,6 +104,7 @@ private:
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
+    
     vtkSmartPointer<vtkRenderer>        renderer_;
     
     vtkSmartPointer<vtkIdList>          fps_;

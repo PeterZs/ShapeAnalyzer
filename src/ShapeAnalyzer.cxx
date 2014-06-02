@@ -20,8 +20,10 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     
     this->actionGroupShapeDisplayMode = new QActionGroup(this);
+    actionGroupShapeDisplayMode->addAction(this->actionShowSurface);
     actionGroupShapeDisplayMode->addAction(this->actionShowSurfaceNormals);
     actionGroupShapeDisplayMode->addAction(this->actionShowTriangulatedMesh);
+    actionGroupShapeDisplayMode->addAction(this->actionShowPointCloud);
     
     
     this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -58,6 +60,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotAddCorrespondencesMode()));
+
+    connect(this->actionGroupCorrespondenceType,    SIGNAL(triggered(QAction*)),
+            this,                                   SLOT(slotAddCorrespondencesMode()));
     
     connect(this->actionGroupCorrespondenceType,    SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotSetCorrespondenceType()));
@@ -68,9 +73,13 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotOpenHelpWindow()));
     
+    connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
+            this,                                   SLOT(slotSetBackgroundColor()));
+    
     // tab signals
     connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabShapeInfo(bool)));
+    
     
     //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
     qtConnectListCorrespondences();
@@ -231,6 +240,20 @@ void ShapeAnalyzer::slotExit() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotSetBackgroundColor() {
+    double dcurrentColor[3];
+    renderer_->GetBackground(dcurrentColor);
+    QColor currentColor;
+    currentColor.setRed(dcurrentColor[0]*255);
+    currentColor.setGreen(dcurrentColor[1]*255);
+    currentColor.setBlue(dcurrentColor[2]*255);
+    QColor color = QColorDialog::getColor(currentColor);
+    renderer_->SetBackground(color.red()/255.0, color.green()/255.0, color.blue()/255.0);
+    renderer_->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotClearCurrentSelection() {
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
@@ -256,17 +279,43 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetShapeDisplayMode() {
-    if(this->actionShowTriangulatedMesh->isChecked()) {
+    if(this->actionShowSurface->isChecked()) {
         for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
             it->second->getMapper()->SetInputData(it->second->getPolyData());
+            it->second->getActor()->GetProperty()->SetRepresentationToSurface();
+            it->second->getActor()->GetProperty()->SetColor(1, 1, 1);
+            
+            it->second->getActor()->Modified();
+        }
+    } else if(this->actionShowSurfaceNormals->isChecked()) {
+        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
+            it->second->getMapper()->SetInputData(it->second->getPolyDataNormals()->GetOutput());
+            it->second->getActor()->GetProperty()->SetRepresentationToSurface();
+            it->second->getActor()->GetProperty()->SetColor(1, 1, 1);
+            
+            it->second->getActor()->Modified();
+        }
+    } else if(this->actionShowTriangulatedMesh->isChecked()) {
+        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
+            it->second->getMapper()->SetInputData(it->second->getPolyData());
+            it->second->getActor()->GetProperty()->SetRepresentationToWireframe();
+            it->second->getActor()->GetProperty()->SetColor(1, 1, 0);
+            
+            it->second->getActor()->Modified();
+        }
+    } else if(this->actionShowPointCloud->isChecked()) {
+        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
+            it->second->getActor()->GetProperty()->SetPointSize(3);
+            it->second->getActor()->GetProperty()->SetRepresentationToPoints();
+            it->second->getActor()->GetProperty()->SetColor(0, 0, 1);
+            
             it->second->getActor()->Modified();
         }
     } else {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getMapper()->SetInputData(it->second->getPolyDataNormals()->GetOutput());
-            it->second->getActor()->Modified();
-        }
+        //
+        ;
     }
+    
     this->qvtkWidget->GetRenderWindow()->Render();
 }
 
@@ -393,11 +442,25 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotAddCorrespondencesMode() {
     if(this->actionAddCorrespondences->isChecked()) {
-        this->actionShowTriangulatedMesh->setChecked(true);
-        this->actionShowTriangulatedMesh->trigger();
+        if(this->actionPointCorrespondences->isChecked()) {
+            if(!actionShowPointCloud->isChecked() && !actionShowSurface->isChecked()) {
+                this->actionShowSurface->setChecked(true);
+                this->actionShowSurface->trigger();
+            }
+        } else if(this->actionFaceCorrespondences->isChecked()) {
+            if(!actionShowTriangulatedMesh->isChecked() && !actionShowSurface->isChecked()) {
+                this->actionShowSurface->setChecked(true);
+                this->actionShowSurface->trigger();
+            }
+        }
+        
         this->actionShowSurfaceNormals->setEnabled(false);
+        this->actionShowPointCloud->setEnabled(actionPointCorrespondences->isChecked());
+        this->actionShowTriangulatedMesh->setEnabled(actionFaceCorrespondences->isChecked());
     } else {
         this->actionShowSurfaceNormals->setEnabled(true);
+        this->actionShowPointCloud->setEnabled(true);
+        this->actionShowTriangulatedMesh->setEnabled(true);
     }
 }
 

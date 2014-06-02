@@ -18,7 +18,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QVTKWidget" name="qvtkWidget" native="true">
+       <widget class="QVTKWidget" name="qvtkWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -147,17 +147,20 @@
     <addaction name="actionTransformShapes"/>
     <addaction name="actionAddCorrespondences"/>
     <addaction name="separator"/>
-    <addaction name="actionShowTriangulatedMesh"/>
+    <addaction name="actionShowSurface"/>
     <addaction name="actionShowSurfaceNormals"/>
+    <addaction name="actionShowTriangulatedMesh"/>
+    <addaction name="actionShowPointCloud"/>
     <addaction name="separator"/>
+    <addaction name="actionSetBackgroundColor"/>
     <addaction name="actionResetCamera"/>
     <addaction name="actionClear"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>585</x>
-      <y>101</y>
+      <x>429</x>
+      <y>109</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -312,7 +315,7 @@
     <string>Show Surface Normals Interpolation</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
   <action name="actionSaveScene">
@@ -325,13 +328,13 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Show Triangulated Mesh</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+M</string>
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="actionExportScene">
@@ -386,6 +389,36 @@
    </property>
    <property name="text">
     <string>Face Correspondences</string>
+   </property>
+  </action>
+  <action name="actionShowSurface">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Surface</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionShowPointCloud">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Point Cloud</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionSetBackgroundColor">
+   <property name="text">
+    <string>Set Background Color</string>
    </property>
   </action>
  </widget>

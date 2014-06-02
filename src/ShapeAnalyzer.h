@@ -34,6 +34,7 @@
 #include <QShortcut>
 #include <QString>
 #include <QFileDialog>
+#include <QColorDialog>
 
 
 #include <unordered_map>
@@ -122,6 +123,8 @@ private slots:
     
     virtual void slotSetShapeDisplayMode();
     virtual void slotSetCorrespondenceType();
+    
+    virtual void slotSetBackgroundColor();
     
     virtual void slotSaveScene();
     virtual void slotExportScene();

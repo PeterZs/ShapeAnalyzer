@@ -40,9 +40,6 @@ public:
 
     Shape(vtkSmartPointer<vtkRenderer> renderer);
     
-    double      getEuclideanDistances(int start, std::vector<double> &result);
-    void        visualizeEuclidean(int start = -1);
-    
     vtkSmartPointer<vtkIdList>  getVoronoiCells(vtkSmartPointer<vtkIdList> points);
     void                        visualizeVoronoiCells();
     void                        visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points);
@@ -50,6 +47,8 @@ public:
     vtkSmartPointer<vtkIdList>  getFPS(unsigned numberSamples, int start = -1);
     void                        setFPS(unsigned numberSamples, int start = -1);
     void                        transformFPS(vtkLinearTransform* t);
+    
+    double                      calculateArea();
     
     // getters
     vtkSmartPointer<vtkActor> getActor() {
@@ -70,6 +69,10 @@ public:
     
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
+    }
+    
+    vtkSmartPointer<vtkRenderer> getRenderer() {
+        return renderer_;
     }
 
     vtkSmartPointer<vtkPolyDataNormals> getPolyDataNormals() {

@@ -8,6 +8,16 @@
 
 #include "qtShapeInfoTab.h"
 
+// will create widget with empty table
+qtShapeInfoTab::qtShapeInfoTab() {
+    QTableView *table = new QTableView( this );
+    
+    QStandardItemModel *model = new QStandardItemModel(5, 1, this);
+    
+    table->setModel(model);
+}
+
+// will create Widget with basic information about the given shape
 qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::WindowFlags f )
 : QWidget( parent, f )
 {
@@ -25,14 +35,14 @@ qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::Window
     
     model->setItem(1, 0,
                    new QStandardItem(
-                                     QString(
-                                             (char *) item->getShape()->getPolyData()->GetNumberOfVerts()
+                                     QString::number(
+                                                (int) item->getShape()->getPolyData()->GetPoints()->GetNumberOfPoints()
                                              )
                                      )
                    );
     model->setItem(2, 0, new QStandardItem(
-                                           QString(
-                                                   (char *) item->getShape()->getPolyData()->GetNumberOfVerts()
+                                           QString::number(
+                                                   (int) item->getShape()->getPolyData()->GetNumberOfCells()
                                                    )
                                            )
                    );

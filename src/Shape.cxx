@@ -1,11 +1,19 @@
 #include "Shape.h"
 
-// Constructor
+
+///////////////////////////////////////////////////////////////////////////////
+// Constructors and Destructor (and related functions)
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkIdType shapeId, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer) : shapeId_(shapeId), polyData_(polyData), renderer_(renderer) {
     
     initialize();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkSmartPointer<vtkRenderer> renderer) : renderer_(renderer) {/* do not call initialize here! Poly data is not yet initialized! */}
 
 void Shape::initialize() {
@@ -36,6 +44,8 @@ void Shape::initialize() {
     fpsActor_ = vtkSmartPointer<vtkActor>::New();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::remove() {
     renderer_->RemoveActor(fpsActor_);
     renderer_->RemoveActor(actor_);
@@ -43,88 +53,24 @@ void Shape::remove() {
     boxWidget_->SetProp3D(nullptr);
 }
 
-double Shape::getEuclideanDistances(int start, vector<double> &distances) {
-    
-    double max = 0.0;
-    distances.resize(polyData_->GetPoints()->GetNumberOfPoints());
-    
-    double reference[3], current[3];
-    polyData_->GetPoints()->GetPoint(start, reference);
-    
-    // calculate all distances
-    for(unsigned i = 0; i < polyData_->GetPoints()->GetNumberOfPoints(); ++i) {
-        polyData_->GetPoints()->GetPoint(i, current);
-        
-        // keep track of distances and max distance
-        distances[i] = sqrt(
-                                 pow(reference[0] - current[0], 2) +
-                                 pow(reference[1] - current[1], 2) +
-                                 pow(reference[2] - current[2], 2)
-                                 );
-        if(distances[i] > max)
-            max = distances[i];
-        
+
+///////////////////////////////////////////////////////////////////////////////
+// Public Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+double Shape::calculateArea() {
+    // add up the areas of all triangles
+    for (int i = 0; i < polyData_->GetNumberOfCells(); i++) {
+        polyData_->GetCell(i);
     }
     
-    return max;
+    return 0.0;
 }
 
-// Visualization
 
-void Shape::visualizeEuclidean(int start) {
-    // random start if none was chosen
-    if (start == -1)
-        start = rand() % polyData_->GetPoints()->GetNumberOfPoints();
-    
-    // initialize
-    vector<double> distances;
-    double max = getEuclideanDistances(start, distances);
-    
-    vtkSmartPointer<vtkLookupTable> colorLookupTable =
-    vtkSmartPointer<vtkLookupTable>::New();
-    colorLookupTable->SetTableRange(0, max);
-    colorLookupTable->Build();
-    
-    // list of colors for vtk
-    vtkSmartPointer<vtkUnsignedCharArray> colors =
-    vtkSmartPointer<vtkUnsignedCharArray>::New();
-    colors->SetNumberOfComponents(3);
-    colors->SetName("Colors");
-    
-    for(int i = 0; i < this->getPolyData()->GetNumberOfCells(); i++) {
-        vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
-        
-        // each cell has three id references to the corresponding points
-        polyData_->GetCellPoints(i, ids);
-        
-        // assign the distance of the closest point
-        double dist = distances[ids->GetId(0)];
-        if(dist > distances[ids->GetId(1)])
-            dist = distances[ids->GetId(1)];
-        if(dist > distances[ids->GetId(2)])
-            dist = distances[ids->GetId(2)];
-        
-        double dcolor[3];
-        colorLookupTable->GetColor(dist, dcolor);
-        
-        unsigned char color[3];
-        for(unsigned int j = 0; j < 3; j++) {
-            color[j] = static_cast<unsigned char>(255.0 * dcolor[j]);
-        }
-        
-        colors->InsertNextTupleValue(color);
-    }
-    
-    // update vtk
-    polyData_->GetCellData()->SetScalars(colors);
-    polyData_->Modified();
-    
-    polyDataNormals_->Update();
-    polyDataNormals_->Modified();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
+///////////////////////////////////////////////////////////////////////////////
 void Shape::visualizeVoronoiCells() {
     if (fps_->GetNumberOfIds() > 0) {
         visualizeVoronoiCells(fps_);
@@ -133,6 +79,8 @@ void Shape::visualizeVoronoiCells() {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
     // initialize
     vtkSmartPointer<vtkIdList> voronoi = getVoronoiCells(points);
@@ -192,14 +140,15 @@ void Shape::visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points) {
 
 // Voronoi Cells
 
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkIdList> Shape::getVoronoiCells(vtkSmartPointer<vtkIdList> points) {
     vtkGeodesic geodesic = vtkGeodesic(this, points);
     
     return geodesic.getVoronoiCells();
 }
 
-// FPS functions
 
+///////////////////////////////////////////////////////////////////////////////
 // fps with given starting point
 vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
     // random start if none was chosen
@@ -224,6 +173,8 @@ vtkSmartPointer<vtkIdList> Shape::getFPS(unsigned numberSamples, int start) {
     return list;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::setFPS(unsigned numberSamples, int start) {
     fps_ = getFPS(numberSamples, start);
     
@@ -254,10 +205,20 @@ void Shape::setFPS(unsigned numberSamples, int start) {
     renderer_->GetRenderWindow()->Render();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::transformFPS(vtkLinearTransform *t) {
     fpsActor_->SetUserTransform(t);
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Serialization Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 //write shape binary
 ostream& Shape::write(ostream& os) {
     //write shape ID.
@@ -307,6 +268,8 @@ ostream& Shape::write(ostream& os) {
     return os;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 //write as ascii txt
 ostream& operator<<(ostream& os, const Shape& shape) {
     os << shape.shapeId_<< endl;
@@ -339,6 +302,8 @@ ostream& operator<<(ostream& os, const Shape& shape) {
     return os;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 //read shape binary
 istream& Shape::read(istream& is) {
     //read shape ID
@@ -398,6 +363,8 @@ istream& Shape::read(istream& is) {
     return is;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 //read shape as ascii txt
 istream& operator>>(istream& is, Shape& shape) {
     string line;

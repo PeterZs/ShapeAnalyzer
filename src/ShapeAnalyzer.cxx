@@ -29,8 +29,6 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
     this->listCorrespondences->setContextMenuPolicy(Qt::CustomContextMenu);
     
-    this->tabWidget->removeTab(1);
-    
 
     // Set up action signals and slots
     connect(this->actionExit,                       SIGNAL(triggered()),
@@ -51,7 +49,8 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionExportScene,                SIGNAL(triggered()),
             this,                                   SLOT(slotExportScene()));
     
-    //delete correspondence picker visual response if mode was changed. This triggers box widget to show up on shape if shape has been selected.
+    // delete correspondence picker visual response if mode was changed.
+    // This triggers box widget to show up on shape if shape has been selected.
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotClearCurrentSelection()));
     
@@ -80,8 +79,13 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabShapeInfo(bool)));
     
+    connect(this->listShapes,                       SIGNAL(currentItemChanged ( QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(slotShapeSelectionChanged(QListWidgetItem*, QListWidgetItem*)));
     
-    //connection of list widgets is done in extra functions since signals of list widgets are disconnected before and reconnected after deletion of list items
+    
+    // connection of list widgets is done in extra functions since signals of
+    // list widgets are disconnected before and reconnected after deletion of
+    // list items
     qtConnectListCorrespondences();
     qtConnectListShapes();
   
@@ -141,6 +145,27 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+vector<QAction*> ShapeAnalyzer::qtAddMetricMenu(QMenu* menu) {
+    QMenu* metricMenu = new QMenu();
+    metricMenu->setTitle("Visualize Metric");
+    menu->addMenu(metricMenu);
+    
+    MetricFactory factory = MetricFactory();
+    
+    vector<string> metrics = factory.getIdentifier();
+    vector<QAction*> actions;
+    
+    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+        // add action with Identifier to the menu and store action pointer in
+        // return vector
+        actions.push_back(metricMenu->addAction(it->data()));
+    }
+    
+    return actions;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInputDialogFPS() {
     bool ok;
     int samples = QInputDialog::getInt (
@@ -197,11 +222,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    QMenu metricMenu;
-    metricMenu.setTitle("Visualize Metric");
-    myMenu.addMenu(&metricMenu);
-    QAction* euklideanAction = metricMenu.addAction("Euclidean");
-    QAction* geodesicAction = metricMenu.addAction("Geodesics");
+    vector<QAction*> metrics = qtAddMetricMenu(&myMenu);
     QAction* fpsAction      = myMenu.addAction("FPS");
     QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
     QAction* renameAction   = myMenu.addAction("Rename");
@@ -211,21 +232,28 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
-    } else if (selectedItem == geodesicAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        
-        vtkGeodesic geodesic(item->getShape());
-        geodesic.visualizeGeodesic(qvtkWidget);
-    } else if (selectedItem == euklideanAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->visualizeEuclidean();
-    } else if (selectedItem == renameAction) {
+    }  else if (selectedItem == renameAction) {
         qtInputDialogRename(this->listShapes->currentItem());
     } else if (selectedItem == fpsAction) {
         qtInputDialogFPS();
     } else if (selectedItem == voronoiAction) {
         ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
         item->getShape()->visualizeVoronoiCells();
+    } else {
+        // try if action is identifier for any factory
+        Shape* currentShape;
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        currentShape = item->getShape();
+        
+        // Metric
+        MetricFactory metricFactory = MetricFactory();
+        for(vector<QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+            if (selectedItem == *it) {
+                Metric* m = metricFactory.produce(selectedItem->text().toStdString(), currentShape);
+                MetricColoring color = MetricColoring(m);
+                color.colorShapeFaces();
+            }
+        }
     }
 }
 
@@ -366,7 +394,6 @@ void ShapeAnalyzer::slotOpenFile() {
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveScene() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.scene)"));
@@ -374,11 +401,27 @@ void ShapeAnalyzer::slotSaveScene() {
     vtkSaveScene(filename.toStdString());
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotExportScene() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Scene Files (*.txt)"));
     
     vtkExportScene(filename.toStdString());
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous) {
+    // search for Shape Info Tab
+    for(int i = 0; i < this->tabWidget->count(); i++) {
+        if(this->tabWidget->tabText(i) == "Shape Info") {
+            this->tabWidget->removeTab(i);
+            this->tabWidget->insertTab(i, new qtShapeInfoTab((ShapeListItem*) current), "Shape Info");
+            this->tabWidget->setCurrentIndex(i);
+        }
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowContextMenuCorrespondences(const QPoint& pos) {
@@ -414,9 +457,13 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
-    if (checked && this->listShapes->currentRow() >= 0) {
-        this->tabWidget->addTab( new qtShapeInfoTab((ShapeListItem*) this->listShapes->currentItem()), "Shape Info");
-    } else {
+    if (checked && this->listShapes->currentRow() >= 0) { // add Shape Info Tab
+        int i = this->tabWidget->addTab( new qtShapeInfoTab((ShapeListItem*) this->listShapes->currentItem()), "Shape Info");
+        this->tabWidget->setCurrentIndex(i);
+    } else if(checked && this->listShapes->currentRow() < 0) { // empty Shape Info Tab
+        int i = this->tabWidget->addTab( new qtShapeInfoTab(), "Shape Info");
+        this->tabWidget->setCurrentIndex(i);
+    } else { // remove shape info tab, if it was there
         for(int i = 0; i < this->tabWidget->count(); i++) {
             if(this->tabWidget->tabText(i) == "Shape Info") {
                 this->tabWidget->removeTab(i);

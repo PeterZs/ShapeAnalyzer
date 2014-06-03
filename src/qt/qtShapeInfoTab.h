@@ -21,6 +21,7 @@
 class qtShapeInfoTab : public QWidget {
 
 public:
+    qtShapeInfoTab();
     qtShapeInfoTab(ShapeListItem *item, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 };
 

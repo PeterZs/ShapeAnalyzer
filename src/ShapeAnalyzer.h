@@ -49,6 +49,11 @@
 
 #include "qt/qtShapeInfoTab.h"
 
+#include "metrics/Metric.h"
+#include "metrics/MetricFactory.h"
+
+#include "coloring/MetricColoring.h"
+
 #include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
 #include "vtkToscaASCIIReader.h"
@@ -117,6 +122,7 @@ private slots:
     virtual void slotToggleBoxWidget();
     virtual void slotAddCorrespondencesMode();
     
+    virtual void slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous);
     
     virtual void slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous);
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
@@ -143,6 +149,8 @@ private:
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
+    
+    vector<QAction*> qtAddMetricMenu(QMenu* menu);
     
     void qtInputDialogFPS();
     void qtInputDialogRename(QListWidgetItem* item);

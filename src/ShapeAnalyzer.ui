@@ -77,7 +77,6 @@
               </item>
              </layout>
             </widget>
-            
            </widget>
           </item>
          </layout>
@@ -138,6 +137,8 @@
     <addaction name="actionSaveScene"/>
     <addaction name="actionExportScene"/>
     <addaction name="separator"/>
+    <addaction name="actionSaveImage"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -153,7 +154,6 @@
     <addaction name="actionShowTriangulatedMesh"/>
     <addaction name="actionShowPointCloud"/>
     <addaction name="separator"/>
-    <addaction name="actionSetBackgroundColor"/>
     <addaction name="actionResetCamera"/>
     <addaction name="actionClear"/>
    </widget>
@@ -196,11 +196,19 @@
     <addaction name="actionCorrespondences"/>
     <addaction name="actionFace_Correspondences"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionSetBackgroundColor"/>
+    <addaction name="actionProjection_Mode"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuWindow"/>
    <addaction name="menuPlug_Ins"/>
+   <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpenFile">
@@ -419,7 +427,17 @@
   </action>
   <action name="actionSetBackgroundColor">
    <property name="text">
-    <string>Set Background Color</string>
+    <string>Background Color</string>
+   </property>
+  </action>
+  <action name="actionProjection_Mode">
+   <property name="text">
+    <string>Projection Mode</string>
+   </property>
+  </action>
+  <action name="actionSaveImage">
+   <property name="text">
+    <string>Save as Image</string>
    </property>
   </action>
  </widget>

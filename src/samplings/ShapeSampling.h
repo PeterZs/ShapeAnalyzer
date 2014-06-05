@@ -16,6 +16,8 @@
 
 #include <Shape.h>
 
+using namespace std;
+
 class ShapeSampling {
     
 public:
@@ -25,9 +27,15 @@ public:
         return idList_;
     }
     
-private:
+    string  getIdentifier() { return identifier_; }
+    Shape*  getShape()      { return shape_; }
+    
+protected:
     // list of ids of the points in the sampling
     vtkSmartPointer<vtkIdList> idList_;
+    
+    string identifier_;
+    Shape* shape_;
 };
 
 #endif /* defined(__ShapeAnalyzer__ShapeSampling__) */

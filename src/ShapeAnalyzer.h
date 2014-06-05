@@ -3,6 +3,7 @@
 
 #include <vtkActor.h>
 #include <vtkBoxWidget.h>
+#include <vtkCamera.h>
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkEventQtSlotConnect.h>
@@ -10,6 +11,7 @@
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
 #include <vtkObject.h>
+#include <vtkPNGWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -24,6 +26,7 @@
 #include <vtkCleanPolyData.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkPointSet.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <QActionGroup>
 #include <QInputDialog>
@@ -131,9 +134,11 @@ private slots:
     virtual void slotSetCorrespondenceType();
     
     virtual void slotSetBackgroundColor();
+    virtual void slotSetProjectionMode();
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
+    virtual void slotSaveImage();
     
     virtual void slotTabShapeInfo(bool);
     

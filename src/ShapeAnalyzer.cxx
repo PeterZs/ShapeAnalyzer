@@ -49,6 +49,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionExportScene,                SIGNAL(triggered()),
             this,                                   SLOT(slotExportScene()));
     
+    connect(this->actionSaveImage,                  SIGNAL(triggered()),
+            this,                                   SLOT(slotSaveImage()));
+    
     // delete correspondence picker visual response if mode was changed.
     // This triggers box widget to show up on shape if shape has been selected.
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
@@ -75,6 +78,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
             this,                                   SLOT(slotSetBackgroundColor()));
     
+    connect(this->actionProjection_Mode,            SIGNAL(triggered()),
+            this,                                   SLOT(slotSetProjectionMode()));
+    
     // tab signals
     connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabShapeInfo(bool)));
@@ -88,6 +94,8 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     // list items
     qtConnectListCorrespondences();
     qtConnectListShapes();
+    
+    
   
     this->vtkSetup();
 }
@@ -304,6 +312,26 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotSetProjectionMode() {
+    vtkSmartPointer<vtkCamera> camera = renderer_->GetActiveCamera();
+    
+    QStringList items;
+    items << tr("Perspective Projection") << tr("Parallel Projection");
+    bool ok;
+    
+    QString item = QInputDialog::getItem(this, tr("Choose Projection Mode"),
+                                         tr("Mode:"), items, 0, false, &ok);
+    
+    if (ok && !item.isEmpty()) {
+        if(item == "Perspective Projection")
+            camera->ParallelProjectionOff();
+        if (item == "Parallel Projection")
+            camera->ParallelProjectionOn();
+    }
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetShapeDisplayMode() {
@@ -407,6 +435,28 @@ void ShapeAnalyzer::slotExportScene() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Scene Files (*.txt)"));
     
     vtkExportScene(filename.toStdString());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotSaveImage() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
+    
+    renderer_->DrawOff();
+    
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter =
+    vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(renderer_->GetRenderWindow());
+    windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+    windowToImageFilter->ShouldRerenderOff();
+    windowToImageFilter->Update();
+    
+    vtkSmartPointer<vtkPNGWriter> writer =
+    vtkSmartPointer<vtkPNGWriter>::New();
+    writer->SetFileName((char*) filename.toStdString().c_str());
+    writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+    writer->Write();
+    
+    renderer_->DrawOn();
 }
 
 

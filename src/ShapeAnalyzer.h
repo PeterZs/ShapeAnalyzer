@@ -206,7 +206,8 @@ private:
     QActionGroup* actionGroupMode;
     QActionGroup* actionGroupShapeDisplayMode;
     
-    QDialog* uiSettings_;
+    Ui_Settings uiSettings_;
+    QDialog*    dialogSettings_;
     
     //counter for ids
     int lastInsertShapeID_;

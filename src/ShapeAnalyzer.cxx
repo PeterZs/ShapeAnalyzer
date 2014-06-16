@@ -203,11 +203,10 @@ vector<QAction*> ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInitializeSettings() {
-    uiSettings_ = new QDialog(0,0);
+    dialogSettings_ = new QDialog(0,0);
     
-    Ui_Settings settingsUi;
-    settingsUi.setupUi(uiSettings_);
-    
+    //Ui_Settings settingsUi;
+    uiSettings_.setupUi(dialogSettings_);
 }
 
 
@@ -467,7 +466,7 @@ void ShapeAnalyzer::slotOpenHelpWindow() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowSettings() {
     
-    uiSettings_->show();
+    dialogSettings_->show();
     
 }
 
@@ -523,34 +522,39 @@ void ShapeAnalyzer::slotExportScene() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveImage() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
-    
-    //renderer_->DrawOff();
-    
     vtkSmartPointer<vtkCamera> oldCamera = renderer_->GetActiveCamera();
-    vtkSmartPointer<vtkCamera> newCamera = vtkSmartPointer<vtkCamera>::New();
-    newCamera->DeepCopy(oldCamera);
     
-    renderer_->SetActiveCamera(newCamera);
-    renderer_->ResetCamera();
-    renderer_->GetRenderWindow()->Render();
+    // if checked, rerender to fit the whole scene
+    if(uiSettings_.checkWholeScene->isChecked()){
+        vtkSmartPointer<vtkCamera> newCamera = vtkSmartPointer<vtkCamera>::New();
+        newCamera->DeepCopy(oldCamera);
+    
+        renderer_->SetActiveCamera(newCamera);
+        renderer_->ResetCamera();
+        renderer_->GetRenderWindow()->Render();
+    }
     
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter =
     vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(renderer_->GetRenderWindow());
-    windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+    // transparency settings
+    if (!(uiSettings_.checkNoTransparency->isChecked()))
+        windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
     windowToImageFilter->ShouldRerenderOff();
     windowToImageFilter->Update();
     
+    // save in file
     vtkSmartPointer<vtkPNGWriter> writer =
     vtkSmartPointer<vtkPNGWriter>::New();
     writer->SetFileName((char*) filename.toStdString().c_str());
     writer->SetInputConnection(windowToImageFilter->GetOutputPort());
     writer->Write();
     
-    renderer_->SetActiveCamera(oldCamera);
-    renderer_->GetRenderWindow()->Render();
-    
-    //renderer_->DrawOn();
+    // if checked, rerender to fit the whole scene
+    if(uiSettings_.checkWholeScene->isChecked()){
+        renderer_->SetActiveCamera(oldCamera);
+        renderer_->GetRenderWindow()->Render();
+    }
 }
 
 
@@ -756,6 +760,7 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
+    
     //make sure that all faces are triangles
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triangleFilter->SetInputConnection(reader->GetOutputPort());

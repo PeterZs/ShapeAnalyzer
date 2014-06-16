@@ -87,6 +87,45 @@ double Geodesic::getDistance(unsigned a, unsigned b) {
     return calculateLengthOfPath(path);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Returns the point furthest to all points in sources
+// Notice that this will remove the current sources and precomputed information
+// about these if the input list is not the same as the current source list
+unsigned Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
+    double distance = 0;
+    unsigned id;
+    
+    
+    unsigned number = sourceList_->GetNumberOfIds();
+    sourceList_->IntersectWith(sources);
+    
+    // sources are not the same as the given list, recompute
+    if (sourceList_->GetNumberOfIds() < number || sources->GetNumberOfIds() != number) {
+        // recompute geodesics
+        changeSourcePoints(sources);
+    }
+    
+    // iterate over all points
+    for(int i = 0; i < mesh_.vertices().size(); i++) {
+        SurfacePoint target(&mesh_.vertices()[i]); //create source
+        
+        // calculate shortest distance to some source
+        double dist;
+        algorithm_->best_source(target, dist);
+        
+        // check if shortest distance is the greatest so far
+        if(dist > distance) {
+            distance = dist;
+            id = i;
+        }
+        
+    }
+    
+    return id;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // Geodesic Public Functions
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@ public:
     
     virtual double getDistance(unsigned a, unsigned b);
     virtual vector<double> getAllDistances(unsigned source);
+    virtual unsigned getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
     
 };
 

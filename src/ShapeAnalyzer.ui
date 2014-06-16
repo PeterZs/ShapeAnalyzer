@@ -200,8 +200,12 @@
     <property name="title">
      <string>Settings</string>
     </property>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
     <addaction name="actionSetBackgroundColor"/>
-    <addaction name="actionProjection_Mode"/>
+    <addaction name="separator"/>
+    <addaction name="actionPerspective"/>
+    <addaction name="actionParallel"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -430,14 +434,42 @@
     <string>Background Color</string>
    </property>
   </action>
-  <action name="actionProjection_Mode">
+  <action name="actionPerspective">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Projection Mode</string>
+    <string>Perspective Projection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="actionSaveImage">
    <property name="text">
     <string>Save as Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+I</string>
+   </property>
+  </action>
+  <action name="actionParallel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Parallel Projection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Open Settings</string>
    </property>
   </action>
  </widget>

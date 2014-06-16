@@ -71,6 +71,12 @@ double Shape::calculateArea() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+unsigned Shape::getRandomPoint() {
+    return std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::visualizeVoronoiCells() {
     if (fps_->GetNumberOfIds() > 0) {
         visualizeVoronoiCells(fps_);

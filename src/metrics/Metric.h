@@ -13,6 +13,9 @@
 
 #include "../Shape.h"
 
+#include <vtkIdList.h>
+#include <vtkSmartPointer.h>
+
 using namespace std;
 
 class Metric {
@@ -25,6 +28,10 @@ public:
     // returns the distances from point with id source to all other points
     // the result is ordered by point ids
     virtual vector<double>  getAllDistances(unsigned source) = 0;
+    
+    // returns the id of the point with the greatest distance to all points
+    // in the source list
+    virtual unsigned getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) = 0;
     
     string  getIdentifier() { return identifier_; }
     Shape*  getShape()      { return shape_; }

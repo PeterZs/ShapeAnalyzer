@@ -22,6 +22,10 @@ public:
     MetricFactory() {};
     ~MetricFactory() {};
     
+    string getLabel() {
+        return "Visualize Metric";
+    }
+    
     vector<string> getIdentifier() {
         vector<string> ids = vector<string>();
         ids.push_back("Euclidean");

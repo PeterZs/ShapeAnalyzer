@@ -55,6 +55,8 @@
 #include "metrics/Metric.h"
 #include "metrics/MetricFactory.h"
 
+#include "samplings/SamplingFactory.h"
+
 #include "coloring/MetricColoring.h"
 
 #include "vtkGeodesic.h"
@@ -62,6 +64,7 @@
 #include "vtkToscaASCIIReader.h"
 
 #include "ui_help.h"
+#include "ui_settings.h"
 #include "ui_ShapeAnalyzer.h"
 
 using namespace std;
@@ -117,6 +120,7 @@ private slots:
     virtual void slotOpenFile();
 
     virtual void slotOpenHelpWindow();
+    virtual void slotShowSettings();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
 
@@ -134,7 +138,8 @@ private slots:
     virtual void slotSetCorrespondenceType();
     
     virtual void slotSetBackgroundColor();
-    virtual void slotSetProjectionMode();
+    virtual void slotTogglePerspectiveMode(bool);
+    virtual void slotToggleParallelMode(bool);
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
@@ -151,14 +156,18 @@ private:
     void qtConnectListShapes();
     bool eventFilter(QObject *object, QEvent *event);
     
+    void qtInitializeSettings();
+    
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
     vector<QAction*> qtAddMetricMenu(QMenu* menu);
+    vector<QAction*> qtAddSamplingMenu(QMenu* menu);
     
     void qtInputDialogFPS();
     void qtInputDialogRename(QListWidgetItem* item);
+    void qtInputDialogOpacity(Shape* shape);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
@@ -171,8 +180,8 @@ private:
     void vtkImportScene(string filename);
     void vtkExportScene(string filename);
     
-    Correspondence* findCorrespondenceByActor(vtkActor* actor);
-    Shape* findShapeByActor(vtkActor* actor);
+    Correspondence*     findCorrespondenceByActor(vtkActor* actor);
+    Shape*              findShapeByActor(vtkActor* actor);
     
     
     void clear();
@@ -196,6 +205,8 @@ private:
     QActionGroup* actionGroupCorrespondenceType;
     QActionGroup* actionGroupMode;
     QActionGroup* actionGroupShapeDisplayMode;
+    
+    QDialog* uiSettings_;
     
     //counter for ids
     int lastInsertShapeID_;

@@ -13,11 +13,11 @@
 
 #include "ShapeSampling.h"
 
-#include <Metric.h>
+#include "../metrics/Metric.h"
 
 class FPS : public ShapeSampling {
 public:
-    FPS(Shape* shape, Metric* metric, bool del = false, unsigned source = -1);
+    FPS(Shape* shape, Metric* metric, unsigned number, bool del = false, unsigned source = -1);
     ~FPS();
     
 private:

@@ -75,11 +75,17 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotOpenHelpWindow()));
     
+    connect(this->actionSettings,                   SIGNAL(triggered()),
+            this,                                   SLOT(slotShowSettings()));
+    
     connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
             this,                                   SLOT(slotSetBackgroundColor()));
     
-    connect(this->actionProjection_Mode,            SIGNAL(triggered()),
-            this,                                   SLOT(slotSetProjectionMode()));
+    connect(this->actionPerspective,                SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotTogglePerspectiveMode(bool)));
+    
+    connect(this->actionParallel,                   SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotToggleParallelMode(bool)));
     
     // tab signals
     connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
@@ -98,6 +104,8 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
   
     this->vtkSetup();
+    
+    qtInitializeSettings();
 }
 
 
@@ -172,6 +180,36 @@ vector<QAction*> ShapeAnalyzer::qtAddMetricMenu(QMenu* menu) {
     return actions;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+vector<QAction*> ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu) {
+    QMenu* samplingMenu = new QMenu();
+    samplingMenu->setTitle("Sampling");
+    menu->addMenu(samplingMenu);
+    
+    SamplingFactory factory = SamplingFactory();
+    
+    vector<string> metrics = factory.getIdentifier();
+    vector<QAction*> actions;
+    
+    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+        // add action with Identifier to the menu and store action pointer in
+        // return vector
+        actions.push_back(samplingMenu->addAction(it->data()));
+    }
+    
+    return actions;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtInitializeSettings() {
+    uiSettings_ = new QDialog(0,0);
+    
+    Ui_Settings settingsUi;
+    settingsUi.setupUi(uiSettings_);
+    
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInputDialogFPS() {
@@ -192,6 +230,27 @@ void ShapeAnalyzer::qtInputDialogFPS() {
         item->getShape()->setFPS(samples);
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
+    bool ok;
+    double opacity = QInputDialog::getDouble (
+                                             this,
+                                             tr("Opacity"),
+                                             tr("Choose a value between 0 and 1"),
+                                             1.0,
+                                             0.0,
+                                             1.0,
+                                             2,
+                                             &ok
+                                           );
+    // calculate fps if ok was given
+    if (ok) {
+        shape->getActor()->GetProperty()->SetOpacity(opacity);
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
@@ -233,6 +292,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     vector<QAction*> metrics = qtAddMetricMenu(&myMenu);
     QAction* fpsAction      = myMenu.addAction("FPS");
     QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
+    QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     // ...
@@ -242,6 +302,12 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         deleteShape(this->listShapes->currentRow());
     }  else if (selectedItem == renameAction) {
         qtInputDialogRename(this->listShapes->currentItem());
+    } else if (selectedItem == opacityAction) {
+        Shape* currentShape;
+        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
+        currentShape = item->getShape();
+        
+        qtInputDialogOpacity(currentShape);
     } else if (selectedItem == fpsAction) {
         qtInputDialogFPS();
     } else if (selectedItem == voronoiAction) {
@@ -313,24 +379,33 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotSetProjectionMode() {
+void ShapeAnalyzer::slotTogglePerspectiveMode(bool b) {
     vtkSmartPointer<vtkCamera> camera = renderer_->GetActiveCamera();
     
-    QStringList items;
-    items << tr("Perspective Projection") << tr("Parallel Projection");
-    bool ok;
+    this->actionParallel->setChecked(!b);
     
-    QString item = QInputDialog::getItem(this, tr("Choose Projection Mode"),
-                                         tr("Mode:"), items, 0, false, &ok);
+    if (b == true)
+        camera->ParallelProjectionOff();
+    else
+        camera->ParallelProjectionOn();
     
-    if (ok && !item.isEmpty()) {
-        if(item == "Perspective Projection")
-            camera->ParallelProjectionOff();
-        if (item == "Parallel Projection")
-            camera->ParallelProjectionOn();
-    }
+    renderer_->GetRenderWindow()->Render();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotToggleParallelMode(bool b) {
+    vtkSmartPointer<vtkCamera> camera = renderer_->GetActiveCamera();
+    
+    this->actionPerspective->setChecked(!b);
+    
+    if (b == true)
+        camera->ParallelProjectionOn();
+    else
+        camera->ParallelProjectionOff();
+    
+    renderer_->GetRenderWindow()->Render();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -390,6 +465,14 @@ void ShapeAnalyzer::slotOpenHelpWindow() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotShowSettings() {
+    
+    uiSettings_->show();
+    
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenFile() {
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
@@ -441,7 +524,15 @@ void ShapeAnalyzer::slotExportScene() {
 void ShapeAnalyzer::slotSaveImage() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
     
-    renderer_->DrawOff();
+    //renderer_->DrawOff();
+    
+    vtkSmartPointer<vtkCamera> oldCamera = renderer_->GetActiveCamera();
+    vtkSmartPointer<vtkCamera> newCamera = vtkSmartPointer<vtkCamera>::New();
+    newCamera->DeepCopy(oldCamera);
+    
+    renderer_->SetActiveCamera(newCamera);
+    renderer_->ResetCamera();
+    renderer_->GetRenderWindow()->Render();
     
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter =
     vtkSmartPointer<vtkWindowToImageFilter>::New();
@@ -456,7 +547,10 @@ void ShapeAnalyzer::slotSaveImage() {
     writer->SetInputConnection(windowToImageFilter->GetOutputPort());
     writer->Write();
     
-    renderer_->DrawOn();
+    renderer_->SetActiveCamera(oldCamera);
+    renderer_->GetRenderWindow()->Render();
+    
+    //renderer_->DrawOn();
 }
 
 

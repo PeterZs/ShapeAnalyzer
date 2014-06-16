@@ -21,7 +21,6 @@ using namespace std;
 class ShapeSampling {
     
 public:
-    virtual ~ShapeSampling() = 0;
     
     vtkSmartPointer<vtkIdList> getSampling() {
         return idList_;

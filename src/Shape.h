@@ -50,6 +50,8 @@ public:
     
     double                      calculateArea();
     
+    unsigned                    getRandomPoint();
+    
     // getters
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;

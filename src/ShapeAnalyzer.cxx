@@ -760,11 +760,16 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
+    //vtkSmartPointer<vtkAlgorithmOutput> output = vtkSmartPointer<vtkAlgorithmOutput>::New();
+    //output = reader->GetOutputPort();
     
-    //make sure that all faces are triangles
-    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-    triangleFilter->SetInputConnection(reader->GetOutputPort());
-    triangleFilter->Update();
+    //if(uiSettings_.checkTriangulation->isChecked()) {
+        //make sure that all faces are triangles
+        vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+        triangleFilter->SetInputConnection(reader->GetOutputPort());
+        triangleFilter->Update();
+        //output = triangleFilter->GetOutputPort();
+    //}
     
     //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
     vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();

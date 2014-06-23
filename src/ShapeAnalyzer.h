@@ -2,6 +2,7 @@
 #define ShapeAnalyzer_H
 
 #include <vtkActor.h>
+#include <vtkAlgorithmOutput.h>
 #include <vtkBoxWidget.h>
 #include <vtkCamera.h>
 #include <vtkCellPicker.h>
@@ -13,6 +14,7 @@
 #include <vtkObject.h>
 #include <vtkPNGWriter.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPolyDataReader.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
@@ -29,6 +31,7 @@
 #include <vtkWindowToImageFilter.h>
 
 #include <QActionGroup>
+#include <QCheckBox>
 #include <QInputDialog>
 #include <QKeySequence>
 #include <QList>
@@ -188,6 +191,7 @@ private:
     void clearCorrespondences();
     void deleteCorrespondence(int i);
     void deleteShape(int i);
+    void addShape(Shape* shape);
 
     //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     unordered_map<vtkActor*, Shape*> shapesByActor_;

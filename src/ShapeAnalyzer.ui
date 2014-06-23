@@ -149,19 +149,14 @@
     <addaction name="actionTransformShapes"/>
     <addaction name="actionAddCorrespondences"/>
     <addaction name="separator"/>
-    <addaction name="actionShowSurface"/>
-    <addaction name="actionShowSurfaceNormals"/>
-    <addaction name="actionShowTriangulatedMesh"/>
-    <addaction name="actionShowPointCloud"/>
-    <addaction name="separator"/>
     <addaction name="actionResetCamera"/>
     <addaction name="actionClear"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>429</x>
-      <y>109</y>
+      <x>652</x>
+      <y>101</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -201,6 +196,11 @@
      <string>Settings</string>
     </property>
     <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowSurface"/>
+    <addaction name="actionShowSurfaceNormals"/>
+    <addaction name="actionShowTriangulatedMesh"/>
+    <addaction name="actionShowPointCloud"/>
     <addaction name="separator"/>
     <addaction name="actionSetBackgroundColor"/>
     <addaction name="separator"/>
@@ -335,6 +335,9 @@
    <property name="text">
     <string>Save Scene...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
   </action>
   <action name="actionShowTriangulatedMesh">
    <property name="checkable">
@@ -433,6 +436,9 @@
    <property name="text">
     <string>Background Color</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+B</string>
+   </property>
   </action>
   <action name="actionPerspective">
    <property name="checkable">
@@ -445,7 +451,7 @@
     <string>Perspective Projection</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+P</string>
+    <string>Ctrl+Alt+P</string>
    </property>
   </action>
   <action name="actionSaveImage">
@@ -463,13 +469,19 @@
    <property name="text">
     <string>Parallel Projection</string>
    </property>
+   <property name="statusTip">
+    <string/>
+   </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+P</string>
+    <string>Ctrl+Alt+P</string>
    </property>
   </action>
   <action name="actionSettings">
    <property name="text">
     <string>Open Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
    </property>
   </action>
  </widget>

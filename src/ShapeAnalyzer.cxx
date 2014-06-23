@@ -207,6 +207,9 @@ void ShapeAnalyzer::qtInitializeSettings() {
     
     //Ui_Settings settingsUi;
     uiSettings_.setupUi(dialogSettings_);
+    
+    uiSettings_.checkTriangulation->setChecked(true);
+    uiSettings_.checkBoxDegenerated->setChecked(true);
 }
 
 
@@ -760,46 +763,78 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
-    //vtkSmartPointer<vtkAlgorithmOutput> output = vtkSmartPointer<vtkAlgorithmOutput>::New();
-    //output = reader->GetOutputPort();
+    // the following will filter the shape for certain properties
+    // filters can be choosen in the settings ui
+    vtkAlgorithmOutput* output;
+    output = reader->GetOutputPort();
     
-    //if(uiSettings_.checkTriangulation->isChecked()) {
+    // filter to triangulate shape
+    if(uiSettings_.checkTriangulation->isChecked()) {
         //make sure that all faces are triangles
         vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-        triangleFilter->SetInputConnection(reader->GetOutputPort());
+        triangleFilter->SetInputConnection(output);
         triangleFilter->Update();
-        //output = triangleFilter->GetOutputPort();
-    //}
-    
-    //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
-    vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter = vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
-    connectivityFilter->SetInputConnection(triangleFilter->GetOutputPort());
-    connectivityFilter->SetExtractionModeToLargestRegion();
-    connectivityFilter->Update();
+        vtkAlgorithmOutput* output;
+        output = triangleFilter->GetOutputPort();
+    }
     
     //Remove all isolated points.
-    vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
-    cleanPolyData->SetInputConnection(connectivityFilter->GetOutputPort());
-    cleanPolyData->Update();
-    
-    // get vtk actor and add to renderer_
-    Shape* shape = new Shape(lastInsertShapeID_, cleanPolyData->GetOutput(), renderer_);
-    
-    vtkAddShape(shape);
-    
-    // add shape to qt list widget
-    lastInsertShapeID_++;
-    string name = "Shape ";
-    name.append(to_string(lastInsertShapeID_));
-    
-    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
-    listShapes->addItem(item);
-    
-    //make sure that there always is exactly one item selected if there exists at least one item
-    listShapes->setCurrentRow(listShapes->count()-1);
+    if(uiSettings_.checkBoxDegenerated->isChecked()) {
+        vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
+        cleanPolyData->SetInputConnection(output);
+        cleanPolyData->Update();
+        vtkAlgorithmOutput* output;
+        output = cleanPolyData->GetOutputPort();
+    }
     
     
-    qvtkWidget->GetRenderWindow()->Render();
+    //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
+    if(!uiSettings_.checkBoxComponents->isChecked()) {
+        vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+        vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+        connectivityFilter->SetInputConnection(output);
+        connectivityFilter->SetExtractionModeToLargestRegion();
+        connectivityFilter->Update();
+        vtkAlgorithmOutput* output;
+        output = connectivityFilter->GetOutputPort();
+        
+        // get vtk actor and add to renderer_
+        vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
+        Shape* shape = new Shape(lastInsertShapeID_, polyDataReader->GetOutput(), renderer_);
+        
+        addShape(shape);
+        
+    } else { // extract all regions in different shapes
+        // yeah theres a lot of overhead here... but it makes problems
+        
+        vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+        vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+        connectivityFilter->SetInputConnection(output);
+        connectivityFilter->SetExtractionModeToAllRegions();
+        connectivityFilter->Update();
+        int numberOfRegions = connectivityFilter->GetNumberOfExtractedRegions();
+        
+        // add all regions separatly
+        for (int i = 0; i < numberOfRegions; i++) {
+            vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+            vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+            connectivityFilter->SetInputConnection(output);
+            connectivityFilter->SetExtractionModeToSpecifiedRegions();
+            connectivityFilter->AddSpecifiedRegion(i);
+            connectivityFilter->Update();
+            
+            vtkAlgorithmOutput* output2;
+            output2 = connectivityFilter->GetOutputPort();
+            
+            // get vtk actor and add to renderer_
+            vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output2->GetProducer();
+            Shape* shape = new Shape(lastInsertShapeID_, polyDataReader->GetOutput(), renderer_);
+            
+            addShape(shape);
+            
+            connectivityFilter->DeleteSpecifiedRegion(i);
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1188,6 +1223,25 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     qtConnectListCorrespondences();
     qtConnectListShapes();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::addShape(Shape* shape) {
+    vtkAddShape(shape);
+    
+    // add shape to qt list widget
+    lastInsertShapeID_++;
+    string name = "Shape ";
+    name.append(to_string(lastInsertShapeID_));
+    
+    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+    listShapes->addItem(item);
+    
+    //make sure that there always is exactly one item selected if there exists at least one item
+    listShapes->setCurrentRow(listShapes->count()-1);
+    
+    
+    qvtkWidget->GetRenderWindow()->Render();
 }
 
 

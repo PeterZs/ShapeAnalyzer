@@ -9,6 +9,12 @@
 #ifndef ShapeAnalyzer_ShapeAttribute_h
 #define ShapeAnalyzer_ShapeAttribute_h
 
+class ShapeAttribute {
+public:
+    virtual ~ShapeAttribute() {};
+    
+    virtual double getValue() = 0;
+};
 
 
 #endif

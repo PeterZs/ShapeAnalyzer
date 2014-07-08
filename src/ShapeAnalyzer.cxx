@@ -101,6 +101,10 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     qtConnectListCorrespondences();
     qtConnectListShapes();
     
+    // short cut for ending correspondence picking
+    QShortcut *shortcut = new QShortcut(Qt::Key_Escape, this);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(slotEndCorrespondencePicker()));
+    
     
   
     this->vtkSetup();
@@ -361,6 +365,22 @@ void ShapeAnalyzer::slotSetBackgroundColor() {
 void ShapeAnalyzer::slotClearCurrentSelection() {
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotEndCorrespondencePicker() {
+    if(this->actionAddCorrespondences->isChecked()) {
+        
+        Correspondence* correspondence; //initialized by correspondencePicker
+        
+        // all shapes are in the current correspondence
+        if(shapesByActor_.size() > 1) {
+            addCorrespondence(correspondence);
+        }
+        
+        
+    }
 }
 
 
@@ -1029,19 +1049,9 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
         else
             ;
         
+        // all shapes are in the current correspondence
         if(shapesByActor_.size() > 1 && pickerCounter_ == shapesByActor_.size()) {
-            if(correspondencePicker_->pick(&correspondence)) {
-                pickerCounter_ = 0;
-                correspondencesByActor_.insert(pair<vtkActor*, Correspondence*>(correspondence->getLinesActor(), correspondence));
-                
-                // add to qt
-                lastInsertCorresondenceID_++;
-                string name = "Correspondence ";
-                name.append(std::to_string(lastInsertCorresondenceID_));
-                // add shape to qt list widget
-                CorrespondenceListItem *item = new CorrespondenceListItem(QString(name.c_str()), correspondence);
-                this->listCorrespondences->addItem(item);
-            }
+            addCorrespondence(correspondence);
         }
         
         
@@ -1224,6 +1234,24 @@ void ShapeAnalyzer::deleteShape(int i) {
     qtConnectListCorrespondences();
     qtConnectListShapes();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::addCorrespondence(Correspondence* correspondence) {
+    if(correspondencePicker_->pick(&correspondence)) {
+        pickerCounter_ = 0;
+        correspondencesByActor_.insert(pair<vtkActor*, Correspondence*>(correspondence->getLinesActor(), correspondence));
+        
+        // add to qt
+        lastInsertCorresondenceID_++;
+        string name = "Correspondence ";
+        name.append(std::to_string(lastInsertCorresondenceID_));
+        // add shape to qt list widget
+        CorrespondenceListItem *item = new CorrespondenceListItem(QString(name.c_str()), correspondence);
+        this->listCorrespondences->addItem(item);
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::addShape(Shape* shape) {

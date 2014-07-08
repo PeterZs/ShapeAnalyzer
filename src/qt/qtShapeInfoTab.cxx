@@ -29,7 +29,6 @@ qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::Window
     model->setVerticalHeaderItem(1, new QStandardItem(QString("#Vertices")));
     model->setVerticalHeaderItem(2, new QStandardItem(QString("#Faces")));
     model->setVerticalHeaderItem(3, new QStandardItem(QString("Area")));
-    model->setVerticalHeaderItem(4, new QStandardItem(QString("Diameter")));
     
     model->setItem(0, 0, new QStandardItem(item->text()));
     
@@ -44,6 +43,13 @@ qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::Window
                                            QString::number(
                                                    (int) item->getShape()->getPolyData()->GetNumberOfCells()
                                                    )
+                                           )
+                   );
+    
+    model->setItem(3, 0, new QStandardItem(
+                                           QString::number(
+                                                           (double) item->getShape()->calculateArea()
+                                                           )
                                            )
                    );
     

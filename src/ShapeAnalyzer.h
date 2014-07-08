@@ -131,6 +131,7 @@ private slots:
 
     virtual void slotToggleBoxWidget();
     virtual void slotAddCorrespondencesMode();
+    virtual void slotEndCorrespondencePicker();
     
     virtual void slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous);
     
@@ -192,6 +193,7 @@ private:
     void deleteCorrespondence(int i);
     void deleteShape(int i);
     void addShape(Shape* shape);
+    void addCorrespondence(Correspondence* correspondence);
 
     //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     unordered_map<vtkActor*, Shape*> shapesByActor_;

@@ -61,12 +61,27 @@ void Shape::remove() {
 
 ///////////////////////////////////////////////////////////////////////////////
 double Shape::calculateArea() {
+    double area = 0.0;
     // add up the areas of all triangles
     for (int i = 0; i < polyData_->GetNumberOfCells(); i++) {
-        polyData_->GetCell(i);
+        // store point coordinates in a, b, c
+        vtkSmartPointer<vtkPoints> ids = polyData_->GetCell(i)->GetPoints();
+        double a[3], b[3], c[3];
+        ids->GetPoint(0, a);
+        ids->GetPoint(1, b);
+        ids->GetPoint(2, c);
+        
+        // side lengths
+        double ab = sqrt(pow(a[0] - b[0], 2) + pow(a[1] - b[1], 2) + pow(a[2] - b[2], 2));
+        double bc = sqrt(pow(c[0] - b[0], 2) + pow(c[1] - b[1], 2) + pow(c[2] - b[2], 2));
+        double ca = sqrt(pow(a[0] - c[0], 2) + pow(a[1] - c[1], 2) + pow(a[2] - c[2], 2));
+        
+        double s = (ab + bc + ca) / 2;
+        
+        area = area + sqrt(s * (s - ab) * (s - bc) + (s - ca));
     }
     
-    return 0.0;
+    return area;
 }
 
 

@@ -372,11 +372,10 @@ void ShapeAnalyzer::slotClearCurrentSelection() {
 void ShapeAnalyzer::slotEndCorrespondencePicker() {
     if(this->actionAddCorrespondences->isChecked()) {
         
-        Correspondence* correspondence; //initialized by correspondencePicker
-        
-        // all shapes are in the current correspondence
+        // add current seleceted correspondence if more than one shape
+        // is involved
         if(shapesByActor_.size() > 1) {
-            addCorrespondence(correspondence);
+            addCorrespondence();
         }
         
         
@@ -387,15 +386,21 @@ void ShapeAnalyzer::slotEndCorrespondencePicker() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetCorrespondenceType() {
     if(this->actionFaceCorrespondences->isChecked()) {
+        // current selection of picker is deleted
         delete correspondencePicker_;
         correspondencePicker_ = new FaceCorrespondencePicker(renderer_);
+        
+        // save current correspondences and clear gui
+        
         clearCorrespondences();
-        labelCorrespondences->setText(tr("Face Correspondences (displayed)"));
+        
+        //labelCorrespondences->setText(tr("Face Correspondences (displayed)"));
     } else {
+        // current selection of picker is deleted
         delete correspondencePicker_;
         correspondencePicker_ = new PointCorrespondencePicker(renderer_);
         clearCorrespondences();
-        labelCorrespondences->setText(tr("Point Correspondences (displayed)"));
+        //labelCorrespondences->setText(tr("Point Correspondences (displayed)"));
     }
 }
 
@@ -1040,7 +1045,6 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->actionAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
-        Correspondence* correspondence; //initialized by correspondencePicker
         int result = correspondencePicker_->add(shape, cellId);
         if(result == 1)
             pickerCounter_++;
@@ -1051,7 +1055,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
         
         // all shapes are in the current correspondence
         if(shapesByActor_.size() > 1 && pickerCounter_ == shapesByActor_.size()) {
-            addCorrespondence(correspondence);
+            addCorrespondence();
         }
         
         
@@ -1237,7 +1241,9 @@ void ShapeAnalyzer::deleteShape(int i) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::addCorrespondence(Correspondence* correspondence) {
+void ShapeAnalyzer::addCorrespondence() {
+    Correspondence* correspondence;
+    
     if(correspondencePicker_->pick(&correspondence)) {
         pickerCounter_ = 0;
         correspondencesByActor_.insert(pair<vtkActor*, Correspondence*>(correspondence->getLinesActor(), correspondence));

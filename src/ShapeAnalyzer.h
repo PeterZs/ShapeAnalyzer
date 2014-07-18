@@ -193,11 +193,14 @@ private:
     void deleteCorrespondence(int i);
     void deleteShape(int i);
     void addShape(Shape* shape);
-    void addCorrespondence(Correspondence* correspondence);
+    void addCorrespondence();
 
     //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     unordered_map<vtkActor*, Shape*> shapesByActor_;
     unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
+    
+    unordered_map<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
+    unordered_map<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

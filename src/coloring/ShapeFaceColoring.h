@@ -9,7 +9,6 @@
 #ifndef ShapeAnalyzer_ShapeFaceColoring_h
 #define ShapeAnalyzer_ShapeFaceColoring_h
 
-using namespace std;
 
 class ShapeFaceColoring {
 public:

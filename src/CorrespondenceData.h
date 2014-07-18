@@ -13,6 +13,8 @@
 
 #include <vector>
 
+using namespace std;
+
 class CorrespondenceData {
 public:
 
@@ -20,12 +22,12 @@ public:
 protected:
     CorrespondenceData() {}
     
-    vector<vtkIdType>& getShapeIds() {
+    std::vector<vtkIdType>& getShapeIds() {
         return shapeIds_;
     }
     
 private:
-    vector<vtkIdType> shapeIds_;
+    std::vector<vtkIdType> shapeIds_;
 };
 
 #endif /* defined(CorrespondenceData_H) */

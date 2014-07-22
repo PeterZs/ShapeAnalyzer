@@ -18,7 +18,7 @@ qtShapeInfoTab::qtShapeInfoTab() {
 }
 
 // will create Widget with basic information about the given shape
-qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::WindowFlags f )
+qtShapeInfoTab::qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent, Qt::WindowFlags f )
 : QWidget( parent, f )
 {
     
@@ -35,20 +35,20 @@ qtShapeInfoTab::qtShapeInfoTab( ShapeListItem *item, QWidget *parent, Qt::Window
     model->setItem(1, 0,
                    new QStandardItem(
                                      QString::number(
-                                                (int) item->getShape()->getPolyData()->GetPoints()->GetNumberOfPoints()
+                                                (int) item->getItem()->getPolyData()->GetPoints()->GetNumberOfPoints()
                                              )
                                      )
                    );
     model->setItem(2, 0, new QStandardItem(
                                            QString::number(
-                                                   (int) item->getShape()->getPolyData()->GetNumberOfCells()
+                                                   (int) item->getItem()->getPolyData()->GetNumberOfCells()
                                                    )
                                            )
                    );
     
     model->setItem(3, 0, new QStandardItem(
                                            QString::number(
-                                                           (double) item->getShape()->calculateArea()
+                                                           (double) item->getItem()->calculateArea()
                                                            )
                                            )
                    );

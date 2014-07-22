@@ -46,15 +46,14 @@
 #include <unordered_map>
 
 #include "Correspondence.h"
-#include "CorrespondenceListItem.h"
 #include "CorrespondencePicker.h"
 #include "CorrespondenceSet.h"
-#include "Shape.h"
-#include "ShapeListItem.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
+#include "Shape.h"
 
 #include "qt/qtShapeInfoTab.h"
+#include "qt/qtListWidgetItem.h"
 
 #include "metrics/Metric.h"
 #include "metrics/MetricFactory.h"

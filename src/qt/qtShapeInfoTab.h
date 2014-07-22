@@ -16,13 +16,15 @@
 #include <QTableView>
 #include <QWidget>
 
-#include <ShapeListItem.h>
+#include "../Shape.h"
+
+#include "qtListWidgetItem.h"
 
 class qtShapeInfoTab : public QWidget {
 
 public:
     qtShapeInfoTab();
-    qtShapeInfoTab(ShapeListItem *item, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 };
 
 #endif /* defined(__ShapeAnalyzer__qtShapeInfoTab__) */

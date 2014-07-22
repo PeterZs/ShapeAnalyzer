@@ -232,8 +232,8 @@ void ShapeAnalyzer::qtInputDialogFPS() {
                                         );
     // calculate fps if ok was given
     if (ok) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->setFPS(samples);
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        item->getItem()->setFPS(samples);
     }
 }
 
@@ -310,20 +310,20 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         qtInputDialogRename(this->listShapes->currentItem());
     } else if (selectedItem == opacityAction) {
         Shape* currentShape;
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        currentShape = item->getShape();
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        currentShape = item->getItem();
         
         qtInputDialogOpacity(currentShape);
     } else if (selectedItem == fpsAction) {
         qtInputDialogFPS();
     } else if (selectedItem == voronoiAction) {
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        item->getShape()->visualizeVoronoiCells();
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        item->getItem()->visualizeVoronoiCells();
     } else {
         // try if action is identifier for any factory
         Shape* currentShape;
-        ShapeListItem *item = (ShapeListItem *) this->listShapes->currentItem();
-        currentShape = item->getShape();
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        currentShape = item->getItem();
         
         // Metric
         MetricFactory metricFactory = MetricFactory();
@@ -593,7 +593,7 @@ void ShapeAnalyzer::slotShapeSelectionChanged(QListWidgetItem* current, QListWid
     for(int i = 0; i < this->tabWidget->count(); i++) {
         if(this->tabWidget->tabText(i) == "Shape Info") {
             this->tabWidget->removeTab(i);
-            this->tabWidget->insertTab(i, new qtShapeInfoTab((ShapeListItem*) current), "Shape Info");
+            this->tabWidget->insertTab(i, new qtShapeInfoTab((qtListWidgetItem<Shape>*) current), "Shape Info");
             this->tabWidget->setCurrentIndex(i);
         }
     }
@@ -635,7 +635,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
     if (checked && this->listShapes->currentRow() >= 0) { // add Shape Info Tab
-        int i = this->tabWidget->addTab( new qtShapeInfoTab((ShapeListItem*) this->listShapes->currentItem()), "Shape Info");
+        int i = this->tabWidget->addTab( new qtShapeInfoTab((qtListWidgetItem<Shape>*) this->listShapes->currentItem()), "Shape Info");
         this->tabWidget->setCurrentIndex(i);
     } else if(checked && this->listShapes->currentRow() < 0) { // empty Shape Info Tab
         int i = this->tabWidget->addTab( new qtShapeInfoTab(), "Shape Info");
@@ -653,7 +653,7 @@ void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
-        Shape* selectedShape = dynamic_cast<ShapeListItem*>(listShapes->currentItem())->getShape();
+        Shape* selectedShape = dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->currentItem())->getItem();
         if(this->actionTransformShapes->isChecked()) {
             selectedShape->getBoxWidget()->On();
         } else {
@@ -693,10 +693,10 @@ void ShapeAnalyzer::slotAddCorrespondencesMode() {
 void ShapeAnalyzer::slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous) {
     if(this->actionTransformShapes->isChecked()) {
         if(current != nullptr) {
-            dynamic_cast<ShapeListItem*>(current)->getShape()->getBoxWidget()->On();
+            dynamic_cast<qtListWidgetItem<Shape>*>(current)->getItem()->getBoxWidget()->On();
             
             if(previous != nullptr) {
-                dynamic_cast<ShapeListItem*>(previous)->getShape()->getBoxWidget()->Off();
+                dynamic_cast<qtListWidgetItem<Shape>*>(previous)->getItem()->getBoxWidget()->Off();
             }
         }
     }
@@ -721,11 +721,11 @@ void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* curren
     // only change color if there is a selection
     if(current != nullptr) {
         // set current correspondence red
-        dynamic_cast<CorrespondenceListItem*>(current)->getCorrespondence()->setSelected(true);
+        dynamic_cast<qtListWidgetItem<Correspondence>*>(current)->getItem()->setSelected(true);
         
         //if there exists a previous selection set previous correspondence to green
         if(previous != nullptr) {
-            dynamic_cast<CorrespondenceListItem*>(previous)->getCorrespondence()->setSelected(false);
+            dynamic_cast<qtListWidgetItem<Correspondence>*>(previous)->getItem()->setSelected(false);
         }
         
         // update
@@ -893,7 +893,7 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
         string name = "Shape ";
         name.append(to_string(shape->getId()+1));
         
-        ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
         listShapes->addItem(item);
         
         //make sure that there always is exactly one item selected if there exists at least one item
@@ -939,7 +939,7 @@ void ShapeAnalyzer::vtkImportScene(string filename) {
         string name = "Shape ";
         name.append(to_string(shape->getId()+1));
         
-        ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
         listShapes->addItem(item);
         
         //make sure that there always is exactly one item selected if there exists at least one item
@@ -964,7 +964,7 @@ void ShapeAnalyzer::vtkSaveScene(string filename) {
     
     
     for(int i = 0; i < listShapes->count(); i++) {
-        dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape()->write(os);
+        dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem()->write(os);
     }
     
     
@@ -979,7 +979,7 @@ void ShapeAnalyzer::vtkExportScene(string filename) {
     os << shapesByActor_.size() << endl;
     os << lastInsertShapeID_ << endl;
     for(int i = 0; i < listShapes->count(); i++) {
-        os << *(dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape());
+        os << *(dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem());
     }
     os.close();
 }
@@ -1032,7 +1032,7 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
 void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     command->AbortFlagOn();
     for(int i = 0; i < listCorrespondences->count(); i++) {
-        if(dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i))->getCorrespondence() == correspondence) {
+        if(dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i))->getItem() == correspondence) {
             listCorrespondences->setCurrentRow(i);
             if(vtkEvent == vtkCommand::RightButtonPressEvent) {
                 qtShowContextMenuCorrepondences(pos);
@@ -1063,7 +1063,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
     } else {
         //select item in list if clicked on shape
         for(int i = 0; i < listShapes->count(); i++) {
-            if(dynamic_cast<ShapeListItem*>(listShapes->item(i))->getShape() == shape) {
+            if(dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem() == shape) {
                 listShapes->setCurrentRow(i);
                 if(vtkEvent == vtkCommand::RightButtonPressEvent && !this->actionTransformShapes->isChecked()) {
                     command->AbortFlagOn();
@@ -1116,8 +1116,8 @@ void ShapeAnalyzer::clear() {
     //delete all correspondences
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
-        CorrespondenceListItem *item = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i));
-        Correspondence *correspondence = item->getCorrespondence();
+        qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
+        Correspondence *correspondence = item->getItem();
         
         
         correspondencesByActor_.erase(correspondence->getLinesActor());
@@ -1130,8 +1130,8 @@ void ShapeAnalyzer::clear() {
     // delete all shapes
     for(int i = listShapes->count()-1; i > -1; i--) {
         //get shape
-        ShapeListItem *item = dynamic_cast<ShapeListItem*>(listShapes->item(i));
-        Shape* shape = item->getShape();
+        qtListWidgetItem<Shape> *item = dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i));
+        Shape* shape = item->getItem();
         shape->remove();
 
         shapesByActor_.erase(shape->getActor());
@@ -1159,8 +1159,8 @@ void ShapeAnalyzer::clearCorrespondences() {
     //delete all correspondences
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
-        CorrespondenceListItem *item = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i));
-        Correspondence *correspondence = item->getCorrespondence();
+        qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
+        Correspondence *correspondence = item->getItem();
         
         
         correspondencesByActor_.erase(correspondence->getLinesActor());
@@ -1179,13 +1179,13 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
     // qt
     listCorrespondences->disconnect();
     
-    CorrespondenceListItem *item = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(i));
+    qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
 
     // vtk
-    correspondencesByActor_.erase(item->getCorrespondence()->getLinesActor());
+    correspondencesByActor_.erase(item->getItem()->getLinesActor());
     
-    item->getCorrespondence()->remove();
-    delete item->getCorrespondence();
+    item->getItem()->remove();
+    delete item->getItem();
     delete item;
     
     this->qvtkWidget->GetRenderWindow()->Render();
@@ -1200,8 +1200,8 @@ void ShapeAnalyzer::deleteShape(int i) {
     listShapes->disconnect();
     
     // qt
-    ShapeListItem *item = dynamic_cast<ShapeListItem*>(this->listShapes->item(i));
-    Shape* shape = item->getShape();
+    qtListWidgetItem<Shape> *item = dynamic_cast<qtListWidgetItem<Shape>*>(this->listShapes->item(i));
+    Shape* shape = item->getItem();
     
     
     correspondencePicker_->clearSelection();
@@ -1212,7 +1212,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     //iterate through the correspondence list BACKWARDS from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete. Then remove items from list
     for(int j = listCorrespondences->count()-1; j > -1; j--) {
         //get correspondence
-        Correspondence *correspondence = dynamic_cast<CorrespondenceListItem*>(listCorrespondences->item(j))->getCorrespondence();
+        Correspondence *correspondence = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(j))->getItem();
         
         //check whether left or right shape of correspondence equals our shape that we want to delete
         for(int i = 0; i < correspondence->getShapes().size(); i++) {
@@ -1254,7 +1254,7 @@ void ShapeAnalyzer::addCorrespondence() {
         string name = "Correspondence ";
         name.append(std::to_string(lastInsertCorresondenceID_));
         // add shape to qt list widget
-        CorrespondenceListItem *item = new CorrespondenceListItem(QString(name.c_str()), correspondence);
+        qtListWidgetItem<Correspondence> *item = new qtListWidgetItem<Correspondence>(QString(name.c_str()), correspondence);
         this->listCorrespondences->addItem(item);
     }
 }
@@ -1269,7 +1269,7 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     string name = "Shape ";
     name.append(to_string(lastInsertShapeID_));
     
-    ShapeListItem *item = new ShapeListItem(QString(name.c_str()), shape);
+    qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
     listShapes->addItem(item);
     
     //make sure that there always is exactly one item selected if there exists at least one item

@@ -6,7 +6,6 @@
 #include "geodesic_mesh_elements.h"
 #include <vector>
 #include <cmath>
-#include <assert.h>
 #include <algorithm>
 
 namespace geodesic{
@@ -33,7 +32,9 @@ public:
 
 	double signal(double x)		//geodesic distance function at point x
 	{
-		assert(x>=0.0 && x <= m_edge->length());
+		if(!(x>=0.0 && x <= m_edge->length())){
+            throw geodesic_error();
+        }
 
 		if(m_d == GEODESIC_INF)
 		{
@@ -71,7 +72,9 @@ public:
 
 	void compute_min_distance(double stop)			//compute min, given c,d theta, start, end.
 	{
-		assert(stop > m_start);
+		if(!(stop > m_start)){
+            throw geodesic_error();
+        }
 
 		if(m_d == GEODESIC_INF)
 		{
@@ -87,7 +90,9 @@ public:
 		}
 		else
 		{
-			assert(m_pseudo_y<=0);
+			if(!(m_pseudo_y<=0)){
+                throw geodesic_error();
+            }
 			m_min = m_d - m_pseudo_y;
 		} 
 	}
@@ -178,7 +183,9 @@ public:
 
 	interval_pointer covering_interval(double offset)			//returns the interval that covers the offset
 	{
-		assert(offset >= 0.0 && offset <= m_edge->length());
+		if(!(offset >= 0.0 && offset <= m_edge->length())){
+            throw geodesic_error();
+        }
 
 		interval_pointer p = m_first; 
 		while(p && p->stop() < offset)
@@ -270,7 +277,9 @@ public:
 
 	bool operator()(SurfacePointWithIndex* x, SurfacePointWithIndex* y) const //used for sorting
 	{
-		assert(x->type() != UNDEFINED_POINT && y->type() !=UNDEFINED_POINT);
+		if(!(x->type() != UNDEFINED_POINT && y->type() !=UNDEFINED_POINT)){
+            throw geodesic_error();
+        }
 
 		if(x->type() != y->type())
 		{
@@ -321,7 +330,9 @@ public:
 
 	SurfacePointWithIndex& operator[](unsigned i)
 	{
-		assert(i < size());
+		if(!(i < size())){
+            throw geodesic_error();
+        }
 		return *(begin() + i);
 	}
 

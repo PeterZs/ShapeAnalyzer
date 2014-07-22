@@ -335,6 +335,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
             }
         }
     }
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////

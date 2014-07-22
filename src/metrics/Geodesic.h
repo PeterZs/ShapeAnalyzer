@@ -26,6 +26,7 @@
 #include <vtkUnsignedCharArray.h>
 
 #include "geodesics/geodesic_algorithm_exact.h"
+#include "geodesics/geodesic_error.h"
 
 using namespace geodesic;
 using namespace std;

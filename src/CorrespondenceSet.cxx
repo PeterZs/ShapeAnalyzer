@@ -154,11 +154,24 @@ vector<T*> CorrespondenceSet<T>::getRandomSubset(int size) {
     return result;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 template<class T>
 unsigned CorrespondenceSet<T>::size() {
     return numberOfCorrespondences;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class T>
+typename unordered_map<T*, bool>::iterator CorrespondenceSet<T>::begin() {
+    return correspondences_.begin();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class T>
+typename unordered_map<T*, bool>::iterator CorrespondenceSet<T>::end() {
+    return correspondences_.end();
 }
 
 

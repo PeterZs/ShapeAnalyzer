@@ -42,12 +42,13 @@
 #include <QFileDialog>
 #include <QColorDialog>
 
-
+#include <exception>
 #include <unordered_map>
 
 #include "Correspondence.h"
 #include "CorrespondenceListItem.h"
 #include "CorrespondencePicker.h"
+#include "CorrespondenceSet.h"
 #include "Shape.h"
 #include "ShapeListItem.h"
 #include "FaceCorrespondencePicker.h"
@@ -69,6 +70,7 @@
 #include "ui_help.h"
 #include "ui_settings.h"
 #include "ui_ShapeAnalyzer.h"
+
 
 using namespace std;
 
@@ -201,6 +203,9 @@ private:
     
     unordered_map<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
     unordered_map<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
+    
+    //CorrespondenceSet<PointCorrespondenceData> pointData_;
+    //CorrespondenceSet<FaceCorrespondenceData> faceData_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

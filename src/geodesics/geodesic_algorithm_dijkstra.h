@@ -6,7 +6,8 @@
 #include "geodesic_mesh_elements.h"
 #include <vector>
 #include <set>
-#include <assert.h>
+
+#include "geodesic_error.h"
 
 namespace geodesic{
 
@@ -86,7 +87,9 @@ protected:
 void GeodesicAlgorithmDijkstra::list_nodes_visible_from_source(MeshElementBase* p,
 															   std::vector<node_pointer>& storage)
 {
-	assert(p->type() != UNDEFINED_POINT);
+	if(p->type() == UNDEFINED_POINT) {
+        throw geodesic_error();
+    }
 
 	if(p->type() == FACE)
 	{
@@ -119,7 +122,9 @@ inline void GeodesicAlgorithmDijkstra::list_nodes_visible_from_node(node_pointer
 															 double threshold_distance)
 {
 	vertex_pointer v = node->vertex();
-	assert(storage.size() == distances.size());
+	if(storage.size() != distances.size()) {
+        throw geodesic_error("Geodesic error: The number of nodes does not match the number of distances.");
+    }
 
 	for(unsigned i=0; i<v->adjacent_edges().size(); ++i)
 	{

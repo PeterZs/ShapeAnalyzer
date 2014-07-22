@@ -6,7 +6,8 @@
 #include "geodesic_mesh_elements.h"
 #include <vector>
 #include <set>
-#include <assert.h>
+
+#include "geodesic_error.h"
 
 namespace geodesic{
 
@@ -73,7 +74,9 @@ public:
 			return s1->z() < s2->z();
 		}
 
-		assert(0);
+		if(!0) {
+            throw geodesic_error();
+        }
 		return true;
 	};
 
@@ -154,7 +157,9 @@ inline void GeodesicAlgorithmSubdivision::list_nodes(MeshElementBase* p,
 											         std::vector<node_pointer>& storage,
 													 double threshold_distance)
 {
-	assert(p->type() != UNDEFINED_POINT);
+	if(p->type() == UNDEFINED_POINT){
+        throw geodesic_error();
+    }
 
 	if(p->type() == VERTEX)
 	{
@@ -184,7 +189,9 @@ inline void GeodesicAlgorithmSubdivision::list_nodes(MeshElementBase* p,
 void GeodesicAlgorithmSubdivision::list_nodes_visible_from_source(MeshElementBase* p,
 																  std::vector<node_pointer>& storage)
 {
-	assert(p->type() != UNDEFINED_POINT);
+	if(p->type() == UNDEFINED_POINT){
+        throw geodesic_error();
+    }
 
 	if(p->type() == FACE)
 	{
@@ -213,8 +220,12 @@ void GeodesicAlgorithmSubdivision::list_nodes_visible_from_node(node_pointer nod
 																double threshold_distance)
 {
 	MeshElementBase* p = node->base_element();
-	assert(p->type() != UNDEFINED_POINT);
-	assert(storage.size() == distances.size());
+	if(p->type() == UNDEFINED_POINT){
+        throw geodesic_error();
+    }
+	if(storage.size() != distances.size()){
+        throw geodesic_error();
+    }
 
 	if(p->type() == VERTEX)
 	{
@@ -254,7 +265,9 @@ void GeodesicAlgorithmSubdivision::list_nodes_visible_from_node(node_pointer nod
 	}
 	else 
 	{
-		assert(0);
+		if(!0) {
+            throw geodesic_error();
+        }
 	}
 
 	unsigned index = distances.size();

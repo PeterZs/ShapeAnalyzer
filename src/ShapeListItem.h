@@ -27,7 +27,7 @@ public:
         setText(*(new QString(name)));
     }
 private:
-    Shape*shape_;
+    Shape* shape_;
 };
 
 #endif

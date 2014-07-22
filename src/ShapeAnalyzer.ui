@@ -159,9 +159,10 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenFile"/>
+    <addaction name="actionLoad_Correspondences"/>
+    <addaction name="separator"/>
     <addaction name="actionSaveScene"/>
     <addaction name="actionExportScene"/>
-    <addaction name="separator"/>
     <addaction name="actionSaveImage"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -200,11 +201,7 @@
     <addaction name="separator"/>
     <addaction name="actionPointCorrespondences"/>
     <addaction name="actionFaceCorrespondences"/>
-   </widget>
-   <widget class="QMenu" name="menuWindow">
-    <property name="title">
-     <string>Window</string>
-    </property>
+    <addaction name="separator"/>
     <addaction name="actionWindowPointCorrespondences"/>
     <addaction name="actionWindowFaceCorrespondences"/>
    </widget>
@@ -227,7 +224,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuWindow"/>
    <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -328,12 +324,12 @@
   </action>
   <action name="actionWindowPointCorrespondences">
    <property name="text">
-    <string>Point Correspondences</string>
+    <string>All Point Correspondences</string>
    </property>
   </action>
   <action name="actionWindowFaceCorrespondences">
    <property name="text">
-    <string>Face Correspondences</string>
+    <string>All Face Correspondences</string>
    </property>
   </action>
   <action name="actionShowSurfaceNormals">
@@ -498,6 +494,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
+   </property>
+  </action>
+  <action name="actionLoad_Correspondences">
+   <property name="text">
+    <string>Load Correspondences</string>
    </property>
   </action>
  </widget>

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <ctime>
 
+#include "geodesic_error.h"
+
 namespace geodesic{
 
 class GeodesicAlgorithmBase
@@ -179,7 +181,9 @@ inline void GeodesicAlgorithmBase::set_stop_conditions(std::vector<SurfacePoint>
 				closest_vertex = possible_vertices[j];
 			}
 		}
-		assert(closest_vertex);
+		if(!closest_vertex) {
+            throw geodesic_error("Geodesic error: No closest vertex was found.");
+        }
 
 		m_stop_vertices[i].first = closest_vertex;
 		m_stop_vertices[i].second = min_distance;

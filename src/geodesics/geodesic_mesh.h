@@ -13,6 +13,8 @@
 #include "geodesic_memory.h"
 #include "geodesic_constants_and_simple_functions.h"
 
+#include "geodesic_error.h"
+
 namespace geodesic{
 
 struct edge_visible_from_source
@@ -66,7 +68,9 @@ private:
 inline unsigned Mesh::closest_vertices(SurfacePoint* p, 
 										  std::vector<vertex_pointer>* storage)
 {
-	assert(p->type() != UNDEFINED_POINT);
+	if(p->type() == UNDEFINED_POINT){
+        throw geodesic_error();
+    }
 
 	if(p->type() == VERTEX)
 	{
@@ -105,16 +109,22 @@ inline unsigned Mesh::closest_vertices(SurfacePoint* p,
 		return 2 + edge->adjacent_faces().size();
 	}
 
-	assert(0);
+	if(!0){
+        throw geodesic_error();
+    }
 	return 0;
 }
 
 template<class Points, class Faces>
 void Mesh::initialize_mesh_data(Points& p, Faces& tri)		//build mesh from regular point-triangle representation
 {
-	assert(p.size() % 3 == 0);
+	if(p.size() % 3 != 0){
+        throw geodesic_error();
+    }
 	unsigned const num_vertices = p.size() / 3;
-	assert(tri.size() % 3 == 0);
+	if(tri.size() % 3 != 0){
+        throw geodesic_error();
+    }
 	unsigned const num_faces = tri.size() / 3; 
 
 	initialize_mesh_data(num_vertices, p, num_faces, tri);
@@ -154,7 +164,9 @@ void Mesh::initialize_mesh_data(unsigned num_vertices,
 		for(unsigned j=0; j<3; ++j)
 		{
 			unsigned vertex_index = tri[shift + j];
-			assert(vertex_index < num_vertices);
+			if(!(vertex_index < num_vertices)){
+                throw geodesic_error();
+            }
 			f.adjacent_vertices()[j] = &m_vertices[vertex_index];
 		}
 	}
@@ -172,7 +184,9 @@ inline void Mesh::build_adjacencies()
 		for(unsigned j=0; j<3; ++j)
 		{
 			unsigned vertex_id = f.adjacent_vertices()[j]->id();
-			assert(vertex_id < m_vertices.size());
+			if(!(vertex_id < m_vertices.size())) {
+                throw geodesic_error();
+            }
 			count[vertex_id]++;
 		}
 	}
@@ -228,7 +242,9 @@ inline void Mesh::build_adjacencies()
 		{
 			if(i<half_edges.size()-1)		//sanity check: there should be at most two equal half-edges
 			{								//if it fails, most likely the input data are messed up
-				assert(half_edges[i] != half_edges[i+1]);
+				if(half_edges[i] == half_edges[i+1]){
+                    throw geodesic_error("Geodesic error: Number of half-edges does not match.");
+                }
 			}
 		}
 	}
@@ -247,8 +263,10 @@ inline void Mesh::build_adjacencies()
 		e.adjacent_vertices()[1] = &m_vertices[half_edges[i].vertex_1];
 
 		e.length() = e.adjacent_vertices()[0]->distance(e.adjacent_vertices()[1]);
-		assert(e.length() > 1e-100);		//algorithm works well with non-degenerate meshes only 
-
+		if(!(e.length() > 1e-100)){		//algorithm works well with non-degenerate meshes only
+            throw geodesic_error("Geodesic error: Mesh is degenerated.");
+        }
+        
 		if(i != half_edges.size()-1 && half_edges[i] == half_edges[i+1])	//double edge
 		{
 			e.adjacent_faces().set_allocation(allocate_pointers(2),2);
@@ -269,7 +287,9 @@ inline void Mesh::build_adjacencies()
 	for(unsigned i=0; i<m_edges.size(); ++i)
 	{
 		Edge& e = m_edges[i];
-		assert(e.adjacent_vertices().size()==2);
+		if(e.adjacent_vertices().size()!=2){
+            throw geodesic_error();
+        }
 		count[e.adjacent_vertices()[0]->id()]++;
 		count[e.adjacent_vertices()[1]->id()]++;
 	}
@@ -303,7 +323,9 @@ inline void Mesh::build_adjacencies()
 		for(unsigned j=0; j<e.adjacent_faces().size(); ++j)
 		{
 			face_pointer f = e.adjacent_faces()[j];
-			assert(count[f->id()]<3);
+			if(!(count[f->id()]<3)){
+                throw geodesic_error();
+            }
 			f->adjacent_edges()[count[f->id()]++] = &e;
 		}
 	}	
@@ -323,13 +345,17 @@ inline void Mesh::build_adjacencies()
 			}
 
 			double angle = angle_from_edges(abc[0], abc[1], abc[2]);
-			assert(angle>1e-5);						//algorithm works well with non-degenerate meshes only 
+			if(!(angle>1e-5)){
+                throw geodesic_error("Geodesic error: Mesh is degenerated.");
+            }//algorithm works well with non-degenerate meshes only
 
 			f.corner_angles()[j] = angle;
 			sum += angle;
 		}
-		assert(std::abs(sum - M_PI) < 1e-5);		//algorithm works well with non-degenerate meshes only 
-	}
+		if(!(std::abs(sum - M_PI) < 1e-5)){		//algorithm works well with non-degenerate meshes only
+            throw geodesic_error("Geodesic error: Mesh is degenerated.");
+        }
+    }
 
 		//define m_turn_around_flag for vertices
 	std::vector<double> total_vertex_angle(m_vertices.size());
@@ -359,7 +385,9 @@ inline void Mesh::build_adjacencies()
 		}
 	}
 
-	assert(verify());
+	if(!verify()){
+        throw geodesic_error();
+    }
 }
 
 inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some debug info
@@ -374,7 +402,9 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
 		map[e->adjacent_vertices()[0]->id()] = true;
 		map[e->adjacent_vertices()[1]->id()] = true;
 	}
-	assert(std::find(map.begin(), map.end(), false) == map.end());
+	if(!(std::find(map.begin(), map.end(), false) == map.end())){
+        throw geodesic_error();
+    }
 
 	//make sure that the mesh is connected trough its edges
 	//if mesh has more than one connected component, it is most likely a bug
@@ -401,7 +431,9 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
 			}
 		}
 	}
-	assert(std::find(map.begin(), map.end(), false) == map.end());
+	if(!(std::find(map.begin(), map.end(), false) == map.end())){
+        throw geodesic_error();
+    }
 
 	//print some mesh statistics that can be useful in debugging
 	std::cout << "mesh has "	<< m_vertices.size() 

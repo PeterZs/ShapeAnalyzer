@@ -24,8 +24,11 @@ Geodesic::Geodesic(Shape* shape) {
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
     
-	mesh_.initialize_mesh_data(*points_, *faces_);		//create internal mesh data structure including edges
-    
+    try {
+        mesh_.initialize_mesh_data(*points_, *faces_);		//create internal mesh data structure including edges
+    } catch (geodesic_error& e) {
+        cout << e.what() << '\n';
+    }
     algorithm_ = new GeodesicAlgorithmExact(&mesh_);
 }
 
@@ -54,14 +57,24 @@ vector<double> Geodesic::getAllDistances(unsigned int s) {
     // initialize algorithm for this source
     SurfacePoint source(&mesh_.vertices()[s]);
     vector<geodesic::SurfacePoint> all_sources(1,source);
-    algorithm_->propagate(all_sources);
+    try {
+        algorithm_->propagate(all_sources);
+    } catch (geodesic_error& e) {
+        cout << e.what() << '\n';
+        return distances;
+    }
     
     for(unsigned i = 0; i< mesh_.vertices().size(); ++i)
     {
         geodesic::SurfacePoint p(&mesh_.vertices()[i]);
         
         double distance;
+        try {
         algorithm_->best_source(p,distance);		//for a given surface point, find closets source and distance to this source
+        } catch (geodesic_error& e) {
+            cout << e.what() << '\n';
+            return distances;
+        }
         
         distances[i] = distance;
     }
@@ -82,7 +95,12 @@ double Geodesic::getDistance(unsigned a, unsigned b) {
     sourceList_ = vtkSmartPointer<vtkIdList>::New();
     sources_ = vector<SurfacePoint>();
     
-    algorithm_->geodesic(source, target, path);
+    try {
+        algorithm_->geodesic(source, target, path);
+    } catch (geodesic_error& e) {
+        cout << e.what() << '\n';
+        return 0.0;
+    }
     
     return calculateLengthOfPath(path);
 }
@@ -112,7 +130,12 @@ unsigned Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sourc
         
         // calculate shortest distance to some source
         double dist;
-        algorithm_->best_source(target, dist);
+        try {
+            algorithm_->best_source(target, dist);
+        } catch (geodesic_error& e) {
+            cout << e.what() << '\n';
+            return 0;
+        }
         
         // check if shortest distance is the greatest so far
         if(dist > distance) {
@@ -156,7 +179,11 @@ void Geodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
     }
     
     // recomputation of geodesics
-    algorithm_->propagate(sources_);
+    try {
+        algorithm_->propagate(sources_);
+    } catch (geodesic_error& e) {
+        cout << e.what() << '\n';
+    }
 }
 
 
@@ -173,7 +200,12 @@ unsigned Geodesic::findPointFurthestToAllSources() {
         
         // calculate shortest distance to some source
         double dist;
-        algorithm_->best_source(target, dist);
+        try {
+            algorithm_->best_source(target, dist);
+        } catch (geodesic_error& e) {
+            cout << e.what() << '\n';
+            return 0;
+        }
         
         // check if shortest distance is the greatest so far
         if(dist > distance) {
@@ -187,7 +219,7 @@ unsigned Geodesic::findPointFurthestToAllSources() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Geodesic Public Functions
+// Geodesic Private Functions
 ///////////////////////////////////////////////////////////////////////////////
 
 

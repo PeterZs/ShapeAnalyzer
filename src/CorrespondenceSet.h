@@ -19,6 +19,7 @@ using namespace std;
 template <class T>
 class CorrespondenceSet {
 public:
+    
     CorrespondenceSet();
     CorrespondenceSet(vector<T*>, bool = false);
     ~CorrespondenceSet() {}
@@ -28,6 +29,9 @@ public:
     
     bool deleteCorrespondence(T*);
     bool deleteCorrespondences(vector<T*>);
+    
+    typename unordered_map<T*, bool>::iterator begin();
+    typename unordered_map<T*, bool>::iterator end();
     
     bool isContained(T *);
     

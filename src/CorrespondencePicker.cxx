@@ -28,18 +28,16 @@ int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
 
     int result = correspondence_->add(shape, selectionId);
     
-    if(result == 1) {
+    if(result == 1) { // success in adding the selection
         counter_++;
         data_->addData(shape->getId(), selectionId);
         return result;
     }
-    if(result == -1) {
+    if(result == -1) { // something went wrong when adding, reset selection
         // reset selection
         correspondence_->remove();
         delete correspondence_;
-        correspondence_ = createCorrespondence();
-        data_ = new CorrespondenceData(*data_);
-        data_->clear();
+        clearPicker();
         counter_ = 1;
         return result;
     }
@@ -49,18 +47,16 @@ int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// stores the current selection in the given pointer (if the selection is a
+// valid correspondences) and resets the picker
 bool CorrespondencePicker::pick(Correspondence** correspondence) {
     if(counter_ >= 2) {
-        renderer_->RemoveActor(currentSelectionActor_);
-        renderer_->RemoveActor(mouseLineActor_);
-        renderer_->GetRenderWindow()->Render();
+        clearRenderer();
         
         //*correspondence = createCorrespondence();
         *correspondence = correspondence_;
         //reset picker
-        counter_ = 0;
-        data_ = new CorrespondenceData(*data_);
-        data_->clear();
+        clearPicker();
         return true;
     }
 
@@ -125,12 +121,28 @@ void CorrespondencePicker::updateMouseLine(int x, int y) {
 // Resets information and deletes actors from renderer
 void CorrespondencePicker::clearSelection() {
     if(counter_ > 0) {
-        renderer_->RemoveActor(currentSelectionActor_);
-        renderer_->RemoveActor(mouseLineActor_);
-        renderer_->GetRenderWindow()->Render();
+        clearRenderer();
         correspondence_->remove();
-        counter_ = 0;
         delete correspondence_;
+        clearPicker();
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Deletes actors from renderer
+void CorrespondencePicker::clearRenderer() {
+    renderer_->RemoveActor(currentSelectionActor_);
+    renderer_->RemoveActor(mouseLineActor_);
+    renderer_->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Resets information from picker
+void CorrespondencePicker::clearPicker() {
+    correspondence_ = createCorrespondence();
+    data_ = new CorrespondenceData(*data_);
+    data_->clear();
+    counter_ = 0;
+}

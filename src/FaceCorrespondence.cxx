@@ -8,9 +8,12 @@
 
 #include "FaceCorrespondence.h"
 
+///////////////////////////////////////////////////////////////////////////////
 FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data) : Correspondence(renderer, data) {
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 // create actor that visualizes selected point on shape
 void FaceCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType faceId) {
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
@@ -47,6 +50,8 @@ void FaceCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape*
     actor->SetUserTransform(shape->getActor()->GetUserTransform());
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 // returns point that serves as source or target of correspondence line
 void FaceCorrespondence::getCorrespondencePoint(double point[3], Shape* shape, vtkIdType faceId) {
     double p1[3];

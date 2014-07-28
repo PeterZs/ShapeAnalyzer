@@ -8,7 +8,7 @@
 
 #include "FaceCorrespondencePicker.h"
 
-
+///////////////////////////////////////////////////////////////////////////////
 void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) {
     double p1[3];
     double p2[3];
@@ -20,6 +20,8 @@ void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType 
     vtkTriangle::TriangleCenter(p1, p2, p3, point);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) {
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
     vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
@@ -56,6 +58,8 @@ void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType
     renderer_->Render();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 Correspondence* FaceCorrespondencePicker::createCorrespondence() {
     return new FaceCorrespondence(renderer_, (FaceCorrespondenceData*) data_);
 }

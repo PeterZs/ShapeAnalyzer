@@ -35,11 +35,14 @@
 using namespace std;
 
 class Shape {
-public:
-    Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
 
+public:
+    // Constructors and Destructor
+    Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
+    ~Shape() {}
     
+    // Voronoi and FPS, delete later
     vtkSmartPointer<vtkIdList>  getVoronoiCells(vtkSmartPointer<vtkIdList> points);
     void                        visualizeVoronoiCells();
     void                        visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points);
@@ -49,10 +52,24 @@ public:
     void                        transformFPS(vtkLinearTransform* t);
     
     double                      calculateArea();
-    
     unsigned                    getRandomPoint();
     
-    // getters
+    // vtk functions
+    
+    void remove();
+    
+    // serialization functions
+    
+    ostream& write(ostream& os);
+    
+    friend ostream& operator<<(ostream& os, const Shape& shape);
+    
+    istream& read(istream& is);
+    
+    friend istream& operator>>(istream& is, Shape& shape);
+    
+    // Getters
+    
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
     }
@@ -76,7 +93,7 @@ public:
     vtkSmartPointer<vtkRenderer> getRenderer() {
         return renderer_;
     }
-
+    
     vtkSmartPointer<vtkPolyDataNormals> getPolyDataNormals() {
         return polyDataNormals_;
     }
@@ -88,21 +105,14 @@ public:
     vtkIdType getId() {
         return shapeId_;
     }
-    
-    void remove();
-    
-    ostream& write(ostream& os);
-    
-    friend ostream& operator<<(ostream& os, const Shape& shape);
-    
-    istream& read(istream& is);
-    
-    friend istream& operator>>(istream& is, Shape& shape);
+
+
 private:
     void initialize();
     
-    
     vtkIdType shapeId_;
+    
+    // vtk objects
     
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
@@ -111,6 +121,8 @@ private:
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     
     vtkSmartPointer<vtkRenderer>        renderer_;
+    
+    // voronoi and fps, delete later
     
     vtkSmartPointer<vtkIdList>          fps_;
     vtkSmartPointer<vtkActor>           fpsActor_;

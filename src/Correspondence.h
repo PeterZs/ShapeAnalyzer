@@ -1,3 +1,10 @@
+//
+//  CorrespondenceData.h
+//  ShapeAnalyzer
+//
+//  Abstract Class for Correspondences that are shown in the GUI. 
+//
+
 #ifndef Correspondence_H
 #define Correspondence_H
 
@@ -33,6 +40,7 @@ public:
     //add another shape + face ID (or vertex ID) pair to this correspondence returns 1 if shape id combi has successfully been added (i.e. shape has not been selected twice). Returns 0 if shape equals last added shape and updates coordinates. Returns -1 if shape equals another shape that has already been added and is not equals to last added shape
     int add(Shape* shape, vtkIdType);
     
+    // getters
     vtkActor* getLinesActor() {
         return linesActor_;
     }
@@ -45,8 +53,11 @@ public:
         return data_;
     }
     
+    // vtk
     void remove();
     void add();
+    
+    
 protected:
     //protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
@@ -55,18 +66,20 @@ protected:
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
     
-    vtkSmartPointer<vtkRenderer> renderer_;
-    CorrespondenceData* data_; //contains list of shape IDs and list of face or vertex IDs
-    vector<Shape*> shapes_;
+    vtkSmartPointer<vtkRenderer>    renderer_;
+    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs
+    vector<Shape*>                  shapes_;
+    
+    
 private:
     //vtk visualization stuff
-    vector<vtkSmartPointer<vtkActor> > actors_; // actors representing highlighted vertex or face (part of this correspondence) on corresponding shape. (Ordering corresponds to ordering of shapes)
+    vector<vtkSmartPointer<vtkActor> >  actors_; // actors representing highlighted vertex or face (part of this correspondence) on corresponding shape. (Ordering corresponds to ordering of shapes)
     
-    vtkSmartPointer<vtkPoints> lineReferencePoints_; // save the reference line coordinates to be able to transform lines if shapes are transformed
+    vtkSmartPointer<vtkPoints>          lineReferencePoints_; // save the reference line coordinates to be able to transform lines if shapes are transformed
 
-    vtkSmartPointer<vtkPolyData> linesPolyData_; // lines polydata. The points inside poly data have the same ordering as shapes.
-    vtkSmartPointer<vtkPolyDataMapper> linesMapper_;
-    vtkSmartPointer<vtkActor> linesActor_; // lines actor
+    vtkSmartPointer<vtkPolyData>        linesPolyData_; // lines polydata. The points inside poly data have the same ordering as shapes.
+    vtkSmartPointer<vtkPolyDataMapper>  linesMapper_;
+    vtkSmartPointer<vtkActor>           linesActor_; // lines actor
 };
 
 #endif

@@ -8,11 +8,13 @@
 
 #include "PointCorrespondencePicker.h"
 
-
+///////////////////////////////////////////////////////////////////////////////
 void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) {
     shape->getPolyData()->GetPoint(pointId, point);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType pointId) {
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
@@ -36,6 +38,8 @@ void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdTyp
     renderer_->AddActor(currentSelectionActor_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 Correspondence* PointCorrespondencePicker::createCorrespondence() {
     return new PointCorrespondence(renderer_, (PointCorrespondenceData*) data_);
 }

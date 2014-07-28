@@ -7,14 +7,22 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Shape::Shape(vtkIdType shapeId, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer) : shapeId_(shapeId), polyData_(polyData), renderer_(renderer) {
+Shape::Shape(
+             vtkIdType shapeId,
+             vtkSmartPointer<vtkPolyData> polyData,
+             vtkSmartPointer<vtkRenderer> renderer
+             )
+: shapeId_(shapeId), polyData_(polyData), renderer_(renderer)
+{
     
     initialize();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Shape::Shape(vtkSmartPointer<vtkRenderer> renderer) : renderer_(renderer) {/* do not call initialize here! Poly data is not yet initialized! */}
+Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
+: renderer_(renderer)
+{/* do not call initialize here! Poly data is not yet initialized! */}
 
 void Shape::initialize() {
     //Visualize with normals. Looks smoother ;)

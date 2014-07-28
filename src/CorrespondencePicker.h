@@ -71,6 +71,9 @@ protected:
 private:
     void visualizeMouseLine(Shape* shape, double point[3]);
     
+    void clearRenderer();
+    void clearPicker();
+    
     Correspondence* correspondence_;
     int counter_;
     

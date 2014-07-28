@@ -2,6 +2,8 @@
 //  CorrespondenceData.h
 //  ShapeAnalyzer
 //
+//  Abstract class to store correspondence information. 
+//
 //  Created by Emanuel Laude on 08.05.14.
 //
 //
@@ -16,6 +18,7 @@
 using namespace std;
 
 class CorrespondenceData {
+    
 public:
     // copy constructor
     CorrespondenceData(CorrespondenceData &data) {
@@ -23,11 +26,18 @@ public:
         correspondingIds_ = getData();
     }
     
+    // manage data
     void addData(const vtkIdType newShape, const vtkIdType newCorrespondence) {
         shapeIds_.push_back(newShape);
         correspondingIds_.push_back(newCorrespondence);
     }
     
+    void clear() {
+        shapeIds_.clear();
+        correspondingIds_.clear();
+    }
+    
+    // getters
     std::vector<vtkIdType> getShapes() {
         return shapeIds_;
     }
@@ -36,17 +46,8 @@ public:
         return correspondingIds_;
     }
     
-    void clear() {
-        shapeIds_.clear();
-        correspondingIds_.clear();
-    }
-    
 protected:
     CorrespondenceData() {}
-    
-    std::vector<vtkIdType>& getShapeIds() {
-        return shapeIds_;
-    }
     
     std::vector<vtkIdType> shapeIds_;
     std::vector<vtkIdType> correspondingIds_; // either face or point ids depending on the implementing class

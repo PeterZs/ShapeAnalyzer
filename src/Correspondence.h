@@ -2,14 +2,15 @@
 #define Correspondence_H
 
 #include <vtkActor.h>
+#include <vtkCellArray.h>
+#include <vtkType.h>
+#include <vtkLine.h>
+#include <vtkLinearTransform.h>
 #include <vtkLineSource.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
-#include <vtkLinearTransform.h>
-#include <vtkProperty.h>
-#include <vtkCellArray.h>
-#include <vtkLine.h>
-#include <vtkRenderer.h>
 
 #include "Shape.h"
 #include "CorrespondenceData.h"
@@ -22,7 +23,7 @@ using namespace std;
 class Correspondence {
 
 public:
-    virtual ~Correspondence() {}
+    virtual ~Correspondence() {};
     
     //apply current user transformation of shape to the reference points that belong to the transformed shape and update line source with the transformed point as well as the actors belonging to the corresponding faces or points.
     void transform(Shape* shape);
@@ -40,7 +41,12 @@ public:
         return shapes_;
     }
     
+    CorrespondenceData* getData() {
+        return data_;
+    }
+    
     void remove();
+    void add();
 protected:
     //protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);

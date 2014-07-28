@@ -17,7 +17,7 @@
 class PointCorrespondencePicker : public CorrespondencePicker {
 public:
     PointCorrespondencePicker(vtkRenderer* renderer) : CorrespondencePicker(renderer) {
-    
+        data_ = new PointCorrespondenceData();
     }
 private:
     virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]);

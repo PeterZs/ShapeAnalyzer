@@ -37,7 +37,7 @@ void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdTyp
 }
 
 Correspondence* PointCorrespondencePicker::createCorrespondence() {
-    return new PointCorrespondence(renderer_, new PointCorrespondenceData());
+    return new PointCorrespondence(renderer_, (PointCorrespondenceData*) data_);
 }
 
 

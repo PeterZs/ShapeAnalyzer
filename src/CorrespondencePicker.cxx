@@ -8,7 +8,7 @@
 
 #include "CorrespondencePicker.h"
 
-
+///////////////////////////////////////////////////////////////////////////////
 int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
     if(counter_ == 0) {
         correspondence_ = createCorrespondence();
@@ -27,32 +27,40 @@ int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
     visualizeCurrentSelection(shape, selectionId);
 
     int result = correspondence_->add(shape, selectionId);
+    
     if(result == 1) {
         counter_++;
+        data_->addData(shape->getId(), selectionId);
         return result;
     }
     if(result == -1) {
         // reset selection
-        counter_ = 1;
         correspondence_->remove();
         delete correspondence_;
         correspondence_ = createCorrespondence();
-        correspondence_->add(shape, selectionId);
+        data_ = new CorrespondenceData(*data_);
+        data_->clear();
+        counter_ = 1;
         return result;
     }
     
     return result;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 bool CorrespondencePicker::pick(Correspondence** correspondence) {
     if(counter_ >= 2) {
         renderer_->RemoveActor(currentSelectionActor_);
         renderer_->RemoveActor(mouseLineActor_);
         renderer_->GetRenderWindow()->Render();
         
+        //*correspondence = createCorrespondence();
         *correspondence = correspondence_;
-        //reset counter
+        //reset picker
         counter_ = 0;
+        data_ = new CorrespondenceData(*data_);
+        data_->clear();
         return true;
     }
 
@@ -60,6 +68,8 @@ bool CorrespondencePicker::pick(Correspondence** correspondence) {
     return false;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void CorrespondencePicker::visualizeMouseLine(Shape* shape, double point[3]) {
     //initialize poly data and required data structures
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -92,6 +102,8 @@ void CorrespondencePicker::visualizeMouseLine(Shape* shape, double point[3]) {
     renderer_->AddActor(mouseLineActor_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void CorrespondencePicker::updateMouseLine(int x, int y) {
     if(counter_ > 0) {
         vtkSmartPointer<vtkPointPlacer> pointPlacer = vtkSmartPointer<vtkPointPlacer>::New();
@@ -108,14 +120,17 @@ void CorrespondencePicker::updateMouseLine(int x, int y) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Resets information and deletes actors from renderer
 void CorrespondencePicker::clearSelection() {
     if(counter_ > 0) {
         renderer_->RemoveActor(currentSelectionActor_);
         renderer_->RemoveActor(mouseLineActor_);
-        correspondence_->remove();
         renderer_->GetRenderWindow()->Render();
-        delete correspondence_;
+        correspondence_->remove();
         counter_ = 0;
+        delete correspondence_;
     }
 }
 

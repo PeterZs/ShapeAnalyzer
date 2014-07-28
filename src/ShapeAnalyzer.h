@@ -54,6 +54,7 @@
 
 #include "qt/qtShapeInfoTab.h"
 #include "qt/qtListWidgetItem.h"
+#include "qt/qtCorrespondenceWindow.h"
 
 #include "metrics/Metric.h"
 #include "metrics/MetricFactory.h"
@@ -94,7 +95,10 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
 
             // transform correspondences
-            for(unordered_map<vtkActor*, Correspondence*>::iterator it = sa->correspondencesByActor_.begin(); it != sa->correspondencesByActor_.end(); it++) {
+            for(auto it = sa->pointCorrespondencesByActor_.begin(); it != sa->pointCorrespondencesByActor_.end(); it++) {
+                it->second->transform(shape);
+            }
+            for(auto it = sa->faceCorrespondencesByActor_.begin(); it != sa->faceCorrespondencesByActor_.end(); it++) {
                 it->second->transform(shape);
             }
             
@@ -111,6 +115,7 @@ public:
     ShapeAnalyzer();
     ~ShapeAnalyzer() {
         delete correspondencePicker_;
+        delete dialogSettings_;
     };
     
     QList<QListWidgetItem *> getShapes();
@@ -124,6 +129,8 @@ private slots:
     virtual void slotOpenFile();
 
     virtual void slotOpenHelpWindow();
+    virtual void slotOpenCorrespondenceWindowPoints();
+    virtual void slotOpenCorrespondenceWindowFaces();
     virtual void slotShowSettings();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
@@ -155,6 +162,7 @@ private slots:
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
     virtual void vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
+    
 private:
     //QT
     void qtConnectListCorrespondences();
@@ -188,23 +196,27 @@ private:
     Correspondence*     findCorrespondenceByActor(vtkActor* actor);
     Shape*              findShapeByActor(vtkActor* actor);
     
+    // these are expensive, use with care
+    Correspondence*         findCorrespondenceByData(CorrespondenceData* data);
+    FaceCorrespondence*     findFaceCorrespondenceByData(FaceCorrespondenceData* data);
+    PointCorrespondence*    findPointCorrespondenceByData(PointCorrespondenceData* data);
     
     void clear();
     void clearCorrespondences();
-    void deleteCorrespondence(int i);
+    void deleteCorrespondence(int i, bool deleteData);
     void deleteShape(int i);
     void addShape(Shape* shape);
     void addCorrespondence();
 
-    //index shapes & corresondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
+    //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     unordered_map<vtkActor*, Shape*> shapesByActor_;
-    unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
+    //unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
     
     unordered_map<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
     unordered_map<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
-    //CorrespondenceSet<PointCorrespondenceData> pointData_;
-    //CorrespondenceSet<FaceCorrespondenceData> faceData_;
+    CorrespondenceSet<PointCorrespondenceData> pointData_;
+    CorrespondenceSet<FaceCorrespondenceData> faceData_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

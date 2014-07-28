@@ -1,7 +1,7 @@
 #include "Correspondence.h"
 
 
-//
+///////////////////////////////////////////////////////////////////////////////
 Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data) : renderer_(renderer), data_(data) {
     lineReferencePoints_ = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPoints> linePoints = vtkSmartPointer<vtkPoints>::New();
@@ -23,6 +23,8 @@ Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, Correspond
     renderer_->AddActor(linesActor_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int Correspondence::add(Shape* shape, vtkIdType id) {
     if(shapes_.size() > 0 && shapes_[shapes_.size()-1] == shape) {
         // in case shape is equal to last added shape replace point
@@ -56,6 +58,8 @@ int Correspondence::add(Shape* shape, vtkIdType id) {
     initializeActor(actors_[actors_.size()-1], shape, id);
     transform(shape);
     
+    //data_->addData(shape->getId(), id);
+    
     if(shapes_.size() > 1) {
         //Visualize in vtk
         //vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
@@ -72,6 +76,9 @@ int Correspondence::add(Shape* shape, vtkIdType id) {
     return 1;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// removes correspondence actor from renderer
 void Correspondence::remove() {
     for(int i = 0; i < actors_.size(); i++) {
         renderer_->RemoveActor(actors_[i]);
@@ -80,6 +87,18 @@ void Correspondence::remove() {
     renderer_->RemoveActor(linesActor_);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// add correspondence actor to renderer
+void Correspondence::add() {
+    for(int i = 0; i < actors_.size(); i++) {
+        renderer_->AddActor(actors_[i]);
+    }
+    
+    renderer_->AddActor(linesActor_);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void Correspondence::setSelected(bool selected) {
     if(selected) {
         linesActor_->GetProperty()->SetColor(1, 0, 0);
@@ -96,6 +115,8 @@ void Correspondence::setSelected(bool selected) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Correspondence::transform(Shape* shape) {
     for(int i = 0; i < shapes_.size(); i++) {
         if(shapes_[i] == shape) {

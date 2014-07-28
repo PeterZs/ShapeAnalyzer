@@ -17,11 +17,8 @@ public:
     }
     
     vector<vtkIdType>& getFaceIds() {
-        return faceIds_;
+        return correspondingIds_;
     }
-    
-private:
-    vector<vtkIdType> faceIds_;
 };
 
 #endif /* defined(FaceCorrespondenceData_H) */

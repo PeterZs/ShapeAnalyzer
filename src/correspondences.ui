@@ -27,7 +27,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QListWidget" name="listWidget"/>
+          <widget class="QListWidget" name="listPoints"/>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
@@ -68,7 +68,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QListWidget" name="listWidget_2"/>
+          <widget class="QListWidget" name="listFaces"/>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">

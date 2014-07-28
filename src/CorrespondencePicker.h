@@ -27,6 +27,7 @@
 
 #include "Shape.h"
 #include "Correspondence.h"
+#include "CorrespondenceData.h"
 
 //Class responsible for creating a correspondence
 class CorrespondencePicker {
@@ -65,9 +66,10 @@ protected:
     vtkSmartPointer<vtkPolyDataMapper> currentSelectionMapper_;
     
     vtkRenderer* renderer_;
+    
+    CorrespondenceData* data_;
 private:
     void visualizeMouseLine(Shape* shape, double point[3]);
-    
     
     Correspondence* correspondence_;
     int counter_;

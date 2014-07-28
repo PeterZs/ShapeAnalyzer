@@ -18,6 +18,8 @@ class PointCorrespondence : public Correspondence {
 public:
     PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);
     
+    PointCorrespondenceData* getData() { return (PointCorrespondenceData*) data_; }
+    
 private:
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType pointId);
     

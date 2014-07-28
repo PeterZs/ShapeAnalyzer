@@ -17,11 +17,8 @@ public:
     }
     
     vector<vtkIdType>& getPointIds() {
-        return pointIds_;
+        return correspondingIds_;
     }
-    
-private:
-    vector<vtkIdType> pointIds_;
 };
 
 #endif /* defined(PointCorrespondeceData_H) */

@@ -43,6 +43,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionOpenFile,                   SIGNAL(triggered()),
             this,                                   SLOT(slotOpenFile()));
     
+    connect(this->actionLoadCorrespondences,        SIGNAL(triggered()),
+            this,                                   SLOT(slotLoadCorrespondences()));
+    
     connect(this->actionSaveScene,                  SIGNAL(triggered()),
             this,                                   SLOT(slotSaveScene()));
 
@@ -593,6 +596,26 @@ void ShapeAnalyzer::slotOpenFile() {
         vtkOpenScene(filename.toStdString());
     } else if(filename.endsWith(".txt")) {
         vtkImportScene(filename.toStdString());
+    } else {
+        //TODO Error handling
+        ;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotLoadCorrespondences() {
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    tr(""),
+                                                    tr("Files (*.txt)"));
+    
+    if(filename.count() == 0)
+        return; //TODO Error handling...
+    
+    SceneReader reader = SceneReader();
+    
+    if(filename.endsWith(".txt")) {
+        reader.loadCorrespondences(filename.toStdString(), &pointData_, &faceData_, this->listShapes);
     } else {
         //TODO Error handling
         ;

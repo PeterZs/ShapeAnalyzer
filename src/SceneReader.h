@@ -9,13 +9,25 @@
 #ifndef __ShapeAnalyzer__SceneReader__
 #define __ShapeAnalyzer__SceneReader__
 
+#include "CorrespondenceData.h"
 #include "FaceCorrespondence.h"
+#include "FaceCorrespondenceData.h"
 #include "PointCorrespondence.h"
+#include "PointCorrespondenceData.h"
 #include "Set.h"
+
+#include "qt/qtListWidgetItem.h"
+
+#include <QInputDialog>
+#include <QListWidget>
+#include <QMessageBox>
+#include <QObject>
+#include <QString>
 
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <unordered_map>
 
 using namespace std;
 
@@ -25,16 +37,23 @@ public:
     SceneReader() {};
     ~SceneReader() {};
     
+    // correspondences
     static void exportPointCorrespondences(
                                Set<PointCorrespondenceData*, bool>* pointCorr,
                                Set<vtkActor*, Shape*>*              shapes,
                                string                               filename
                                );
     static void exportFaceCorrespondences(
-                               Set<FaceCorrespondenceData*, bool>*  pointCorr,
+                               Set<FaceCorrespondenceData*, bool>*  faceCorr,
                                Set<vtkActor*, Shape*>*              shapes,
                                string                               filename
                                );
+    static void loadCorrespondences(
+                                    string                                  filename,
+                                    Set<PointCorrespondenceData*, bool>*    pointCorr,
+                                    Set<FaceCorrespondenceData*, bool>*     faceCorr,
+                                    QListWidget*                            shapes
+                                    );
     
 private:
     static void exportCorrespondences(
@@ -42,6 +61,8 @@ private:
                                Set<vtkActor*, Shape*>*          shapeIds,
                                ofstream*                        os
                                );
+    static unordered_map<string, Shape*> createShapeMap(QListWidget* shapes);
+    static void createData(vector<Shape*> shapes, stringstream* ss, CorrespondenceData* data);
 };
 
 #endif /* defined(__ShapeAnalyzer__SceneReader__) */

@@ -47,9 +47,10 @@
 
 #include "Correspondence.h"
 #include "CorrespondencePicker.h"
-#include "CorrespondenceSet.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
+#include "SceneReader.h"
+#include "Set.h"
 #include "Shape.h"
 
 #include "qt/qtShapeInfoTab.h"
@@ -63,7 +64,6 @@
 
 #include "coloring/MetricColoring.h"
 
-#include "vtkGeodesic.h"
 #include "vtkOFFReader.h"
 #include "vtkToscaASCIIReader.h"
 
@@ -102,11 +102,6 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
                 it->second->transform(shape);
             }
             
-            // transform fps
-            for(unordered_map<vtkActor*, Shape*>::iterator it = sa->shapesByActor_.begin(); it != sa->shapesByActor_.end(); it++) {
-                it->second->transformFPS(t);
-            }
-            
             sa->qvtkWidget->GetRenderWindow()->Render();
         }
     };
@@ -127,6 +122,7 @@ private slots:
     virtual void slotClear();
 
     virtual void slotOpenFile();
+    virtual void slotLoadCorrespondences();
 
     virtual void slotOpenHelpWindow();
     virtual void slotOpenCorrespondenceWindowPoints();
@@ -155,6 +151,7 @@ private slots:
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
+    virtual void slotExportCorrespondences();
     virtual void slotSaveImage();
     
     virtual void slotTabShapeInfo(bool);
@@ -209,14 +206,14 @@ private:
     void addCorrespondence();
 
     //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
-    unordered_map<vtkActor*, Shape*> shapesByActor_;
-    //unordered_map<vtkActor*, Correspondence*> correspondencesByActor_;
+    Set<vtkActor*, Shape*> shapesByActor_;
     
     unordered_map<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
     unordered_map<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
-    CorrespondenceSet<PointCorrespondenceData> pointData_;
-    CorrespondenceSet<FaceCorrespondenceData> faceData_;
+    // all face and point correspondences data, the bool indicates if the data is visible
+    Set<PointCorrespondenceData*, bool> pointData_;
+    Set<FaceCorrespondenceData*, bool> faceData_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

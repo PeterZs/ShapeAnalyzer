@@ -49,6 +49,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionExportScene,                SIGNAL(triggered()),
             this,                                   SLOT(slotExportScene()));
     
+    connect(this->actionExportCorrespondences,      SIGNAL(triggered()),
+            this,                                   SLOT(slotExportCorrespondences()));
+    
     connect(this->actionSaveImage,                  SIGNAL(triggered()),
             this,                                   SLOT(slotSaveImage()));
     
@@ -225,27 +228,6 @@ void ShapeAnalyzer::qtInitializeSettings() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtInputDialogFPS() {
-    bool ok;
-    int samples = QInputDialog::getInt (
-                                        this,
-                                        tr("FPS"),
-                                        tr("Number of Samples"),
-                                        10, // value
-                                        1, // min
-                                        100, // max
-                                        1, // step size
-                                        &ok
-                                        );
-    // calculate fps if ok was given
-    if (ok) {
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        item->getItem()->setFPS(samples);
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
     bool ok;
     double opacity = QInputDialog::getDouble (
@@ -306,8 +288,6 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
     vector<QAction*> metrics = qtAddMetricMenu(&myMenu);
-    QAction* fpsAction      = myMenu.addAction("FPS");
-    QAction* voronoiAction  = myMenu.addAction("Voronoi Cells");
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
@@ -324,12 +304,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         currentShape = item->getItem();
         
         qtInputDialogOpacity(currentShape);
-    } else if (selectedItem == fpsAction) {
-        qtInputDialogFPS();
-    } else if (selectedItem == voronoiAction) {
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        item->getItem()->visualizeVoronoiCells();
-    } else {
+    }  else {
         // try if action is identifier for any factory
         Shape* currentShape;
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
@@ -641,6 +616,27 @@ void ShapeAnalyzer::slotExportScene() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotExportCorrespondences() {
+    SceneReader reader = SceneReader();
+    
+    QStringList types;
+    types << "Point Correspondences" << "Face Correspondences";
+    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types);
+    
+    if (save == types.value(0) &&  pointData_.size() > 0) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Point Correspondence Files (*.txt)"));
+    
+        reader.exportPointCorrespondences(&pointData_, &shapesByActor_, filename.toStdString());
+    }
+    
+    if (save == types.value(1) && faceData_.size() > 0) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Face Correspondence Files (*.txt)"));
+        
+        reader.exportFaceCorrespondences(&faceData_, &shapesByActor_, filename.toStdString());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveImage() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
     vtkSmartPointer<vtkCamera> oldCamera = renderer_->GetActiveCamera();
@@ -875,7 +871,7 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
     
     //triggers boxwidget to show up on new shape
-    shapesByActor_.insert(pair<vtkActor*, Shape*>(shape->getActor(), shape));
+    shapesByActor_.add(shape->getActor(), shape);
 }
 
 
@@ -1175,12 +1171,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
-    unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.find(actor);
-    if(it != shapesByActor_.end()) {
-        return it->second;
-    } else {
-        return nullptr;
-    }
+    return shapesByActor_.getValue(actor);
 }
 
 
@@ -1287,7 +1278,7 @@ void ShapeAnalyzer::clear() {
         Shape* shape = item->getItem();
         shape->remove();
 
-        shapesByActor_.erase(shape->getActor());
+        shapesByActor_.remove(shape->getActor());
         delete item;
     }
     
@@ -1339,18 +1330,18 @@ void ShapeAnalyzer::deleteCorrespondence(int i, bool deleteData = false) {
     
     // correspondence deleting
     if(this->actionPointCorrespondences->isChecked()) {
-        pointData_.deleteCorrespondence((PointCorrespondenceData*) item->getItem()->getData());
+        pointData_.remove((PointCorrespondenceData*) item->getItem()->getData());
         pointCorrespondencesByActor_.erase(item->getItem()->getLinesActor());
     } else {
-        faceData_.deleteCorrespondence((FaceCorrespondenceData*) item->getItem()->getData());
+        faceData_.remove((FaceCorrespondenceData*) item->getItem()->getData());
         faceCorrespondencesByActor_.erase(item->getItem()->getLinesActor());
     }
     
     if(!deleteData) {
         if(this->actionPointCorrespondences->isChecked()) {
-            pointData_.addCorrespondence((PointCorrespondenceData*) item->getItem()->getData(), false);
+            pointData_.add((PointCorrespondenceData*) item->getItem()->getData(), false);
         } else {
-            faceData_.addCorrespondence((FaceCorrespondenceData*) item->getItem()->getData(), false);
+            faceData_.add((FaceCorrespondenceData*) item->getItem()->getData(), false);
         }
     }
     
@@ -1403,7 +1394,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     // delete shape
     shape->remove();
-    shapesByActor_.erase(shape->getActor());
+    shapesByActor_.remove(shape->getActor());
 
     this->qvtkWidget->GetRenderWindow()->Render();
     
@@ -1422,7 +1413,7 @@ void ShapeAnalyzer::addCorrespondence() {
         // adding to face/point data
         if (this->actionPointCorrespondences->isChecked()) { // point correspondence
             PointCorrespondence* point = (PointCorrespondence*) correspondence;
-            pointData_.addCorrespondence(point->getData(), true);
+            pointData_.add(point->getData(), true);
             
             pickerCounter_ = 0;
             pointCorrespondencesByActor_.insert(pair<vtkActor*, PointCorrespondence*>(point->getLinesActor(), point));
@@ -1436,7 +1427,7 @@ void ShapeAnalyzer::addCorrespondence() {
             this->listCorrespondences->addItem(item);
         } else { // face correspondence
             FaceCorrespondence* face = (FaceCorrespondence*) correspondence;
-            faceData_.addCorrespondence(face->getData(), true);
+            faceData_.add(face->getData(), true);
             
             pickerCounter_ = 0;
             faceCorrespondencesByActor_.insert(pair<vtkActor*, FaceCorrespondence*>(face->getLinesActor(), face));

@@ -7,6 +7,7 @@
 #include <vtkCellArray.h>
 #include <vtkGlyph3D.h>
 #include <vtkIdList.h>
+#include <vtkLookUpTable.h>
 #include <vtkLinearTransform.h>
 #include <vtkMatrix4x4.h>
 #include <vtkObjectBase.h>
@@ -29,8 +30,6 @@
 #include <string>
 #include <sstream>
 
-#include "vtkGeodesic.h"
-
 
 using namespace std;
 
@@ -41,15 +40,6 @@ public:
     Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
     ~Shape() {}
-    
-    // Voronoi and FPS, delete later
-    vtkSmartPointer<vtkIdList>  getVoronoiCells(vtkSmartPointer<vtkIdList> points);
-    void                        visualizeVoronoiCells();
-    void                        visualizeVoronoiCells(vtkSmartPointer<vtkIdList> points);
-    
-    vtkSmartPointer<vtkIdList>  getFPS(unsigned numberSamples, int start = -1);
-    void                        setFPS(unsigned numberSamples, int start = -1);
-    void                        transformFPS(vtkLinearTransform* t);
     
     double                      calculateArea();
     unsigned                    getRandomPoint();

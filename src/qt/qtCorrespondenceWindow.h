@@ -17,7 +17,7 @@
 #include <QString>
 #include <QWidget>
 
-#include "../CorrespondenceSet.h"
+#include "../Set.h"
 #include "../FaceCorrespondenceData.h"
 #include "../PointCorrespondenceData.h"
 
@@ -39,18 +39,18 @@ public:
     
     // normal constructor
     qtCorrespondenceWindow(
-                           CorrespondenceSet<PointCorrespondenceData>* points,
-                           CorrespondenceSet<FaceCorrespondenceData>*  faces,
+                           Set<PointCorrespondenceData*, bool>* points,
+                           Set<FaceCorrespondenceData*, bool>*  faces,
                            QWidget * parent = 0,
                            Qt::WindowFlags f = 0
                            );
     ~qtCorrespondenceWindow() {}
     
-    CorrespondenceSet<PointCorrespondenceData>* getPointCorrespondences() const  {
+    Set<PointCorrespondenceData*, bool>* getPointCorrespondences() const  {
         return pointCorr_;
     }
     
-    CorrespondenceSet<FaceCorrespondenceData>* getFaceCorrespondences() const  {
+    Set<FaceCorrespondenceData*, bool>* getFaceCorrespondences() const  {
         return faceCorr_;
     }
     
@@ -59,8 +59,8 @@ private slots:
     virtual void slotOpenContextMenuFaces(const QPoint& point);
     
 private:
-    CorrespondenceSet<PointCorrespondenceData>* pointCorr_;
-    CorrespondenceSet<FaceCorrespondenceData>*  faceCorr_;
+    Set<PointCorrespondenceData*, bool>*    pointCorr_;
+    Set<FaceCorrespondenceData*, bool>*     faceCorr_;
 };
 
 

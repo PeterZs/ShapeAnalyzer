@@ -57,6 +57,16 @@ public:
     void remove();
     void add();
     
+    // serialization functions
+    
+//    ostream& write(ostream& os);
+//    
+//    friend ostream& operator<<(ostream& os, const Correspondence& correspondence);
+//    
+//    istream& read(istream& is);
+//    
+//    friend istream& operator>>(istream& is, Correspondence& correspondence);
+    
     
 protected:
     //protected contructor since class is abstract

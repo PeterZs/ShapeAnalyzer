@@ -14,8 +14,8 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-qtCorrespondenceWindow::qtCorrespondenceWindow( CorrespondenceSet<PointCorrespondenceData>* points,
-                                                CorrespondenceSet<FaceCorrespondenceData>* faces,
+qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bool>* points,
+                                                Set<FaceCorrespondenceData*, bool>* faces,
                                                 QWidget * parent,
                                                 Qt::WindowFlags f
                                                 )

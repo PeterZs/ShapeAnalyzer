@@ -17,6 +17,7 @@
 #include "../metrics/Metric.h"
 #include "../Shape.h"
 
+#include <vtkCellData.h>
 #include <vtkSmartPointer.h>
 #include <vtkLookupTable.h>
 

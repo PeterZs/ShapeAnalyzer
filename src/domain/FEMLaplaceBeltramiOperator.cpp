@@ -166,7 +166,7 @@ void FEMLaplaceBeltramiOperator::compute() {
     ierr = EPSPrintSolution(eps_, NULL);
     
     
-    ierr = EPSGetEigenvector(eps_, 25, xr, xi);
+    ierr = EPSGetEigenvector(eps_, 7, xr, xi);
     ierr = EPSSetFromOptions(eps_);
     
     

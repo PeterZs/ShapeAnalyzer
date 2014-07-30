@@ -5,8 +5,8 @@
 //  Abstract Class for Correspondences that are shown in the GUI. 
 //
 
-#ifndef Correspondence_H
-#define Correspondence_H
+#ifndef __ShapeAnalyzer__Correspondence__
+#define __ShapeAnalyzer__Correspondence__
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -19,7 +19,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
 
-#include "Shape.h"
+#include "../Shape.h"
 #include "CorrespondenceData.h"
 
 #include <vector>
@@ -92,4 +92,4 @@ private:
     vtkSmartPointer<vtkActor>           linesActor_; // lines actor
 };
 
-#endif
+#endif /* defined(__ShapeAnalyzer__Correspondence__) */

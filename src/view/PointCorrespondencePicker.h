@@ -11,7 +11,7 @@
 
 #include <vtkVertexGlyphFilter.h>
 
-#include "PointCorrespondence.h"
+#include "../domain/correspondences/PointCorrespondence.h"
 #include "CorrespondencePicker.h"
 
 class PointCorrespondencePicker : public CorrespondencePicker {

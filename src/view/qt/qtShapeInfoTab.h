@@ -16,7 +16,7 @@
 #include <QTableView>
 #include <QWidget>
 
-#include "../Shape.h"
+#include "../../domain/Shape.h"
 
 #include "qtListWidgetItem.h"
 

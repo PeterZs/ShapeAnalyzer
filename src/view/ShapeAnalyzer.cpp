@@ -294,6 +294,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
+    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace Beltrami eigenfunction");
     // ...
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -307,7 +308,14 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         currentShape = item->getItem();
         
         qtInputDialogOpacity(currentShape);
-    }  else {
+    } else if (selectedItem == laplaceBeltramiAction) {
+            Shape* currentShape;
+            qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+            currentShape = item->getItem();
+            
+            FEMLaplaceBeltramiOperator laplacian(currentShape);
+            laplacian.compute();
+    } else {
         // try if action is identifier for any factory
         Shape* currentShape;
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();

@@ -45,32 +45,32 @@
 #include <exception>
 #include <unordered_map>
 
-#include "Correspondence.h"
+
 #include "CorrespondencePicker.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
-#include "SceneReader.h"
-#include "Set.h"
-#include "Shape.h"
 
 #include "qt/qtShapeInfoTab.h"
 #include "qt/qtListWidgetItem.h"
 #include "qt/qtCorrespondenceWindow.h"
 
-#include "metrics/Metric.h"
-#include "metrics/MetricFactory.h"
+#include "../domain/correspondences/Correspondence.h"
+#include "../domain/io/SceneReader.h"
+#include "../domain/io/vtkOFFReader.h"
+#include "../domain/io/vtkToscaASCIIReader.h"
+#include "../domain/Set.h"
+#include "../domain/Shape.h"
+#include "../domain/metric/Metric.h"
+#include "../domain/metric/MetricFactory.h"
+#include "../domain/samplings/SamplingFactory.h"
 
-#include "samplings/SamplingFactory.h"
+#include "../domain/coloring/MetricColoring.h"
 
-#include "coloring/MetricColoring.h"
-
-#include "vtkOFFReader.h"
-#include "vtkToscaASCIIReader.h"
+#include "../domain/FEMLaplaceBeltramiOperator.h"
 
 #include "ui_help.h"
 #include "ui_settings.h"
 #include "ui_ShapeAnalyzer.h"
-
 
 using namespace std;
 

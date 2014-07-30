@@ -17,9 +17,9 @@
 #include <QString>
 #include <QWidget>
 
-#include "../Set.h"
-#include "../FaceCorrespondenceData.h"
-#include "../PointCorrespondenceData.h"
+#include "../../domain/Set.h"
+#include "../../domain/correspondences/FaceCorrespondenceData.h"
+#include "../../domain/correspondences/PointCorrespondenceData.h"
 
 #include "qtListWidgetItem.h"
 

@@ -9,14 +9,14 @@
 #ifndef __ShapeAnalyzer__SceneReader__
 #define __ShapeAnalyzer__SceneReader__
 
-#include "CorrespondenceData.h"
-#include "FaceCorrespondence.h"
-#include "FaceCorrespondenceData.h"
-#include "PointCorrespondence.h"
-#include "PointCorrespondenceData.h"
-#include "Set.h"
+#include "../correspondences/CorrespondenceData.h"
+#include "../correspondences/FaceCorrespondence.h"
+#include "../correspondences/FaceCorrespondenceData.h"
+#include "../correspondences/PointCorrespondence.h"
+#include "../correspondences/PointCorrespondenceData.h"
+#include "../Set.h"
 
-#include "qt/qtListWidgetItem.h"
+#include "../view/qt/qtListWidgetItem.h"
 
 #include <QInputDialog>
 #include <QListWidget>

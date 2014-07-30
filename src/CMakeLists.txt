@@ -6,6 +6,8 @@ endif()
 
 PROJECT(ShapeAnalyzer)
 
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
@@ -21,73 +23,76 @@ else()
   include(${QT_USE_FILE})
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+find_package(PETSc REQUIRED)
+find_package(SLEPc REQUIRED)
+
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${SLEPC_INCLUDES} ${PETSC_INCLUDES})
 
 file(GLOB_RECURSE UI_FILES *.ui)
-file(GLOB QT_WRAP *.h)
-file(GLOB CXX_FILES *.cxx)
-file(GLOB CPP_FILES *.cpp)
-file(GLOB_RECURSE AUTO_GENERATED (ui_*.h) | (*.cpp) )
-file(GLOB GEODESICS ${CMAKE_CURRENT_SOURCE_DIR}/geodesics/*)
-file(GLOB QT ${CMAKE_CURRENT_SOURCE_DIR}/qt/*)
-file(GLOB METRICS ${CMAKE_CURRENT_SOURCE_DIR}/metrics/*)
-file(GLOB SAMPLINGS ${CMAKE_CURRENT_SOURCE_DIR}/samplings/*)
-file(GLOB COLORINGS ${CMAKE_CURRENT_SOURCE_DIR}/coloring/*)
+file(GLOB_RECURSE QT_AUTO_GEN (ui_*.h) | (moc*) | (*automoc) )
 
-file(GLOB_RECURSE CORRESPONDENCES_HEADER *Correspondence*.h)
-file(GLOB_RECURSE CORRESPONDENCES_SOURCE (*Correspondence*.cxx | *Correspondence*.cpp))
-file(GLOB VTK_HEADER vtk*.h)
-file(GLOB VTK_SOURCE vtk*.cxx)
-file(GLOB SHAPE_HEADER *Shape*.h)
-file(GLOB SHAPE_SOURCE *Shape*.cxx)
-file(GLOB_RECURSE ATTRIBUTES attributes/*)
+file(GLOB DOMAIN_METRIC_3RDPARTY_GEODESIC domain/metric/3rdparty/geodesic/* )
+file(GLOB DOMAIN_METRIC domain/metric/* )
+file(GLOB DOMAIN_IO domain/io/* )
+file(GLOB DOMAIN_SAMPLINGS domain/samplings/* )
+file(GLOB DOMAIN_CORRESPONDENCES domain/correspondences/* )
+file(GLOB DOMAIN_ATTRIBUTES domain/attributes/* )
+file(GLOB DOMAIN_COLORING domain/coloring/* )
+file(GLOB DOMAIN domain/* )
+
+
+file(GLOB VIEW_QT view/qt/* )
+file(GLOB VIEW view/* )
+
 
 set(HEADERS_HAVING_Q_OBJECT)
 foreach(header ${QT_WRAP})
-    file(STRINGS "${header}" lines REGEX "Q_OBJECT")
-    if(lines)
-        list(APPEND HEADERS_HAVING_Q_OBJECT "${header}")
-    endif()
+  file(STRINGS "${header}" lines REGEX "Q_OBJECT")
+  if(lines)
+    list(APPEND HEADERS_HAVING_Q_OBJECT "${header}")
+  endif()
 endforeach()
 
 
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )
-#  qt5_wrap_cpp(ShapeAnalyzerMocs ${HEADERS_HAVING_Q_OBJECT})
-  # CMAKE_AUTOMOC in ON so the MocHdrs will be automatically wrapped.
-add_executable(ShapeAnalyzer MACOSX_BUNDLE ${CXX_FILES} ${CPP_FILES} ${GEODESICS} ${QT} ${METRICS} ${SAMPLINGS} ${COLORINGS} ${UISrcs} ${QT_WRAP} ${ATTRIBUTES})
+# qt5_wrap_cpp(ShapeAnalyzerMocs ${HEADERS_HAVING_Q_OBJECT})
+# CMAKE_AUTOMOC in ON so the MocHdrs will be automatically wrapped.
+  add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${QT_AUTO_GEN} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_IO} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN} ${VIEW_QT} ${VIEW})
   qt5_use_modules(ShapeAnalyzer Core Gui)
-  target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES})
+  target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES} ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES})
 else()
   # might not work
   QT4_WRAP_UI(UISrcs ${UI_FILES})
   QT4_WRAP_CPP(MOCSrcs ${QT_WRAP})
-add_executable(ShapeAnalyzer MACOSX_BUNDLE ${CXX_FILES} ${CPP_FILES} ${GEODESICS} ${QT} ${METRICS} ${SAMPLINGS} ${COLORINGS} ${UISrcs} ${QT_WRAP} ${ATTRIBUTES})
+  add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${QT_AUTO_GEN} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_IO} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN} ${VIEW_QT} ${VIEW})
 
   if(VTK_LIBRARIES)
     if(${VTK_VERSION} VERSION_LESS "6")
-      target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES} QVTK)
+      target_link_libraries(ShapeAnalyzer ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES} ${VTK_LIBRARIES} QVTK)
     else()
-      target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES})
+      target_link_libraries(ShapeAnalyzer ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES} ${VTK_LIBRARIES})
     endif()
   else()
-    target_link_libraries(ShapeAnalyzer vtkHybrid QVTK vtkViews ${QT_LIBRARIES})
+    target_link_libraries(ShapeAnalyzer ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES} vtkHybrid QVTK vtkViews ${QT_LIBRARIES})
   endif()
 endif()
 
-source_group("Geodesics" FILES ${GEODESICS})
-source_group("Correspondences\\Header Files" FILES ${CORRESPONDENCES_HEADER})
-source_group("Correspondences\\Source Files" FILES ${CORRESPONDENCES_SOURCE})
-source_group("VTK\\Header Files" FILES ${VTK_HEADER})
-source_group("VTK\\Source Files" FILES ${VTK_SOURCE})
-source_group("Shapes\\Header Files" FILES ${SHAPE_HEADER})
-source_group("Shapes\\Source Files" FILES ${SHAPE_SOURCE})
-source_group("ShapeAnalyzer" FILES ShapeAnalyzer.h ShapeAnalyzer.cxx ShapeAnalyzerDriver.cxx)
-source_group("vtk Reader" FILES ${VTKREADER})
-source_group("QT" FILES ${QT})
-source_group("Metrics" FILES ${METRICS})
-source_group("Samplings" FILES ${SAMPLINGS})
-source_group("Coloring" FILES ${COLORINGS})
-source_group("Attributes" FILES ${ATTRIBUTES} attributes/Descriptor.h)
-source_group("UI Files" FILES  ${UI_FILES})
+
+
+source_group("qt_auto_generated" FILES ${QT_AUTO_GEN})
+
+source_group("domain\\metric\\3rdparty\\geodesic" FILES ${DOMAIN_METRIC_3RDPARTY_GEODESIC})
+source_group("domain\\metric" FILES ${DOMAIN_METRIC})
+source_group("domain\\io" FILES ${DOMAIN_IO})
+source_group("domain\\samplings" FILES ${DOMAIN_SAMPLINGS})
+source_group("domain\\correspondences" FILES ${DOMAIN_CORRESPONDENCES})
+source_group("domain\\attributes" FILES ${DOMAIN_ATTRIBUTES})
+source_group("domain\\coloring" FILES ${DOMAIN_COLORING})
+source_group("domain" FILES ${DOMAIN})
+source_group("view\\qt" FILES ${VIEW_QT})
+source_group("view" FILES ${VIEW})
+
+

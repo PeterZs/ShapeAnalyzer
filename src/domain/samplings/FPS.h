@@ -13,7 +13,7 @@
 
 #include "ShapeSampling.h"
 
-#include "../metrics/Metric.h"
+#include "../metric/Metric.h"
 
 class FPS : public ShapeSampling {
 public:

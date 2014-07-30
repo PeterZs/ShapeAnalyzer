@@ -25,9 +25,9 @@
 #include <list>
 #include <algorithm>
 
-#include "Shape.h"
-#include "Correspondence.h"
-#include "CorrespondenceData.h"
+#include "../domain/Shape.h"
+#include "../domain/correspondences/Correspondence.h"
+#include "../domain/correspondences/CorrespondenceData.h"
 
 //Class responsible for creating a correspondence
 class CorrespondencePicker {

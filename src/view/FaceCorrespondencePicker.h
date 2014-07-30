@@ -10,7 +10,7 @@
 #define FaceCorrespondencePicker_H
 
 #include "CorrespondencePicker.h"
-#include "FaceCorrespondence.h"
+#include "../domain/correspondences/FaceCorrespondence.h"
 
 class FaceCorrespondencePicker : public CorrespondencePicker {
 public:

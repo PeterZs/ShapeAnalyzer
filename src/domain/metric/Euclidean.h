@@ -12,9 +12,10 @@
 #include <iostream>
 
 #include "Metric.h"
+#include "../Shape.h"
+
 
 #include <vtkPoints.h>
-#include <Shape.h>
 #include <vtkSmartPointer.h>
 
 class Euclidean : public Metric {

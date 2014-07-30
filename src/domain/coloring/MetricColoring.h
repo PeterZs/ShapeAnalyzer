@@ -14,7 +14,7 @@
 #include "ShapeFaceColoring.h"
 #include "ShapePointColoring.h"
 
-#include "../metrics/Metric.h"
+#include "../metric/Metric.h"
 #include "../Shape.h"
 
 #include <vtkCellData.h>

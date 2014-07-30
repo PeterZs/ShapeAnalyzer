@@ -12,7 +12,7 @@
 #include "Euclidean.h"
 #include "Geodesic.h"
 
-#include <Shape.h>
+#include "../Shape.h"
 
 using namespace std;
 

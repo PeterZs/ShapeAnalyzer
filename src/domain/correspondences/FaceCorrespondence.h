@@ -14,7 +14,7 @@
 #include <vtkTriangle.h>
 
 #include "Correspondence.h"
-#include "Shape.h"
+#include "../Shape.h"
 #include "FaceCorrespondenceData.h"
 
 class FaceCorrespondence : public Correspondence {

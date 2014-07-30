@@ -14,7 +14,7 @@
 #include <vtkIdList.h>
 #include <vtkSmartPointer.h>
 
-#include <Shape.h>
+#include "../Shape.h"
 
 using namespace std;
 

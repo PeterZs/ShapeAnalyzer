@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "Metric.h"
-#include <Shape.h>
+#include "../Shape.h"
 
 #include <vtkCellData.h>
 #include <vtkIdList.h>
@@ -25,8 +25,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnsignedCharArray.h>
 
-#include "geodesics/geodesic_algorithm_exact.h"
-#include "geodesics/geodesic_error.h"
+#include "3rdparty/geodesic/geodesic_algorithm_exact.h"
+#include "3rdparty/geodesic/geodesic_error.h"
 
 using namespace geodesic;
 using namespace std;

@@ -88,12 +88,10 @@ void SceneReader::loadCorrespondences(string                                file
     char type;
     unsigned int numberOfShapes, numberOfCorrespondences;
     
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> type >> numberOfShapes >> numberOfCorrespondences;
-    }
+    stringstream ss;
+    getline(is, line);
+    ss << line;
+    ss >> type >> numberOfShapes >> numberOfCorrespondences;
     
     // stop if there not enough shapes to match
     if (shapes->count() >= numberOfShapes) {

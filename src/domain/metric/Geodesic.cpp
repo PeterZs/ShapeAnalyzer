@@ -17,9 +17,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // initialization of the internal data structure and an precomputation-free
 // algorithm
-Geodesic::Geodesic(Shape* shape) {
+Geodesic::Geodesic(Shape* shape) : Metric(shape) {
     identifier_ = "Geodesic";
-    shape_ = shape;
     
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
@@ -49,11 +48,11 @@ Geodesic::~Geodesic() {
 // Returns a vector with all distances on the shape to the source s ordered
 // by their id
 // Notice that this will remove the current sources and precomputed information
-vector<double> Geodesic::getAllDistances(unsigned int s) {
-    // initialize result vector
-    vector<double> distances;
-    distances.resize(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
-    
+void Geodesic::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) {
+    if(s == -1) {
+        s = rand() % shape_->getPolyData()->GetPoints()->GetNumberOfPoints();
+    }
+
     // initialize algorithm for this source
     SurfacePoint source(&mesh_.vertices()[s]);
     vector<geodesic::SurfacePoint> all_sources(1,source);
@@ -61,11 +60,9 @@ vector<double> Geodesic::getAllDistances(unsigned int s) {
         algorithm_->propagate(all_sources);
     } catch (geodesic_error& e) {
         cout << e.what() << '\n';
-        return distances;
     }
     
-    for(unsigned i = 0; i< mesh_.vertices().size(); ++i)
-    {
+    for(vtkIdType i = 0; i< mesh_.vertices().size(); ++i) {
         geodesic::SurfacePoint p(&mesh_.vertices()[i]);
         
         double distance;
@@ -73,20 +70,17 @@ vector<double> Geodesic::getAllDistances(unsigned int s) {
         algorithm_->best_source(p,distance);		//for a given surface point, find closets source and distance to this source
         } catch (geodesic_error& e) {
             cout << e.what() << '\n';
-            return distances;
         }
         
-        distances[i] = distance;
+        distances.getScalars()->SetValue(i, distance);
     }
-    
-    return distances;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Returns distance between a and b
 // Notice that this will remove the current sources and precomputed information
 // about these
-double Geodesic::getDistance(unsigned a, unsigned b) {
+double Geodesic::getDistance(vtkIdType a, vtkIdType b) {
     SurfacePoint source(&mesh_.vertices()[a]);
     SurfacePoint target(&mesh_.vertices()[b]);
     
@@ -110,12 +104,12 @@ double Geodesic::getDistance(unsigned a, unsigned b) {
 // Returns the point furthest to all points in sources
 // Notice that this will remove the current sources and precomputed information
 // about these if the input list is not the same as the current source list
-unsigned Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
+vtkIdType Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
     double distance = 0;
-    unsigned id;
+    vtkIdType id;
     
     
-    unsigned number = sourceList_->GetNumberOfIds();
+    vtkIdType number = sourceList_->GetNumberOfIds();
     sourceList_->IntersectWith(sources);
     
     // sources are not the same as the given list, recompute
@@ -157,7 +151,7 @@ unsigned Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sourc
 ///////////////////////////////////////////////////////////////////////////////
 // changes the source to points with id s
 // other already computed distances will be lost
-void Geodesic::changeSourcePoint(unsigned s) {
+void Geodesic::changeSourcePoint(vtkIdType s) {
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
     
@@ -189,9 +183,9 @@ void Geodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
 
 ///////////////////////////////////////////////////////////////////////////////
 // returns id of points furthest to all sources
-unsigned Geodesic::findPointFurthestToAllSources() {
+vtkIdType Geodesic::findPointFurthestToAllSources() {
     
-    unsigned id = 0;
+    vtkIdType id = 0;
     double distance = 0.0;
     
     // iterate over all points

@@ -9,12 +9,15 @@
 #ifndef ShapeAnalyzer_ShapeAttribute_h
 #define ShapeAnalyzer_ShapeAttribute_h
 
-template<T>
+template<class T>
 class ShapeAttribute {
 public:
-    virtual ~ShapeAttribute() {};
+    ~ShapeAttribute() {};
     
-    virtual T getValue() = 0;
+    T* getValue();
+private:
+    T* value_;
+    
 };
 
 

@@ -7,3 +7,6 @@
 //
 
 #include "LaplaceBeltramiOperator.h"
+
+LaplaceBeltramiOperator::LaplaceBeltramiOperator(Shape* shape) : shape_(shape) {
+}

@@ -20,21 +20,26 @@
 
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
-    FEMLaplaceBeltramiOperator(Shape* shape) : LaplaceBeltramiOperator(shape) {
-        
-    }
+    FEMLaplaceBeltramiOperator(Shape* shape);
     
-    virtual void compute();
+    virtual void initialize();
     
+    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction);
     
     virtual ~FEMLaplaceBeltramiOperator();
 private:
 
     void setupMatrices();
     
+    inline void getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces);
+    inline PetscScalar getMass(double* a, double* b, double* c);
+    inline PetscScalar getCotan(double* a, double* b, double* c);
+    
     PetscScalar* eigenvector_;
     Mat C_;
     Mat M_;
+    Vec xi_;
+    Vec xr_;
     EPS eps_; // eigenproblem solver context
 };
 

@@ -14,14 +14,14 @@
 #ifndef __ShapeAnalyzer__CorrespondenceColoring__
 #define __ShapeAnalyzer__CorrespondenceColoring__
 
-#include "ShapeFaceColoring.h"
-#include "ShapePointColoring.h"
+#include "FaceColoring.h"
+#include "PointColoring.h"
 
 #include "../Shape.h"
 
 using namespace std;
 
-class CorrespondenceColoring : public ShapeFaceColoring, public ShapePointColoring {
+class CorrespondenceColoring : public FaceColoring, public PointColoring {
 public:
     CorrespondenceColoring(vector<Shape*> shapes);
     

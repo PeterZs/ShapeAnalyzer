@@ -14,7 +14,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Euclidean::Euclidean(Shape* shape) {
+Euclidean::Euclidean(Shape* shape) : Metric(shape) {
     identifier_ = "Euclidean";
     shape_ = shape;
 }
@@ -26,7 +26,7 @@ Euclidean::Euclidean(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-double Euclidean::getDistance(unsigned int a, unsigned int b) {
+double Euclidean::getDistance(vtkIdType a, vtkIdType b) {
     double p1[3], p2[3];
     shape_->getPolyData()->GetPoints()->GetPoint(a, p1);
     shape_->getPolyData()->GetPoints()->GetPoint(b, p2);
@@ -36,21 +36,20 @@ double Euclidean::getDistance(unsigned int a, unsigned int b) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<double> Euclidean::getAllDistances(unsigned source) {
-    vector<double> distances;
-    distances.resize(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
-    
-    for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
-        distances[i] = getDistance(source, i);
+void Euclidean::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
+    if(source == -1) {
+        source = rand() % shape_->getPolyData()->GetPoints()->GetNumberOfPoints();
     }
-    
-    return distances;
+
+    for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
+        distances.getScalars()->SetValue(i, getDistance(source, i));
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-unsigned Euclidean::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
+vtkIdType Euclidean::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
     double dist = 0;
-    unsigned id;
+    vtkIdType id;
     
     // iterate over all points on the shape
     for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {

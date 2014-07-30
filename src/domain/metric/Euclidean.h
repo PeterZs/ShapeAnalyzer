@@ -22,9 +22,9 @@ class Euclidean : public Metric {
 public:
     Euclidean(Shape* shape);
     
-    virtual double getDistance(unsigned a, unsigned b);
-    virtual vector<double> getAllDistances(unsigned source);
-    virtual unsigned getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
+    virtual double getDistance(vtkIdType a, vtkIdType b);
+    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source = -1);
+    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
     
 };
 

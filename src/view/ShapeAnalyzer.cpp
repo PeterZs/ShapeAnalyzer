@@ -123,6 +123,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     this->vtkSetup();
     
     qtInitializeSettings();
+    
+    //Initialize Slepc for eigenfunction computation
+    SlepcInitializeNoArguments();
 }
 
 
@@ -237,10 +240,10 @@ void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
                                              this,
                                              tr("Opacity"),
                                              tr("Choose a value between 0 and 1"),
-                                             1.0,
+                                             shape->getActor()->GetProperty()->GetOpacity(),
                                              0.0,
                                              1.0,
-                                             2,
+                                             0.1,
                                              &ok
                                            );
     // change opacity if ok was given
@@ -265,6 +268,26 @@ void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
     if (ok) {
         item->setText(label);
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+vtkIdType ShapeAnalyzer::qtInputDialogChooseEigenfunction(Shape* shape) {
+    bool ok;
+    vtkIdType eigenfunction = QInputDialog::getInt(
+                                              this,
+                                              tr("Eigenfunction"),
+                                              tr("Choose an eigenfunction"),
+                                              0,
+                                              0,
+                                              std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
+                                              1,
+                                              &ok
+                                              );
+    // change opacity if ok was given
+    if (ok) {
+        return eigenfunction;
+    }
+    return -1;
 }
 
 
@@ -294,7 +317,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
-    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace Beltrami eigenfunction");
+    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
     // ...
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -309,12 +332,26 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         qtInputDialogOpacity(currentShape);
     } else if (selectedItem == laplaceBeltramiAction) {
-            Shape* currentShape;
-            qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-            currentShape = item->getItem();
-            
-            FEMLaplaceBeltramiOperator laplacian(currentShape);
-            laplacian.compute();
+        Shape* currentShape;
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        currentShape = item->getItem();
+        
+        int i = qtInputDialogChooseEigenfunction(currentShape);
+        if(i == -1) {
+            return;
+        }
+        if(currentShape != currentShape_) {
+            currentShape_ = currentShape;
+            delete laplacian_;
+            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape);
+            laplacian_->initialize();
+        }
+        
+        ScalarPointAttribute eigenfunction(currentShape);
+        laplacian_->getEigenfunction(i, eigenfunction);
+        
+        PointColoring coloring(currentShape, &eigenfunction);
+        coloring.color();
     } else {
         // try if action is identifier for any factory
         Shape* currentShape;
@@ -326,8 +363,10 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         for(vector<QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
             if (selectedItem == *it) {
                 Metric* m = metricFactory.produce(selectedItem->text().toStdString(), currentShape);
-                MetricColoring color = MetricColoring(m);
-                color.colorShapeFaces();
+                ScalarPointAttribute distances(currentShape);
+                m->getAllDistances(distances);
+                PointColoring coloring(currentShape, &distances);
+                coloring.color();
             }
         }
     }

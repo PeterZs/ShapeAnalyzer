@@ -87,15 +87,15 @@ public:
     virtual ~Geodesic();
     
     // from abstract class Metric
-    virtual double getDistance(unsigned a, unsigned b);
-    virtual vector<double> getAllDistances(unsigned source);
-    virtual unsigned getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
+    virtual double getDistance(vtkIdType a, vtkIdType b);
+    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source = -1);
+    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
     
     // Geodesic functions
-    void        changeSourcePoint(unsigned source);
+    void        changeSourcePoint(vtkIdType source);
     void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
     
-    unsigned    findPointFurthestToAllSources();
+    vtkIdType    findPointFurthestToAllSources();
     
 private:
     double  calculateLengthOfPath(vector<SurfacePoint> path);

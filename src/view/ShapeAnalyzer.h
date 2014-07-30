@@ -44,6 +44,7 @@
 
 #include <exception>
 #include <unordered_map>
+#include <algorithm>
 
 
 #include "CorrespondencePicker.h"
@@ -63,8 +64,7 @@
 #include "../domain/metric/Metric.h"
 #include "../domain/metric/MetricFactory.h"
 #include "../domain/samplings/SamplingFactory.h"
-
-#include "../domain/coloring/MetricColoring.h"
+#include "../domain/coloring/PointColoring.h"
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
 
@@ -109,8 +109,12 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
 public:
     ShapeAnalyzer();
     ~ShapeAnalyzer() {
+
         delete correspondencePicker_;
         delete dialogSettings_;
+        delete laplacian_;
+        
+        SlepcFinalize();
     };
     
     QList<QListWidgetItem *> getShapes();
@@ -178,6 +182,7 @@ private:
     void qtInputDialogFPS();
     void qtInputDialogRename(QListWidgetItem* item);
     void qtInputDialogOpacity(Shape* shape);
+    vtkIdType qtInputDialogChooseEigenfunction(Shape* shape);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
@@ -222,6 +227,8 @@ private:
     
     CorrespondencePicker* correspondencePicker_;
     
+    LaplaceBeltramiOperator* laplacian_;
+    Shape* currentShape_;
     
     //QT
     QActionGroup* actionGroupCorrespondenceType;

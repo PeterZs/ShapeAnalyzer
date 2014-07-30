@@ -1,38 +1,35 @@
 //
-//  PointAttribute.h
+//  FaceAttribute.h
 //  ShapeAnalyzer
 //
-//  Assings a double value to each vertex of the referenced shape.
+//  Assigns a double value to each face of the referenced shape.
 //
 //  Created by Zorah on 05.06.14.
 //
 //
 
-#ifndef ShapeAnalyzer_PointAttribute_h
-#define ShapeAnalyzer_PointAttribute_h
+#ifndef ShapeAnalyzer_ComplexFaceAttribute_h
+#define ShapeAnalyzer_ComplexFaceAttribute_h
 
 #include "../Shape.h"
 
-#include <vtkPolyData.h>
-
 template<class T>
-class PointAttribute {
+class ComplexFaceAttribute {
     
 public:
-    PointAttribute(Shape* shape) {
+    ~ComplexFaceAttribute() {};
+    
+    ComplexFaceAttribute(Shape* shape) {
         shape_ = shape;
         values = new T[shape->getPolyData()->getNumberOfPoints()];
     }
-    
-    ~PointAttribute() {
-    };
-    
-    // the size of the returned array must be equal to the number of vertices of the shape
+        
+    // the size of the returned array must be equal to the number of faces of the shape
     // the order of the values must correspond to the one in the vtkPolyData structure of the shape
     T* getValues() { return values_ }
     Shape* getShape() { return shape_; }
     
-protected:
+private:
     Shape* shape_;
     T* values_;
 };

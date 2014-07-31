@@ -118,6 +118,7 @@ public:
     };
     
     QList<QListWidgetItem *> getShapes();
+    void render();
     
 private slots:
     //QT slots
@@ -213,8 +214,8 @@ private:
     //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     Set<vtkActor*, Shape*> shapesByActor_;
     
-    unordered_map<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
-    unordered_map<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
+    Set<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
+    Set<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
     // all face and point correspondences data, the bool indicates if the data is visible
     Set<PointCorrespondenceData*, bool> pointData_;

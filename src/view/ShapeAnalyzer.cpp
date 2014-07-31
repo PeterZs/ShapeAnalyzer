@@ -164,6 +164,11 @@ QList<QListWidgetItem *> ShapeAnalyzer::getShapes() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::render() {
+    this->qvtkWidget->GetRenderWindow()->Render();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions handling QT 
@@ -594,7 +599,15 @@ void ShapeAnalyzer::slotOpenHelpWindow() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenCorrespondenceWindowFaces() {
     
-    qtCorrespondenceWindow* win = new qtCorrespondenceWindow(&pointData_, &faceData_, this);
+    qtCorrespondenceWindow* win = new qtCorrespondenceWindow(
+                                                             &pointData_,
+                                                             &faceData_,
+                                                             &pointCorrespondencesByActor_,
+                                                             &faceCorrespondencesByActor_,
+                                                             this->listCorrespondences,
+                                                             this
+                                                             );
+    win->tabWidget->setCurrentIndex(1);
     win->show();
     
 }
@@ -603,7 +616,14 @@ void ShapeAnalyzer::slotOpenCorrespondenceWindowFaces() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenCorrespondenceWindowPoints() {
     
-    qtCorrespondenceWindow* win = new qtCorrespondenceWindow(&pointData_, &faceData_, this);
+    qtCorrespondenceWindow* win = new qtCorrespondenceWindow(
+                                                             &pointData_,
+                                                             &faceData_,
+                                                             &pointCorrespondencesByActor_,
+                                                             &faceCorrespondencesByActor_,
+                                                             this->listCorrespondences,
+                                                             this
+                                                             );
     win->show();
     
 }
@@ -811,7 +831,7 @@ void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
-        Shape* selectedShape = dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->currentItem())->getItem();
+        Shape* selectedShape = ((qtListWidgetItem<Shape>*) listShapes->currentItem())->getItem();
         if(this->actionTransformShapes->isChecked()) {
             selectedShape->getBoxWidget()->On();
         } else {
@@ -851,10 +871,10 @@ void ShapeAnalyzer::slotAddCorrespondencesMode() {
 void ShapeAnalyzer::slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous) {
     if(this->actionTransformShapes->isChecked()) {
         if(current != nullptr) {
-            dynamic_cast<qtListWidgetItem<Shape>*>(current)->getItem()->getBoxWidget()->On();
+            ((qtListWidgetItem<Shape>*) current)->getItem()->getBoxWidget()->On();
             
             if(previous != nullptr) {
-                dynamic_cast<qtListWidgetItem<Shape>*>(previous)->getItem()->getBoxWidget()->Off();
+                ((qtListWidgetItem<Shape>*) previous)->getItem()->getBoxWidget()->Off();
             }
         }
     }
@@ -879,11 +899,11 @@ void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* curren
     // only change color if there is a selection
     if(current != nullptr) {
         // set current correspondence red
-        dynamic_cast<qtListWidgetItem<Correspondence>*>(current)->getItem()->setSelected(true);
+        ((qtListWidgetItem<Correspondence>*) current)->getItem()->setSelected(true);
         
         //if there exists a previous selection set previous correspondence to green
         if(previous != nullptr) {
-            dynamic_cast<qtListWidgetItem<Correspondence>*>(previous)->getItem()->setSelected(false);
+            ((qtListWidgetItem<Correspondence>*) previous)->getItem()->setSelected(false);
         }
         
         // update
@@ -1122,7 +1142,7 @@ void ShapeAnalyzer::vtkSaveScene(string filename) {
     
     
     for(int i = 0; i < listShapes->count(); i++) {
-        dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem()->write(os);
+        ((qtListWidgetItem<Shape>*) listShapes->item(i))->getItem()->write(os);
     }
     
     
@@ -1137,7 +1157,7 @@ void ShapeAnalyzer::vtkExportScene(string filename) {
     os << shapesByActor_.size() << endl;
     os << lastInsertShapeID_ << endl;
     for(int i = 0; i < listShapes->count(); i++) {
-        os << *(dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem());
+        os << *(((qtListWidgetItem<Shape>*) listShapes->item(i))->getItem());
     }
     os.close();
 }
@@ -1190,7 +1210,7 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
 void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     command->AbortFlagOn();
     for(int i = 0; i < listCorrespondences->count(); i++) {
-        if(dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i))->getItem() == correspondence) {
+        if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem() == correspondence) {
             listCorrespondences->setCurrentRow(i);
             if(vtkEvent == vtkCommand::RightButtonPressEvent) {
                 qtShowContextMenuCorrepondences(pos);
@@ -1221,7 +1241,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
     } else {
         //select item in list if clicked on shape
         for(int i = 0; i < listShapes->count(); i++) {
-            if(dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i))->getItem() == shape) {
+            if(((qtListWidgetItem<Shape>*) listShapes->item(i))->getItem() == shape) {
                 listShapes->setCurrentRow(i);
                 if(vtkEvent == vtkCommand::RightButtonPressEvent && !this->actionTransformShapes->isChecked()) {
                     command->AbortFlagOn();
@@ -1247,18 +1267,12 @@ Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence* ShapeAnalyzer::findCorrespondenceByActor(vtkActor *actor) {
-    auto it = pointCorrespondencesByActor_.find(actor);
-    if(it != pointCorrespondencesByActor_.end()) {
-        return it->second;
+    
+    if(pointCorrespondencesByActor_.contains(actor)) {
+        return pointCorrespondencesByActor_.getValue(actor);
     }
     
-    auto it2 = faceCorrespondencesByActor_.find(actor);
-    
-    if(it2 != faceCorrespondencesByActor_.end()) {
-        return it->second;
-    }
-    
-    return nullptr;
+    return faceCorrespondencesByActor_.getValue(actor);
 }
 
 
@@ -1329,7 +1343,7 @@ void ShapeAnalyzer::clear() {
     //delete all correspondences
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
-        qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
+        qtListWidgetItem<Correspondence> *item = (qtListWidgetItem<Correspondence>*) listCorrespondences->item(i);
         Correspondence *correspondence = item->getItem();
         
         delete item;
@@ -1344,7 +1358,7 @@ void ShapeAnalyzer::clear() {
     // delete all shapes
     for(int i = listShapes->count()-1; i > -1; i--) {
         //get shape
-        qtListWidgetItem<Shape> *item = dynamic_cast<qtListWidgetItem<Shape>*>(listShapes->item(i));
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) listShapes->item(i);
         Shape* shape = item->getItem();
         shape->remove();
 
@@ -1373,7 +1387,7 @@ void ShapeAnalyzer::clearCorrespondences() {
     //delete all correspondences
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
-        qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
+        qtListWidgetItem<Correspondence> *item = (qtListWidgetItem<Correspondence>*) listCorrespondences->item(i);
         Correspondence *correspondence = item->getItem();
         
         delete item;
@@ -1395,16 +1409,16 @@ void ShapeAnalyzer::deleteCorrespondence(int i, bool deleteData = false) {
     // qt
     listCorrespondences->disconnect();
     
-    qtListWidgetItem<Correspondence> *item = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(i));
+    qtListWidgetItem<Correspondence> *item = (qtListWidgetItem<Correspondence>*) listCorrespondences->item(i);
 
     
     // correspondence deleting
     if(this->actionPointCorrespondences->isChecked()) {
         pointData_.remove((PointCorrespondenceData*) item->getItem()->getData());
-        pointCorrespondencesByActor_.erase(item->getItem()->getLinesActor());
+        pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     } else {
         faceData_.remove((FaceCorrespondenceData*) item->getItem()->getData());
-        faceCorrespondencesByActor_.erase(item->getItem()->getLinesActor());
+        faceCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     }
     
     if(!deleteData) {
@@ -1431,7 +1445,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     listShapes->disconnect();
     
     // qt
-    qtListWidgetItem<Shape> *item = dynamic_cast<qtListWidgetItem<Shape>*>(this->listShapes->item(i));
+    qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) this->listShapes->item(i);
     Shape* shape = item->getItem();
     
     
@@ -1443,7 +1457,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     //iterate through the correspondence list BACKWARDS from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete. Then remove items from list
     for(int j = listCorrespondences->count()-1; j > -1; j--) {
         //get correspondence
-        Correspondence *correspondence = dynamic_cast<qtListWidgetItem<Correspondence>*>(listCorrespondences->item(j))->getItem();
+        Correspondence *correspondence = ((qtListWidgetItem<Correspondence>*) listCorrespondences->item(j))->getItem();
         
         //check whether left or right shape of correspondence equals our shape that we want to delete
         for(int i = 0; i < correspondence->getShapes().size(); i++) {
@@ -1452,8 +1466,8 @@ void ShapeAnalyzer::deleteShape(int i) {
                 delete listCorrespondences->item(j);
                 
                 //remove correspondence from list
-                pointCorrespondencesByActor_.erase(correspondence->getLinesActor());
-                faceCorrespondencesByActor_.erase(correspondence->getLinesActor());
+                pointCorrespondencesByActor_.remove(correspondence->getLinesActor());
+                faceCorrespondencesByActor_.remove(correspondence->getLinesActor());
                 
                 //destroy correspondence object
                 correspondence->remove();
@@ -1486,7 +1500,7 @@ void ShapeAnalyzer::addCorrespondence() {
             pointData_.add(point->getData(), true);
             
             pickerCounter_ = 0;
-            pointCorrespondencesByActor_.insert(pair<vtkActor*, PointCorrespondence*>(point->getLinesActor(), point));
+            pointCorrespondencesByActor_.add(point->getLinesActor(), point);
             
             // add to qt
             lastInsertCorresondenceID_++;
@@ -1500,7 +1514,7 @@ void ShapeAnalyzer::addCorrespondence() {
             faceData_.add(face->getData(), true);
             
             pickerCounter_ = 0;
-            faceCorrespondencesByActor_.insert(pair<vtkActor*, FaceCorrespondence*>(face->getLinesActor(), face));
+            faceCorrespondencesByActor_.add(face->getLinesActor(), face);
             
             // add to qt
             lastInsertCorresondenceID_++;

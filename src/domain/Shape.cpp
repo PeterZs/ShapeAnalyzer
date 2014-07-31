@@ -47,15 +47,11 @@ void Shape::initialize() {
     boxWidget_->SetPlaceFactor(1.25);
     
     boxWidget_->PlaceWidget();
-    
-    fps_ = vtkSmartPointer<vtkIdList>::New();
-    fpsActor_ = vtkSmartPointer<vtkActor>::New();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::remove() {
-    renderer_->RemoveActor(fpsActor_);
     renderer_->RemoveActor(actor_);
     boxWidget_->SetInteractor(nullptr);
     boxWidget_->SetProp3D(nullptr);

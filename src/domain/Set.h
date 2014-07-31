@@ -32,6 +32,7 @@ public:
     
     bool remove(KEY);
     bool remove(vector<KEY>);
+    void clear();
     
     // iterators
     typename unordered_map<KEY, VALUE>::iterator begin();
@@ -128,6 +129,13 @@ bool Set<KEY, VALUE>::remove(vector<KEY> correspondences) {
     return success;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+void Set<KEY, VALUE>::clear() {
+    elements_.clear();
+    setSize = 0;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Getters

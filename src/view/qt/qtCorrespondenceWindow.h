@@ -23,11 +23,13 @@
 
 #include "qtListWidgetItem.h"
 
+#include "../ShapeAnalyzer.h"
+
 #include "ui_correspondences.h"
 
 using namespace std;
 
-class qtCorrespondenceWindow : public QDialog, private Ui::CorrespondenceWindow {
+class qtCorrespondenceWindow : public QDialog, public Ui::CorrespondenceWindow {
     Q_OBJECT
     
 public:
@@ -41,6 +43,9 @@ public:
     qtCorrespondenceWindow(
                            Set<PointCorrespondenceData*, bool>* points,
                            Set<FaceCorrespondenceData*, bool>*  faces,
+                           Set<vtkActor*, PointCorrespondence*>* visiblePoints,
+                           Set<vtkActor*, FaceCorrespondence*>* visibleFaces,
+                           QListWidget* visibleList,
                            QWidget * parent = 0,
                            Qt::WindowFlags f = 0
                            );
@@ -58,9 +63,14 @@ private slots:
     virtual void slotOpenContextMenuPoints(const QPoint& point);
     virtual void slotOpenContextMenuFaces(const QPoint& point);
     
+    virtual void slotClearCorrespondences();
+    
 private:
     Set<PointCorrespondenceData*, bool>*    pointCorr_;
     Set<FaceCorrespondenceData*, bool>*     faceCorr_;
+    Set<vtkActor*, PointCorrespondence*>*   visiblePoints_;
+    Set<vtkActor*, FaceCorrespondence*>*    visibleFaces_;
+    QListWidget*                            visibleList_;
 };
 
 

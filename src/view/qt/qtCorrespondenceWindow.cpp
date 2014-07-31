@@ -16,14 +16,19 @@
 ///////////////////////////////////////////////////////////////////////////////
 qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bool>* points,
                                                 Set<FaceCorrespondenceData*, bool>* faces,
+                                                Set<vtkActor*, PointCorrespondence*>* visiblePoints,
+                                                Set<vtkActor*, FaceCorrespondence*>* visibleFaces,
+                                                QListWidget* visibleList,
                                                 QWidget * parent,
                                                 Qt::WindowFlags f
                                                 )
-: QDialog(parent, f)
+:   QDialog(parent, f),
+    pointCorr_(points),
+    faceCorr_(faces),
+    visiblePoints_(visiblePoints),
+    visibleFaces_(visibleFaces),
+    visibleList_(visibleList)
 {
-    pointCorr_ = points;
-    faceCorr_ = faces;
-
     this->setupUi(this);
     
     this->listPoints->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -31,6 +36,9 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
     
     connect(this->listPoints,                       SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotOpenContextMenuPoints(const QPoint&)));
+    
+    connect(this->clearButton,                      SIGNAL(released()),
+            this,                                   SLOT(slotClearCorrespondences()));
     
     // add all point correspondences to widget
     unsigned counter = 0;
@@ -62,10 +70,35 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
 
 
 ///////////////////////////////////////////////////////////////////////////////
+void qtCorrespondenceWindow::slotClearCorrespondences() {
+    pointCorr_->clear();
+    faceCorr_->clear();
+    
+    for(auto it = visiblePoints_->begin(); it != visiblePoints_->end(); it++) {
+        it->second->remove();
+    }
+    
+    for(auto it = visibleFaces_->begin(); it != visibleFaces_->end(); it++) {
+        it->second->remove();
+    }
+    
+    visiblePoints_->clear();
+    visibleFaces_->clear();
+    visibleList_->clear();
+    
+    this->listPoints->clear();
+    this->listFaces->clear();
+    
+    ShapeAnalyzer* parent = (ShapeAnalyzer*) this->parent();
+    parent->render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void qtCorrespondenceWindow::slotOpenContextMenuFaces(const QPoint& pos) {
     // current correspondence
     qtListWidgetItem<FaceCorrespondenceData>* current =
-    dynamic_cast<qtListWidgetItem<FaceCorrespondenceData>* > (this->listFaces->currentItem());
+    (qtListWidgetItem<FaceCorrespondenceData>*) this->listFaces->currentItem();
     
     
     QMenu menu;

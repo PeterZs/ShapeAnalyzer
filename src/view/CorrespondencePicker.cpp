@@ -142,7 +142,6 @@ void CorrespondencePicker::clearRenderer() {
 // Resets information from picker
 void CorrespondencePicker::clearPicker() {
     correspondence_ = createCorrespondence();
-    data_ = new CorrespondenceData(*data_);
-    data_->clear();
+    data_ = correspondence_->getData();
     counter_ = 0;
 }

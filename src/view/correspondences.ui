@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CorrespondenceWindow</class>
- <widget class="QDialog" name="correspondences">
+ <widget class="QDialog" name="CorrespondenceWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -101,6 +101,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="clearButton">
+     <property name="text">
+      <string>Clear All Correspondences</string>
+     </property>
     </widget>
    </item>
   </layout>

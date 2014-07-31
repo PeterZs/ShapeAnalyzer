@@ -68,14 +68,6 @@ public:
         return boxWidget_;
     }
     
-    vtkSmartPointer<vtkIdList> getCurrentFPS() {
-        return fps_;
-    }
-    
-    vtkSmartPointer<vtkActor> getFPSActor() {
-        return fpsActor_;
-    }
-    
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
     }
@@ -111,14 +103,6 @@ private:
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     
     vtkSmartPointer<vtkRenderer>        renderer_;
-    
-    // voronoi and fps, delete later
-    
-    vtkSmartPointer<vtkIdList>          fps_;
-    vtkSmartPointer<vtkActor>           fpsActor_;
-    
-    vtkSmartPointer<vtkIdList>          voronoiCells_;
-    vtkSmartPointer<vtkActor>           voronoiCellsActor_;
 
 };
 

@@ -16,7 +16,7 @@
 #include "../correspondences/PointCorrespondenceData.h"
 #include "../Set.h"
 
-#include "../view/qt/qtListWidgetItem.h"
+#include "../../view/qt/qtListWidgetItem.h"
 
 #include <QInputDialog>
 #include <QListWidget>

@@ -61,6 +61,6 @@ void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence* FaceCorrespondencePicker::createCorrespondence() {
-    return new FaceCorrespondence(renderer_, (FaceCorrespondenceData*) data_);
+    return new FaceCorrespondence(renderer_, new FaceCorrespondenceData());
 }
 

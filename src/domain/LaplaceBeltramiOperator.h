@@ -14,15 +14,22 @@
 
 class LaplaceBeltramiOperator {
 public:
-    LaplaceBeltramiOperator(Shape* shape);
+    LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
     
     virtual ~LaplaceBeltramiOperator() {};
     
     virtual void initialize() = 0;
     
     virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction) = 0;
+    
+    virtual double getEigenvalue(vtkIdType i) = 0;
+    
+    int getNumberOfEigenfunctions() {
+        return numberOfEigenfunctions_;
+    }
 protected:
     Shape* shape_;
+    int numberOfEigenfunctions_;
 };
 
 #endif

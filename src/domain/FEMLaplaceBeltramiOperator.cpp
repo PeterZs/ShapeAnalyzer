@@ -8,9 +8,10 @@
 
 #include "FEMLaplaceBeltramiOperator.h"
 
-FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape* shape) : LaplaceBeltramiOperator(shape) {
+FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
 }
 
+//detroy all data structures
 FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
@@ -21,6 +22,14 @@ FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     ierr = MatDestroy(&M_);
 }
 
+
+Mat FEMLaplaceBeltramiOperator::getCotanMatrix() {
+    return C_;
+}
+
+Mat FEMLaplaceBeltramiOperator::getMassMatrix() {
+    return M_;
+}
 
 void FEMLaplaceBeltramiOperator::initialize() {
     PetscErrorCode ierr;
@@ -40,13 +49,12 @@ void FEMLaplaceBeltramiOperator::initialize() {
     
     // Set solver parameters at runtime
     // type: generalized hermitian
-    
     EPSSetProblemType(eps_, EPS_GHEP);
     EPSSetTarget(eps_, 0.001);
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     
-    EPSSetDimensions(eps_, min((vtkIdType) 100, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
+    EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
     ST st;
     EPSGetST(eps_, &st);
     STSetType(st, STSINVERT);
@@ -64,7 +72,7 @@ void FEMLaplaceBeltramiOperator::initialize() {
     ierr = EPSPrintSolution(eps_, NULL);
 }
 
-
+//get number of non-zero elements per row (needed for efficient allocation of sparse matrices)
 void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces) {
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];
@@ -88,6 +96,7 @@ void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints,
     delete [] adjacencyList;
 }
 
+//get value of mass matrix at ij
 PetscScalar FEMLaplaceBeltramiOperator::getMass(double *a, double *b, double *c) {
     return vtkTriangle::TriangleArea(a, b, c) / 12.0;
 }
@@ -116,27 +125,30 @@ PetscScalar FEMLaplaceBeltramiOperator::getCotan(double *a, double *b, double *c
     return 0.5 * cotan;
 }
 
-void FEMLaplaceBeltramiOperator::setupMatrices() {
+//setup cotan and mass matrix for further computation (e.g. eigenfunctions)
+void FEMLaplaceBeltramiOperator::setupMatrices() {    
     PetscErrorCode ierr;
 
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     vtkIdType numberOfFaces = shape_->getPolyData()->GetNumberOfCells();
     
-    
+    //compute number of non-zero elements per row (nnz is indexed by row index)
     PetscInt* nnz = new PetscInt[numberOfPoints];
     getNnz(nnz, numberOfPoints, numberOfFaces);
     
-    
+    //allocate spares matrices
     ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &M_);
     ierr = MatSetOption(M_, MAT_SPD, PETSC_TRUE);
     
     ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &C_);
     ierr = MatSetOption(C_, MAT_SYMMETRIC, PETSC_TRUE);
     
+    //fill matrices with their values
+    //iterate over all faces
     for(vtkIdType x = 0; x < numberOfFaces; x++) {
         vtkTriangle* face = reinterpret_cast<vtkTriangle*>(shape_->getPolyData()->GetCell(x));
         
-
+        //iterate over all edges ij of triangle ijk. k always lies on the opposite side of edge ij
         for(int i = 0; i < 3; i++) {
             int j = (i + 1) % 3;
             int k = (i + 2) % 3;
@@ -163,6 +175,7 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
         }
     }
     
+    //assemble matrices
     ierr = MatAssemblyBegin(M_, MAT_FINAL_ASSEMBLY);
     ierr = MatAssemblyEnd(M_, MAT_FINAL_ASSEMBLY);
     
@@ -174,6 +187,26 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
+//returns ith eigenfunctions
+void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, PetscScalar** eigenfunction) {
+    PetscErrorCode ierr;
+    ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
+    PetscInt size;
+    VecGetSize(xr_, &size);
+    VecGetArray(xr_, eigenfunction);
+}
+
+//returns ith eigenvalue
+double FEMLaplaceBeltramiOperator::getEigenvalue(vtkIdType i) {
+    PetscErrorCode ierr;
+    PetscScalar eigr;
+    PetscScalar eigi;
+    ierr = EPSGetEigenvalue(eps_, i, &eigr, &eigi);
+    
+    return eigr;
+}
+
+//return ith eigenfunctions as ScalarPointAttribute
 void FEMLaplaceBeltramiOperator::getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction) {
 
     PetscErrorCode ierr;

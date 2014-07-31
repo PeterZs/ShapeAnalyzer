@@ -343,7 +343,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         if(currentShape != currentShape_) {
             currentShape_ = currentShape;
             delete laplacian_;
-            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape);
+            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape, 100);
             laplacian_->initialize();
         }
         

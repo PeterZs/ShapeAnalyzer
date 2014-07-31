@@ -8,5 +8,5 @@
 
 #include "LaplaceBeltramiOperator.h"
 
-LaplaceBeltramiOperator::LaplaceBeltramiOperator(Shape* shape) : shape_(shape) {
+LaplaceBeltramiOperator::LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
 }

@@ -17,6 +17,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkPointData.h>
 #include <set>
+#include <iostream>
 
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
@@ -24,17 +25,17 @@ public:
     
     virtual void initialize();
     
-    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction);
+    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& phi);
     
     virtual double getEigenvalue(vtkIdType i);
     
-    void getEigenfunction(PetscInt i, PetscScalar** eigenfunction);
+    void getEigenfunction(PetscInt i, PetscScalar** phi);
     
-    void getEigenvalues(PetscScalar** eigenfunction);
+    void getEigenfunction(PetscInt i, Vec* phi);
     
-    Mat getMassMatrix();
+    void getMassMatrix(Mat* M);
     
-    Mat getCotanMatrix();
+    void getCotanMatrix(Mat* C);
     
     virtual ~FEMLaplaceBeltramiOperator();
     

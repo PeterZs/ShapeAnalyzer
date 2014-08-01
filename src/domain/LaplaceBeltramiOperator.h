@@ -20,7 +20,7 @@ public:
     
     virtual void initialize() = 0;
     
-    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction) = 0;
+    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& phi) = 0;
     
     virtual double getEigenvalue(vtkIdType i) = 0;
     

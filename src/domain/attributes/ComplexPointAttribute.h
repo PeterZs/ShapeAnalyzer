@@ -25,7 +25,8 @@ public:
     }
     
     ~ComplexPointAttribute() {
-    };
+        
+    }
     
     // the size of the returned array must be equal to the number of vertices of the shape
     // the order of the values must correspond to the one in the vtkPolyData structure of the shape

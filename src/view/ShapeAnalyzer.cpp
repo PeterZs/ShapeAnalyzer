@@ -248,7 +248,7 @@ void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
                                              shape->getActor()->GetProperty()->GetOpacity(),
                                              0.0,
                                              1.0,
-                                             0.1,
+                                             2,
                                              &ok
                                            );
     // change opacity if ok was given
@@ -295,6 +295,26 @@ vtkIdType ShapeAnalyzer::qtInputDialogChooseEigenfunction(Shape* shape) {
     return -1;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+double ShapeAnalyzer::qtInputDialogChooseHeatDiffusionTime(Shape* shape) {
+    bool ok;
+    double t = QInputDialog::getDouble(
+                                                   this,
+                                                   tr("Heat diffusion"),
+                                                   tr("Choose diffusion time."),
+                                                   0,
+                                                   0,
+                                                   2147483647,
+                                                   2,
+                                                   &ok
+                                                   );
+    // change opacity if ok was given
+    if (ok) {
+        return t;
+    }
+    return -1.0;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
@@ -323,6 +343,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
+    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
     // ...
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -356,6 +377,36 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         laplacian_->getEigenfunction(i, eigenfunction);
         
         PointColoring coloring(currentShape, &eigenfunction);
+        coloring.color();
+    } else if(selectedItem == heatDiffusion) {
+        Shape* currentShape;
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        currentShape = item->getItem();
+        
+        
+        int t = qtInputDialogChooseHeatDiffusionTime(currentShape);
+        if(t == -1.0) {
+            return;
+        }
+        if(currentShape != currentShape_) {
+            currentShape_ = currentShape;
+            delete laplacian_;
+            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape, 100);
+            laplacian_->initialize();
+        }
+        ScalarPointAttribute u0(currentShape);
+        vtkIdType source = rand() % currentShape->getPolyData()->GetNumberOfPoints();
+        for(vtkIdType i = 0; i < currentShape->getPolyData()->GetNumberOfPoints(); i++) {
+            if(i == source) {
+                u0.getScalars()->SetValue(i, 1.0);
+            } else {
+                u0.getScalars()->SetValue(i, 0.0);
+            }
+        }
+        HeatDiffusion diffusion(currentShape, laplacian_, u0);
+        ScalarPointAttribute ut(currentShape);
+        diffusion.getHeat(ut, t);
+        PointColoring coloring(currentShape, &ut);
         coloring.color();
     } else {
         // try if action is identifier for any factory

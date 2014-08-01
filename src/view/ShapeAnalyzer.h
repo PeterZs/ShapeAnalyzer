@@ -67,6 +67,7 @@
 #include "../domain/coloring/PointColoring.h"
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
+#include "../domain/HeatDiffusion.h"
 
 #include "ui_help.h"
 #include "ui_settings.h"
@@ -184,6 +185,7 @@ private:
     void qtInputDialogRename(QListWidgetItem* item);
     void qtInputDialogOpacity(Shape* shape);
     vtkIdType qtInputDialogChooseEigenfunction(Shape* shape);
+    double qtInputDialogChooseHeatDiffusionTime(Shape* shape);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
@@ -228,7 +230,7 @@ private:
     
     CorrespondencePicker* correspondencePicker_;
     
-    LaplaceBeltramiOperator* laplacian_;
+    FEMLaplaceBeltramiOperator* laplacian_;
     Shape* currentShape_;
     
     //QT

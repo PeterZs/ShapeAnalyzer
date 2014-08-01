@@ -23,12 +23,12 @@ FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
 }
 
 
-Mat FEMLaplaceBeltramiOperator::getCotanMatrix() {
-    return C_;
+void FEMLaplaceBeltramiOperator::getCotanMatrix(Mat* C) {
+    *C = C_;
 }
 
-Mat FEMLaplaceBeltramiOperator::getMassMatrix() {
-    return M_;
+void FEMLaplaceBeltramiOperator::getMassMatrix(Mat* M) {
+    *M = M_;
 }
 
 void FEMLaplaceBeltramiOperator::initialize() {
@@ -50,8 +50,9 @@ void FEMLaplaceBeltramiOperator::initialize() {
     // Set solver parameters at runtime
     // type: generalized hermitian
     EPSSetProblemType(eps_, EPS_GHEP);
-    EPSSetTarget(eps_, 0.001);
+    EPSSetTarget(eps_, -1e-5);
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
+    EPSSetType(eps_, EPSARPACK);
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     
     EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
@@ -138,10 +139,10 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     
     //allocate spares matrices
     ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &M_);
-    ierr = MatSetOption(M_, MAT_SPD, PETSC_TRUE);
+    //ierr = MatSetOption(M_, MAT_SPD, PETSC_TRUE);
     
     ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &C_);
-    ierr = MatSetOption(C_, MAT_SYMMETRIC, PETSC_TRUE);
+    //ierr = MatSetOption(C_, MAT_SYMMETRIC, PETSC_TRUE);
     
     //fill matrices with their values
     //iterate over all faces
@@ -187,27 +188,32 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
-//returns ith eigenfunctions
-void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, PetscScalar** eigenfunction) {
+//returns i-th eigenfunctions
+void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, PetscScalar** phi) {
     PetscErrorCode ierr;
     ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
     PetscInt size;
     VecGetSize(xr_, &size);
-    VecGetArray(xr_, eigenfunction);
+    VecGetArray(xr_, phi);
 }
 
-//returns ith eigenvalue
+void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
+    PetscErrorCode ierr;
+    ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
+    *phi = xr_;
+}
+
+//returns i-th eigenvalue
 double FEMLaplaceBeltramiOperator::getEigenvalue(vtkIdType i) {
     PetscErrorCode ierr;
-    PetscScalar eigr;
-    PetscScalar eigi;
-    ierr = EPSGetEigenvalue(eps_, i, &eigr, &eigi);
+    PetscScalar k;
+    ierr = EPSGetEigenvalue(eps_, i, &k, NULL);
     
-    return eigr;
+    return k;
 }
 
-//return ith eigenfunctions as ScalarPointAttribute
-void FEMLaplaceBeltramiOperator::getEigenfunction(vtkIdType i, ScalarPointAttribute& eigenfunction) {
+//return i-th eigenfunctions as ScalarPointAttribute
+void FEMLaplaceBeltramiOperator::getEigenfunction(vtkIdType i, ScalarPointAttribute& phi) {
 
     PetscErrorCode ierr;
     ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
@@ -217,6 +223,6 @@ void FEMLaplaceBeltramiOperator::getEigenfunction(vtkIdType i, ScalarPointAttrib
     VecGetArray(xr_, &x);
     
     for(int j = 0; j < size; j++) {
-        eigenfunction.getScalars()->SetValue(j, x[j]);
+        phi.getScalars()->SetValue(j, x[j]);
     }
 }

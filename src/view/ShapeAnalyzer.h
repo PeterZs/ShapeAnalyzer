@@ -54,6 +54,7 @@
 #include "qt/qtShapeInfoTab.h"
 #include "qt/qtListWidgetItem.h"
 #include "qt/qtCorrespondenceWindow.h"
+#include "qt/qtCorrespondenceColoringTab.h"
 
 #include "../domain/correspondences/Correspondence.h"
 #include "../domain/io/SceneReader.h"
@@ -119,6 +120,7 @@ public:
     };
     
     QList<QListWidgetItem *> getShapes();
+    void switchCorrespondenceMode();
     void render();
     
 private slots:
@@ -161,6 +163,7 @@ private slots:
     virtual void slotSaveImage();
     
     virtual void slotTabShapeInfo(bool);
+    virtual void slotTabCorrespondenceColoring(bool);
     
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);

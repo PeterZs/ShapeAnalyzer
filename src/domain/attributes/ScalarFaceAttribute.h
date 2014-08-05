@@ -9,7 +9,9 @@
 #ifndef ShapeAnalyzer_ScalarFaceAttribute_h
 #define ShapeAnalyzer_ScalarFaceAttribute_h
 
-#include <vtkFloatArray.h>
+#include <vtkDoubleArray.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
 
 #include "../Shape.h"
 
@@ -20,18 +22,19 @@ public:
     
     ScalarFaceAttribute(Shape* shape) {
         shape_ = shape;
-        values = new T[shape->getPolyData()->getNumberOfPoints()];
+        scalars_ = vtkSmartPointer<vtkDoubleArray>::New();
+        scalars_->SetNumberOfValues(shape->getPolyData()->GetNumberOfCells());
     }
 
     
     // the size of the returned array must be equal to the number of faces of the shape
     // the order of the values must correspond to the one in the vtkPolyData structure of the shape
-    T* getValues() { return values_ }
+    vtkSmartPointer<vtkDoubleArray> getScalars() { return scalars_; }
     Shape* getShape() { return shape_; }
     
 private:
     Shape* shape_;
-    T* values_;
+    vtkSmartPointer<vtkDoubleArray> scalars_;
 };
 
 #endif

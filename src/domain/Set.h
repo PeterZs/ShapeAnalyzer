@@ -23,6 +23,7 @@ class Set {
 public:
     // constructors and destructor
     Set();
+    Set(Set<KEY, VALUE>*);
     Set(vector<KEY>, VALUE);
     ~Set() {}
     
@@ -43,7 +44,11 @@ public:
     VALUE       getValue(KEY);
     unsigned    size();
     
-    vector<KEY> getRandomSubset(int size);
+    void getRandomSubset(unsigned size, Set<KEY, VALUE>*);
+    void getRandomKeySubset(unsigned size, vector<KEY>*);
+    void getRandomValueSubset(unsigned size, vector<VALUE>*);
+    
+    unordered_map<KEY, VALUE>* getElements();
     
 protected:
     unordered_map<KEY, VALUE> elements_;
@@ -51,6 +56,8 @@ protected:
     // number of stored elements
     // notice that this is not the same as elements_.size()!
     unsigned setSize;
+    
+    void getRandomIndices(unsigned size, unordered_map<unsigned, bool>*);
     
 };
 
@@ -63,6 +70,14 @@ template<class KEY, class VALUE>
 Set<KEY, VALUE>::Set() {
     elements_ = unordered_map<KEY, VALUE>(0);
     setSize = 0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+Set<KEY, VALUE>::Set(Set<KEY, VALUE>* set) {
+    elements_ = *unordered_map<KEY, VALUE>(set->getElements());
+    setSize = set->size();
 }
 
 
@@ -144,53 +159,95 @@ void Set<KEY, VALUE>::clear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-vector<KEY> Set<KEY, VALUE>::getRandomSubset(int size) {
-    // create result vector
-    vector<KEY> result = vector<KEY>(size);
+void Set<KEY, VALUE>::getRandomSubset(unsigned size, Set<KEY, VALUE>* set) {
     
     // if size is larger than the number elements in the set, all keys are
     // returned
     if (size >= setSize) {
         
-        auto it = elements_.begin();
-        for (int i = 0; i < elements_.size(); i++) {
-            result.push_back(it->first);
+        // copy this set
+        set = new Set(this);
+        
+    } else { // size smaller that number of correspondences
+        
+        unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
+        
+        indices = getRandomIndices(size, &indices);
+        
+        // iterates over all elements and puts the chosen ones in the result
+        // TODO there are probably better ways to do that
+        auto it = begin();
+        for (int i = 0; i < setSize; i++) {
+            if (indices.count(i) != 0) {
+                set->add(it->first, it->second);
+            }
             it++;
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+void Set<KEY, VALUE>::getRandomKeySubset(unsigned size, vector<KEY>* result) {
+    
+    // if size is larger than the number elements in the set, all keys are
+    // returned
+    if (size >= setSize) {
+        
+        // copy this set
+        for (auto it = begin(); it != end(); it++) {
+            result->push_back(it->first);
         }
         
     } else { // size smaller that number of correspondences
         
         unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
         
-        int counter = 0;
+        indices = getRandomIndices(size, &indices);
         
-        // generating random unique index sequence
-        // the assumption is that the number of elements is way
-        // larger than the size of the subset, thats why i did not use
-        // shuffle
-        
-        // generate random numbers until size many unique values have been created
-        while (counter < size) {
-            int v = rand() % setSize;
-            
-            if(indices.count(v) == 0) {
-                indices.insert(make_pair<unsigned, bool>(v, true));
-                counter++;
-            }
-        }
-        
-        // iterates over all elements and puts the chosen ones in the vector
+        // iterates over all elements and puts the chosen ones in the result
         // TODO there are probably better ways to do that
         auto it = begin();
         for (int i = 0; i < setSize; i++) {
             if (indices.count(i) != 0) {
-                result.push_back(it->first);
+                result->push_back(it->first);
             }
             it++;
         }
     }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+void Set<KEY, VALUE>::getRandomValueSubset(unsigned size, vector<VALUE>* result) {
     
-    return result;
+    // if size is larger than the number elements in the set, all keys are
+    // returned
+    if (size >= setSize) {
+        
+        // copy this set
+        for (auto it = begin(); it != end(); it++) {
+            result->push_back(it->second);
+        }
+        
+    } else { // size smaller that number of correspondences
+        
+        unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
+        
+        indices = getRandomIndices(size, &indices);
+        
+        // iterates over all elements and puts the chosen ones in the result
+        // TODO there are probably better ways to do that
+        auto it = begin();
+        for (int i = 0; i < setSize; i++) {
+            if (indices.count(i) != 0) {
+                result->push_back(it->second);
+            }
+            it++;
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -236,6 +293,48 @@ VALUE Set<KEY, VALUE>::getValue(KEY correspondence) {
     }
     
     return nullptr;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+unordered_map<KEY, VALUE>* Set<KEY, VALUE>::getElements() {
+    return &elements_;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Protected Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// will return an empty set if the size is larger than the available indices
+template<class KEY, class VALUE>
+void Set<KEY, VALUE>::getRandomIndices(unsigned size, unordered_map<unsigned, bool>* indices) {
+    
+    // no indices will be produced, if the requested size is larger than the
+    // available indices
+    if (size <= setSize) {
+    
+        int counter = 0;
+        
+        // generating random unique index sequence
+        // the assumption is that the number of elements is way
+        // larger than the size of the subset, thats why i did not use
+        // shuffle
+        
+        // generate random numbers until size many unique values have been created
+        while (counter < size) {
+            int v = rand() % setSize;
+            
+            if(indices->count(v) == 0) {
+                indices->insert(make_pair<unsigned, bool>(v, true));
+                counter++;
+            }
+        }
+        
+    }
 }
 
 #endif

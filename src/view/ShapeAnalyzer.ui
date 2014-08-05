@@ -122,12 +122,14 @@
                 </item>
                </layout>
               </item>
+              <item>
+               <widget class="QPushButton" name="hideAllButton">
+                <property name="text">
+                 <string>Hide All</string>
+                </property>
+               </widget>
+              </item>
              </layout>
-            </widget>
-            <widget class="QWidget" name="tabFaces">
-             <attribute name="title">
-              <string>Tab 2</string>
-             </attribute>
             </widget>
            </widget>
           </item>
@@ -202,6 +204,8 @@
     <addaction name="separator"/>
     <addaction name="actionPointCorrespondences"/>
     <addaction name="actionFaceCorrespondences"/>
+    <addaction name="separator"/>
+    <addaction name="actionCorrespondenceColoring"/>
     <addaction name="separator"/>
     <addaction name="actionWindowPointCorrespondences"/>
     <addaction name="actionWindowFaceCorrespondences"/>
@@ -505,6 +509,14 @@
   <action name="actionExportCorrespondences">
    <property name="text">
     <string>Export Correspondences (ASCII)...</string>
+   </property>
+  </action>
+  <action name="actionCorrespondenceColoring">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Correspondence Coloring</string>
    </property>
   </action>
  </widget>

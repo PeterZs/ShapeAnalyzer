@@ -8,7 +8,7 @@
 
 #include "PointColoring.h"
 
-
+///////////////////////////////////////////////////////////////////////////////
 void PointColoring::color() {
     double range[2];
     attribute_->getScalars()->GetValueRange(range);

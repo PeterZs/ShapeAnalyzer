@@ -30,7 +30,7 @@ public:
     
     // the size of the returned array must be equal to the number of vertices of the shape
     // the order of the values must correspond to the one in the vtkPolyData structure of the shape
-    T* getValues() { return values_ }
+    T* getValues() { return values_; }
     Shape* getShape() { return shape_; }
     
 private:

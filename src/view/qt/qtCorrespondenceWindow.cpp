@@ -19,6 +19,7 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
                                                 Set<vtkActor*, PointCorrespondence*>* visiblePoints,
                                                 Set<vtkActor*, FaceCorrespondence*>* visibleFaces,
                                                 QListWidget* visibleList,
+                                                QAction* pointMode,
                                                 QWidget * parent,
                                                 Qt::WindowFlags f
                                                 )
@@ -27,12 +28,16 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
     faceCorr_(faces),
     visiblePoints_(visiblePoints),
     visibleFaces_(visibleFaces),
-    visibleList_(visibleList)
+    visibleList_(visibleList),
+    pointMode_(pointMode)
 {
     this->setupUi(this);
     
     this->listPoints->setContextMenuPolicy(Qt::CustomContextMenu);
     this->listFaces->setContextMenuPolicy(Qt::CustomContextMenu);
+    
+    connect(this->listFaces,                        SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(slotOpenContextMenuFaces(const QPoint&)));
     
     connect(this->listPoints,                       SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotOpenContextMenuPoints(const QPoint&)));
@@ -108,7 +113,6 @@ void qtCorrespondenceWindow::slotOpenContextMenuFaces(const QPoint& pos) {
     } else {
         guiAction   = menu.addAction("Show");
     }
-    QAction* renameAction   = menu.addAction("Rename");
     QAction* deleteAction   = menu.addAction("Delete");
     
     // TODO this is not opening at the right position
@@ -135,7 +139,6 @@ void qtCorrespondenceWindow::slotOpenContextMenuPoints(const QPoint& pos) {
     } else {
         guiAction   = menu.addAction("Show");
     }
-    QAction* renameAction   = menu.addAction("Rename");
     QAction* deleteAction   = menu.addAction("Delete");
     
     // TODO this is not opening at the right position
@@ -145,5 +148,36 @@ void qtCorrespondenceWindow::slotOpenContextMenuPoints(const QPoint& pos) {
     //} else if (selectedItem == renameAction) {
     //    qtInputDialogRename(this->listCorrespondences->currentItem());
     //}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void qtCorrespondenceWindow::slotRandomSubsetFaces() {
+    if(pointMode_->isChecked()) {
+        ShapeAnalyzer* parent = (ShapeAnalyzer*) parentWidget();
+        parent->switchCorrespondenceMode();
+    }
+    
+    visibleList_->clear();
+    visibleFaces_->clear();
+    
+    unsigned size = this->spinBoxFaceNumber->value();
+    
+    
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void qtCorrespondenceWindow::slotRandomSubsetPoints() {
+    if(pointMode_->isChecked()) {
+        ShapeAnalyzer* parent = (ShapeAnalyzer*) parentWidget();
+        parent->switchCorrespondenceMode();
+    }
+    
+    visibleList_->clear();
+    visibleFaces_->clear();
+    
+    unsigned size = this->spinBoxFaceNumber->value();
+    
+    
 }
 

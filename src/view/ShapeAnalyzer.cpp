@@ -99,12 +99,16 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionWindowFaceCorrespondences,  SIGNAL(triggered()),
             this,                                   SLOT(slotOpenCorrespondenceWindowFaces()));
     
+    connect(this->listShapes,                       SIGNAL(currentItemChanged ( QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(slotShapeSelectionChanged(QListWidgetItem*, QListWidgetItem*)));
+    
     // tab signals
     connect(this->actionShape_Info,                 SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabShapeInfo(bool)));
     
-    connect(this->listShapes,                       SIGNAL(currentItemChanged ( QListWidgetItem*, QListWidgetItem*)),
-            this,                                   SLOT(slotShapeSelectionChanged(QListWidgetItem*, QListWidgetItem*)));
+    connect(this->actionCorrespondenceColoring,     SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotTabCorrespondenceColoring(bool)));
+    
     
     
     
@@ -161,6 +165,16 @@ void ShapeAnalyzer::qtConnectListShapes() {
 ///////////////////////////////////////////////////////////////////////////////
 QList<QListWidgetItem *> ShapeAnalyzer::getShapes() {
     return this->listShapes->findItems(QString("*"), Qt::MatchWildcard);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::switchCorrespondenceMode() {
+    if(this->actionPointCorrespondences->isChecked()) {
+        this->actionFaceCorrespondences->toggle();
+    } else {
+        this->actionPointCorrespondences->toggle();
+    }
 }
 
 
@@ -656,6 +670,7 @@ void ShapeAnalyzer::slotOpenCorrespondenceWindowFaces() {
                                                              &pointCorrespondencesByActor_,
                                                              &faceCorrespondencesByActor_,
                                                              this->listCorrespondences,
+                                                             this->actionPointCorrespondences,
                                                              this
                                                              );
     win->tabWidget->setCurrentIndex(1);
@@ -673,6 +688,7 @@ void ShapeAnalyzer::slotOpenCorrespondenceWindowPoints() {
                                                              &pointCorrespondencesByActor_,
                                                              &faceCorrespondencesByActor_,
                                                              this->listCorrespondences,
+                                                             this->actionPointCorrespondences,
                                                              this
                                                              );
     win->show();
@@ -873,6 +889,29 @@ void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
         for(int i = 0; i < this->tabWidget->count(); i++) {
             if(this->tabWidget->tabText(i) == "Shape Info") {
                 this->tabWidget->removeTab(i);
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotTabCorrespondenceColoring(bool checked) {
+    if (checked) { // add Tab
+        int i = this->tabWidget_2->addTab(
+                                          new qtCorrespondenceColoringTab(
+                                                this->listShapes,
+                                                &shapesByActor_,
+                                                &faceData_,
+                                                &pointData_,
+                                                this
+                                          ),
+                                          "Correspondence Coloring");
+        this->tabWidget_2->setCurrentIndex(i);
+    } else { // remove shape info tab, if it was there
+        for(int i = 0; i < this->tabWidget_2->count(); i++) {
+            if(this->tabWidget_2->tabText(i) == "Correspondence Coloring") {
+                this->tabWidget_2->removeTab(i);
             }
         }
     }

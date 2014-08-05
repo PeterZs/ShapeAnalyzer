@@ -38,11 +38,11 @@ public:
     }
     
     // getters
-    std::vector<vtkIdType> getShapes() {
+    std::vector<vtkIdType>& getShapes() {
         return shapeIds_;
     }
     
-    std::vector<vtkIdType> getData() {
+    std::vector<vtkIdType>& getData() {
         return correspondingIds_;
     }
     

@@ -12,6 +12,7 @@
 int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
     if(counter_ == 0) {
         correspondence_ = createCorrespondence();
+        data_ = correspondence_->getData();
     }
     
     // visual response for picked face or vertex

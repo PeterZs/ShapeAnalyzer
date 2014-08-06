@@ -30,8 +30,16 @@
 #include <string>
 #include <sstream>
 
+#include "LaplaceBeltramiOperator.h"
+#include "FEMLaplaceBeltramiOperator.h"
+#include "attributes/ScalarPointAttribute.h"
+#include "PetscHelper.h"
+
+
+class ScalarPointAttribute;
 
 using namespace std;
+
 
 class Shape {
 
@@ -39,10 +47,12 @@ public:
     // Constructors and Destructor
     Shape(vtkIdType shapeID, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
-    ~Shape() {}
+    ~Shape() {
+        delete laplacian_;
+    }
     
     double                      calculateArea();
-    unsigned                    getRandomPoint();
+    vtkIdType                    getRandomPoint();
     
     // vtk functions
     
@@ -88,14 +98,19 @@ public:
         return shapeId_;
     }
 
+    LaplaceBeltramiOperator* getLaplacian(int numberOfEigenfunctions);
 
+    LaplaceBeltramiOperator* getLaplacian();
+    
+    void getEigenfunction(int i, ScalarPointAttribute& phi);
+    
+    double getEigenvalue(int i);
 private:
     void initialize();
     
     vtkIdType shapeId_;
     
     // vtk objects
-    
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
@@ -104,6 +119,7 @@ private:
     
     vtkSmartPointer<vtkRenderer>        renderer_;
 
+    LaplaceBeltramiOperator* laplacian_;
 };
 
 #endif

@@ -8,5 +8,5 @@
 
 #include "LaplaceBeltramiOperator.h"
 
-LaplaceBeltramiOperator::LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
+LaplaceBeltramiOperator::LaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions) : polyData_(polyData), numberOfEigenfunctions_(numberOfEigenfunctions) {
 }

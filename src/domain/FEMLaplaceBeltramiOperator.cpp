@@ -8,23 +8,17 @@
 
 #include "FEMLaplaceBeltramiOperator.h"
 
-FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
+FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions) : LaplaceBeltramiOperator(polyData, numberOfEigenfunctions) {
 }
 
 //detroy all data structures
 FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
-    ierr = VecDestroy(&xr_);
-    ierr = VecDestroy(&xi_);
+    ierr = VecDestroy(&phi_);
     ierr = EPSDestroy(&eps_);
     ierr = MatDestroy(&C_);
     ierr = MatDestroy(&M_);
-}
-
-
-void FEMLaplaceBeltramiOperator::getCotanMatrix(Mat* C) {
-    *C = C_;
 }
 
 void FEMLaplaceBeltramiOperator::getMassMatrix(Mat* M) {
@@ -36,8 +30,7 @@ void FEMLaplaceBeltramiOperator::initialize() {
     
     setupMatrices();
     
-    MatGetVecs(C_, NULL, &xr_);
-    MatGetVecs(C_, NULL, &xi_);
+    MatGetVecs(C_, NULL, &phi_);
     
     
     // Create eigensolver context
@@ -53,7 +46,7 @@ void FEMLaplaceBeltramiOperator::initialize() {
     EPSSetTarget(eps_, -1e-5);
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
     EPSSetType(eps_, EPSARPACK);
-    vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
+    vtkIdType numberOfPoints = polyData_->GetNumberOfPoints();
     
     EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
     ST st;
@@ -78,7 +71,7 @@ void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints,
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];
     for(vtkIdType i = 0; i < numberOfFaces; i++) {
-        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(shape_->getPolyData()->GetCell(i));
+        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(polyData_->GetCell(i));
         
         
         for(int i = 0; i < 3; i++) {
@@ -130,8 +123,8 @@ PetscScalar FEMLaplaceBeltramiOperator::getCotan(double *a, double *b, double *c
 void FEMLaplaceBeltramiOperator::setupMatrices() {    
     PetscErrorCode ierr;
 
-    vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
-    vtkIdType numberOfFaces = shape_->getPolyData()->GetNumberOfCells();
+    vtkIdType numberOfPoints = polyData_->GetNumberOfPoints();
+    vtkIdType numberOfFaces = polyData_->GetNumberOfCells();
     
     //compute number of non-zero elements per row (nnz is indexed by row index)
     PetscInt* nnz = new PetscInt[numberOfPoints];
@@ -147,7 +140,7 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     //fill matrices with their values
     //iterate over all faces
     for(vtkIdType x = 0; x < numberOfFaces; x++) {
-        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(shape_->getPolyData()->GetCell(x));
+        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(polyData_->GetCell(x));
         
         //iterate over all edges ij of triangle ijk. k always lies on the opposite side of edge ij
         for(int i = 0; i < 3; i++) {
@@ -191,38 +184,35 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
 //returns i-th eigenfunctions
 void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, PetscScalar** phi) {
     PetscErrorCode ierr;
-    ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
-    PetscInt size;
-    VecGetSize(xr_, &size);
-    VecGetArray(xr_, phi);
+    ierr = EPSGetEigenvector(eps_, i, phi_, NULL);
+    
+    VecGetArray(phi_, phi);
 }
 
 void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
     PetscErrorCode ierr;
-    ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
-    *phi = xr_;
+    ierr = EPSGetEigenvector(eps_, i, phi_, NULL);
+    *phi = phi_;
 }
 
 //returns i-th eigenvalue
 double FEMLaplaceBeltramiOperator::getEigenvalue(vtkIdType i) {
     PetscErrorCode ierr;
-    PetscScalar k;
-    ierr = EPSGetEigenvalue(eps_, i, &k, NULL);
+    PetscScalar lambda;
+    ierr = EPSGetEigenvalue(eps_, i, &lambda, NULL);
     
-    return k;
+    return lambda;
 }
 
-//return i-th eigenfunctions as ScalarPointAttribute
-void FEMLaplaceBeltramiOperator::getEigenfunction(vtkIdType i, ScalarPointAttribute& phi) {
-
+void FEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) {
     PetscErrorCode ierr;
-    ierr = EPSGetEigenvector(eps_, i, xr_, xi_);
-    PetscInt size;
-    VecGetSize(xr_, &size);
-    PetscScalar* x;
-    VecGetArray(xr_, &x);
-    
-    for(int j = 0; j < size; j++) {
-        phi.getScalars()->SetValue(j, x[j]);
-    }
+    ierr = EPSGetEigenpair(eps_, i, lambda, NULL, *phi, NULL);
 }
+
+void FEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, PetscScalar** phi, PetscScalar* lambda) {
+    PetscErrorCode ierr;
+    ierr = EPSGetEigenpair(eps_, i, lambda, NULL, phi_, NULL);
+    
+    VecGetArray(phi_, phi);
+}
+

@@ -9,10 +9,9 @@
 #include "CorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
+int CorrespondencePicker::addShape(Shape* shape, vtkIdType selectionId) {
     if(counter_ == 0) {
         correspondence_ = createCorrespondence();
-        data_ = correspondence_->getData();
     }
     
     // visual response for picked face or vertex
@@ -27,19 +26,20 @@ int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
     //visualize selected vertex or face
     visualizeCurrentSelection(shape, selectionId);
 
-    int result = correspondence_->add(shape, selectionId);
+    int result = correspondence_->addShape(shape, selectionId);
     
     if(result == 1) { // success in adding the selection
         counter_++;
-        data_->addData(shape->getId(), selectionId);
+        
         return result;
     }
-    if(result == -1) { // something went wrong when adding, reset selection
+    if(result == -1) { // clicked shape is already part of correspondence and not equal to the last added
         // reset selection
+        counter_ = 1;
         correspondence_->remove();
         delete correspondence_;
-        clearPicker();
-        counter_ = 1;
+        correspondence_ = createCorrespondence();
+        correspondence_->addShape(shape, selectionId);
         return result;
     }
     
@@ -49,15 +49,16 @@ int CorrespondencePicker::add(Shape* shape, vtkIdType selectionId) {
 
 ///////////////////////////////////////////////////////////////////////////////
 // stores the current selection in the given pointer (if the selection is a
-// valid correspondences) and resets the picker
+// valid correspondence) and resets the picker
 bool CorrespondencePicker::pick(Correspondence** correspondence) {
     if(counter_ >= 2) {
-        clearRenderer();
+        renderer_->RemoveActor(currentSelectionActor_);
+        renderer_->RemoveActor(mouseLineActor_);
+        renderer_->GetRenderWindow()->Render();
         
-        //*correspondence = createCorrespondence();
         *correspondence = correspondence_;
-        //reset picker
-        clearPicker();
+        //reset counter
+        counter_ = 0;
         return true;
     }
 
@@ -122,27 +123,14 @@ void CorrespondencePicker::updateMouseLine(int x, int y) {
 // Resets information and deletes actors from renderer
 void CorrespondencePicker::clearSelection() {
     if(counter_ > 0) {
-        clearRenderer();
+        renderer_->RemoveActor(currentSelectionActor_);
+        renderer_->RemoveActor(mouseLineActor_);
         correspondence_->remove();
+        renderer_->GetRenderWindow()->Render();
+        delete correspondence_->getData();
         delete correspondence_;
-        clearPicker();
+        counter_ = 0;
     }
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-// Deletes actors from renderer
-void CorrespondencePicker::clearRenderer() {
-    renderer_->RemoveActor(currentSelectionActor_);
-    renderer_->RemoveActor(mouseLineActor_);
-    renderer_->GetRenderWindow()->Render();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Resets information from picker
-void CorrespondencePicker::clearPicker() {
-    correspondence_ = createCorrespondence();
-    data_ = correspondence_->getData();
-    counter_ = 0;
-}

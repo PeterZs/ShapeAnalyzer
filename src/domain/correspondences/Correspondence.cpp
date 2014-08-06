@@ -25,7 +25,7 @@ Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, Correspond
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int Correspondence::add(Shape* shape, vtkIdType id) {
+int Correspondence::addShape(Shape* shape, vtkIdType id) {
     if(shapes_.size() > 0 && shapes_[shapes_.size()-1] == shape) {
         // in case shape is equal to last added shape replace point
         //get coordinates of line target
@@ -58,12 +58,10 @@ int Correspondence::add(Shape* shape, vtkIdType id) {
     initializeActor(actors_[actors_.size()-1], shape, id);
     transform(shape);
     
-    //data_->addData(shape->getId(), id);
+    data_->addData(shape->getId(), id);
     
     if(shapes_.size() > 1) {
         //Visualize in vtk
-        //vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
-        
         // create new line cell out of the two points inserted last
         vtkSmartPointer<vtkIdList> line = vtkSmartPointer<vtkIdList>::New();
         line->InsertId(0, linesPolyData_->GetPoints()->GetNumberOfPoints()-2);
@@ -131,12 +129,5 @@ void Correspondence::transform(Shape* shape) {
         }
     }
 }
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Serializable Functions
-///////////////////////////////////////////////////////////////////////////////
-
-
 
 

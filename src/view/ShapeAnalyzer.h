@@ -50,6 +50,7 @@
 #include "CorrespondencePicker.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
+#include "ShapeAnalyzerInteractorStyle.h"
 
 #include "qt/qtShapeInfoTab.h"
 #include "qt/qtListWidgetItem.h"
@@ -69,6 +70,7 @@
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
+#include "../domain/FunctionalMaps.h"
 
 #include "ui_help.h"
 #include "ui_settings.h"
@@ -76,9 +78,11 @@
 
 using namespace std;
 
+
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
-
+    
+    
     // manages update of correspondences after scene transformation
     class vtkBoxWidgetCallback : public vtkCommand {
     public:
@@ -94,7 +98,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
             widget->GetTransform(t);
             widget->GetProp3D()->SetUserTransform(t);
 
-            Shape* shape = sa->findShapeByActor(reinterpret_cast<vtkActor*>(widget->GetProp3D()));
+            Shape* shape = sa->shapesByActor_[reinterpret_cast<vtkActor*>(widget->GetProp3D())];
 
             // transform correspondences
             for(auto it = sa->pointCorrespondencesByActor_.begin(); it != sa->pointCorrespondencesByActor_.end(); it++) {
@@ -114,7 +118,6 @@ public:
 
         delete correspondencePicker_;
         delete dialogSettings_;
-        delete laplacian_;
         
         SlepcFinalize();
     };
@@ -143,7 +146,6 @@ private slots:
 
     virtual void slotToggleBoxWidget();
     virtual void slotAddCorrespondencesMode();
-    virtual void slotEndCorrespondencePicker();
     
     virtual void slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous);
     
@@ -154,8 +156,7 @@ private slots:
     virtual void slotSetCorrespondenceType();
     
     virtual void slotSetBackgroundColor();
-    virtual void slotTogglePerspectiveMode(bool);
-    virtual void slotToggleParallelMode(bool);
+    virtual void slotTogglePerspectiveMode();
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
@@ -168,7 +169,8 @@ private slots:
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
     virtual void vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
-    
+
+    virtual void vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
 private:
     //QT
     void qtConnectListCorrespondences();
@@ -200,9 +202,7 @@ private:
     void vtkSaveScene(string filename);
     void vtkImportScene(string filename);
     void vtkExportScene(string filename);
-    
-    Correspondence*     findCorrespondenceByActor(vtkActor* actor);
-    Shape*              findShapeByActor(vtkActor* actor);
+
     
     // these are expensive, use with care
     Correspondence*         findCorrespondenceByData(CorrespondenceData* data);
@@ -233,13 +233,11 @@ private:
     
     CorrespondencePicker* correspondencePicker_;
     
-    FEMLaplaceBeltramiOperator* laplacian_;
-    Shape* currentShape_;
-    
     //QT
     QActionGroup* actionGroupCorrespondenceType;
     QActionGroup* actionGroupMode;
     QActionGroup* actionGroupShapeDisplayMode;
+    QActionGroup* actionGroupProjectionMode;
     
     Ui_Settings uiSettings_;
     QDialog*    dialogSettings_;
@@ -250,5 +248,8 @@ private:
     
     int pickerCounter_;
 };
+
+
+
 
 #endif

@@ -54,7 +54,7 @@ void CorrespondenceColoring::showPointCorrespondences() {
     // look up colors for non-reference shapes
     for(auto it = points_->begin(); it != points_->end(); it++) {
         vector<vtkIdType> shapes = it->first->getShapes();
-        vector<vtkIdType> points = it->first->getPointIds();
+        vector<vtkIdType> points = it->first->getCorrespondingIds();
         
         // id of correspondence on reference shape
         vtkIdType referenceCorrespondence = -1;
@@ -129,7 +129,7 @@ void CorrespondenceColoring::showFaceCorrespondences() {
     // look up colors for non-reference shapes
     for(auto it = faces_->begin(); it != faces_->end(); it++) {
         vector<vtkIdType> shapes = it->first->getShapes();
-        vector<vtkIdType> points = it->first->getData();
+        vector<vtkIdType> points = it->first->getCorrespondingIds();
         
         // id of correspondence on reference shape
         vtkIdType referenceCorrespondence = -1;

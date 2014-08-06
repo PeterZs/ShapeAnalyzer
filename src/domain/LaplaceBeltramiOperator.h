@@ -9,26 +9,36 @@
 #ifndef ShapeAnalyzer_LaplaceBeltramiOperator_h
 #define ShapeAnalyzer_LaplaceBeltramiOperator_h
 
-#include "Shape.h"
-#include "attributes/ScalarPointAttribute.h"
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+
+#include <slepceps.h>
 
 class LaplaceBeltramiOperator {
 public:
-    LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
+    LaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions);
     
     virtual ~LaplaceBeltramiOperator() {};
     
     virtual void initialize() = 0;
-    
-    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& phi) = 0;
-    
+
     virtual double getEigenvalue(vtkIdType i) = 0;
+    
+    virtual void getEigenfunction(PetscInt i, PetscScalar** phi) = 0;
+    
+    virtual void getEigenfunction(PetscInt i, Vec* phi) = 0;
+    
+    virtual void getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) = 0;
+    
+    virtual void getEigenpair(PetscInt i, PetscScalar** phi, PetscScalar* lambda) = 0;
+    
+    virtual void getMassMatrix(Mat* M) = 0;
     
     int getNumberOfEigenfunctions() {
         return numberOfEigenfunctions_;
     }
 protected:
-    Shape* shape_;
+    vtkSmartPointer<vtkPolyData> polyData_;
     int numberOfEigenfunctions_;
 };
 

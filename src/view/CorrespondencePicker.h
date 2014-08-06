@@ -37,7 +37,7 @@ public:
     }
     
     //add face (or vertex) ID + shape pair to correspondence. Returns true if id+shape pair has successfully been added (i.e. if shape has not been added twice).
-    int add(Shape* shape, vtkIdType selectionId);
+    int addShape(Shape* shape, vtkIdType selectionId);
     
     //returns true in case at least two shapes have been added to correspondence and returns new correspondence via argument. Otherwise returns false.
     bool pick(Correspondence** correspondence);
@@ -66,13 +66,9 @@ protected:
     vtkSmartPointer<vtkPolyDataMapper> currentSelectionMapper_;
     
     vtkRenderer* renderer_;
-    
-    CorrespondenceData* data_;
 private:
     void visualizeMouseLine(Shape* shape, double point[3]);
-    
-    void clearRenderer();
-    void clearPicker();
+
     
     Correspondence* correspondence_;
     int counter_;

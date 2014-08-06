@@ -15,6 +15,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 
+class Shape;
+
 class ScalarPointAttribute {
     
 public:

@@ -11,14 +11,13 @@
 
 #include "CorrespondenceData.h"
 
+//serves as a marker class to ensure that variable "Set<...> pointCorrespondences" only contains point correspondences
+
 class PointCorrespondenceData : public CorrespondenceData {
 public:
     PointCorrespondenceData() {
     }
     
-    vector<vtkIdType>& getPointIds() {
-        return correspondingIds_;
-    }
 };
 
 #endif /* defined(PointCorrespondeceData_H) */

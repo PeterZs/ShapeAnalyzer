@@ -16,7 +16,7 @@ void SceneReader::exportCorrespondences(Set<CorrespondenceData*, bool>* correspo
     // write down all correspondences
     for (auto it = correspondences->begin(); it != correspondences->end(); it++) {
         vector<vtkIdType> shapes = it->first->getShapes();
-        vector<vtkIdType> data = it->first->getData();
+        vector<vtkIdType> data = it->first->getCorrespondingIds();
         // get the same order of shapes for all lines
         for (auto shapeIt = shapeIds->begin(); shapeIt != shapeIds->end(); shapeIt++) {
             bool contained = false;
@@ -48,9 +48,7 @@ void SceneReader::exportPointCorrespondences(Set<PointCorrespondenceData*, bool>
     
     // basic information, point correspondences, number of shapes
     // number of correspondences
-    os << "P " << endl;
-    os << shapes->size() << endl;
-    os << correspondences->size() << endl;
+    os << "P " << " " << shapes->size() << " " << correspondences->size() << endl;
     
     exportCorrespondences((Set<CorrespondenceData*, bool>*) correspondences, shapes, &os);
     
@@ -92,6 +90,9 @@ void SceneReader::loadCorrespondences(string                                file
     getline(is, line);
     ss << line;
     ss >> type >> numberOfShapes >> numberOfCorrespondences;
+    
+    cout << "NOS"<<numberOfShapes<<endl;
+    cout << shapes->count()<<endl;
     
     // stop if there not enough shapes to match
     if (shapes->count() >= numberOfShapes) {

@@ -19,23 +19,25 @@
 #include <set>
 #include <iostream>
 
+using namespace std;
+
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
-    FEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
+    FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions);
     
     virtual void initialize();
-    
-    virtual void getEigenfunction(vtkIdType i, ScalarPointAttribute& phi);
-    
+
     virtual double getEigenvalue(vtkIdType i);
     
-    void getEigenfunction(PetscInt i, PetscScalar** phi);
+    virtual void getEigenfunction(PetscInt i, PetscScalar** phi);
     
-    void getEigenfunction(PetscInt i, Vec* phi);
+    virtual void getEigenfunction(PetscInt i, Vec* phi);
     
-    void getMassMatrix(Mat* M);
+    virtual void getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda);
     
-    void getCotanMatrix(Mat* C);
+    virtual void getEigenpair(PetscInt i, PetscScalar** phi, PetscScalar* lambda);
+    
+    virtual void getMassMatrix(Mat* M);
     
     virtual ~FEMLaplaceBeltramiOperator();
     
@@ -49,8 +51,7 @@ private:
     
     Mat C_;
     Mat M_;
-    Vec xi_;
-    Vec xr_;
+    Vec phi_;
     EPS eps_; // eigenproblem solver context
 };
 

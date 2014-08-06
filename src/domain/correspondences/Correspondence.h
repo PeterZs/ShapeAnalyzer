@@ -38,7 +38,7 @@ public:
     void setSelected(bool selected);
 
     //add another shape + face ID (or vertex ID) pair to this correspondence returns 1 if shape id combi has successfully been added (i.e. shape has not been selected twice). Returns 0 if shape equals last added shape and updates coordinates. Returns -1 if shape equals another shape that has already been added and is not equals to last added shape
-    int add(Shape* shape, vtkIdType);
+    int addShape(Shape* shape, vtkIdType);
     
     // getters
     vtkActor* getLinesActor() {
@@ -56,17 +56,7 @@ public:
     // vtk
     void remove();
     void add();
-    
-    // serialization functions
-    
-//    ostream& write(ostream& os);
-//    
-//    friend ostream& operator<<(ostream& os, const Correspondence& correspondence);
-//    
-//    istream& read(istream& is);
-//    
-//    friend istream& operator>>(istream& is, Correspondence& correspondence);
-    
+  
     
 protected:
     //protected contructor since class is abstract

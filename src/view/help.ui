@@ -68,7 +68,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Click ESC while picking correspondences to stop.</string>
+      <string>Press 'ESC' while picking correspondences to clear selection. Press 'a' to pick and add current correspondence.</string>
      </property>
     </widget>
    </item>

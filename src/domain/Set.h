@@ -10,6 +10,7 @@
 //
 //
 
+
 #ifndef ShapeAnalyzer_Set_h
 #define ShapeAnalyzer_Set_h
 
@@ -18,9 +19,11 @@
 using namespace std;
 
 template <class KEY, class VALUE>
+
 class Set {
-    
 public:
+    typedef typename unordered_map<KEY, VALUE>::iterator iterator;
+    
     // constructors and destructor
     Set();
     Set(Set<KEY, VALUE>*);
@@ -36,12 +39,14 @@ public:
     void clear();
     
     // iterators
-    typename unordered_map<KEY, VALUE>::iterator begin();
-    typename unordered_map<KEY, VALUE>::iterator end();
+    iterator begin();
+    iterator end();
     
     // attributes
     bool        contains(KEY);
     VALUE       getValue(KEY);
+    VALUE       operator[](KEY);
+    
     unsigned    size();
     
     void getRandomSubset(unsigned size, Set<KEY, VALUE>*);
@@ -259,14 +264,14 @@ unsigned Set<KEY, VALUE>::size() {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-typename unordered_map<KEY, VALUE>::iterator Set<KEY, VALUE>::begin() {
+typename Set<KEY, VALUE>::iterator Set<KEY, VALUE>::begin() {
     return elements_.begin();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-typename unordered_map<KEY, VALUE>::iterator Set<KEY, VALUE>::end() {
+typename Set<KEY, VALUE>::iterator Set<KEY, VALUE>::end() {
     return elements_.end();
 }
 
@@ -286,6 +291,19 @@ bool Set<KEY, VALUE>::contains(KEY correspondence) {
 // returns the value to the key, returns null pointer if the key does not exist
 template<class KEY, class VALUE>
 VALUE Set<KEY, VALUE>::getValue(KEY correspondence) {
+    auto find = elements_.find(correspondence);
+    
+    if (find != elements_.end()) {
+        return find->second;
+    }
+    
+    return nullptr;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// returns the value to the key, returns null pointer if the key does not exist
+template<class KEY, class VALUE>
+VALUE Set<KEY, VALUE>::operator[](KEY correspondence) {
     auto find = elements_.find(correspondence);
     
     if (find != elements_.end()) {

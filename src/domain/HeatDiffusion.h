@@ -16,16 +16,19 @@
 #include "Shape.h"
 #include "FEMLaplaceBeltramiOperator.h"
 #include "attributes/ScalarPointAttribute.h"
+#include "PetscHelper.h"
 
 class HeatDiffusion {
 public:
-    HeatDiffusion(Shape* shape, FEMLaplaceBeltramiOperator* laplacian, ScalarPointAttribute& u0);
+    HeatDiffusion(Shape* shape, ScalarPointAttribute& initialCondition, int numberOfEigenfunctions);
     ~HeatDiffusion();
     void getHeat(ScalarPointAttribute& heat, double t);
 private:
+    
     Shape* shape_;
+    PetscInt numberOfEigenfunctions_;
+
     Vec PhiTMu0_;
-    FEMLaplaceBeltramiOperator* laplacian_;
 };
 
 #endif /* defined(__ShapeAnalyzer__HeatDiffusion__) */

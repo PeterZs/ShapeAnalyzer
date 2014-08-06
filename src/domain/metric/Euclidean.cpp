@@ -8,16 +8,6 @@
 
 #include "Euclidean.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// Constructors
-///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
-Euclidean::Euclidean(Shape* shape) : Metric(shape) {
-    identifier_ = "Euclidean";
-    shape_ = shape;
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,10 +27,6 @@ double Euclidean::getDistance(vtkIdType a, vtkIdType b) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void Euclidean::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
-    if(source == -1) {
-        source = rand() % shape_->getPolyData()->GetPoints()->GetNumberOfPoints();
-    }
-
     for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
         distances.getScalars()->SetValue(i, getDistance(source, i));
     }

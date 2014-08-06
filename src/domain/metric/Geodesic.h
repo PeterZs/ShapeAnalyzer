@@ -81,23 +81,9 @@ class Geodesic : public Metric {
 ///////////////////////////////////////////////////////////////////////////////
 // Declaration
 ///////////////////////////////////////////////////////////////////////////////
-    
-public:
-    Geodesic(Shape* shape);
-    virtual ~Geodesic();
-    
-    // from abstract class Metric
-    virtual double getDistance(vtkIdType a, vtkIdType b);
-    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source = -1);
-    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
-    
-    // Geodesic functions
-    void        changeSourcePoint(vtkIdType source);
-    void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
-    
-    vtkIdType    findPointFurthestToAllSources();
-    
 private:
+    Geodesic() {}
+    
     double  calculateLengthOfPath(vector<SurfacePoint> path);
     
     Mesh                                mesh_;
@@ -106,6 +92,27 @@ private:
     geodesicFaces*                      faces_;
     vector<SurfacePoint>                sources_;
     vtkSmartPointer<vtkIdList>          sourceList_;
+    
+public:
+    static Metric* create() {
+        return new Geodesic();
+    }
+    
+    virtual void initialize(Shape* shape);
+    
+    virtual ~Geodesic();
+    
+    // from abstract class Metric
+    virtual double getDistance(vtkIdType a, vtkIdType b);
+    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
+    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
+    
+    // Geodesic functions
+    void        changeSourcePoint(vtkIdType source);
+    void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
+    
+    vtkIdType    findPointFurthestToAllSources();
+    
 };
 
 #endif /* defined(__ShapeAnalyzer__Geodesic__) */

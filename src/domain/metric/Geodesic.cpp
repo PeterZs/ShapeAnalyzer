@@ -17,8 +17,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // initialization of the internal data structure and an precomputation-free
 // algorithm
-Geodesic::Geodesic(Shape* shape) : Metric(shape) {
-    identifier_ = "Geodesic";
+void Geodesic::initialize(Shape *shape) {
+    Metric::initialize(shape);
     
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
@@ -49,10 +49,6 @@ Geodesic::~Geodesic() {
 // by their id
 // Notice that this will remove the current sources and precomputed information
 void Geodesic::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) {
-    if(s == -1) {
-        s = rand() % shape_->getPolyData()->GetPoints()->GetNumberOfPoints();
-    }
-
     // initialize algorithm for this source
     SurfacePoint source(&mesh_.vertices()[s]);
     vector<geodesic::SurfacePoint> all_sources(1,source);

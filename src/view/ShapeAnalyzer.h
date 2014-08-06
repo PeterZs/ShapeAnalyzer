@@ -64,7 +64,9 @@
 #include "../domain/Set.h"
 #include "../domain/Shape.h"
 #include "../domain/metric/Metric.h"
-#include "../domain/metric/MetricFactory.h"
+#include "../domain/metric/Euclidean.h"
+#include "../domain/metric/Geodesic.h"
+#include "../domain/Factory.h"
 #include "../domain/samplings/SamplingFactory.h"
 #include "../domain/coloring/PointColoring.h"
 
@@ -183,8 +185,8 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
-    vector<QAction*> qtAddMetricMenu(QMenu* menu);
-    vector<QAction*> qtAddSamplingMenu(QMenu* menu);
+    void qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries);
+    void qtAddSamplingMenu(QMenu* menu, Set<string, QAction*>& entries);
     
     void qtInputDialogFPS();
     void qtInputDialogRename(QListWidgetItem* item);

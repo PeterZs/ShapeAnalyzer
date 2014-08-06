@@ -115,6 +115,12 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     
     
+    //register metrics
+    Factory<Metric>::getInstance()->Register("euclidean", "Euclidean Metric", &Euclidean::create);
+    Factory<Metric>::getInstance()->Register("geodesic", "Geodesic Metric", &Geodesic::create);
+    
+
+    
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -198,44 +204,38 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<QAction*> ShapeAnalyzer::qtAddMetricMenu(QMenu* menu) {
+void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries) {
     QMenu* metricMenu = new QMenu();
     metricMenu->setTitle("Visualize Metric");
     menu->addMenu(metricMenu);
+
+    unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
     
-    MetricFactory factory = MetricFactory();
-    
-    vector<string> metrics = factory.getIdentifier();
-    vector<QAction*> actions;
-    
-    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-        // add action with Identifier to the menu and store action pointer in
-        // return vector
-        actions.push_back(metricMenu->addAction(it->data()));
+    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
+        entries.add(it->first, metricMenu->addAction(it->second.c_str()));
     }
-    
-    return actions;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<QAction*> ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu) {
-    QMenu* samplingMenu = new QMenu();
-    samplingMenu->setTitle("Sampling");
-    menu->addMenu(samplingMenu);
-    
-    SamplingFactory factory = SamplingFactory();
-    
-    vector<string> metrics = factory.getIdentifier();
-    vector<QAction*> actions;
-    
-    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-        // add action with Identifier to the menu and store action pointer in
-        // return vector
-        actions.push_back(samplingMenu->addAction(it->data()));
-    }
-    
-    return actions;
-}
+//void ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu, Set<string, QAction*> entries) {
+//    QMenu* samplingMenu = new QMenu();
+//    samplingMenu->setTitle("Sampling");
+//    menu->addMenu(samplingMenu);
+//    
+//    SamplingFactory factory = SamplingFactory();
+//    
+//    vector<string> metrics = factory.getIdentifier();
+//    vector<QAction*> actions;
+//    
+//    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+//        // add action with Identifier to the menu and store action pointer in
+//        // return vector
+//        const string bla = it->data();
+//        actions.push_back(samplingMenu->addAction(""));
+//    }
+//    
+//    return actions;
+//}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -350,7 +350,10 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    vector<QAction*> metrics = qtAddMetricMenu(&myMenu);
+    
+    //map containing unique id of metric + corresponding QAction already set with corresponding label
+    Set<string, QAction*> metrics;
+    qtAddMetricMenu(&myMenu, metrics);
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
@@ -410,7 +413,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
                 u0.getScalars()->SetValue(i, 0.0);
             }
         }
-        HeatDiffusion diffusion(currentShape, u0, 10);
+        HeatDiffusion diffusion(currentShape, u0, 100);
         ScalarPointAttribute ut(currentShape);
         diffusion.getHeat(ut, t);
         PointColoring coloring(currentShape, &ut);
@@ -436,17 +439,23 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
             
             for(int i = 0; i < corr->getData()->getShapes().size(); i++) {
                 if(corr->getData()->getShapes()[i] == shape1->getId()) {
-                    Geodesic metric(shape1);
+                    Metric* m;
+                    m = Factory<Metric>::getInstance()->create("geodesic");
+                    m->initialize(shape1);
                     ScalarPointAttribute distances(shape1);
-                    metric.getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
                     c1.push_back(distances);
+                    delete m;
                 }
                 
                 if(corr->getData()->getShapes()[i] == shape2->getId()) {
-                    Geodesic metric(shape2);
+                    Metric* m;
+                    m = Factory<Metric>::getInstance()->create("geodesic");
+                    m->initialize(shape2);
                     ScalarPointAttribute distances(shape2);
-                    metric.getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
                     c2.push_back(distances);
+                    delete m;
                 }
             }
         }
@@ -484,14 +493,15 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         currentShape = item->getItem();
         
         // Metric
-        MetricFactory metricFactory = MetricFactory();
-        for(vector<QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-            if (selectedItem == *it) {
-                Metric* m = metricFactory.produce(selectedItem->text().toStdString(), currentShape);
+        for(Set<string, QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+            if (selectedItem == it->second) {
+                Metric* m = Factory<Metric>::getInstance()->create(it->first);
+                m->initialize(currentShape);
                 ScalarPointAttribute distances(currentShape);
-                m->getAllDistances(distances);
+                m->getAllDistances(distances, currentShape->getRandomPoint());
                 PointColoring coloring(currentShape, &distances);
                 coloring.color();
+                delete m;
             }
         }
     }

@@ -59,12 +59,15 @@ void qtCorrespondenceColoringTab::slotColorCorrespondences(const QString label) 
     
     // proceed if shape was found
     if (referenceId != -1) {
-        
         CorrespondenceColoring cc = CorrespondenceColoring(set_,
                                                            points_,
                                                            faces_,
                                                            referenceShape);
-        cc.showPointCorrespondences();
+        if(pointRadio->isChecked()) {
+            cc.showPointCorrespondences();
+        } else {
+            cc.showFaceCorrespondences();
+        }
 
     }
 }

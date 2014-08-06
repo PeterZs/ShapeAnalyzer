@@ -16,6 +16,7 @@
 
 #include "CoordinateColoring.h"
 #include "FaceColoring.h"
+#include "FaceCoordinateColoring.h"
 #include "PointColoring.h"
 
 #include <vtkSmartPointer.h>

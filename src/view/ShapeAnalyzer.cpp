@@ -11,7 +11,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     actionGroupCorrespondenceType->addAction(this->actionFaceCorrespondences);
     actionGroupCorrespondenceType->addAction(this->actionPointCorrespondences);
     
-
+    
     //Group actions related to different modes.
     this->actionGroupMode = new QActionGroup(this);
     actionGroupMode->addAction(this->actionTransformScene);
@@ -26,10 +26,15 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     actionGroupShapeDisplayMode->addAction(this->actionShowPointCloud);
     
     
+    this->actionGroupProjectionMode = new QActionGroup(this);
+    actionGroupProjectionMode->addAction(this->actionPerspective);
+    actionGroupProjectionMode->addAction(this->actionParallel);
+    
+    
     this->listShapes->setContextMenuPolicy(Qt::CustomContextMenu);
     this->listCorrespondences->setContextMenuPolicy(Qt::CustomContextMenu);
     
-
+    
     // Set up action signals and slots
     connect(this->actionExit,                       SIGNAL(triggered()),
             this,                                   SLOT(slotExit()));
@@ -48,7 +53,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     connect(this->actionSaveScene,                  SIGNAL(triggered()),
             this,                                   SLOT(slotSaveScene()));
-
+    
     connect(this->actionExportScene,                SIGNAL(triggered()),
             this,                                   SLOT(slotExportScene()));
     
@@ -59,7 +64,6 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotSaveImage()));
     
     // delete correspondence picker visual response if mode was changed.
-    // This triggers box widget to show up on shape if shape has been selected.
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotClearCurrentSelection()));
     
@@ -68,7 +72,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     connect(this->actionGroupMode,                  SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotAddCorrespondencesMode()));
-
+    
     connect(this->actionGroupCorrespondenceType,    SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotAddCorrespondencesMode()));
     
@@ -76,7 +80,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotSetCorrespondenceType()));
     
     connect(this->actionGroupShapeDisplayMode,      SIGNAL(triggered(QAction*)),
-                                                    SLOT(slotSetShapeDisplayMode()));
+            SLOT(slotSetShapeDisplayMode()));
     
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotOpenHelpWindow()));
@@ -87,11 +91,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
             this,                                   SLOT(slotSetBackgroundColor()));
     
-    connect(this->actionPerspective,                SIGNAL(toggled(bool)),
-            this,                                   SLOT(slotTogglePerspectiveMode(bool)));
-    
-    connect(this->actionParallel,                   SIGNAL(toggled(bool)),
-            this,                                   SLOT(slotToggleParallelMode(bool)));
+    connect(this->actionGroupProjectionMode,        SIGNAL(triggered(QAction*)),
+            this,                                   SLOT(slotTogglePerspectiveMode()));
+
     
     connect(this->actionWindowPointCorrespondences, SIGNAL(triggered()),
             this,                                   SLOT(slotOpenCorrespondenceWindowPoints()));
@@ -114,6 +116,12 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     
     
+    //register metrics
+    Factory<Metric>::getInstance()->Register("euclidean", "Euclidean Metric", &Euclidean::create);
+    Factory<Metric>::getInstance()->Register("geodesic", "Geodesic Metric", &Geodesic::create);
+    
+    
+    
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -121,12 +129,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     qtConnectListCorrespondences();
     qtConnectListShapes();
     
-    // short cut for ending correspondence picking
-    QShortcut *shortcut = new QShortcut(Qt::Key_Escape, this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(slotEndCorrespondencePicker()));
     
-    
-  
     this->vtkSetup();
     
     qtInitializeSettings();
@@ -143,7 +146,7 @@ void ShapeAnalyzer::qtConnectListCorrespondences() {
             this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
     connect(this->listCorrespondences,              SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotShowContextMenuCorrespondences(const QPoint&)));
-
+    
     
     //manually call slot set box widget
     slotSetSelectedCurrentCorrespondence(listCorrespondences->currentItem(), nullptr);
@@ -156,7 +159,7 @@ void ShapeAnalyzer::qtConnectListShapes() {
             this,                                   SLOT(slotSetCurrentBoxWidget(QListWidgetItem*, QListWidgetItem*)));
     connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotShowContextMenuShapes(const QPoint&)));
-
+    
     slotSetCurrentBoxWidget(listShapes->currentItem(), nullptr);
 }
 
@@ -188,59 +191,52 @@ void ShapeAnalyzer::render() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Functions handling QT 
+// Functions handling QT
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
-    //catch mouse wheel events since they cause strange behavior on Mac OSX
+    //catch and ignore mouse wheel events since they cause strange behavior on Mac OSX
     if (object == qvtkWidget && event->type() == QEvent::Wheel) {
         return true;
     }
-    
     return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<QAction*> ShapeAnalyzer::qtAddMetricMenu(QMenu* menu) {
+void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries) {
     QMenu* metricMenu = new QMenu();
     metricMenu->setTitle("Visualize Metric");
     menu->addMenu(metricMenu);
     
-    MetricFactory factory = MetricFactory();
+    unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
     
-    vector<string> metrics = factory.getIdentifier();
-    vector<QAction*> actions;
-    
-    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-        // add action with Identifier to the menu and store action pointer in
-        // return vector
-        actions.push_back(metricMenu->addAction(it->data()));
+    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
+        entries.add(it->first, metricMenu->addAction(it->second.c_str()));
     }
-    
-    return actions;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<QAction*> ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu) {
-    QMenu* samplingMenu = new QMenu();
-    samplingMenu->setTitle("Sampling");
-    menu->addMenu(samplingMenu);
-    
-    SamplingFactory factory = SamplingFactory();
-    
-    vector<string> metrics = factory.getIdentifier();
-    vector<QAction*> actions;
-    
-    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-        // add action with Identifier to the menu and store action pointer in
-        // return vector
-        actions.push_back(samplingMenu->addAction(it->data()));
-    }
-    
-    return actions;
-}
+//void ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu, Set<string, QAction*> entries) {
+//    QMenu* samplingMenu = new QMenu();
+//    samplingMenu->setTitle("Sampling");
+//    menu->addMenu(samplingMenu);
+//
+//    SamplingFactory factory = SamplingFactory();
+//
+//    vector<string> metrics = factory.getIdentifier();
+//    vector<QAction*> actions;
+//
+//    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+//        // add action with Identifier to the menu and store action pointer in
+//        // return vector
+//        const string bla = it->data();
+//        actions.push_back(samplingMenu->addAction(""));
+//    }
+//
+//    return actions;
+//}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -259,15 +255,15 @@ void ShapeAnalyzer::qtInitializeSettings() {
 void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
     bool ok;
     double opacity = QInputDialog::getDouble (
-                                             this,
-                                             tr("Opacity"),
-                                             tr("Choose a value between 0 and 1"),
-                                             shape->getActor()->GetProperty()->GetOpacity(),
-                                             0.0,
-                                             1.0,
-                                             2,
-                                             &ok
-                                           );
+                                              this,
+                                              tr("Opacity"),
+                                              tr("Choose a value between 0 and 1"),
+                                              shape->getActor()->GetProperty()->GetOpacity(),
+                                              0.0,
+                                              1.0,
+                                              2,
+                                              &ok
+                                              );
     // change opacity if ok was given
     if (ok) {
         shape->getActor()->GetProperty()->SetOpacity(opacity);
@@ -279,13 +275,13 @@ void ShapeAnalyzer::qtInputDialogOpacity(Shape* shape) {
 void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
     bool ok;
     QString label = QInputDialog::getText (
-                                        this,
-                                        tr("Rename"),
-                                        tr("New Name"),
-                                        QLineEdit::Normal,
-                                        item->text(),
-                                        &ok
-                                        );
+                                           this,
+                                           tr("Rename"),
+                                           tr("New Name"),
+                                           QLineEdit::Normal,
+                                           item->text(),
+                                           &ok
+                                           );
     // rename if ok was given
     if (ok) {
         item->setText(label);
@@ -296,16 +292,16 @@ void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
 vtkIdType ShapeAnalyzer::qtInputDialogChooseEigenfunction(Shape* shape) {
     bool ok;
     vtkIdType eigenfunction = QInputDialog::getInt(
-                                              this,
-                                              tr("Eigenfunction"),
-                                              tr("Choose an eigenfunction"),
-                                              0,
-                                              0,
-                                              std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
-                                              1,
-                                              &ok
-                                              );
-    // change opacity if ok was given
+                                                   this,
+                                                   tr("Eigenfunction"),
+                                                   tr("Choose an eigenfunction"),
+                                                   0,
+                                                   0,
+                                                   std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
+                                                   1,
+                                                   &ok
+                                                   );
+    // return eigenfunction id if ok was given
     if (ok) {
         return eigenfunction;
     }
@@ -316,15 +312,15 @@ vtkIdType ShapeAnalyzer::qtInputDialogChooseEigenfunction(Shape* shape) {
 double ShapeAnalyzer::qtInputDialogChooseHeatDiffusionTime(Shape* shape) {
     bool ok;
     double t = QInputDialog::getDouble(
-                                                   this,
-                                                   tr("Heat diffusion"),
-                                                   tr("Choose diffusion time."),
-                                                   0,
-                                                   0,
-                                                   2147483647,
-                                                   2,
-                                                   &ok
-                                                   );
+                                       this,
+                                       tr("Heat diffusion"),
+                                       tr("Choose diffusion time."),
+                                       0,
+                                       0,
+                                       2147483647,
+                                       2,
+                                       &ok
+                                       );
     // change opacity if ok was given
     if (ok) {
         return t;
@@ -355,12 +351,17 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     
     QMenu myMenu;
-    vector<QAction*> metrics = qtAddMetricMenu(&myMenu);
+    
+    //map containing unique id of metric + corresponding QAction already set with corresponding label
+    Set<string, QAction*> metrics;
+    qtAddMetricMenu(&myMenu, metrics);
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
     QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
+    QAction* matching = myMenu.addAction("Match shapes");
+    
     // ...
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -383,15 +384,11 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         if(i == -1) {
             return;
         }
-        if(currentShape != currentShape_) {
-            currentShape_ = currentShape;
-            delete laplacian_;
-            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape, 100);
-            laplacian_->initialize();
-        }
+        
+        
         
         ScalarPointAttribute eigenfunction(currentShape);
-        laplacian_->getEigenfunction(i, eigenfunction);
+        currentShape->getEigenfunction(i, eigenfunction);
         
         PointColoring coloring(currentShape, &eigenfunction);
         coloring.color();
@@ -405,12 +402,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         if(t == -1.0) {
             return;
         }
-        if(currentShape != currentShape_) {
-            currentShape_ = currentShape;
-            delete laplacian_;
-            laplacian_ = new FEMLaplaceBeltramiOperator(currentShape, 100);
-            laplacian_->initialize();
-        }
+        
+        
+        
         ScalarPointAttribute u0(currentShape);
         vtkIdType source = rand() % currentShape->getPolyData()->GetNumberOfPoints();
         for(vtkIdType i = 0; i < currentShape->getPolyData()->GetNumberOfPoints(); i++) {
@@ -420,11 +414,79 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
                 u0.getScalars()->SetValue(i, 0.0);
             }
         }
-        HeatDiffusion diffusion(currentShape, laplacian_, u0);
+        HeatDiffusion diffusion(currentShape, u0, 100);
         ScalarPointAttribute ut(currentShape);
         diffusion.getHeat(ut, t);
         PointColoring coloring(currentShape, &ut);
         coloring.color();
+    } else if(selectedItem == matching) {
+        Shape* shape1;
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        shape1 = item->getItem();
+        
+        vector<ScalarPointAttribute> c1;
+        vector<ScalarPointAttribute> c2;
+        
+        Shape* shape2 = nullptr;
+        for(Set<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+            if(it->second != shape1) {
+                shape2 = it->second;
+                break;
+            }
+        }
+        
+        for(Set<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
+            PointCorrespondence* corr = it->second;
+            
+            for(int i = 0; i < corr->getData()->getShapes().size(); i++) {
+                if(corr->getData()->getShapes()[i] == shape1->getId()) {
+                    Metric* m;
+                    m = Factory<Metric>::getInstance()->create("geodesic");
+                    m->initialize(shape1);
+                    ScalarPointAttribute distances(shape1);
+                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    c1.push_back(distances);
+                    delete m;
+                }
+                
+                if(corr->getData()->getShapes()[i] == shape2->getId()) {
+                    Metric* m;
+                    m = Factory<Metric>::getInstance()->create("geodesic");
+                    m->initialize(shape2);
+                    ScalarPointAttribute distances(shape2);
+                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    c2.push_back(distances);
+                    delete m;
+                }
+            }
+        }
+        
+        
+        
+        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 12);
+        fmaps.initialize();
+        
+        
+        ScalarPointAttribute u0(shape1);
+        vtkIdType source = 223;
+        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+            if(i == source) {
+                u0.getScalars()->SetValue(i, 1.0);
+            } else {
+                u0.getScalars()->SetValue(i, 0.0);
+            }
+        }
+        HeatDiffusion diffusion(shape1, u0, 12);
+        ScalarPointAttribute ut(shape1);
+        diffusion.getHeat(ut, 40);
+        PointColoring coloring1(shape1, &ut);
+        coloring1.color();
+        
+        ScalarPointAttribute x(shape2);
+        fmaps.transferFunction(ut, x);
+        
+        PointColoring coloring2(shape2, &x);
+        coloring2.color();
     } else {
         // try if action is identifier for any factory
         Shape* currentShape;
@@ -432,14 +494,15 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         currentShape = item->getItem();
         
         // Metric
-        MetricFactory metricFactory = MetricFactory();
-        for(vector<QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-            if (selectedItem == *it) {
-                Metric* m = metricFactory.produce(selectedItem->text().toStdString(), currentShape);
+        for(Set<string, QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
+            if (selectedItem == it->second) {
+                Metric* m = Factory<Metric>::getInstance()->create(it->first);
+                m->initialize(currentShape);
                 ScalarPointAttribute distances(currentShape);
-                m->getAllDistances(distances);
+                m->getAllDistances(distances, currentShape->getRandomPoint());
                 PointColoring coloring(currentShape, &distances);
                 coloring.color();
+                delete m;
             }
         }
     }
@@ -451,7 +514,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotExit() {    
+void ShapeAnalyzer::slotExit() {
     qApp->exit();
 }
 
@@ -484,22 +547,6 @@ void ShapeAnalyzer::slotHideCorrespondences() {
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotEndCorrespondencePicker() {
-    if(this->actionAddCorrespondences->isChecked()) {
-        
-        // add current seleceted correspondence if more than one shape
-        // is involved
-        if(shapesByActor_.size() > 1) {
-            addCorrespondence();
-        }
-        
-        
-    }
-}
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // removes all current face/point correspondences from renderer
 // then adds visible point/face correspondences to renderer
@@ -531,9 +578,9 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             string name = "Correspondence ";
             name.append(to_string(counter));
             this->listCorrespondences->addItem(new qtListWidgetItem<Correspondence>(
-                                                                                  QString(name.c_str()),
-                                                                                it->second)
-                                     );
+                                                                                    QString(name.c_str()),
+                                                                                    it->second)
+                                               );
             counter++;
             
             // add to renderer
@@ -587,30 +634,13 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotTogglePerspectiveMode(bool b) {
+void ShapeAnalyzer::slotTogglePerspectiveMode() {
     vtkSmartPointer<vtkCamera> camera = renderer_->GetActiveCamera();
     
-    this->actionParallel->setChecked(!b);
-    
-    if (b == true)
+    if (!actionParallel->isChecked())
         camera->ParallelProjectionOff();
     else
         camera->ParallelProjectionOn();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotToggleParallelMode(bool b) {
-    vtkSmartPointer<vtkCamera> camera = renderer_->GetActiveCamera();
-    
-    this->actionPerspective->setChecked(!b);
-    
-    if (b == true)
-        camera->ParallelProjectionOn();
-    else
-        camera->ParallelProjectionOff();
     
     renderer_->GetRenderWindow()->Render();
 }
@@ -663,12 +693,12 @@ void ShapeAnalyzer::slotSetShapeDisplayMode() {
 void ShapeAnalyzer::slotOpenHelpWindow() {
     
     QDialog* help = new QDialog(0,0);
-
+    
     Ui_Dialog helpUi;
     helpUi.setupUi(help);
-
+    
     help->show();
-
+    
 }
 
 
@@ -793,7 +823,7 @@ void ShapeAnalyzer::slotExportCorrespondences() {
     
     if (save == types.value(0) &&  pointData_.size() > 0) {
         QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Point Correspondence Files (*.txt)"));
-    
+        
         reader.exportPointCorrespondences(&pointData_, &shapesByActor_, filename.toStdString());
     }
     
@@ -813,7 +843,7 @@ void ShapeAnalyzer::slotSaveImage() {
     if(uiSettings_.checkWholeScene->isChecked()){
         vtkSmartPointer<vtkCamera> newCamera = vtkSmartPointer<vtkCamera>::New();
         newCamera->DeepCopy(oldCamera);
-    
+        
         renderer_->SetActiveCamera(newCamera);
         renderer_->ResetCamera();
         renderer_->GetRenderWindow()->Render();
@@ -859,14 +889,14 @@ void ShapeAnalyzer::slotShapeSelectionChanged(QListWidgetItem* current, QListWid
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowContextMenuCorrespondences(const QPoint& pos) {
     int currentRow = this->listCorrespondences->currentRow();
-
+    
     // menu appears only if item was selected
     if(currentRow >= 0) {
-
+        
         QPoint globalPos = this->listCorrespondences->mapToGlobal(pos);
         // for QAbstractScrollArea and derived classes you would use:
         // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-
+        
         qtShowContextMenuCorrepondences(globalPos);
     }
 }
@@ -876,14 +906,14 @@ void ShapeAnalyzer::slotShowContextMenuCorrespondences(const QPoint& pos) {
 // opens menu for shapes
 void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
     int currentRow = this->listShapes->currentRow();
-
+    
     // menu appears only if item was selected
     if(currentRow >= 0) {
-
+        
         QPoint globalPos = this->listShapes->mapToGlobal(pos);
         // for QAbstractScrollArea and derived classes you would use:
         // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-
+        
         qtShowContextMenuShapes(globalPos);
     }
 }
@@ -911,12 +941,12 @@ void ShapeAnalyzer::slotTabCorrespondenceColoring(bool checked) {
     if (checked) { // add Tab
         int i = this->tabWidget_2->addTab(
                                           new qtCorrespondenceColoringTab(
-                                                this->listShapes,
-                                                &shapesByActor_,
-                                                &faceData_,
-                                                &pointData_,
-                                                this
-                                          ),
+                                                                          this->listShapes,
+                                                                          &shapesByActor_,
+                                                                          &faceData_,
+                                                                          &pointData_,
+                                                                          this
+                                                                          ),
                                           "Correspondence Coloring");
         this->tabWidget_2->setCurrentIndex(i);
     } else { // remove shape info tab, if it was there
@@ -1039,11 +1069,25 @@ void ShapeAnalyzer::vtkSetup() {
                                 SLOT(vtkMouseMoveHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
                                 nullptr, 1.0);
     
+    this->connections_->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
+                                vtkCommand::KeyPressEvent,
+                                this,
+                                SLOT(vtkKeyPressHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                                nullptr, 1.0);
     
     renderer_ = vtkSmartPointer<vtkRenderer>::New();
     
-    this->correspondencePicker_ = new PointCorrespondencePicker(renderer_);
     this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer_);
+    
+    
+    vtkSmartPointer<ShapeAnalyzerInteractorStyle> style =
+    vtkSmartPointer<ShapeAnalyzerInteractorStyle>::New();
+    this->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle( style );
+    
+    
+    
+    this->correspondencePicker_ = new PointCorrespondencePicker(renderer_);
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1054,11 +1098,11 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
     
     if(shapesByActor_.size() == 0)
         renderer_->ResetCamera();
-
-
+    
+    
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
-
+    
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
     
     //triggers boxwidget to show up on new shape
@@ -1162,7 +1206,7 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
     //read shapes
     for(unsigned int i = 0; i < numberOfShapes; i++) {
         Shape* shape = new Shape(renderer_);
-
+        
         shape->read(is);
         
         vtkAddShape(shape);
@@ -1190,7 +1234,7 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
 void ShapeAnalyzer::vtkImportScene(string filename) {
     clear();
     ifstream is(filename);
-
+    
     string line;
     
     unsigned int numberOfShapes;
@@ -1237,7 +1281,7 @@ void ShapeAnalyzer::vtkSaveScene(string filename) {
     ofstream os(filename, ios::binary);
     int64_t numberOfShapes = (int64_t) shapesByActor_.size();
     os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
-
+    
     int64_t lastInsertShapeID = (int64_t) lastInsertShapeID_;
     os.write(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
     
@@ -1269,31 +1313,57 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
     vtkRenderWindowInteractor* interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
     // Get the location of the click (in window coordinates)
     int* pos =interactor->GetEventPosition();
-   
+    
     //Get global position of the click
     int* size = interactor->GetSize();
     QPoint globalPos = qvtkWidget->mapToGlobal(QPoint(pos[0], size[1]-pos[1]));
-
+    
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
     picker->SetTolerance(0.005);
     
     // Pick from this location.
     picker->Pick(pos[0], pos[1], 0, renderer_);
-
-
+    
+    
     // check if pick was valid
     if(picker->GetPointId() != -1 && picker->GetCellId() != -1) {
-        Shape* shape = findShapeByActor(picker->GetActor());
-        if(shape != nullptr) {
+        
+        if(shapesByActor_.contains(picker->GetActor())) {
+            Shape* shape = shapesByActor_[picker->GetActor()];
             // depending on whether we want to add face or point correspondences provide picker->GetCellId or picker->GetPointId to vtkShapeClicked method
             vtkShapeClicked(shape, (actionFaceCorrespondences->isChecked() ? picker->GetCellId() : picker->GetPointId()), globalPos, vtkEvent, command);
         } else {
-            Correspondence* correspondence = findCorrespondenceByActor(picker->GetActor());
-            if(correspondence != nullptr) {
-                vtkCorrespondenceClicked(correspondence, picker->GetPointId(), globalPos, vtkEvent, command);
+            if(pointCorrespondencesByActor_.contains(picker->GetActor())) {
+                vtkCorrespondenceClicked(pointCorrespondencesByActor_[picker->GetActor()], picker->GetPointId(), globalPos, vtkEvent, command);
+            }
+            if(faceCorrespondencesByActor_.contains(picker->GetActor())) {
+                vtkCorrespondenceClicked(faceCorrespondencesByActor_[picker->GetActor()], picker->GetPointId(), globalPos, vtkEvent, command);
             }
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command) {
+    vtkRenderWindowInteractor* interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
+    
+    std::string key = interactor->GetKeySym();
+    
+    if(key == "a") {
+        if(this->actionAddCorrespondences->isChecked()) {
+            // add current seleceted correspondence if more than one shape
+            // is involved
+            if(pickerCounter_ > 1) {
+                addCorrespondence();
+            }
+            
+            
+        }
+    } else if(key == "Escape") {
+        correspondencePicker_->clearSelection();
+        pickerCounter_ = 0;
+    }
+    
 }
 
 
@@ -1325,7 +1395,7 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if(this->actionAddCorrespondences->isChecked() && vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
-        int result = correspondencePicker_->add(shape, cellId);
+        int result = correspondencePicker_->addShape(shape, cellId);
         if(result == 1)
             pickerCounter_++;
         else if(result == -1)
@@ -1358,23 +1428,6 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
 ///////////////////////////////////////////////////////////////////////////////
 // Functions accessing data structures
 ///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
-Shape* ShapeAnalyzer::findShapeByActor(vtkActor *actor) {
-    return shapesByActor_.getValue(actor);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-Correspondence* ShapeAnalyzer::findCorrespondenceByActor(vtkActor *actor) {
-    
-    if(pointCorrespondencesByActor_.contains(actor)) {
-        return pointCorrespondencesByActor_.getValue(actor);
-    }
-    
-    return faceCorrespondencesByActor_.getValue(actor);
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1440,7 +1493,7 @@ void ShapeAnalyzer::clear() {
     // qt
     listShapes->disconnect();
     listCorrespondences->disconnect();
-
+    
     //delete all correspondences
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
@@ -1462,7 +1515,7 @@ void ShapeAnalyzer::clear() {
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) listShapes->item(i);
         Shape* shape = item->getItem();
         shape->remove();
-
+        
         shapesByActor_.remove(shape->getActor());
         delete item;
     }
@@ -1511,7 +1564,7 @@ void ShapeAnalyzer::deleteCorrespondence(int i, bool deleteData = false) {
     listCorrespondences->disconnect();
     
     qtListWidgetItem<Correspondence> *item = (qtListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-
+    
     
     // correspondence deleting
     if(this->actionPointCorrespondences->isChecked()) {
@@ -1554,7 +1607,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     pickerCounter_ = 0;
     //first remove shape from list
     delete item;
-
+    
     //iterate through the correspondence list BACKWARDS from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete. Then remove items from list
     for(int j = listCorrespondences->count()-1; j > -1; j--) {
         //get correspondence
@@ -1580,7 +1633,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     // delete shape
     shape->remove();
     shapesByActor_.remove(shape->getActor());
-
+    
     this->qvtkWidget->GetRenderWindow()->Render();
     
     qtConnectListCorrespondences();
@@ -1594,39 +1647,36 @@ void ShapeAnalyzer::addCorrespondence() {
     
     // adding to correspondenceByActor, vtkPart
     if(correspondencePicker_->pick(&correspondence)) {
-    
+        
+        // add to qt
+        lastInsertCorresondenceID_++;
+        string name = "Correspondence ";
+        name.append(std::to_string(lastInsertCorresondenceID_));
+        
         // adding to face/point data
         if (this->actionPointCorrespondences->isChecked()) { // point correspondence
             PointCorrespondence* point = (PointCorrespondence*) correspondence;
             pointData_.add(point->getData(), true);
             
-            pickerCounter_ = 0;
             pointCorrespondencesByActor_.add(point->getLinesActor(), point);
             
-            // add to qt
-            lastInsertCorresondenceID_++;
-            string name = "Correspondence ";
-            name.append(std::to_string(lastInsertCorresondenceID_));
             // add shape to qt list widget
             qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(name.c_str()), point);
             this->listCorrespondences->addItem(item);
         } else { // face correspondence
             FaceCorrespondence* face = (FaceCorrespondence*) correspondence;
             faceData_.add(face->getData(), true);
-            
-            pickerCounter_ = 0;
             faceCorrespondencesByActor_.add(face->getLinesActor(), face);
             
-            // add to qt
-            lastInsertCorresondenceID_++;
-            string name = "Correspondence ";
-            name.append(std::to_string(lastInsertCorresondenceID_));
+            
             // add shape to qt list widget
             qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(name.c_str()), face);
             this->listCorrespondences->addItem(item);
         }
         
     }
+    
+    pickerCounter_ = 0;
 }
 
 
@@ -1648,5 +1698,4 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     
     qvtkWidget->GetRenderWindow()->Render();
 }
-
 

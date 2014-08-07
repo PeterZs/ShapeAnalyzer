@@ -145,6 +145,7 @@ private slots:
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
 
     virtual void slotClearCurrentSelection();
+    virtual void slotHideCorrespondences();
 
     virtual void slotToggleBoxWidget();
     virtual void slotAddCorrespondencesMode();

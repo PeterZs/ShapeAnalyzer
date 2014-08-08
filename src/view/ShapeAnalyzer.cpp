@@ -710,8 +710,10 @@ void ShapeAnalyzer::slotOpenCorrespondenceWindowFaces() {
                                                              &faceData_,
                                                              &pointCorrespondencesByActor_,
                                                              &faceCorrespondencesByActor_,
+                                                             &shapesByActor_,
                                                              this->listCorrespondences,
                                                              this->actionPointCorrespondences,
+                                                             this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer(),
                                                              this
                                                              );
     win->tabWidget->setCurrentIndex(1);
@@ -728,8 +730,10 @@ void ShapeAnalyzer::slotOpenCorrespondenceWindowPoints() {
                                                              &faceData_,
                                                              &pointCorrespondencesByActor_,
                                                              &faceCorrespondencesByActor_,
+                                                             &shapesByActor_,
                                                              this->listCorrespondences,
                                                              this->actionPointCorrespondences,
+                                                             this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer(),
                                                              this
                                                              );
     win->show();
@@ -790,7 +794,7 @@ void ShapeAnalyzer::slotLoadCorrespondences() {
     SceneReader reader = SceneReader();
     
     if(filename.endsWith(".txt")) {
-        reader.loadCorrespondences(filename.toStdString(), &pointData_, &faceData_, this->listShapes);
+        reader.loadCorrespondences(filename.toStdString(), &pointData_, &faceData_, this->listShapes, this);
     } else {
         //TODO Error handling
         ;
@@ -819,18 +823,28 @@ void ShapeAnalyzer::slotExportCorrespondences() {
     
     QStringList types;
     types << "Point Correspondences" << "Face Correspondences";
-    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types);
+    bool ok; // stores if user pressed ok button
+    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
     
-    if (save == types.value(0) &&  pointData_.size() > 0) {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Point Correspondence Files (*.txt)"));
-        
-        reader.exportPointCorrespondences(&pointData_, &shapesByActor_, filename.toStdString());
+    if (ok && save == types.value(0) &&  pointData_.size() > 0) {
+        QString filename = QFileDialog::getSaveFileName(
+                                                        this,
+                                                        tr("Save file"),
+                                                        tr(""),
+                                                        tr("ASCII Point Correspondence Files (*.txt)")
+                                                        );
+        if (!filename.isEmpty())
+            reader.exportPointCorrespondences(&pointData_, &shapesByActor_, filename.toStdString());
     }
     
-    if (save == types.value(1) && faceData_.size() > 0) {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Face Correspondence Files (*.txt)"));
+    if (ok &&save == types.value(1) && faceData_.size() > 0) {
+        QString filename = QFileDialog::getSaveFileName(this,
+                                                        tr("Save file"),
+                                                        tr(""),
+                                                        tr("ASCII Face Correspondence Files (*.txt)"));
         
-        reader.exportFaceCorrespondences(&faceData_, &shapesByActor_, filename.toStdString());
+        if (!filename.isEmpty())
+            reader.exportFaceCorrespondences(&faceData_, &shapesByActor_, filename.toStdString());
     }
 }
 
@@ -1531,6 +1545,9 @@ void ShapeAnalyzer::clear() {
     
     qtConnectListCorrespondences();
     qtConnectListShapes();
+    
+    pointData_.clear();
+    faceData_.clear();
 }
 
 

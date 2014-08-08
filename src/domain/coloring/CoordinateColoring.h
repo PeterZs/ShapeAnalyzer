@@ -30,6 +30,7 @@ public:
     
     virtual void color() {
         shape_->getPolyData()->GetPointData()->SetScalars(colors_);
+        shape_->getMapper()->SetScalarModeToUsePointData();
     }
     
     vtkSmartPointer<vtkUnsignedCharArray> getColors() {

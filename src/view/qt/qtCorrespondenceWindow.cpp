@@ -18,8 +18,10 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
                                                 Set<FaceCorrespondenceData*, bool>* faces,
                                                 Set<vtkActor*, PointCorrespondence*>* visiblePoints,
                                                 Set<vtkActor*, FaceCorrespondence*>* visibleFaces,
+                                                Set<vtkActor*, Shape*>* shapes,
                                                 QListWidget* visibleList,
                                                 QAction* pointMode,
+                                                vtkSmartPointer<vtkRenderer> renderer,
                                                 QWidget * parent,
                                                 Qt::WindowFlags f
                                                 )
@@ -28,8 +30,10 @@ qtCorrespondenceWindow::qtCorrespondenceWindow( Set<PointCorrespondenceData*, bo
     faceCorr_(faces),
     visiblePoints_(visiblePoints),
     visibleFaces_(visibleFaces),
+    shapes_(shapes),
     visibleList_(visibleList),
-    pointMode_(pointMode)
+    pointMode_(pointMode),
+    renderer_(renderer)
 {
     this->setupUi(this);
     
@@ -119,9 +123,10 @@ void qtCorrespondenceWindow::slotOpenContextMenuFaces(const QPoint& pos) {
     QAction* selectedItem = menu.exec(pos);
     //if (selectedItem == deleteAction) {
     //    deleteCorrespondence(this->listCorrespondences->currentRow());
-    //} else if (selectedItem == renameAction) {
-    //    qtInputDialogRename(this->listCorrespondences->currentItem());
-    //}
+    //} else
+    if (selectedItem == guiAction) {
+        
+    }
 }
 
 
@@ -129,7 +134,7 @@ void qtCorrespondenceWindow::slotOpenContextMenuFaces(const QPoint& pos) {
 void qtCorrespondenceWindow::slotOpenContextMenuPoints(const QPoint& pos) {
     // current correspondence
     qtListWidgetItem<PointCorrespondenceData>* current =
-    dynamic_cast<qtListWidgetItem<PointCorrespondenceData>* > (this->listPoints->currentItem());
+    (qtListWidgetItem<PointCorrespondenceData>*) this->listPoints->currentItem();
     
     
     QMenu menu;
@@ -145,9 +150,14 @@ void qtCorrespondenceWindow::slotOpenContextMenuPoints(const QPoint& pos) {
     QAction* selectedItem = menu.exec(pos);
     //if (selectedItem == deleteAction) {
     //    deleteCorrespondence(this->listCorrespondences->currentRow());
-    //} else if (selectedItem == renameAction) {
-    //    qtInputDialogRename(this->listCorrespondences->currentItem());
-    //}
+    //} else
+    if (selectedItem == guiAction) {
+        if (this->pointCorr_->getValue(current->getItem())){
+            guiAction   = menu.addAction("Hide");
+        } else {
+            addPointCorrespondence(current->getItem());
+        }
+    }
 }
 
 
@@ -166,6 +176,7 @@ void qtCorrespondenceWindow::slotRandomSubsetFaces() {
     
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void qtCorrespondenceWindow::slotRandomSubsetPoints() {
     if(pointMode_->isChecked()) {
@@ -181,3 +192,18 @@ void qtCorrespondenceWindow::slotRandomSubsetPoints() {
     
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Private Functions
+///////////////////////////////////////////////////////////////////////////////
+
+void qtCorrespondenceWindow::addPointCorrespondence(PointCorrespondenceData* data) {
+    if(!pointMode_->isChecked()) {
+        ShapeAnalyzer* parent = (ShapeAnalyzer*) parentWidget();
+        parent->switchCorrespondenceMode();
+    }
+    PointCorrespondence* corr = new PointCorrespondence(renderer_, data, shapes_);
+    // create actor and add to vtk
+    corr->produceActorFromData();
+    corr->add();
+    visiblePoints_->add(corr->getLinesActor(), corr);
+}

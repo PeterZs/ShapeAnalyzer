@@ -89,6 +89,7 @@ void CorrespondenceColoring::showPointCorrespondences() {
         if(it->second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(it->second->getId())->second;
             it->second->getPolyData()->GetPointData()->SetScalars(colors);
+            it->second->getMapper()->SetScalarModeToUsePointData();
         }
     }
     
@@ -164,6 +165,7 @@ void CorrespondenceColoring::showFaceCorrespondences() {
         if(it->second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(it->second->getId())->second;
             it->second->getPolyData()->GetCellData()->SetScalars(colors);
+            it->second->getMapper()->SetScalarModeToUseCellData();
         }
     }
     

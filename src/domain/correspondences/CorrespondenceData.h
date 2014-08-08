@@ -40,6 +40,8 @@ public:
         return correspondingIds_;
     }
     
+    int size() { return shapeIds_.size(); }
+    
 protected:
     CorrespondenceData() {}
     

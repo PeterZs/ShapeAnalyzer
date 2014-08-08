@@ -14,12 +14,15 @@
 #include <vtkTriangle.h>
 
 #include "Correspondence.h"
-#include "../Shape.h"
 #include "FaceCorrespondenceData.h"
+
+#include "../Set.h"
+#include "../Shape.h"
 
 class FaceCorrespondence : public Correspondence {
 public:
     FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data);
+    //FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data, Set<vtkActor*, Shape*> shapes);
     
     FaceCorrespondenceData* getData() { return (FaceCorrespondenceData*) data_; }
     

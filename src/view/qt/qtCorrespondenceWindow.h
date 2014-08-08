@@ -45,8 +45,10 @@ public:
                            Set<FaceCorrespondenceData*, bool>*  faces,
                            Set<vtkActor*, PointCorrespondence*>* visiblePoints,
                            Set<vtkActor*, FaceCorrespondence*>* visibleFaces,
+                           Set<vtkActor*, Shape*>* shapes,
                            QListWidget* visibleList,
                            QAction* pointMode,
+                           vtkSmartPointer<vtkRenderer> renderer,
                            QWidget * parent = 0,
                            Qt::WindowFlags f = 0
                            );
@@ -70,12 +72,16 @@ private slots:
     virtual void slotRandomSubsetFaces();
     
 private:
+    void addPointCorrespondence(PointCorrespondenceData*);
+    
     Set<PointCorrespondenceData*, bool>*    pointCorr_;
     Set<FaceCorrespondenceData*, bool>*     faceCorr_;
     Set<vtkActor*, PointCorrespondence*>*   visiblePoints_;
     Set<vtkActor*, FaceCorrespondence*>*    visibleFaces_;
+    Set<vtkActor*, Shape*>*                 shapes_;
     QListWidget*                            visibleList_;
     QAction*                                pointMode_;
+    vtkSmartPointer<vtkRenderer>            renderer_;
 };
 
 

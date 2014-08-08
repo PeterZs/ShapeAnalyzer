@@ -19,7 +19,9 @@
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
 
+#include "../Set.h"
 #include "../Shape.h"
+
 #include "CorrespondenceData.h"
 
 #include <vector>
@@ -56,12 +58,16 @@ public:
     // vtk
     void remove();
     void add();
+    
+    void produceActorFromData();
   
     
 protected:
     //protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, Set<vtkActor*, Shape*>* shapes);
     
+    void initialize();
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
@@ -71,7 +77,6 @@ protected:
     vector<Shape*>                  shapes_;
     
     
-private:
     //vtk visualization stuff
     vector<vtkSmartPointer<vtkActor> >  actors_; // actors representing highlighted vertex or face (part of this correspondence) on corresponding shape. (Ordering corresponds to ordering of shapes)
     

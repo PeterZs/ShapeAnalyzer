@@ -52,7 +52,8 @@ public:
                                     string                                  filename,
                                     Set<PointCorrespondenceData*, bool>*    pointCorr,
                                     Set<FaceCorrespondenceData*, bool>*     faceCorr,
-                                    QListWidget*                            shapes
+                                    QListWidget*                            shapes,
+                                    QWidget*                                parentWidget
                                     );
     
 private:

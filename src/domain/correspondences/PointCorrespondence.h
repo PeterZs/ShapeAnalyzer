@@ -14,9 +14,13 @@
 #include "Correspondence.h"
 #include "PointCorrespondenceData.h"
 
+#include "../Set.h"
+#include "../Shape.h"
+
 class PointCorrespondence : public Correspondence {
 public:
     PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, Set<vtkActor*, Shape*>* shapes);
     
     PointCorrespondenceData* getData() { return (PointCorrespondenceData*) data_; }
     

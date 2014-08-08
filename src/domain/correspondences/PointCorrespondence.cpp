@@ -15,6 +15,11 @@ PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, 
 
 
 ///////////////////////////////////////////////////////////////////////////////
+PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, Set<vtkActor*, Shape*>* shapes) : Correspondence(renderer, data, shapes) {
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // create actor that visualizes selected point on shape
 void PointCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType pointId) {
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();

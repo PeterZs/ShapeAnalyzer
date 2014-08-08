@@ -77,7 +77,8 @@ void SceneReader::exportFaceCorrespondences(Set<FaceCorrespondenceData*, bool>* 
 void SceneReader::loadCorrespondences(string                                filename,
                                       Set<PointCorrespondenceData*, bool>*  pointCorr,
                                       Set<FaceCorrespondenceData*, bool>*   faceCorr,
-                                      QListWidget*                          shapes)
+                                      QListWidget*                          shapes,
+                                      QWidget*                              parentWidget)
 {
     ifstream is(filename);
     string line;
@@ -100,22 +101,31 @@ void SceneReader::loadCorrespondences(string                                file
         vector<Shape*> correspondingShapes = vector<Shape*>(0);
         
         // user chooses numberOfShapes many shapes to correspond
+        unsigned counter = 1;
         for (int i = 0; i < numberOfShapes; i++) {
             QStringList shapeNames;
             // add all shapes that have not been chosen yet
             for (auto it = allShapes.begin(); it != allShapes.end(); it++) {
                 shapeNames << QString::fromStdString(it->first);
             }
+            shapeNames.sort();
+            
             // TODO the nullptr is not good, the windows move done...
-            QString chosen = QInputDialog::getItem(nullptr,
-                                                   QObject::tr("Choose a shape"),
-                                                   QObject::tr("Shape"),
-                                                   shapeNames);
+            QString description = QString(QObject::tr("Shape for column ")).append(QString::number(counter));
+            QString chosen = QInputDialog::getItem(parentWidget,
+                                                   QObject::tr("Choose a shape:"),
+                                                   description,
+                                                   shapeNames,
+                                                   0,
+                                                   true,
+                                                   0,
+                                                   Qt::Popup);
             // add chosen shape to vector
             Shape* shape = allShapes.find(chosen.toStdString())->second;
             correspondingShapes.push_back(shape);
             // delete chosen shape from map, so it can not be chosen again
             allShapes.erase(chosen.toStdString());
+            counter++;
         }
         
         // create correspondeneces

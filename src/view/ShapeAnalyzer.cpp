@@ -435,40 +435,45 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
             }
         }
         
-        for(Set<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
-            PointCorrespondence* corr = it->second;
+        Metric* m1;
+        m1 = Factory<Metric>::getInstance()->create("geodesic");
+        m1->initialize(shape1);
+        
+        Metric* m2;
+        m2 = Factory<Metric>::getInstance()->create("geodesic");
+        m2->initialize(shape2);
+        
+        for(Set<PointCorrespondenceData*, bool>::iterator it = pointData_.begin(); it != pointData_.end(); it++) {
+            PointCorrespondenceData* corr = it->first;
             
-            for(int i = 0; i < corr->getData()->getShapes().size(); i++) {
-                if(corr->getData()->getShapes()[i] == shape1->getId()) {
-                    Metric* m;
-                    m = Factory<Metric>::getInstance()->create("geodesic");
-                    m->initialize(shape1);
+            for(int i = 0; i < corr->getShapes().size(); i++) {
+                if(corr->getShapes()[i] == shape1->getId()) {
+
+
                     ScalarPointAttribute distances(shape1);
-                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    m1->getAllDistances(distances, corr->getCorrespondingIds()[i]);
                     c1.push_back(distances);
-                    delete m;
+
                 }
                 
-                if(corr->getData()->getShapes()[i] == shape2->getId()) {
-                    Metric* m;
-                    m = Factory<Metric>::getInstance()->create("geodesic");
-                    m->initialize(shape2);
+                if(corr->getShapes()[i] == shape2->getId()) {
+
                     ScalarPointAttribute distances(shape2);
-                    m->getAllDistances(distances, corr->getData()->getCorrespondingIds()[i]);
+                    m2->getAllDistances(distances, corr->getCorrespondingIds()[i]);
                     c2.push_back(distances);
-                    delete m;
+                    
                 }
             }
         }
         
+        delete m1;
+        delete m2;
         
-        
-        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 12);
-        fmaps.initialize();
+        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 7);
         
         
         ScalarPointAttribute u0(shape1);
-        vtkIdType source = 223;
+        vtkIdType source = 100;
         for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
             if(i == source) {
                 u0.getScalars()->SetValue(i, 1.0);
@@ -476,7 +481,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
                 u0.getScalars()->SetValue(i, 0.0);
             }
         }
-        HeatDiffusion diffusion(shape1, u0, 12);
+        HeatDiffusion diffusion(shape1, u0, 7);
         ScalarPointAttribute ut(shape1);
         diffusion.getHeat(ut, 40);
         PointColoring coloring1(shape1, &ut);

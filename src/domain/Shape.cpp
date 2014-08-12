@@ -95,15 +95,10 @@ vtkIdType Shape::getRandomPoint() {
 }
 
 LaplaceBeltramiOperator* Shape::getLaplacian(int numberOfEigenfunctions) {
-    if(laplacian_ == nullptr || laplacian_->getNumberOfEigenfunctions() < numberOfEigenfunctions) {
+    if(laplacian_ == nullptr || laplacian_->getNumberOfEigenfunctions() != numberOfEigenfunctions) {
         laplacian_ = new FEMLaplaceBeltramiOperator(polyData_, numberOfEigenfunctions);
-        laplacian_->initialize();
     }
     return laplacian_;
-}
-
-LaplaceBeltramiOperator* Shape::getLaplacian() {
-    return getLaplacian(100);
 }
 
 
@@ -114,8 +109,9 @@ double Shape::getEigenvalue(int i) {
 void Shape::getEigenfunction(int i, ScalarPointAttribute &phi) {
     Vec vec;
     getLaplacian(max(i, 100))->getEigenfunction(i, &vec);
-    
-    PetscHelper::petscVecToScalarPointAttribute(vec, phi);
+
+    ScalarPointAttribute::petscVecToScalarPointAttribute(vec, phi);
+    VecDestroy(&vec);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

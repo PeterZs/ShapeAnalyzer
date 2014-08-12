@@ -287,6 +287,7 @@ bool Set<KEY, VALUE>::contains(KEY correspondence) {
     return false;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // returns the value to the key, returns null pointer if the key does not exist
 template<class KEY, class VALUE>
@@ -299,6 +300,7 @@ VALUE Set<KEY, VALUE>::getValue(KEY correspondence) {
     
     return nullptr;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // returns the value to the key, returns null pointer if the key does not exist

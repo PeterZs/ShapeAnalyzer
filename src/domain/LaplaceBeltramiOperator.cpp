@@ -10,3 +10,18 @@
 
 LaplaceBeltramiOperator::LaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions) : polyData_(polyData), numberOfEigenfunctions_(numberOfEigenfunctions) {
 }
+
+void LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
+    for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
+        Vec phi;
+        getEigenfunction(i, &phi);
+        
+        PetscHelper::setColumn(*Phi, phi, i);
+        
+        VecDestroy(&phi);
+    }
+    
+    
+    MatAssemblyBegin(*Phi, MAT_FINAL_ASSEMBLY);
+    MatAssemblyEnd(*Phi, MAT_FINAL_ASSEMBLY);
+}

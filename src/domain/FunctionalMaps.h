@@ -19,11 +19,7 @@
 
 class FunctionalMaps {
 public:
-    FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointAttribute> c1, vector<ScalarPointAttribute> c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
-        numberOfConstraints_ = c1_.size();
-    }
-    
-    void initialize();
+    FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions);
     
     void transferFunction(ScalarPointAttribute& f1, ScalarPointAttribute& f2);
     
@@ -33,7 +29,7 @@ private:
     
     Mat C_;
     Mat AT_;
-    Mat B_;
+    Vec B_;
     
     Mat Phi1_;
     Mat Phi2_;
@@ -49,7 +45,7 @@ private:
     vector<ScalarPointAttribute> c2_;
     PetscInt numberOfEigenfunctions_;
     PetscInt numberOfConstraints_;
-    KSP ksp_;
+    KSP ksp_; //least squares solver
 };
 
 

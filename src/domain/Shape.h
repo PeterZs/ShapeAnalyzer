@@ -99,8 +99,6 @@ public:
     }
 
     LaplaceBeltramiOperator* getLaplacian(int numberOfEigenfunctions);
-
-    LaplaceBeltramiOperator* getLaplacian();
     
     void getEigenfunction(int i, ScalarPointAttribute& phi);
     

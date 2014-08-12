@@ -24,20 +24,15 @@ using namespace std;
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
     FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions);
-    
-    virtual void initialize();
 
-    virtual double getEigenvalue(vtkIdType i);
-    
-    virtual void getEigenfunction(PetscInt i, PetscScalar** phi);
+    virtual double getEigenvalue(int i);
     
     virtual void getEigenfunction(PetscInt i, Vec* phi);
     
     virtual void getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda);
     
-    virtual void getEigenpair(PetscInt i, PetscScalar** phi, PetscScalar* lambda);
-    
-    virtual void getMassMatrix(Mat* M);
+    //returns a reference to mass matrix. LaplaceOperator object itself is responsible for deleting the Mat object.
+    virtual Mat* getMassMatrix();
     
     virtual ~FEMLaplaceBeltramiOperator();
     
@@ -51,7 +46,6 @@ private:
     
     Mat C_;
     Mat M_;
-    Vec phi_;
     EPS eps_; // eigenproblem solver context
 };
 

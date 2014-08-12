@@ -8,26 +8,6 @@
 
 #include "PetscHelper.h"
 
-void PetscHelper::scalarPointAttributeToPetscVec(ScalarPointAttribute &attr, Vec &vec) {
-    PetscInt size = attr.getShape()->getPolyData()->GetNumberOfPoints();
-    
-    for(PetscInt i = 0; i < size; i++) {
-        VecSetValue(vec, i, attr.getScalars()->GetValue(i), INSERT_VALUES);
-    }
-    
-    VecAssemblyBegin(vec);
-    VecAssemblyEnd(vec);
-}
-
-void PetscHelper::petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr) {
-    PetscScalar* arr;
-    VecGetArray(vec, &arr);
-    for(PetscInt j = 0; j < attr.getShape()->getPolyData()->GetNumberOfPoints(); j++) {
-        attr.getScalars()->SetValue(j, arr[j]);
-    }
-}
-
-
 void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     PetscInt size;
     VecGetSize(ai, &size);
@@ -41,6 +21,7 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     }
     
     MatSetValues(A, 1, &i, size, colIdx, row, INSERT_VALUES);
+    delete [] colIdx;
 }
 
 void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
@@ -56,6 +37,62 @@ void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     }
     
     MatSetValues(A, size, rowIdx, 1, &i, column, INSERT_VALUES);
+    delete [] rowIdx;
 }
+
+void PetscHelper::setBlock(Mat &A, Mat &B, PetscInt i, PetscInt j) {
+    PetscInt m;
+    PetscInt n;
+    MatGetSize(B, &m, &n);
+    
+    PetscScalar* values = new PetscScalar[m*n];
+    
+    PetscInt* rowIdx = new PetscInt[m];
+    for(PetscInt l = 0; l < m; l++) {
+        rowIdx[l] = l;
+    }
+    
+    PetscInt* colIdx = new PetscInt[n];
+    for(PetscInt k = 0; k < n; k++) {
+        colIdx[k] = k;
+    }
+    
+    MatGetValues(B, m, rowIdx, n, colIdx, values);
+    
+    for(PetscInt l = 0; l < m; l++) {
+        rowIdx[l] += i;
+    }
+
+    for(PetscInt m = 0; m < n; m++) {
+        colIdx[m] += j;
+    }
+    
+    MatSetValues(A, m, rowIdx, n, colIdx, values, INSERT_VALUES);
+    
+    delete [] values;
+    delete [] colIdx;
+    delete [] rowIdx;
+}
+
+void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
+    PetscInt* rowIdx = new PetscInt[m];
+    for(PetscInt l = 0; l < m; l++) {
+        rowIdx[l] = l;
+    }
+    
+    PetscInt* colIdx = new PetscInt[n];
+    for(PetscInt k = 0; k < n; k++) {
+        colIdx[k] = k;
+    }
+    PetscScalar* values;
+    VecGetArray(b, &values);
+    MatSetValues(B, m, rowIdx, n, colIdx, values, INSERT_VALUES);
+    MatAssemblyBegin(B, MAT_FINAL_ASSEMBLY);
+    MatAssemblyEnd(B, MAT_FINAL_ASSEMBLY);
+    
+    delete [] colIdx;
+    delete [] rowIdx;
+}
+
 
 

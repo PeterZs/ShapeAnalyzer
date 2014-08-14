@@ -63,9 +63,16 @@
 #include "../domain/io/vtkToscaASCIIReader.h"
 #include "../domain/Set.h"
 #include "../domain/Shape.h"
+
 #include "../domain/metric/Metric.h"
 #include "../domain/metric/Euclidean.h"
 #include "../domain/metric/Geodesic.h"
+
+#include "../domain/signatures/PointSignature.h"
+#include "../domain/signatures/HeatKernelSignature.h"
+#include "../domain/signatures/WaveKernelSignature.h"
+#include "../domain/signatures/FaceSignature.h"
+
 #include "../domain/Factory.h"
 #include "../domain/samplings/SamplingFactory.h"
 #include "../domain/coloring/PointColoring.h"
@@ -187,6 +194,7 @@ private:
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
     void qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries);
+    void qtAddSignatureMenu(QMenu* menu, Set<string, QAction*>& pointSignatures, Set<string, QAction*>& faceSignatures);
     void qtAddSamplingMenu(QMenu* menu, Set<string, QAction*>& entries);
     
     void qtInputDialogFPS();

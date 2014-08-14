@@ -24,6 +24,23 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     delete [] colIdx;
 }
 
+void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
+    PetscInt m;
+    MatGetSize(A, &m, NULL);
+
+    
+    const PetscScalar* row;
+    MatGetRow(A, i, NULL, NULL, &row);
+    PetscInt* idx = new PetscInt[m];
+    
+    for(PetscInt j = 0; j < m; j++) {
+        idx[j] = j;
+    }
+    VecSetValues(ai, m, idx, row, INSERT_VALUES);
+    VecAssemblyBegin(ai);
+    VecAssemblyEnd(ai);
+}
+
 void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     PetscInt size;
     VecGetSize(ai, &size);

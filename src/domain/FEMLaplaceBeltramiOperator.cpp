@@ -25,24 +25,23 @@ FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyDa
     EPSSetProblemType(eps_, EPS_GHEP);
     EPSSetTarget(eps_, -1e-5);
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
-    EPSSetType(eps_, EPSARPACK);
+    EPSSetType(eps_, EPSARNOLDI);
+    //EPSSetType(eps_, EPSARPACK);
     vtkIdType numberOfPoints = polyData_->GetNumberOfPoints();
     
     EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
     ST st;
     EPSGetST(eps_, &st);
     STSetType(st, STSINVERT);
+    //BV bv;
+    //EPSGetBV(eps_, &bv);
+    //BVSetOrthogonalization(bv, BV_ORTHOG_CGS, BV_ORTHOG_REFINE_IFNEEDED, 0.7071);
     
     EPSSetFromOptions(eps_);
     // Solve the eigensystem
     ierr = EPSSolve(eps_);
-    
-    EPSType type;
-    PetscInt nev;
-    EPSGetType(eps_, &type);
-    PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
-    EPSGetDimensions(eps_,&nev,NULL,NULL);
-    PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);
+
+    ierr = EPSView(eps_, PETSC_VIEWER_STDOUT_SELF);
     ierr = EPSPrintSolution(eps_, NULL);
 }
 

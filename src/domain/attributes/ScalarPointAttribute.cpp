@@ -33,3 +33,9 @@ void ScalarPointAttribute::petscVecToScalarPointAttribute(Vec& vec, ScalarPointA
         attr.getScalars()->SetValue(j, arr[j]);
     }
 }
+
+void ScalarPointAttribute::arrayToScalarPointAttribute(const PetscScalar *array, ScalarPointAttribute &attr) {
+    for(PetscInt j = 0; j < attr.getShape()->getPolyData()->GetNumberOfPoints(); j++) {
+        attr.getScalars()->SetValue(j, array[j]);
+    }
+}

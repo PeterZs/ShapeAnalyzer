@@ -120,6 +120,8 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     Factory<Metric>::getInstance()->Register("euclidean", "Euclidean Metric", &Euclidean::create);
     Factory<Metric>::getInstance()->Register("geodesic", "Geodesic Metric", &Geodesic::create);
     
+    Factory<PointSignature>::getInstance()->Register("hks", "Heat Kernel Signature", &HeatKernelSignature::create);
+    Factory<PointSignature>::getInstance()->Register("wks", "Wave Kernel Signature", &WaveKernelSignature::create);
     
     
     
@@ -214,6 +216,26 @@ void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries)
     
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
         entries.add(it->first, metricMenu->addAction(it->second.c_str()));
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, Set<string, QAction*>& pointSignatures, Set<string, QAction*>& faceSignatures) {
+    QMenu* signatureMenu = new QMenu();
+    signatureMenu->setTitle("Visualize Signature");
+    menu->addMenu(signatureMenu);
+
+    
+    unordered_map<string, string>& labels = Factory<PointSignature>::getInstance()->getLabels();
+    
+    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
+        pointSignatures.add(it->first, signatureMenu->addAction(it->second.c_str()));
+    }
+    
+    labels = Factory<FaceSignature>::getInstance()->getLabels();
+    
+    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
+        faceSignatures.add(it->first, signatureMenu->addAction(it->second.c_str()));
     }
 }
 
@@ -355,6 +377,8 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     //map containing unique id of metric + corresponding QAction already set with corresponding label
     Set<string, QAction*> metrics;
     qtAddMetricMenu(&myMenu, metrics);
+    Set<string, QAction*> pointSignatures, faceSignatures;
+    qtAddSignatureMenu(&myMenu, pointSignatures, faceSignatures);
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
@@ -469,26 +493,63 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         delete m1;
         delete m2;
         
-        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 7);
+        
+        WaveKernelSignature* wks1 = (WaveKernelSignature*) Factory<PointSignature>::getInstance()->create("wks");
+        wks1->setNumberOfEigenfunctions(100);
+        wks1->setWKSVariance(20.9);
+        wks1->initialize(shape1, 50);
+
+        
+        WaveKernelSignature* wks2 = (WaveKernelSignature*) Factory<PointSignature>::getInstance()->create("wks");
+        wks2->setNumberOfEigenfunctions(100);
+        wks2->setWKSVariance(20.9);
+        wks2->initialize(shape2, 50);
         
         
-        ScalarPointAttribute u0(shape1);
-        vtkIdType source = 100;
-        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-            if(i == source) {
-                u0.getScalars()->SetValue(i, 1.0);
-            } else {
-                u0.getScalars()->SetValue(i, 0.0);
-            }
+        for(int i = 0; i < 50; i++) {
+            ScalarPointAttribute wksi1(shape1);
+            wks1->getComponent(i, wksi1);
+            c1.push_back(wksi1);
+            
+            ScalarPointAttribute wksi2(shape2);
+            wks2->getComponent(i, wksi2);
+            c2.push_back(wksi2);
         }
-        HeatDiffusion diffusion(shape1, u0, 7);
-        ScalarPointAttribute ut(shape1);
-        diffusion.getHeat(ut, 40);
-        PointColoring coloring1(shape1, &ut);
+        
+        delete wks1;
+        delete wks2;
+        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 10);
+        //fmaps.initialize();
+        
+        
+//        ScalarPointAttribute u0(shape1);
+//        vtkIdType source = 1132;
+//        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+//            if(i == source) {
+//                u0.getScalars()->SetValue(i, 1.0);
+//            } else {
+//                u0.getScalars()->SetValue(i, 0.0);
+//            }
+//        }
+//        HeatDiffusion diffusion(shape1, u0, 10);
+//        ScalarPointAttribute ut(shape1);
+//        diffusion.getHeat(ut, 100);
+//        PointColoring coloring1(shape1, &ut);
+//        coloring1.color();
+        
+        ScalarPointAttribute test(shape1);
+        
+        for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+            double p[3];
+            shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
+            test.getScalars()->SetValue(i, p[2]);
+        }
+        PointColoring coloring1(shape1, &test);
         coloring1.color();
         
+        
         ScalarPointAttribute x(shape2);
-        fmaps.transferFunction(ut, x);
+        fmaps.transferFunction(test, x);
         
         PointColoring coloring2(shape2, &x);
         coloring2.color();
@@ -508,6 +569,33 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
                 PointColoring coloring(currentShape, &distances);
                 coloring.color();
                 delete m;
+                
+                return;
+            }
+        }
+        
+        // Point Signatures
+        for(Set<string, QAction*>::iterator it = pointSignatures.begin(); it != pointSignatures.end(); it++) {
+            if (selectedItem == it->second) {
+                PointSignature* s = Factory<PointSignature>::getInstance()->create(it->first);
+                s->initialize(currentShape, 100);
+                ScalarPointAttribute component(currentShape);
+                s->getComponent(49, component);
+                PointColoring coloring(currentShape, &component);
+                coloring.color();
+                delete s;
+                
+                
+                return;
+            }
+        }
+        
+        // Face Signatures
+        for(Set<string, QAction*>::iterator it = faceSignatures.begin(); it != faceSignatures.end(); it++) {
+            if (selectedItem == it->second) {
+
+                
+                return;
             }
         }
     }

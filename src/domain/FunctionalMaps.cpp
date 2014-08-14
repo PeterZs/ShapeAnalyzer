@@ -11,12 +11,12 @@
 FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
     
     numberOfConstraints_ = c1_.size();
-
+    
     //compute Phi_M^T * M_M and Phi_N^T * M_N
     setupPhiTM(shape1_, &Phi1_, &PhiTM1_);
     setupPhiTM(shape2_, &Phi2_, &PhiTM2_);
     
-
+    
     // compute A^T which corresponds to all the constraits ci1 on shape M (shape1) and vec bi which corresponds to contraint ci2 on shape N (shape2)
     Mat AT;
     Mat B;
@@ -63,11 +63,11 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointA
     
     MatAssemblyBegin(B, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(B, MAT_FINAL_ASSEMBLY);
-
-
+    
+    
     MatCreateSeqAIJ(MPI_COMM_SELF, numberOfConstraints_*numberOfEigenfunctions_, numberOfEigenfunctions_*numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &AT_);
-    VecCreateSeq(PETSC_COMM_SELF, numberOfConstraints_*numberOfEigenfunctions_, &B_);
-   
+    VecCreateSeq(PETSC_COMM_SELF, numberOfConstraints_*numberOfEigenfunctions_, &b_);
+    
     PetscInt* rowIdx = new PetscInt[numberOfConstraints_];
     
     for(PetscInt j = 0; j < numberOfEigenfunctions_; j++) {
@@ -75,59 +75,63 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointA
         
         const PetscScalar* row;
         MatGetRow(B, j, NULL, NULL, &row);
-
+        
         for(PetscInt i = 0; i < numberOfConstraints_; i++) {
             rowIdx[i] = j*numberOfConstraints_+i;
         }
-        VecSetValues(B_, numberOfConstraints_, rowIdx, row, INSERT_VALUES);
-
+        VecSetValues(b_, numberOfConstraints_, rowIdx, row, INSERT_VALUES);
+        
     }
     MatAssemblyBegin(AT_, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(AT_, MAT_FINAL_ASSEMBLY);
     
-    VecAssemblyBegin(B_);
-    VecAssemblyEnd(B_);
+    VecAssemblyBegin(b_);
+    VecAssemblyEnd(b_);
     
     delete [] rowIdx;
     //MatDestroy(&AT);
     //MatDestroy(&B);
     
-
-
     
-
+    
+    
+    
     //compute C
     
     //setup least squares solver
     PetscErrorCode ierr;
-    ierr = KSPCreate(PETSC_COMM_SELF, &ksp_);
-    
 
+    Vec c;
+    ierr = VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_*numberOfEigenfunctions_, &c);
+
+    ierr = KSPCreate(PETSC_COMM_WORLD, &ksp_);
     ierr = KSPSetOperators(ksp_, AT_, AT_);
     ierr = KSPSetType(ksp_, KSPLSQR);
+
     PC pc;
     ierr = KSPGetPC(ksp_, &pc);
-    PCSetType(pc, PCNONE);
+    ierr = PCSetType(pc,PCNONE);
+    ierr = KSPSetTolerances(ksp_, 1.e-7, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+
+    PetscScalar p = 0.0;
+    ierr = VecSet(c, p);
+    ierr = KSPSetInitialGuessNonzero(ksp_,PETSC_TRUE);
+    
+    // Solve linear system
+    for (int i = 0; i < 50; ++i) {
+        ierr = KSPSolve(ksp_, b_, c);
+        cout << "iteration "<< i <<endl;
+    }
     
 
-    
-    
-    //Solve for C
-    Vec C;
-    ierr = VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_*numberOfEigenfunctions_, &C);
-    ierr = KSPSolve(ksp_, B_, C);
-    
-    PetscScalar residual;
-    KSPGetResidualNorm(ksp_, &residual);
-    cout << "Residual "<<residual<<endl;
+    ierr = KSPView(ksp_,PETSC_VIEWER_STDOUT_WORLD);
     
     MatCreateSeqDense(PETSC_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C_);
     
-    PetscHelper::reshape(C_, C, numberOfEigenfunctions_, numberOfEigenfunctions_);
-    //MatTranspose(C_, MAT_REUSE_MATRIX, &C_);
+    PetscHelper::reshape(C_, c, numberOfEigenfunctions_, numberOfEigenfunctions_);
     
-    VecDestroy(&C);
-
+    VecDestroy(&c);
+    
     
     MatView(C_, PETSC_VIEWER_STDOUT_SELF);
     
@@ -137,7 +141,7 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointA
     
     MatMatMult(C_, A, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &CA);
     
-
+    
     MatAXPY(CA, -1.0, B, SAME_NONZERO_PATTERN);
     
     PetscReal res;
@@ -145,9 +149,10 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointA
     cout << "residual "<< res <<endl;
     
     MatAXPY(A, -1.0, B, SAME_NONZERO_PATTERN);
-
+    
     MatNorm(A, NORM_FROBENIUS, &res);
     cout << "residual "<< res <<endl;
+
 }
 
 FunctionalMaps::~FunctionalMaps() {
@@ -155,7 +160,7 @@ FunctionalMaps::~FunctionalMaps() {
     MatDestroy(&AT_);
     MatDestroy(&PhiTM1_);
     MatDestroy(&PhiTM2_);
-    VecDestroy(&B_);
+    VecDestroy(&b_);
     
     MatDestroy(&Phi1_);
     MatDestroy(&Phi2_);
@@ -179,9 +184,9 @@ void FunctionalMaps::transferFunction(ScalarPointAttribute &f1, ScalarPointAttri
     MatMult(C_, a, b);
     
     Vec f2v;
-    MatGetVecs(Phi1_, NULL, &f2v);
+    MatGetVecs(Phi2_, NULL, &f2v);
     
-    MatMult(Phi1_, b, f2v);
+    MatMult(Phi2_, b, f2v);
     ScalarPointAttribute::petscVecToScalarPointAttribute(f2v, f2);
     
     
@@ -206,5 +211,4 @@ void FunctionalMaps::setupPhiTM(Shape& shape, Mat* Phi, Mat *PhiTM) {
     
     MatDestroy(&PhiT);
 }
-
 

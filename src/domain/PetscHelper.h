@@ -19,6 +19,9 @@ public:
     //set i-th row in matrix A
     static void setRow(Mat& A, Vec& ai, PetscInt i);
 
+    //get i-th row in matrix A
+    static void getRow(Vec& ai, Mat& A, PetscInt i);
+    
     //set i-th column in matrix A
     static void setColumn(Mat& A, Vec& ai, PetscInt i);
     

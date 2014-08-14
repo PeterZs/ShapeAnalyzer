@@ -42,6 +42,9 @@ public:
     //convert scalar point attribute to vector
     static void petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr);
     
+
+    //convert scalar point attribute to vector
+    static void arrayToScalarPointAttribute(const PetscScalar* array, ScalarPointAttribute& attr);
     
 private:
     Shape* shape_;

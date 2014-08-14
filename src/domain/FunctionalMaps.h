@@ -29,13 +29,13 @@ private:
     
     Mat C_;
     Mat AT_;
-    Vec B_;
+    Vec b_;
     
     Mat Phi1_;
     Mat Phi2_;
     Mat PhiTM1_;
     Mat PhiTM2_;
-
+    
     
     
     
@@ -50,3 +50,4 @@ private:
 
 
 #endif /* defined(__ShapeAnalyzer__FunctionalMaps__) */
+

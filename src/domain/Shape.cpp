@@ -121,7 +121,7 @@ void Shape::getEigenfunction(int i, ScalarPointAttribute &phi) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //write shape binary
-ostream& Shape::write(ostream& os) {
+ostream& Shape::writeBinary(ostream& os) {
     //write shape ID.
     int64_t shapeId = (int64_t) shapeId_;
     os.write(reinterpret_cast<const char*>(&shapeId), sizeof(int64_t));
@@ -172,10 +172,10 @@ ostream& Shape::write(ostream& os) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //write as ascii txt
-ostream& operator<<(ostream& os, const Shape& shape) {
-    os << shape.shapeId_<< endl;
+ostream& Shape::writeASCII(ostream& os) {
+    os << shapeId_<< endl;
     
-    vtkSmartPointer<vtkMatrix4x4> transform = shape.actor_->GetUserMatrix();
+    vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
     if(transform == nullptr) {
         transform = vtkSmartPointer<vtkMatrix4x4>::New();
         transform->Identity();
@@ -188,16 +188,16 @@ ostream& operator<<(ostream& os, const Shape& shape) {
         os << endl;
     }
     
-    os << shape.polyData_->GetNumberOfPoints() << "\t" << shape.polyData_->GetNumberOfCells() << endl;
+    os << polyData_->GetNumberOfPoints() << "\t" << polyData_->GetNumberOfCells() << endl;
     
-    for(vtkIdType i = 0; i < shape.polyData_->GetNumberOfPoints(); i++) {
+    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
         double point[3];
-        shape.polyData_->GetPoints()->GetPoint(i, point);
+        polyData_->GetPoints()->GetPoint(i, point);
         os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
     }
     
-    for(vtkIdType i = 0; i < shape.polyData_->GetNumberOfCells(); i++) {
-        os << shape.polyData_->GetCell(i)->GetPointId(0) << "\t" << shape.polyData_->GetCell(i)->GetPointId(1) << "\t" << shape.polyData_->GetCell(i)->GetPointId(2) << endl;
+    for(vtkIdType i = 0; i < polyData_->GetNumberOfCells(); i++) {
+        os << polyData_->GetCell(i)->GetPointId(0) << "\t" << polyData_->GetCell(i)->GetPointId(1) << "\t" << polyData_->GetCell(i)->GetPointId(2) << endl;
     }
     
     return os;
@@ -206,7 +206,7 @@ ostream& operator<<(ostream& os, const Shape& shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //read shape binary
-istream& Shape::read(istream& is) {
+istream& Shape::readBinary(istream& is) {
     //read shape ID
     int64_t shapeId;
     is.read(reinterpret_cast<char*>(&shapeId), sizeof(int64_t));
@@ -267,7 +267,7 @@ istream& Shape::read(istream& is) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //read shape as ascii txt
-istream& operator>>(istream& is, Shape& shape) {
+istream& Shape::readASCII(istream& is) {
     string line;
     
     //read shape ID.
@@ -275,7 +275,7 @@ istream& operator>>(istream& is, Shape& shape) {
         getline(is, line);
         stringstream ss;
         ss << line;
-        ss >> shape.shapeId_;
+        ss >> shapeId_;
     }
 
     //read user transform.
@@ -330,16 +330,16 @@ istream& operator>>(istream& is, Shape& shape) {
         polys->InsertNextCell(face);
     }
     
-    shape.polyData_ = vtkSmartPointer<vtkPolyData>::New();
-    shape.polyData_->SetPoints(points);
-    shape.polyData_->SetPolys(polys);
+    polyData_ = vtkSmartPointer<vtkPolyData>::New();
+    polyData_->SetPoints(points);
+    polyData_->SetPolys(polys);
     
-    shape.initialize();
+    initialize();
     
-    shape.actor_->SetUserMatrix(matrix);
+    actor_->SetUserMatrix(matrix);
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->SetMatrix(matrix);
-    shape.boxWidget_->SetTransform(transform);
+    boxWidget_->SetTransform(transform);
     
     return is;
 }

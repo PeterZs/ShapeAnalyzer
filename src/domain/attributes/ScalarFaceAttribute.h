@@ -20,11 +20,7 @@ class ScalarFaceAttribute {
 public:
     ~ScalarFaceAttribute() {};
     
-    ScalarFaceAttribute(Shape* shape) {
-        shape_ = shape;
-        scalars_ = vtkSmartPointer<vtkDoubleArray>::New();
-        scalars_->SetNumberOfValues(shape->getPolyData()->GetNumberOfCells());
-    }
+    ScalarFaceAttribute(Shape* shape);
 
     
     // the size of the returned array must be equal to the number of faces of the shape

@@ -18,23 +18,28 @@
 
 using namespace std;
 
-class ShapeSampling {
+class Sampling {
     
 public:
+    virtual ~Sampling() {}
     
-    vtkSmartPointer<vtkIdList> getSampling() {
-        return idList_;
+    virtual void initialize(Shape* shape, vtkIdType numberOfPoints);
+    
+    vtkSmartPointer<vtkIdList> getPoints() {
+        return points_;
     }
     
-    string  getIdentifier() { return identifier_; }
     Shape*  getShape()      { return shape_; }
     
 protected:
-    // list of ids of the points in the sampling
-    vtkSmartPointer<vtkIdList> idList_;
+    Sampling() {}
     
-    string identifier_;
+
     Shape* shape_;
+    vtkIdType numberOfPoints_;
+    
+    // list of ids of the points in the sampling
+    vtkSmartPointer<vtkIdList> points_;
 };
 
 #endif /* defined(__ShapeAnalyzer__ShapeSampling__) */

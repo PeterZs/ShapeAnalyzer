@@ -54,19 +54,20 @@
 
 #include "qt/qtShapeInfoTab.h"
 #include "qt/qtListWidgetItem.h"
-#include "qt/qtCorrespondenceWindow.h"
+#include "qt/qtPointCorrespondencesTab.h"
+#include "qt/qtFaceCorrespondencesTab.h"
 #include "qt/qtCorrespondenceColoringTab.h"
 
 #include "../domain/correspondences/Correspondence.h"
-#include "../domain/io/SceneReader.h"
+#include "../domain/io/SceneWriterReader.h"
 #include "../domain/io/vtkOFFReader.h"
 #include "../domain/io/vtkToscaASCIIReader.h"
-#include "../domain/Set.h"
+#include "../domain/HashMap.h"
 #include "../domain/Shape.h"
 
 #include "../domain/metric/Metric.h"
-#include "../domain/metric/Euclidean.h"
-#include "../domain/metric/Geodesic.h"
+#include "../domain/metric/EuclideanMetric.h"
+#include "../domain/metric/GeodesicMetric.h"
 
 #include "../domain/signatures/PointSignature.h"
 #include "../domain/signatures/HeatKernelSignature.h"
@@ -74,8 +75,7 @@
 #include "../domain/signatures/FaceSignature.h"
 
 #include "../domain/Factory.h"
-#include "../domain/samplings/SamplingFactory.h"
-#include "../domain/coloring/PointColoring.h"
+#include "../domain/coloring/ScalarPointColoring.h"
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
@@ -145,8 +145,7 @@ private slots:
     virtual void slotLoadCorrespondences();
 
     virtual void slotOpenHelpWindow();
-    virtual void slotOpenCorrespondenceWindowPoints();
-    virtual void slotOpenCorrespondenceWindowFaces();
+
     virtual void slotShowSettings();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
@@ -155,7 +154,8 @@ private slots:
     virtual void slotHideCorrespondences();
 
     virtual void slotToggleBoxWidget();
-    virtual void slotAddCorrespondencesMode();
+    virtual void slotModeAddCorrespondences();
+    
     
     virtual void slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous);
     
@@ -166,15 +166,17 @@ private slots:
     virtual void slotSetCorrespondenceType();
     
     virtual void slotSetBackgroundColor();
-    virtual void slotTogglePerspectiveMode();
+    virtual void slotToggleProjectionMode();
     
     virtual void slotSaveScene();
     virtual void slotExportScene();
     virtual void slotExportCorrespondences();
-    virtual void slotSaveImage();
+    virtual void slotSaveScreenshot();
     
     virtual void slotTabShapeInfo(bool);
     virtual void slotTabCorrespondenceColoring(bool);
+    virtual void slotTabAllFaceCorrespondences(bool);
+    virtual void slotTabAllPointCorrespondences(bool);
     
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
@@ -193,11 +195,10 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
-    void qtAddMetricMenu(QMenu* menu, Set<string, QAction*>& entries);
-    void qtAddSignatureMenu(QMenu* menu, Set<string, QAction*>& pointSignatures, Set<string, QAction*>& faceSignatures);
-    void qtAddSamplingMenu(QMenu* menu, Set<string, QAction*>& entries);
+    void qtAddMetricMenu(QMenu* menu, HashMap<string, QAction*>& entries);
+    void qtAddSignatureMenu(QMenu* menu, HashMap<string, QAction*>& pointSignatures, HashMap<string, QAction*>& faceSignatures);
+    void qtAddSamplingMenu(QMenu* menu, HashMap<string, QAction*>& entries);
     
-    void qtInputDialogFPS();
     void qtInputDialogRename(QListWidgetItem* item);
     void qtInputDialogOpacity(Shape* shape);
     vtkIdType qtInputDialogChooseEigenfunction(Shape* shape);
@@ -228,14 +229,14 @@ private:
     void addCorrespondence();
 
     //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
-    Set<vtkActor*, Shape*> shapesByActor_;
+    HashMap<vtkActor*, Shape*> shapesByActor_;
     
-    Set<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
-    Set<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
+    HashMap<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
+    HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
     // all face and point correspondences data, the bool indicates if the data is visible
-    Set<PointCorrespondenceData*, bool> pointData_;
-    Set<FaceCorrespondenceData*, bool> faceData_;
+    HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
+    HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

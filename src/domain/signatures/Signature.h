@@ -23,7 +23,7 @@ protected:
     Shape* shape_;
     int dimension_;
     
-protected:
+
     Signature() {}
 };
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1054</width>
-    <height>702</height>
+    <width>1176</width>
+    <height>770</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,128 +16,149 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QVTKWidget" name="qvtkWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>800</width>
-          <height>500</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSplitter" name="splitter">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <widget class="QWidget" name="layoutWidget_1">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTabWidget" name="tabWidget">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="tabShapes">
-             <attribute name="title">
-              <string>Shapes</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <property name="leftMargin">
-               <number>5</number>
-              </property>
-              <property name="rightMargin">
-               <number>5</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QListWidget" name="listShapes">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>150</width>
-                  <height>200</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QVTKWidget" name="qvtkWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>800</width>
+         <height>500</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="layoutWidget_1">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QTabWidget" name="tabWidgetShapes">
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="tabShapes">
+            <attribute name="title">
+             <string>Shapes</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QListWidget" name="listShapes">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>200</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="layoutWidget">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QTabWidget" name="tabWidget_2">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="tabPoints">
-             <attribute name="title">
-              <string>Displayed Correspondences</string>
-             </attribute>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <property name="leftMargin">
-               <number>5</number>
-              </property>
-              <property name="rightMargin">
-               <number>5</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_5">
-                <item>
-                 <widget class="QListWidget" name="listCorrespondences">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                    <horstretch>150</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>150</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QPushButton" name="hideAllButton">
-                <property name="text">
-                 <string>Hide All</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+          </widget>
+         </item>
+        </layout>
        </widget>
-      </item>
-     </layout>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QTabWidget" name="tabWidgetCorrespondences">
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="tabPoints">
+            <attribute name="title">
+             <string>Displayed Correspondences</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="labelCurrentlyDisplayed">
+                 <property name="text">
+                  <string>Currently displayed:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEditCurrentlyDisplayed">
+                 <property name="minimumSize">
+                  <size>
+                   <width>150</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Point Correspondences</string>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QListWidget" name="listCorrespondences">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>150</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="hideAllButton">
+                 <property name="text">
+                  <string>Hide All</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -146,7 +167,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1054</width>
+     <width>1176</width>
      <height>22</height>
     </rect>
    </property>
@@ -166,7 +187,7 @@
     <addaction name="actionSaveScene"/>
     <addaction name="actionExportScene"/>
     <addaction name="actionExportCorrespondences"/>
-    <addaction name="actionSaveImage"/>
+    <addaction name="actionSaveScreenshot"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -174,9 +195,16 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <widget class="QMenu" name="menuAddCorrespondences">
+     <property name="title">
+      <string>Add Correspondences</string>
+     </property>
+     <addaction name="actionAddPointCorrespondences"/>
+     <addaction name="actionAddFaceCorrespondences"/>
+    </widget>
     <addaction name="actionTransformScene"/>
     <addaction name="actionTransformShapes"/>
-    <addaction name="actionAddCorrespondences"/>
+    <addaction name="menuAddCorrespondences"/>
     <addaction name="separator"/>
     <addaction name="actionResetCamera"/>
     <addaction name="actionClear"/>
@@ -184,8 +212,8 @@
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>652</x>
-      <y>101</y>
+      <x>448</x>
+      <y>69</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -200,15 +228,15 @@
      <string>View</string>
     </property>
     <addaction name="actionShapes"/>
-    <addaction name="actionShape_Info"/>
+    <addaction name="actionShapeInfo"/>
     <addaction name="separator"/>
-    <addaction name="actionPointCorrespondences"/>
-    <addaction name="actionFaceCorrespondences"/>
+    <addaction name="actionDisplayPointCorrespondences"/>
+    <addaction name="actionDisplayFaceCorrespondences"/>
     <addaction name="separator"/>
     <addaction name="actionCorrespondenceColoring"/>
     <addaction name="separator"/>
-    <addaction name="actionWindowPointCorrespondences"/>
-    <addaction name="actionWindowFaceCorrespondences"/>
+    <addaction name="actionAllPointCorrespondences"/>
+    <addaction name="actionAllFaceCorrespondences"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -223,8 +251,8 @@
     <addaction name="separator"/>
     <addaction name="actionSetBackgroundColor"/>
     <addaction name="separator"/>
-    <addaction name="actionPerspective"/>
-    <addaction name="actionParallel"/>
+    <addaction name="actionProjectionPerspective"/>
+    <addaction name="actionProjectionParallel"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -291,29 +319,18 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionAddCorrespondences">
+  <action name="actionDisplayFaceCorrespondences">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Add Correspondences</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
-  <action name="actionFaceCorrespondences">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Face Correspondences</string>
+    <string>Display Face Correspondences</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionPointCorrespondences">
+  <action name="actionDisplayPointCorrespondences">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -321,18 +338,24 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Point Correspondences</string>
+    <string>Display Point Correspondences</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionWindowPointCorrespondences">
+  <action name="actionAllPointCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>All Point Correspondences</string>
    </property>
   </action>
-  <action name="actionWindowFaceCorrespondences">
+  <action name="actionAllFaceCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>All Face Correspondences</string>
    </property>
@@ -375,11 +398,6 @@
     <string>Export Scene (ASCII)...</string>
    </property>
   </action>
-  <action name="actionShapeInfo">
-   <property name="text">
-    <string>Test</string>
-   </property>
-  </action>
   <action name="actionShapes">
    <property name="checkable">
     <bool>true</bool>
@@ -391,7 +409,7 @@
     <string>Shapes</string>
    </property>
   </action>
-  <action name="actionShape_Info">
+  <action name="actionShapeInfo">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -411,17 +429,6 @@
    </property>
    <property name="text">
     <string>Point Correspondences</string>
-   </property>
-  </action>
-  <action name="actionFace_Correspondences">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Face Correspondences</string>
    </property>
   </action>
   <action name="actionShowSurface">
@@ -457,7 +464,7 @@
     <string>Ctrl+Alt+B</string>
    </property>
   </action>
-  <action name="actionPerspective">
+  <action name="actionProjectionPerspective">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -471,15 +478,15 @@
     <string>Ctrl+Alt+P</string>
    </property>
   </action>
-  <action name="actionSaveImage">
+  <action name="actionSaveScreenshot">
    <property name="text">
-    <string>Save Image</string>
+    <string>Save Screenshot</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+I</string>
    </property>
   </action>
-  <action name="actionParallel">
+  <action name="actionProjectionParallel">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -517,6 +524,22 @@
    </property>
    <property name="text">
     <string>Correspondence Coloring</string>
+   </property>
+  </action>
+  <action name="actionAddPointCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Point Correspondences</string>
+   </property>
+  </action>
+  <action name="actionAddFaceCorrespondences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Face Correspondences</string>
    </property>
   </action>
  </widget>

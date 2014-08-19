@@ -15,9 +15,13 @@
 
 class Serializable {
     
-    virtual ostream& write(ostream& os);
+    virtual ostream& writeBinary(ostream& os) = 0;
     
-    virtual istream& read(istream& is);
+    virtual ostream& writeASCII(ostream& os) = 0;
+    
+    virtual istream& readBinary(istream& is) = 0;
+    
+    virtual istream& readASCII(istream& is) = 0;
     
 };
 

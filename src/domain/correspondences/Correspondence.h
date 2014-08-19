@@ -19,7 +19,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
 
-#include "../Set.h"
+#include "../HashMap.h"
 #include "../Shape.h"
 
 #include "CorrespondenceData.h"
@@ -65,7 +65,7 @@ public:
 protected:
     //protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, Set<vtkActor*, Shape*>* shapes);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes);
     
     void initialize();
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;

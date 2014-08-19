@@ -1,13 +1,13 @@
 //
-//  Geodesic.h
+//  GeodesicMetric.h
 //  ShapeAnalyzer
 //
 //  Created by Zorah on 27.05.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__Geodesic__
-#define __ShapeAnalyzer__Geodesic__
+#ifndef __ShapeAnalyzer__GeodesicMetric__
+#define __ShapeAnalyzer__GeodesicMetric__
 
 #include <iostream>
 
@@ -31,11 +31,15 @@
 using namespace geodesic;
 using namespace std;
 
-class Geodesic : public Metric {
-    
+class GeodesicMetric : public Metric {
+
 ///////////////////////////////////////////////////////////////////////////////
-// Nested Classes
+// Declaration
 ///////////////////////////////////////////////////////////////////////////////
+private:
+    ///////////////////////////////////////////////////////////////////////////////
+    // Nested Classes
+    ///////////////////////////////////////////////////////////////////////////////
     
     // for using vtkPolyData in the geodesic algorithm
     class geodesicPoints {
@@ -78,11 +82,7 @@ class Geodesic : public Metric {
         vtkSmartPointer<vtkPolyData> polyData_;
     };
     
-///////////////////////////////////////////////////////////////////////////////
-// Declaration
-///////////////////////////////////////////////////////////////////////////////
-private:
-    Geodesic() {}
+    GeodesicMetric() {}
     
     double  calculateLengthOfPath(vector<SurfacePoint> path);
     
@@ -92,27 +92,33 @@ private:
     geodesicFaces*                      faces_;
     vector<SurfacePoint>                sources_;
     vtkSmartPointer<vtkIdList>          sourceList_;
+  
+    
+
+    
     
 public:
     static Metric* create() {
-        return new Geodesic();
+        return new GeodesicMetric();
     }
+    
     
     virtual void initialize(Shape* shape);
     
-    virtual ~Geodesic();
+    virtual ~GeodesicMetric();
     
     // from abstract class Metric
     virtual double getDistance(vtkIdType a, vtkIdType b);
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
-    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources);
+    virtual vtkIdType getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources);
     
     // Geodesic functions
     void        changeSourcePoint(vtkIdType source);
     void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
     
-    vtkIdType    findPointFurthestToAllSources();
+    vtkIdType   getPointFarthestFromAllSources();
+
     
 };
 
-#endif /* defined(__ShapeAnalyzer__Geodesic__) */
+#endif /* defined(__ShapeAnalyzer__GeodesicMetric__) */

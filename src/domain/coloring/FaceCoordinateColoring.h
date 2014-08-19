@@ -79,7 +79,7 @@ private:
             zmin = zmin + zOffset;
             zmax = zmax + zOffset;
         }
-
+        
         // calculate colors
         for (vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
             vtkSmartPointer<vtkIdList> pointIds = shape_->getPolyData()->GetCell(i)->GetPointIds();

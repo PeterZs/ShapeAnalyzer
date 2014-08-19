@@ -11,7 +11,7 @@
 
 #include "CorrespondenceData.h"
 
-//serves as a marker class to ensure that variable "Set<...> faceCorrespondences" only contains face correspondences
+//serves as a marker class to ensure that variable "HashMap<...> faceCorrespondences" only contains face correspondences
 class FaceCorrespondenceData : public CorrespondenceData {
 public:
     FaceCorrespondenceData() {

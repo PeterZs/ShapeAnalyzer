@@ -11,7 +11,7 @@
 
 #include "CorrespondenceData.h"
 
-//serves as a marker class to ensure that variable "Set<...> pointCorrespondences" only contains point correspondences
+//serves as a marker class to ensure that variable "HashMap<...> pointCorrespondences" only contains point correspondences
 
 class PointCorrespondenceData : public CorrespondenceData {
 public:

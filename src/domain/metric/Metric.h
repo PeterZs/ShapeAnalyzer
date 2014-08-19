@@ -17,6 +17,7 @@
 #include <vtkIdList.h>
 #include <vtkSmartPointer.h>
 
+
 using namespace std;
 
 
@@ -38,7 +39,7 @@ public:
     
     // returns the id of the point with the greatest distance to all points
     // in the source list
-    virtual vtkIdType getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) = 0;
+    virtual vtkIdType getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources) = 0;
     
     Shape*  getShape()          { return shape_; }
     

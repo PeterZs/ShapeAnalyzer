@@ -7,3 +7,10 @@
 //
 
 #include "GlobalPointSignature.h"
+
+
+void GlobalPointSignature::initialize(Shape* shape, int dimension) {
+    PointSignature::initialize(shape, dimension);
+    
+    //TODO
+}

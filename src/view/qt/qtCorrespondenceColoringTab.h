@@ -20,7 +20,7 @@
 
 #include "qtListWidgetItem.h"
 
-#include "../../domain/Set.h"
+#include "../../domain/HashMap.h"
 #include "../../domain/Shape.h"
 
 #include "../../domain/correspondences/FaceCorrespondenceData.h"
@@ -35,9 +35,9 @@ class qtCorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceCol
     
 public:
     qtCorrespondenceColoringTab(QListWidget*                            shapes,
-                                Set<vtkActor*, Shape*>*                 set,
-                                Set<FaceCorrespondenceData*, bool>*     faces,
-                                Set<PointCorrespondenceData*, bool>*    points,
+                                HashMap<vtkActor*, Shape*>*                 map,
+                                HashMap<FaceCorrespondenceData*, bool>*     faceCorr,
+                                HashMap<PointCorrespondenceData*, bool>*    pointCorr,
                                 QWidget * parent,
                                 Qt::WindowFlags f = 0);
     
@@ -46,9 +46,9 @@ private slots:
     
 private:
     QListWidget*                            shapes_;
-    Set<vtkActor*, Shape*>*                 set_;
-    Set<FaceCorrespondenceData*, bool>*     faces_;
-    Set<PointCorrespondenceData*, bool>*    points_;
+    HashMap<vtkActor*, Shape*>*                 map_;
+    HashMap<FaceCorrespondenceData*, bool>*     faceCorr_;
+    HashMap<PointCorrespondenceData*, bool>*    pointCorr_;
 };
 
 

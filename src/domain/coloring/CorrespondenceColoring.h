@@ -15,16 +15,14 @@
 #define __ShapeAnalyzer__CorrespondenceColoring__
 
 #include "CoordinateColoring.h"
-#include "FaceColoring.h"
 #include "FaceCoordinateColoring.h"
-#include "PointColoring.h"
 
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
 #include <vtkUnsignedCharArray.h>
 
 #include "../Shape.h"
-#include "../Set.h"
+#include "../HashMap.h"
 
 #include "../correspondences/FaceCorrespondence.h"
 #include "../correspondences/PointCorrespondenceData.h"
@@ -36,18 +34,18 @@ using namespace std;
 
 class CorrespondenceColoring {
 public:
-    CorrespondenceColoring(Set<vtkActor*, Shape*>*              set,
-                           Set<PointCorrespondenceData*, bool>* points,
-                           Set<FaceCorrespondenceData*, bool>*  faces,
+    CorrespondenceColoring(HashMap<vtkActor*, Shape*>*              set,
+                           HashMap<PointCorrespondenceData*, bool>* points,
+                           HashMap<FaceCorrespondenceData*, bool>*  faces,
                            Shape* reference = 0);
     
     void showPointCorrespondences();
     void showFaceCorrespondences();
     
 protected:
-    Set<vtkActor*, Shape*>*                 shapes_;
-    Set<PointCorrespondenceData*, bool>*    points_;
-    Set<FaceCorrespondenceData*, bool>*     faces_;
+    HashMap<vtkActor*, Shape*>*                 shapes_;
+    HashMap<PointCorrespondenceData*, bool>*    points_;
+    HashMap<FaceCorrespondenceData*, bool>*     faces_;
     
     Shape* reference_;
     

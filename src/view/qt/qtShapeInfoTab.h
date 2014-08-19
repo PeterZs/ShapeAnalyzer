@@ -13,18 +13,26 @@
 
 #include <QPushbutton>
 #include <QStandardItemModel>
-#include <QTableView>
+#include <QTableWidget>
 #include <QWidget>
+#include <QHeaderView>
 
 #include "../../domain/Shape.h"
 
 #include "qtListWidgetItem.h"
 
-class qtShapeInfoTab : public QWidget {
+#include "ui_shapeInfo.h"
 
+
+class qtShapeInfoTab : public QWidget, private Ui::ShapeInfoWidget {
+    Q_OBJECT
+    
 public:
-    qtShapeInfoTab();
-    qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f = 0);
+    qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent = 0, Qt::WindowFlags f = 0);
+    
+private:
+    void qtSetupTableWidget();
 };
 
 #endif /* defined(__ShapeAnalyzer__qtShapeInfoTab__) */

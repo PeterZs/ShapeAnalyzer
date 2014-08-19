@@ -1,12 +1,12 @@
 //
-//  Euclidean.cpp
+//  EuclideanMetric.cpp
 //  ShapeAnalyzer
 //
 //  Created by Zorah on 27.05.14.
 //
 //
 
-#include "Euclidean.h"
+#include "EuclideanMetric.h"
 
 
 
@@ -16,7 +16,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-double Euclidean::getDistance(vtkIdType a, vtkIdType b) {
+double EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
     double p1[3], p2[3];
     shape_->getPolyData()->GetPoints()->GetPoint(a, p1);
     shape_->getPolyData()->GetPoints()->GetPoint(b, p2);
@@ -26,22 +26,22 @@ double Euclidean::getDistance(vtkIdType a, vtkIdType b) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void Euclidean::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
-    for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
+void EuclideanMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
+    for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
         distances.getScalars()->SetValue(i, getDistance(source, i));
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkIdType Euclidean::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
+vtkIdType EuclideanMetric::getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources) {
     double dist = 0;
     vtkIdType id;
     
     // iterate over all points on the shape
-    for(int i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
+    for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
         double d = getDistance(i, sources->GetId(0));
         // iterate over all sources
-        for (int j = 1; j < sources->GetNumberOfIds(); j++) {
+        for (vtkIdType j = 1; j < sources->GetNumberOfIds(); j++) {
             // test for minimum distance of sources
             if (getDistance(i, sources->GetId(j)) < d)
                 d = getDistance(i, sources->GetId(j));

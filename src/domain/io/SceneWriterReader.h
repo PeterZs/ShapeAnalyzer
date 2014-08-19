@@ -1,20 +1,20 @@
 //
-//  SceneReader.h
+//  SceneWriterReader.h
 //  ShapeAnalyzer
 //
 //  Created by Zorah on 28.07.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__SceneReader__
-#define __ShapeAnalyzer__SceneReader__
+#ifndef __ShapeAnalyzer__SceneWriterReader__
+#define __ShapeAnalyzer__SceneWriterReader__
 
 #include "../correspondences/CorrespondenceData.h"
 #include "../correspondences/FaceCorrespondence.h"
 #include "../correspondences/FaceCorrespondenceData.h"
 #include "../correspondences/PointCorrespondence.h"
 #include "../correspondences/PointCorrespondenceData.h"
-#include "../Set.h"
+#include "../HashMap.h"
 
 #include "../../view/qt/qtListWidgetItem.h"
 
@@ -31,39 +31,39 @@
 
 using namespace std;
 
-class SceneReader {
+class SceneWriterReader {
     
 public:
-    SceneReader() {};
-    ~SceneReader() {};
+    SceneWriterReader() {};
+    ~SceneWriterReader() {};
     
     // correspondences
     static void exportPointCorrespondences(
-                               Set<PointCorrespondenceData*, bool>* pointCorr,
-                               Set<vtkActor*, Shape*>*              shapes,
+                               HashMap<PointCorrespondenceData*, bool>* pointCorr,
+                               HashMap<vtkActor*, Shape*>*              shapes,
                                string                               filename
                                );
     static void exportFaceCorrespondences(
-                               Set<FaceCorrespondenceData*, bool>*  faceCorr,
-                               Set<vtkActor*, Shape*>*              shapes,
+                               HashMap<FaceCorrespondenceData*, bool>*  faceCorr,
+                               HashMap<vtkActor*, Shape*>*              shapes,
                                string                               filename
                                );
-    static void loadCorrespondences(
+    static void importCorrespondences(
                                     string                                  filename,
-                                    Set<PointCorrespondenceData*, bool>*    pointCorr,
-                                    Set<FaceCorrespondenceData*, bool>*     faceCorr,
+                                    HashMap<PointCorrespondenceData*, bool>*    pointCorr,
+                                    HashMap<FaceCorrespondenceData*, bool>*     faceCorr,
                                     QListWidget*                            shapes,
                                     QWidget*                                parentWidget
                                     );
     
 private:
     static void exportCorrespondences(
-                               Set<CorrespondenceData*, bool>*  pointCorr,
-                               Set<vtkActor*, Shape*>*          shapeIds,
+                               HashMap<CorrespondenceData*, bool>*  pointCorr,
+                               HashMap<vtkActor*, Shape*>*          shapeIds,
                                ofstream*                        os
                                );
     static unordered_map<string, Shape*> createShapeMap(QListWidget* shapes);
     static void createData(vector<Shape*> shapes, stringstream* ss, CorrespondenceData* data);
 };
 
-#endif /* defined(__ShapeAnalyzer__SceneReader__) */
+#endif /* defined(__ShapeAnalyzer__SceneWriterReader__) */

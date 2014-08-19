@@ -35,13 +35,15 @@
 #include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
 
+#include "io/Serializable.h"
+
 
 class ScalarPointAttribute;
 
 using namespace std;
 
 
-class Shape {
+class Shape : public Serializable {
 
 public:
     // Constructors and Destructor
@@ -60,13 +62,13 @@ public:
     
     // serialization functions
     
-    ostream& write(ostream& os);
+    virtual ostream& writeBinary(ostream& os);
     
-    friend ostream& operator<<(ostream& os, const Shape& shape);
+    virtual ostream& writeASCII(ostream& os);
     
-    istream& read(istream& is);
+    virtual istream& readBinary(istream& is);
     
-    friend istream& operator>>(istream& is, Shape& shape);
+    virtual istream& readASCII(istream& is);
     
     // Getters
     

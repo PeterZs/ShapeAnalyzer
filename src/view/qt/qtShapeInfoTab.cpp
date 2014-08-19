@@ -9,51 +9,50 @@
 #include "qtShapeInfoTab.h"
 
 // will create widget with empty table
-qtShapeInfoTab::qtShapeInfoTab() {
-    QTableView *table = new QTableView( this );
+qtShapeInfoTab::qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f) {
+    this->setupUi(this);
     
-    QStandardItemModel *model = new QStandardItemModel(5, 1, this);
+    this->qtSetupTableWidget();
+}
+
+void qtShapeInfoTab::qtSetupTableWidget() {
+    tableWidget->setRowCount(4);
+    tableWidget->setColumnCount(1);
     
-    table->setModel(model);
+
+    tableWidget->horizontalHeader()->hide();
+    
+    QStringList tableVerticalHeader;
+    tableVerticalHeader<<"Name"<<"#Vertices"<<"#Faces"<<"Area";
+    tableWidget->setVerticalHeaderLabels(tableVerticalHeader);
 }
 
 // will create Widget with basic information about the given shape
-qtShapeInfoTab::qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent, Qt::WindowFlags f )
-: QWidget( parent, f )
-{
-    
-    QTableView *table = new QTableView( this );
-    
-    QStandardItemModel *model = new QStandardItemModel(5, 1, this);
-    model->setVerticalHeaderItem(0, new QStandardItem(QString("Name")));
-    model->setVerticalHeaderItem(1, new QStandardItem(QString("#Vertices")));
-    model->setVerticalHeaderItem(2, new QStandardItem(QString("#Faces")));
-    model->setVerticalHeaderItem(3, new QStandardItem(QString("Area")));
-    
-    model->setItem(0, 0, new QStandardItem(item->text()));
-    
-    model->setItem(1, 0,
-                   new QStandardItem(
-                                     QString::number(
-                                                (int) item->getItem()->getPolyData()->GetPoints()->GetNumberOfPoints()
-                                             )
-                                     )
-                   );
-    model->setItem(2, 0, new QStandardItem(
+qtShapeInfoTab::qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f) {
+    this->setupUi(this);
+
+    this->qtSetupTableWidget();
+
+
+    //insert data
+    tableWidget->setItem(0, 0, new QTableWidgetItem(item->text()));
+    tableWidget->setItem(1, 0, new QTableWidgetItem(
+                                                 QString::number(
+                                                                 (int) item->getItem()->getPolyData()->GetPoints()->GetNumberOfPoints()
+                                                                 )
+                                                 ));
+    tableWidget->setItem(2, 0, new QTableWidgetItem(
                                            QString::number(
-                                                   (int) item->getItem()->getPolyData()->GetNumberOfCells()
-                                                   )
+                                                           (int) item->getItem()->getPolyData()->GetNumberOfCells()
+                                                           )
                                            )
                    );
     
-    model->setItem(3, 0, new QStandardItem(
+    tableWidget->setItem(3, 0, new QTableWidgetItem(
                                            QString::number(
                                                            (double) item->getItem()->calculateArea()
                                                            )
                                            )
                    );
-    
-    table->setModel(model);
-    
     
 }

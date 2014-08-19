@@ -9,7 +9,7 @@ Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, Correspond
 
 ///////////////////////////////////////////////////////////////////////////////
 // to call when the CorrespondenceData is not empty, call produceActor afterwards
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, Set<vtkActor*, Shape*>* shapes) : renderer_(renderer), data_(data) {
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes) : renderer_(renderer), data_(data) {
     initialize();
     
     // fill shape_ vector

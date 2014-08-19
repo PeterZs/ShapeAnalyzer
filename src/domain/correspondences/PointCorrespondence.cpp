@@ -15,7 +15,7 @@ PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, Set<vtkActor*, Shape*>* shapes) : Correspondence(renderer, data, shapes) {
+PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes) : Correspondence(renderer, data, shapes) {
 }
 
 

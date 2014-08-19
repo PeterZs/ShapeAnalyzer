@@ -9,9 +9,9 @@
 #include "CorrespondenceColoring.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-CorrespondenceColoring::CorrespondenceColoring(Set<vtkActor*, Shape*>*               set,
-                                               Set<PointCorrespondenceData*, bool>*  points,
-                                               Set<FaceCorrespondenceData*, bool> *  faces,
+CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
+                                               HashMap<PointCorrespondenceData*, bool>*  points,
+                                               HashMap<FaceCorrespondenceData*, bool> *  faces,
                                                Shape* reference)
 : shapes_(set), points_(points), faces_(faces), reference_(reference)
 {

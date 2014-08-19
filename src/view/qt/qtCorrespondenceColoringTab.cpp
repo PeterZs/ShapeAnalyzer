@@ -15,17 +15,17 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 qtCorrespondenceColoringTab::qtCorrespondenceColoringTab( QListWidget* shapes,
-                                                         Set<vtkActor*, Shape*>*              set,
-                                                         Set<FaceCorrespondenceData*, bool>* faces,
-                                                         Set<PointCorrespondenceData*, bool>* points,
+                                                         HashMap<vtkActor*, Shape*>*             map,
+                                                         HashMap<FaceCorrespondenceData*, bool>* faceCorr,
+                                                         HashMap<PointCorrespondenceData*, bool>* pointCorr,
                                                          QWidget * parent,
                                                          Qt::WindowFlags f
                                                          )
 :   QWidget(parent, f),
 shapes_(shapes),
-set_(set),
-faces_(faces),
-points_(points)
+map_(map),
+faceCorr_(faceCorr),
+pointCorr_(pointCorr)
 {
     this->setupUi(this);
     
@@ -59,9 +59,9 @@ void qtCorrespondenceColoringTab::slotColorCorrespondences(const QString label) 
     
     // proceed if shape was found
     if (referenceId != -1) {
-        CorrespondenceColoring cc = CorrespondenceColoring(set_,
-                                                           points_,
-                                                           faces_,
+        CorrespondenceColoring cc = CorrespondenceColoring(map_,
+                                                           pointCorr_,
+                                                           faceCorr_,
                                                            referenceShape);
         if(pointRadio->isChecked()) {
             cc.showPointCorrespondences();

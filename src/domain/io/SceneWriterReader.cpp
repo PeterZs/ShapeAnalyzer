@@ -1,16 +1,16 @@
 //
-//  SceneReader.cpp
+//  SceneWriterReader.cpp
 //  ShapeAnalyzer
 //
 //  Created by Zorah on 28.07.14.
 //
 //
 
-#include "SceneReader.h"
+#include "SceneWriterReader.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneReader::exportCorrespondences(Set<CorrespondenceData*, bool>* correspondences,
-                                        Set<vtkActor*, Shape*>*         shapeIds,
+void SceneWriterReader::exportCorrespondences(HashMap<CorrespondenceData*, bool>* correspondences,
+                                        HashMap<vtkActor*, Shape*>*         shapeIds,
                                         ofstream*                       os)
 {
     // write down all correspondences
@@ -40,8 +40,8 @@ void SceneReader::exportCorrespondences(Set<CorrespondenceData*, bool>* correspo
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneReader::exportPointCorrespondences(Set<PointCorrespondenceData*, bool>*   correspondences,
-                                             Set<vtkActor*, Shape*>*                shapes,
+void SceneWriterReader::exportPointCorrespondences(HashMap<PointCorrespondenceData*, bool>*   correspondences,
+                                             HashMap<vtkActor*, Shape*>*                shapes,
                                              string                                 filename)
 {
     ofstream os(filename);
@@ -50,15 +50,15 @@ void SceneReader::exportPointCorrespondences(Set<PointCorrespondenceData*, bool>
     // number of correspondences
     os << "P " << " " << shapes->size() << " " << correspondences->size() << endl;
     
-    exportCorrespondences((Set<CorrespondenceData*, bool>*) correspondences, shapes, &os);
+    exportCorrespondences((HashMap<CorrespondenceData*, bool>*) correspondences, shapes, &os);
     
     os.close();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneReader::exportFaceCorrespondences(Set<FaceCorrespondenceData*, bool>* correspondences,
-                                            Set<vtkActor*, Shape*>*             shapes,
+void SceneWriterReader::exportFaceCorrespondences(HashMap<FaceCorrespondenceData*, bool>* correspondences,
+                                            HashMap<vtkActor*, Shape*>*             shapes,
                                             string                              filename)
 {
     ofstream os(filename);
@@ -67,16 +67,16 @@ void SceneReader::exportFaceCorrespondences(Set<FaceCorrespondenceData*, bool>* 
     // number of correspondences
     os << "F " << shapes->size() << " " << correspondences->size() << endl;
     
-    exportCorrespondences((Set<CorrespondenceData*, bool>*) correspondences, shapes, &os);
+    exportCorrespondences((HashMap<CorrespondenceData*, bool>*) correspondences, shapes, &os);
     
     os.close();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneReader::loadCorrespondences(string                                filename,
-                                      Set<PointCorrespondenceData*, bool>*  pointCorr,
-                                      Set<FaceCorrespondenceData*, bool>*   faceCorr,
+void SceneWriterReader::importCorrespondences(string                        filename,
+                                      HashMap<PointCorrespondenceData*, bool>*  pointCorr,
+                                      HashMap<FaceCorrespondenceData*, bool>*   faceCorr,
                                       QListWidget*                          shapes,
                                       QWidget*                              parentWidget)
 {
@@ -155,7 +155,7 @@ void SceneReader::loadCorrespondences(string                                file
 
 ///////////////////////////////////////////////////////////////////////////////
 // the items in the widget must be qtListWidgetItem<Shape*>
-unordered_map<string, Shape*> SceneReader::createShapeMap(QListWidget* shapes) {
+unordered_map<string, Shape*> SceneWriterReader::createShapeMap(QListWidget* shapes) {
     unordered_map<string, Shape*> map;
     
     for (int i = 0; i < shapes->count(); i++) {
@@ -169,7 +169,7 @@ unordered_map<string, Shape*> SceneReader::createShapeMap(QListWidget* shapes) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneReader::createData(vector<Shape*> shapes, stringstream* ss, CorrespondenceData* data) {
+void SceneWriterReader::createData(vector<Shape*> shapes, stringstream* ss, CorrespondenceData* data) {
     for (auto it = shapes.begin(); it != shapes.end(); it++) {
         int id;
         *ss >> id;

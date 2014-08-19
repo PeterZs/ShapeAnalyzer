@@ -11,4 +11,6 @@
 
 void HeatKernelSignature::initialize(Shape* shape, int dimension) {
     PointSignature::initialize(shape, dimension);
+    
+    //TODO
 }

@@ -8,75 +8,15 @@
 
 #include "WaveKernelSignature.h"
 
+//Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
+
 void WaveKernelSignature::initialize(Shape* shape, int dimension) {
     PointSignature::initialize(shape, dimension);
-
-    if(numberOfEigenfunctions_ == -1)
-        numberOfEigenfunctions_ = std::min((int) shape_->getPolyData()->GetNumberOfPoints(), 100);
-    
-
-    
     
     PetscScalar* logLambda = new PetscScalar[numberOfEigenfunctions_];
     
     LaplaceBeltramiOperator* laplacian = shape_->getLaplacian(numberOfEigenfunctions_);
-    
-//    
-//    ofstream out;
-//    out.open("Phi.csv");
-//    
-//    for(int i = 0; i < 100; i++) {
-//        Vec phi;
-//        
-//        laplacian->getEigenfunction(i, &phi);
-//        
-//        for(int j = 0; j < shape_->getPolyData()->GetNumberOfPoints(); j++) {
-//            PetscScalar val;
-//            
-//            VecGetValues(phi, 1, &j, &val);
-//            out << val <<(j < shape_->getPolyData()->GetNumberOfPoints()-1 ?  "," : "");
-//        }
-//        out <<endl;
-//        
-//        VecDestroy(&phi);
-//    }
-//    
-//    out.close();
-//
-//    ofstream out2;
-//    
-//    out2.open("lambda.csv");
-//    
-//    for(int i = 0; i < 100; i++) {
-//
-//        
-//        out2 <<laplacian->getEigenvalue(i);
-//        out2 <<endl;
-//        
-//    }
-//    
-//    out2.close();
-//
-//    ofstream out3;
-//    
-//    out3.open("shape.off");
-//    
-//    out3 << "OFF"<<endl;
-//    out3 << shape_->getPolyData()->GetNumberOfPoints() <<" "<<shape_->getPolyData()->GetNumberOfCells()<<" 0"<<endl;
-//    
-//    for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
-//        double p[3];
-//        shape_->getPolyData()->GetPoint(i, p);
-//        out3 << p[0]<<" "<<p[1]<<" "<<p[2]<<endl;
-//    }
-//
-//    for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
-//        vtkTriangle* t = (vtkTriangle*) shape_->getPolyData()->GetCell(i);
-//        
-//        out3 <<"3 "<<t->GetPointId(0)<<" "<<t->GetPointId(1)<<" "<<t->GetPointId(2)<<endl;
-//    }
-//    
-//    out3.close();
+
     
     double maximum = -std::numeric_limits<double>::infinity();
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {

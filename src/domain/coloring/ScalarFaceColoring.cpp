@@ -1,24 +1,24 @@
 //
-//  PointColoring.cpp
+//  ScalarFaceColoring.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 30.07.14.
 //
 //
 
-#include "PointColoring.h"
+#include "ScalarFaceColoring.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void PointColoring::color() {
+void ScalarFaceColoring::color() {
     double range[2];
-    attribute_->getScalars()->GetValueRange(range);
+    attribute_.getScalars()->GetValueRange(range);
     
-    shape_->getPolyData()->GetPointData()->SetScalars(attribute_->getScalars());
+    shape_->getPolyData()->GetCellData()->SetScalars(attribute_.getScalars());
     shape_->getPolyData()->Modified();
     
     //shape_->getMapper()->SetLookupTable(lookupTable_);
     shape_->getMapper()->ScalarVisibilityOn();
-    shape_->getMapper()->SetScalarModeToUsePointData();
+    shape_->getMapper()->SetScalarModeToUseCellData();
     shape_->getMapper()->SetColorModeToMapScalars();
     shape_->getMapper()->SetScalarRange(range[0], range[1]);
     shape_->getMapper()->Modified();

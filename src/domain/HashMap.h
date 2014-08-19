@@ -1,18 +1,19 @@
 //
-//  Set.h
+//  HashMap.h
 //  ShapeAnalyzer
 //
-//  Set manages an unordered_map with some extra features,
-//  a random subset of the set can be chosen and the exact number
-//  of items in the set is maintained.
+//  HashMap is a wrapper class for unordered_map.
+//  It manages an unordered_map with some extra features,
+//  a random subset of the map can be chosen and the exact number
+//  of items in the map is maintained.
 //
 //  Created by Zorah on 28.07.14.
 //
 //
 
 
-#ifndef ShapeAnalyzer_Set_h
-#define ShapeAnalyzer_Set_h
+#ifndef ShapeAnalyzer_HashMap_h
+#define ShapeAnalyzer_HashMap_h
 
 #include <unordered_map>
 
@@ -20,22 +21,22 @@ using namespace std;
 
 template <class KEY, class VALUE>
 
-class Set {
+class HashMap {
 public:
     typedef typename unordered_map<KEY, VALUE>::iterator iterator;
     
     // constructors and destructor
-    Set();
-    Set(Set<KEY, VALUE>*);
-    Set(vector<KEY>, VALUE);
-    ~Set() {}
+    HashMap();
+    HashMap(HashMap<KEY, VALUE>&);
+    HashMap(vector<KEY>&, VALUE);
+    ~HashMap() {}
     
-    // adding and deleting correspondences
+    // adding and deleting elements
     void add(KEY, VALUE);
-    void add(vector<KEY>, VALUE);
+    void add(vector<KEY>&, VALUE);
     
     bool remove(KEY);
-    bool remove(vector<KEY>);
+    bool remove(vector<KEY>&);
     void clear();
     
     // iterators
@@ -44,23 +45,18 @@ public:
     
     // attributes
     bool        contains(KEY);
-    VALUE       getValue(KEY);
     VALUE       operator[](KEY);
     
     unsigned    size();
     
-    void getRandomSubset(unsigned size, Set<KEY, VALUE>*);
-    void getRandomKeySubset(unsigned size, vector<KEY>*);
-    void getRandomValueSubset(unsigned size, vector<VALUE>*);
+    void getRandomSubset(unsigned size, HashMap<KEY, VALUE>&);
+    void getRandomKeySubset(unsigned size, vector<KEY>&);
+    void getRandomValueSubset(unsigned size, vector<VALUE>&);
     
-    unordered_map<KEY, VALUE>* getElements();
+    unordered_map<KEY, VALUE>& getEntries();
     
 protected:
-    unordered_map<KEY, VALUE> elements_;
-    
-    // number of stored elements
-    // notice that this is not the same as elements_.size()!
-    unsigned setSize;
+    unordered_map<KEY, VALUE> entries_;
     
     void getRandomIndices(unsigned size, unordered_map<unsigned, bool>*);
     
@@ -72,28 +68,23 @@ protected:
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-Set<KEY, VALUE>::Set() {
-    elements_ = unordered_map<KEY, VALUE>(0);
-    setSize = 0;
+HashMap<KEY, VALUE>::HashMap() {
+    entries_ = unordered_map<KEY, VALUE>(0);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-Set<KEY, VALUE>::Set(Set<KEY, VALUE>* set) {
-    elements_ = *unordered_map<KEY, VALUE>(set->getElements());
-    setSize = set->size();
+HashMap<KEY, VALUE>::HashMap(HashMap<KEY, VALUE>& map) {
+    entries_ = unordered_map<KEY, VALUE>(map->getEntries());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // all keys are added with the same value
 template<class KEY, class VALUE>
-Set<KEY, VALUE>::Set(vector<KEY> correspondences, VALUE value) {
-    elements_ = unordered_map<KEY, VALUE>(correspondences.size());
-    setSize = correspondences.size();
-    
-    addCorrespondences(correspondences, value);
+HashMap<KEY, VALUE>::HashMap(vector<KEY>& keys, VALUE value) {
+    entries_ = unordered_map<KEY, VALUE>(keys.size());
 }
 
 
@@ -104,44 +95,34 @@ Set<KEY, VALUE>::Set(vector<KEY> correspondences, VALUE value) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::add(KEY correspondence, VALUE value) {
-    elements_.insert(make_pair<KEY, VALUE>(correspondence, value));
-    setSize++;
+void HashMap<KEY, VALUE>::add(KEY key, VALUE value) {
+    entries_.insert(make_pair<KEY, VALUE>(key, value));
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::add(vector<KEY> correspondences, VALUE value) {
-    // reserve enough memory for new correspondences
-    elements_.rehash(setSize + correspondences.size());
+void HashMap<KEY, VALUE>::add(vector<KEY>& keys, VALUE value) {
+    // reserve enough memory for new keys
+    entries_.rehash(entries_.size() + keys.size());
     
-    for (auto it = correspondences.begin(); it != correspondences.end(); it++) {
-        elements_.insert(make_pair<KEY, VALUE>(&it, value));
+    for (auto it = keys.begin(); it != keys.end(); it++) {
+        entries_.insert(make_pair<KEY, VALUE>(&it, value));
     }
-    
-    setSize += correspondences.size();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-bool Set<KEY, VALUE>::remove(KEY correspondence) {
-    if (elements_.find(correspondence) != elements_.end()) {
-        elements_.erase(correspondence);
-        setSize--;
-        
-        return true;
-    }
-    
-    return false;
+bool HashMap<KEY, VALUE>::remove(KEY key) {
+    return entries_.erase(key) != 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-bool Set<KEY, VALUE>::remove(vector<KEY> correspondences) {
+bool HashMap<KEY, VALUE>::remove(vector<KEY>& keys) {
     bool success = true;
-    for (auto it = correspondences.begin(); it != correspondences.end(); it++) {
-        if (!deleteCorrespondences(&it)) {
+    for (auto it = keys.begin(); it != keys.end(); it++) {
+        if (!remove(*it)) {
             success = false;
         }
     }
@@ -152,9 +133,8 @@ bool Set<KEY, VALUE>::remove(vector<KEY> correspondences) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::clear() {
-    elements_.clear();
-    setSize = 0;
+void HashMap<KEY, VALUE>::clear() {
+    entries_.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -164,16 +144,16 @@ void Set<KEY, VALUE>::clear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::getRandomSubset(unsigned size, Set<KEY, VALUE>* set) {
+void HashMap<KEY, VALUE>::getRandomSubset(unsigned size, HashMap<KEY, VALUE>& map) {
     
-    // if size is larger than the number elements in the set, all keys are
+    // if size is larger than the number elements in the map, all keys are
     // returned
-    if (size >= setSize) {
+    if (size >= this->size()) {
         
-        // copy this set
-        set = new Set(this);
+        // copy this map
+        map = *this;
         
-    } else { // size smaller that number of correspondences
+    } else { // size smaller that number of entries
         
         unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
         
@@ -182,9 +162,9 @@ void Set<KEY, VALUE>::getRandomSubset(unsigned size, Set<KEY, VALUE>* set) {
         // iterates over all elements and puts the chosen ones in the result
         // TODO there are probably better ways to do that
         auto it = begin();
-        for (int i = 0; i < setSize; i++) {
+        for (int i = 0; i < entries_.size(); i++) {
             if (indices.count(i) != 0) {
-                set->add(it->first, it->second);
+                map->add(it->first, it->second);
             }
             it++;
         }
@@ -194,18 +174,18 @@ void Set<KEY, VALUE>::getRandomSubset(unsigned size, Set<KEY, VALUE>* set) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::getRandomKeySubset(unsigned size, vector<KEY>* result) {
+void HashMap<KEY, VALUE>::getRandomKeySubset(unsigned size, vector<KEY>& result) {
     
-    // if size is larger than the number elements in the set, all keys are
+    // if size is larger than the number elements in the map, all keys are
     // returned
-    if (size >= setSize) {
+    if (size >= this->size()) {
         
-        // copy this set
+        // copy this map
         for (auto it = begin(); it != end(); it++) {
-            result->push_back(it->first);
+            result.push_back(it->first);
         }
         
-    } else { // size smaller that number of correspondences
+    } else { // size smaller that number of entries
         
         unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
         
@@ -214,7 +194,7 @@ void Set<KEY, VALUE>::getRandomKeySubset(unsigned size, vector<KEY>* result) {
         // iterates over all elements and puts the chosen ones in the result
         // TODO there are probably better ways to do that
         auto it = begin();
-        for (int i = 0; i < setSize; i++) {
+        for (int i = 0; i < this->size; i++) {
             if (indices.count(i) != 0) {
                 result->push_back(it->first);
             }
@@ -226,18 +206,18 @@ void Set<KEY, VALUE>::getRandomKeySubset(unsigned size, vector<KEY>* result) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::getRandomValueSubset(unsigned size, vector<VALUE>* result) {
+void HashMap<KEY, VALUE>::getRandomValueSubset(unsigned size, vector<VALUE>& result) {
     
-    // if size is larger than the number elements in the set, all keys are
+    // if size is larger than the number elements in the map, all keys are
     // returned
-    if (size >= setSize) {
+    if (size >= this->size()) {
         
-        // copy this set
+        // copy this map
         for (auto it = begin(); it != end(); it++) {
-            result->push_back(it->second);
+            result.push_back(it->second);
         }
         
-    } else { // size smaller that number of correspondences
+    } else { // size smaller that number of entries
         
         unordered_map<unsigned, bool> indices = unordered_map<unsigned, bool>(size);
         
@@ -246,7 +226,7 @@ void Set<KEY, VALUE>::getRandomValueSubset(unsigned size, vector<VALUE>* result)
         // iterates over all elements and puts the chosen ones in the result
         // TODO there are probably better ways to do that
         auto it = begin();
-        for (int i = 0; i < setSize; i++) {
+        for (int i = 0; i < this->size(); i++) {
             if (indices.count(i) != 0) {
                 result->push_back(it->second);
             }
@@ -257,58 +237,41 @@ void Set<KEY, VALUE>::getRandomValueSubset(unsigned size, vector<VALUE>* result)
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-unsigned Set<KEY, VALUE>::size() {
-    return setSize;
+unsigned HashMap<KEY, VALUE>::size() {
+    return entries_.size();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-typename Set<KEY, VALUE>::iterator Set<KEY, VALUE>::begin() {
-    return elements_.begin();
+typename HashMap<KEY, VALUE>::iterator HashMap<KEY, VALUE>::begin() {
+    return entries_.begin();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-typename Set<KEY, VALUE>::iterator Set<KEY, VALUE>::end() {
-    return elements_.end();
+typename HashMap<KEY, VALUE>::iterator HashMap<KEY, VALUE>::end() {
+    return entries_.end();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// returns true if the input was found in the set, false otherwise
+// returns true if the input was found in the map, false otherwise
 template<class KEY, class VALUE>
-bool Set<KEY, VALUE>::contains(KEY correspondence) {
-    if (elements_.find(correspondence) != elements_.end()) {
-        return true;
-    }
-    
-    return false;
+bool HashMap<KEY, VALUE>::contains(KEY key) {
+    return entries_.find(key) != entries_.end();
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // returns the value to the key, returns null pointer if the key does not exist
 template<class KEY, class VALUE>
-VALUE Set<KEY, VALUE>::getValue(KEY correspondence) {
-    auto find = elements_.find(correspondence);
+VALUE HashMap<KEY, VALUE>::operator[](KEY key) {
+    auto find = entries_.find(key);
     
-    if (find != elements_.end()) {
-        return find->second;
-    }
-    
-    return nullptr;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// returns the value to the key, returns null pointer if the key does not exist
-template<class KEY, class VALUE>
-VALUE Set<KEY, VALUE>::operator[](KEY correspondence) {
-    auto find = elements_.find(correspondence);
-    
-    if (find != elements_.end()) {
+    if (find != entries_.end()) {
         return find->second;
     }
     
@@ -318,8 +281,8 @@ VALUE Set<KEY, VALUE>::operator[](KEY correspondence) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-unordered_map<KEY, VALUE>* Set<KEY, VALUE>::getElements() {
-    return &elements_;
+unordered_map<KEY, VALUE>& HashMap<KEY, VALUE>::getEntries() {
+    return entries_;
 }
 
 
@@ -329,13 +292,13 @@ unordered_map<KEY, VALUE>* Set<KEY, VALUE>::getElements() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// will return an empty set if the size is larger than the available indices
+// will return an empty map if the size is larger than the available indices
 template<class KEY, class VALUE>
-void Set<KEY, VALUE>::getRandomIndices(unsigned size, unordered_map<unsigned, bool>* indices) {
+void HashMap<KEY, VALUE>::getRandomIndices(unsigned size, unordered_map<unsigned, bool>* indices) {
     
     // no indices will be produced, if the requested size is larger than the
     // available indices
-    if (size <= setSize) {
+    if (size <= this->size()) {
     
         int counter = 0;
         
@@ -346,7 +309,7 @@ void Set<KEY, VALUE>::getRandomIndices(unsigned size, unordered_map<unsigned, bo
         
         // generate random numbers until size many unique values have been created
         while (counter < size) {
-            int v = rand() % setSize;
+            int v = rand() % this->size();
             
             if(indices->count(v) == 0) {
                 indices->insert(make_pair<unsigned, bool>(v, true));

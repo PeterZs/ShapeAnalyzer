@@ -1,12 +1,12 @@
 //
-//  Geodesic.cpp
+//  GeodesicMetric.cpp
 //  ShapeAnalyzer
 //
 //  Created by Zorah on 27.05.14.
 //
 //
 
-#include "Geodesic.h"
+#include "GeodesicMetric.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // initialization of the internal data structure and an precomputation-free
 // algorithm
-void Geodesic::initialize(Shape *shape) {
+void GeodesicMetric::initialize(Shape *shape) {
     Metric::initialize(shape);
     
     points_ = new geodesicPoints(shape_->getPolyData());
@@ -32,7 +32,7 @@ void Geodesic::initialize(Shape *shape) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Geodesic::~Geodesic() {
+GeodesicMetric::~GeodesicMetric() {
     delete algorithm_;
     delete points_;
     delete faces_;
@@ -48,7 +48,7 @@ Geodesic::~Geodesic() {
 // Returns a vector with all distances on the shape to the source s ordered
 // by their id
 // Notice that this will remove the current sources and precomputed information
-void Geodesic::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) {
+void GeodesicMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) {
     // initialize algorithm for this source
     SurfacePoint source(&mesh_.vertices()[s]);
     vector<geodesic::SurfacePoint> all_sources(1,source);
@@ -76,7 +76,7 @@ void Geodesic::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) {
 // Returns distance between a and b
 // Notice that this will remove the current sources and precomputed information
 // about these
-double Geodesic::getDistance(vtkIdType a, vtkIdType b) {
+double GeodesicMetric::getDistance(vtkIdType a, vtkIdType b) {
     SurfacePoint source(&mesh_.vertices()[a]);
     SurfacePoint target(&mesh_.vertices()[b]);
     
@@ -97,14 +97,10 @@ double Geodesic::getDistance(vtkIdType a, vtkIdType b) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Returns the point furthest to all points in sources
+// Returns the point that is farthest away from all points in sources
 // Notice that this will remove the current sources and precomputed information
 // about these if the input list is not the same as the current source list
-vtkIdType Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sources) {
-    double distance = 0;
-    vtkIdType id;
-    
-    
+vtkIdType GeodesicMetric::getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources) {
     vtkIdType number = sourceList_->GetNumberOfIds();
     sourceList_->IntersectWith(sources);
     
@@ -114,28 +110,7 @@ vtkIdType Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sour
         changeSourcePoints(sources);
     }
     
-    // iterate over all points
-    for(int i = 0; i < mesh_.vertices().size(); i++) {
-        SurfacePoint target(&mesh_.vertices()[i]); //create source
-        
-        // calculate shortest distance to some source
-        double dist;
-        try {
-            algorithm_->best_source(target, dist);
-        } catch (geodesic_error& e) {
-            cout << e.what() << '\n';
-            return 0;
-        }
-        
-        // check if shortest distance is the greatest so far
-        if(dist > distance) {
-            distance = dist;
-            id = i;
-        }
-        
-    }
-    
-    return id;
+    return getPointFarthestFromAllSources();
 }
 
 
@@ -147,7 +122,7 @@ vtkIdType Geodesic::getPointFurthestToAllSources(vtkSmartPointer<vtkIdList> sour
 ///////////////////////////////////////////////////////////////////////////////
 // changes the source to points with id s
 // other already computed distances will be lost
-void Geodesic::changeSourcePoint(vtkIdType s) {
+void GeodesicMetric::changeSourcePoint(vtkIdType s) {
     vtkSmartPointer<vtkIdList> list = vtkSmartPointer<vtkIdList>::New();
     list->InsertNextId(s);
     
@@ -158,7 +133,7 @@ void Geodesic::changeSourcePoint(vtkIdType s) {
 ///////////////////////////////////////////////////////////////////////////////
 // changes the source to points with ids in s
 // other already computed distances will be lost
-void Geodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
+void GeodesicMetric::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
     sourceList_ = s;
     sources_.resize(s->GetNumberOfIds());
     
@@ -178,11 +153,11 @@ void Geodesic::changeSourcePoints(vtkSmartPointer<vtkIdList> s) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// returns id of points furthest to all sources
-vtkIdType Geodesic::findPointFurthestToAllSources() {
+// Returns the point that is farthest away from all points in sources
+vtkIdType GeodesicMetric::getPointFarthestFromAllSources() {
+    double distance = 0.0;
     
     vtkIdType id = 0;
-    double distance = 0.0;
     
     // iterate over all points
     for(int i = 0; i < mesh_.vertices().size(); i++) {
@@ -215,7 +190,7 @@ vtkIdType Geodesic::findPointFurthestToAllSources() {
 
 ///////////////////////////////////////////////////////////////////////////////
 // calculates the length of the path given by the SurfacePoints in path
-double Geodesic::calculateLengthOfPath(vector<SurfacePoint> path) {
+double GeodesicMetric::calculateLengthOfPath(vector<SurfacePoint> path) {
     double length = 0;
     
     // iterate over all points but the last

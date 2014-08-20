@@ -174,7 +174,7 @@ void SceneWriterReader::createData(vector<Shape*> shapes, stringstream* ss, Corr
         int id;
         *ss >> id;
         if (id > -1) {
-            data->addData((*it)->getId(), id);
+            data->addShape((*it)->getId(), id);
         }
     }
 }

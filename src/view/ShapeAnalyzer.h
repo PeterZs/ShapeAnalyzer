@@ -69,10 +69,10 @@
 #include "../domain/metric/EuclideanMetric.h"
 #include "../domain/metric/GeodesicMetric.h"
 
-#include "../domain/signatures/PointSignature.h"
+#include "../domain/signatures/Signature.h"
 #include "../domain/signatures/HeatKernelSignature.h"
 #include "../domain/signatures/WaveKernelSignature.h"
-#include "../domain/signatures/FaceSignature.h"
+#include "../domain/signatures/GlobalPointSignature.h"
 
 #include "../domain/Factory.h"
 #include "../domain/coloring/ScalarPointColoring.h"
@@ -80,6 +80,9 @@
 #include "../domain/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
 #include "../domain/FunctionalMaps.h"
+
+#include "../domain/samplings/Sampling.h"
+#include "../domain/samplings/FarthestPointSampling.h"
 
 #include "ui_help.h"
 #include "ui_settings.h"
@@ -195,14 +198,17 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
-    void qtAddMetricMenu(QMenu* menu, HashMap<string, QAction*>& entries);
-    void qtAddSignatureMenu(QMenu* menu, HashMap<string, QAction*>& pointSignatures, HashMap<string, QAction*>& faceSignatures);
-    void qtAddSamplingMenu(QMenu* menu, HashMap<string, QAction*>& entries);
+    void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    void qtAddSamplingMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     
     void qtInputDialogRename(QListWidgetItem* item);
     void qtInputDialogOpacity(Shape* shape);
-    vtkIdType qtInputDialogChooseEigenfunction(Shape* shape);
-    double qtInputDialogChooseHeatDiffusionTime(Shape* shape);
+    void qtShowEigenfunction(Shape* shape);
+    void qtShowHeatDiffusion(Shape* shape);
+    void qtShowSignature(string id, Shape* shape);
+    void qtShowMetricColoring(string id, Shape* shape);
+    void qtShowSampling(string id, Shape* shape);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);

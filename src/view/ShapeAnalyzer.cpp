@@ -117,11 +117,20 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     
     
     //register metrics
-    Factory<Metric>::getInstance()->Register<EuclideanMetric>("euclidean", "Euclidean Metric");
-    Factory<Metric>::getInstance()->Register<GeodesicMetric>("geodesic", "Geodesic Metric");
-    Factory<PointSignature>::getInstance()->Register<HeatKernelSignature>("hks", "Heat Kernel Signature");
-    Factory<PointSignature>::getInstance()->Register<WaveKernelSignature>("wks", "Wave Kernel Signature");
+    Factory<Metric>::getInstance()->Register<EuclideanMetric>("Euclidean Metric");
+    Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
     
+    //register signatures
+    Factory<Signature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
+    Factory<Signature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
+    Factory<Signature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
+    
+    //register samplings
+    Factory<Sampling>::getInstance()->Register<FarthestPointSampling<EuclideanMetric> >("FPS Euclidean Metric");
+    Factory<Sampling>::getInstance()->Register<FarthestPointSampling<GeodesicMetric> >("FPS Geodesic Metric");
+    
+    //register Laplace-Beltrami Operators
+    Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
     
     
     // connection of list widgets is done in extra functions since signals of
@@ -206,7 +215,7 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<string, QAction*>& entries) {
+void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
     QMenu* metricMenu = new QMenu();
     metricMenu->setTitle("Visualize Metric");
     menu->addMenu(metricMenu);
@@ -214,50 +223,39 @@ void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<string, QAction*>& entr
     unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
     
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        entries.add(it->first, metricMenu->addAction(it->second.c_str()));
+        entries.add(metricMenu->addAction(it->second.c_str()), it->first);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<string, QAction*>& pointSignatures, HashMap<string, QAction*>& faceSignatures) {
+void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
     QMenu* signatureMenu = new QMenu();
     signatureMenu->setTitle("Visualize Signature");
     menu->addMenu(signatureMenu);
 
     
-    unordered_map<string, string>& labels = Factory<PointSignature>::getInstance()->getLabels();
+    unordered_map<string, string>& labels = Factory<Signature>::getInstance()->getLabels();
     
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        pointSignatures.add(it->first, signatureMenu->addAction(it->second.c_str()));
-    }
-    
-    labels = Factory<FaceSignature>::getInstance()->getLabels();
-    
-    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        faceSignatures.add(it->first, signatureMenu->addAction(it->second.c_str()));
+        entries.add(signatureMenu->addAction(it->second.c_str()), it->first);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-//void ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu, HashMap<string, QAction*> entries) {
-//    QMenu* samplingMenu = new QMenu();
-//    samplingMenu->setTitle("Sampling");
-//    menu->addMenu(samplingMenu);
-//
-//    SamplingFactory factory = SamplingFactory();
-//
-//    vector<string> metrics = factory.getIdentifier();
-//    vector<QAction*> actions;
-//
-//    for(vector<string>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-//        // add action with Identifier to the menu and store action pointer in
-//        // return vector
-//        const string bla = it->data();
-//        actions.push_back(samplingMenu->addAction(""));
-//    }
-//
-//    return actions;
-//}
+void ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
+    QMenu* samplingMenu = new QMenu();
+    samplingMenu->setTitle("Samplings");
+    menu->addMenu(samplingMenu);
+
+    unordered_map<string, string>& labels = Factory<Sampling>::getInstance()->getLabels();
+    
+    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
+        entries.add(samplingMenu->addAction(it->second.c_str()), it->first);
+    }
+    
+    
+    
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -310,27 +308,34 @@ void ShapeAnalyzer::qtInputDialogRename(QListWidgetItem* item) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkIdType ShapeAnalyzer::qtInputDialogChooseEigenfunction(Shape* shape) {
+void ShapeAnalyzer::qtShowEigenfunction(Shape* shape) {
     bool ok;
-    vtkIdType eigenfunction = QInputDialog::getInt(
+    int i = QInputDialog::getInt(
                                                    this,
                                                    tr("Eigenfunction"),
-                                                   tr("Choose an eigenfunction"),
+                                                   tr("Choose an eigenfunction."),
                                                    0,
                                                    0,
                                                    std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
                                                    1,
                                                    &ok
                                                    );
-    // return eigenfunction id if ok was given
+    // show eigenfunction
     if (ok) {
-        return eigenfunction;
+        ScalarPointAttribute eigenfunction(shape);
+        
+        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+        laplacian->initialize(shape, 100);
+        laplacian->getEigenfunction(i, eigenfunction);
+        delete laplacian;
+        
+        ScalarPointColoring coloring(shape, eigenfunction);
+        coloring.color();
     }
-    return -1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-double ShapeAnalyzer::qtInputDialogChooseHeatDiffusionTime(Shape* shape) {
+void ShapeAnalyzer::qtShowHeatDiffusion(Shape* shape) {
     bool ok;
     double t = QInputDialog::getDouble(
                                        this,
@@ -342,13 +347,107 @@ double ShapeAnalyzer::qtInputDialogChooseHeatDiffusionTime(Shape* shape) {
                                        2,
                                        &ok
                                        );
-    // change opacity if ok was given
-    if (ok) {
-        return t;
+    if (!ok) {
+        return;
     }
-    return -1.0;
+    
+    vtkIdType source = QInputDialog::getInt(
+                                       this,
+                                       tr("Source vertex"),
+                                       tr("Choose ID of source vertex."),
+                                       0,
+                                       0,
+                                       shape->getPolyData()->GetNumberOfPoints()-1,
+                                       1,
+                                       &ok
+                                       );
+
+    if (ok) {
+
+        ScalarPointAttribute u0(shape);
+        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
+            if(i == source) {
+                u0.getScalars()->SetValue(i, 1.0);
+            } else {
+                u0.getScalars()->SetValue(i, 0.0);
+            }
+        }
+        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+        laplacian->initialize(shape, 100);
+        
+        HeatDiffusion heatDiffusion(shape, laplacian, u0);
+        ScalarPointAttribute ut(shape);
+        heatDiffusion.getHeat(ut, t);
+        delete laplacian;
+        ScalarPointColoring coloring(shape, ut);
+        coloring.color();
+    }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtShowSignature(string id, Shape *shape) {
+    bool ok;
+    int i = QInputDialog::getInt(
+                                            this,
+                                            tr("Component"),
+                                            tr("Choose component."),
+                                            0,
+                                            0,
+                                            99,
+                                            1,
+                                            &ok
+                                            );
+    
+    if (ok) {
+        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+        laplacian->initialize(shape, 100);
+        
+        Signature* s = Factory<Signature>::getInstance()->create(id);
+        s->initialize(shape, laplacian, 100);
+        
+        ScalarPointAttribute component(shape);
+        s->getComponent(i, component);
+        delete s;
+        delete laplacian;
+        ScalarPointColoring coloring(shape, component);
+        coloring.color();
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtShowMetricColoring(string id, Shape *shape) {
+    bool ok;
+    vtkIdType source = QInputDialog::getInt(
+                                            this,
+                                            tr("Source vertex"),
+                                            tr("Choose ID of source vertex."),
+                                            0,
+                                            0,
+                                            shape->getPolyData()->GetNumberOfPoints()-1,
+                                            1,
+                                            &ok
+                                            );
+    
+    if (ok) {
+        Metric* m = Factory<Metric>::getInstance()->create(id);
+        m->initialize(shape);
+        ScalarPointAttribute distances(shape);
+        m->getAllDistances(distances, source);
+        ScalarPointColoring coloring(shape, distances);
+        coloring.color();
+        delete m;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtShowSampling(string id, Shape* shape) {
+    Sampling* s = Factory<Sampling>::getInstance()->create(id);
+    cout << s->getShape()<<endl;
+    delete s;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
@@ -374,18 +473,20 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QMenu myMenu;
     
     //map containing unique id of metric + corresponding QAction already set with corresponding label
-    HashMap<string, QAction*> metrics;
+    HashMap<QAction*, string> metrics;
     qtAddMetricMenu(&myMenu, metrics);
-    HashMap<string, QAction*> pointSignatures, faceSignatures;
-    qtAddSignatureMenu(&myMenu, pointSignatures, faceSignatures);
+    HashMap<QAction*, string> signatures;
+    qtAddSignatureMenu(&myMenu, signatures);
+    HashMap<QAction*, string> samplings;
+    qtAddSamplingMenu(&myMenu, samplings);
+    
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
     QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
-    QAction* matching = myMenu.addAction("Match shapes");
+    QAction* matching = myMenu.addAction("Transfer current function");
     
-    // ...
     
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
@@ -403,45 +504,14 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
         currentShape = item->getItem();
         
-        int i = qtInputDialogChooseEigenfunction(currentShape);
-        if(i == -1) {
-            return;
-        }
-        
-        
-        
-        ScalarPointAttribute eigenfunction(currentShape);
-        currentShape->getEigenfunction(i, eigenfunction);
-        
-        ScalarPointColoring coloring(currentShape, eigenfunction);
-        coloring.color();
+        qtShowEigenfunction(currentShape);
     } else if(selectedItem == heatDiffusion) {
         Shape* currentShape;
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
         currentShape = item->getItem();
         
         
-        int t = qtInputDialogChooseHeatDiffusionTime(currentShape);
-        if(t == -1.0) {
-            return;
-        }
-        
-        
-        
-        ScalarPointAttribute u0(currentShape);
-        vtkIdType source = rand() % currentShape->getPolyData()->GetNumberOfPoints();
-        for(vtkIdType i = 0; i < currentShape->getPolyData()->GetNumberOfPoints(); i++) {
-            if(i == source) {
-                u0.getScalars()->SetValue(i, 1.0);
-            } else {
-                u0.getScalars()->SetValue(i, 0.0);
-            }
-        }
-        HeatDiffusion diffusion(currentShape, u0, 100);
-        ScalarPointAttribute ut(currentShape);
-        diffusion.getHeat(ut, t);
-        ScalarPointColoring coloring(currentShape, ut);
-        coloring.color();
+        qtShowHeatDiffusion(currentShape);
     } else if(selectedItem == matching) {
         Shape* shape1;
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
@@ -492,20 +562,20 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         delete m1;
         delete m2;
         
+        LaplaceBeltramiOperator* laplacian1 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+        laplacian1->initialize(shape1, 100);
+        LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+        laplacian2->initialize(shape2, 100);
         
-        WaveKernelSignature* wks1 = (WaveKernelSignature*) Factory<PointSignature>::getInstance()->create("wks");
-        wks1->setNumberOfEigenfunctions(100);
-        wks1->setWKSVariance(20.9);
-        wks1->initialize(shape1, 50);
+        Signature* wks1 = Factory<Signature>::getInstance()->create("wks");
+        wks1->initialize(shape1, laplacian1, 200);
 
         
-        WaveKernelSignature* wks2 = (WaveKernelSignature*) Factory<PointSignature>::getInstance()->create("wks");
-        wks2->setNumberOfEigenfunctions(100);
-        wks2->setWKSVariance(20.9);
-        wks2->initialize(shape2, 50);
+        Signature* wks2 = Factory<Signature>::getInstance()->create("wks");
+        wks2->initialize(shape2, laplacian2, 200);
         
         
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 125; i++) {
             ScalarPointAttribute wksi1(shape1);
             wks1->getComponent(i, wksi1);
             c1.push_back(wksi1);
@@ -517,9 +587,17 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         delete wks1;
         delete wks2;
-        FunctionalMaps fmaps(*shape1, *shape2, c1, c2, 10);
-        //fmaps.initialize();
+        FunctionalMaps functionalMaps(*shape1, *shape2, laplacian1, laplacian2, c1, c2, 100);
         
+        ScalarPointAttribute f(shape1);
+        
+        for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+            double p[3];
+            shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
+            f.getScalars()->SetValue(i, p[2]);
+        }
+        ScalarPointColoring coloring1(shape1, f);
+        coloring1.color();
         
 //        ScalarPointAttribute u0(shape1);
 //        vtkIdType source = 1132;
@@ -530,27 +608,20 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
 //                u0.getScalars()->SetValue(i, 0.0);
 //            }
 //        }
-//        HeatDiffusion diffusion(shape1, u0, 10);
-//        ScalarPointAttribute ut(shape1);
-//        diffusion.getHeat(ut, 100);
-//        PointColoring coloring1(shape1, &ut);
+//        HeatDiffusion diffusion(shape1, laplacian1, u0);
+//        ScalarPointAttribute f(shape1);
+//        diffusion.getHeat(f, 100);
+//        ScalarPointColoring coloring1(shape1, f);
 //        coloring1.color();
         
-        ScalarPointAttribute test(shape1);
         
-        for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-            double p[3];
-            shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
-            test.getScalars()->SetValue(i, p[2]);
-        }
-        ScalarPointColoring coloring1(shape1, test);
-        coloring1.color();
+        ScalarPointAttribute Tf(shape2);
+        functionalMaps.transferFunction(f, Tf);
         
+        delete laplacian1;
+        delete laplacian2;
         
-        ScalarPointAttribute x(shape2);
-        fmaps.transferFunction(test, x);
-        
-        ScalarPointColoring coloring2(shape2, x);
+        ScalarPointColoring coloring2(shape2, Tf);
         coloring2.color();
     } else {
         // try if action is identifier for any factory
@@ -559,43 +630,25 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         currentShape = item->getItem();
         
         // Metric
-        for(HashMap<string, QAction*>::iterator it = metrics.begin(); it != metrics.end(); it++) {
-            if (selectedItem == it->second) {
-                Metric* m = Factory<Metric>::getInstance()->create(it->first);
-                m->initialize(currentShape);
-                ScalarPointAttribute distances(currentShape);
-                m->getAllDistances(distances, currentShape->getRandomPoint());
-                ScalarPointColoring coloring(currentShape, distances);
-                coloring.color();
-                delete m;
-                
-                return;
-            }
+        if(metrics.contains(selectedItem)) {
+            qtShowMetricColoring(metrics[selectedItem], currentShape);
+            
+            return;
         }
         
-        // Point Signatures
-        for(HashMap<string, QAction*>::iterator it = pointSignatures.begin(); it != pointSignatures.end(); it++) {
-            if (selectedItem == it->second) {
-                PointSignature* s = Factory<PointSignature>::getInstance()->create(it->first);
-                s->initialize(currentShape, 100);
-                ScalarPointAttribute component(currentShape);
-                s->getComponent(49, component);
-                ScalarPointColoring coloring(currentShape, component);
-                coloring.color();
-                delete s;
-                
-                
-                return;
-            }
+        // Signatures
+        if (signatures.contains(selectedItem)) {
+            qtShowSignature(signatures[selectedItem], currentShape);
+            
+            return;
         }
         
-        // Face Signatures
-        for(HashMap<string, QAction*>::iterator it = faceSignatures.begin(); it != faceSignatures.end(); it++) {
-            if (selectedItem == it->second) {
-
-                
-                return;
-            }
+        // Samplings
+        if (samplings.contains(selectedItem)) {
+            qtShowSampling(samplings[selectedItem], currentShape);
+            
+            
+            return;
         }
     }
     
@@ -1294,7 +1347,9 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
         
         // get vtk actor and add to renderer_
         vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
-        Shape* shape = new Shape(lastInsertShapeID_, polyDataReader->GetOutput(), renderer_);
+        string name = "Shape ";
+        name.append(to_string(lastInsertShapeID_+1));
+        Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
         
         addShape(shape);
         
@@ -1322,7 +1377,9 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
             
             // get vtk actor and add to renderer_
             vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output2->GetProducer();
-            Shape* shape = new Shape(lastInsertShapeID_, polyDataReader->GetOutput(), renderer_);
+            string name = "Shape ";
+            name.append(to_string(lastInsertShapeID_+1));
+            Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
             
             addShape(shape);
             
@@ -1834,10 +1891,9 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     
     // add shape to qt list widget
     lastInsertShapeID_++;
-    string name = "Shape ";
-    name.append(to_string(lastInsertShapeID_));
+
     
-    qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
+    qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
     listShapes->addItem(item);
     
     //make sure that there always is exactly one item selected if there exists at least one item

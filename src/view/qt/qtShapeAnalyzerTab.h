@@ -2,7 +2,7 @@
 //  qtTab.h
 //  ShapeAnalyzer
 //
-//  Created by Emanuel Laude on 19.08.14.
+//  Created by Zorah on 08.08.14.
 //
 //
 
@@ -14,5 +14,6 @@ public:
     virtual void onShapeDelete(Shape* shape) = 0;
     virtual void onClear() = 0;
 };
+
 
 #endif

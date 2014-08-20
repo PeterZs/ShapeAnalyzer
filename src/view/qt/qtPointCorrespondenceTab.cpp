@@ -141,7 +141,7 @@ void qtPointCorrespondencesTab::addPointCorrespondence(PointCorrespondenceData* 
     }
     PointCorrespondence* corr = new PointCorrespondence(renderer_, data, shapes_);
     // create actor and add to vtk
-    corr->produceActorFromData();
+    corr->createActorFromData();
     corr->add();
     visiblePointCorrespondences_->add(corr->getLinesActor(), corr);
 }

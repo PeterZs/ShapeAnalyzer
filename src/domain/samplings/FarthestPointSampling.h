@@ -17,6 +17,10 @@
 template<class METRIC>
 class FarthestPointSampling : public Sampling {
 public:
+    virtual ~FarthestPointSampling() {
+        delete metric_;
+    }
+    
     virtual void initialize(Shape* shape, vtkIdType numberOfPoints);
     
     void setSource(vtkIdType source) {
@@ -27,8 +31,17 @@ public:
         return new FarthestPointSampling<METRIC>();
     }
     
+    
+    //returns identifier of a particular fps. Example: identifier for euclidean metric fps "FarthestPointSampling<EuclideanMetric>" is fps_euclidean
+    static string getIdentifier() {
+        string identifier = "fps_";
+        return identifier.append(METRIC::getIdentifier());
+    }
+    
 private:
-    FarthestPointSampling() {}
+    FarthestPointSampling() {
+        metric_ = Factory<Metric>::getInstance()->create<METRIC>();
+    }
     Metric* metric_;
     vtkIdType source_;
 
@@ -40,8 +53,8 @@ private:
 template<class METRIC>
 void FarthestPointSampling<METRIC>::initialize(Shape* shape, vtkIdType numberOfPoints) {
     Sampling::initialize(shape, numberOfPoints);
+    metric_->initialize(shape);
     
- 
     // calculate sampling
     if (source_ != -1)
         points_->InsertNextId(source_);

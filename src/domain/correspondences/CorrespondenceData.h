@@ -21,7 +21,7 @@ class CorrespondenceData {
     
 public:    
     // manage data
-    void addData(const vtkIdType newShape, const vtkIdType newCorrespondence) {
+    void addShape(const vtkIdType newShape, const vtkIdType newCorrespondence) {
         shapeIds_.push_back(newShape);
         correspondingIds_.push_back(newCorrespondence);
     }

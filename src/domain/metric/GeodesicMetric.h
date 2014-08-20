@@ -82,7 +82,9 @@ private:
         vtkSmartPointer<vtkPolyData> polyData_;
     };
     
-    GeodesicMetric() {}
+    GeodesicMetric() : algorithm_(nullptr), points_(nullptr), faces_(nullptr) {
+        
+    }
     
     double  calculateLengthOfPath(vector<SurfacePoint> path);
     
@@ -102,6 +104,9 @@ public:
         return new GeodesicMetric();
     }
     
+    static string getIdentifier() {
+        return "geodesic";
+    }
     
     virtual void initialize(Shape* shape);
     

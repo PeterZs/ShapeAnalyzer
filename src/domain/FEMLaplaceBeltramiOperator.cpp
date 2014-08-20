@@ -8,7 +8,8 @@
 
 #include "FEMLaplaceBeltramiOperator.h"
 
-FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions) : LaplaceBeltramiOperator(polyData, numberOfEigenfunctions) {
+void FEMLaplaceBeltramiOperator::initialize(Shape *shape, int numberOfEigenfunctions) {
+    LaplaceBeltramiOperator::initialize(shape, numberOfEigenfunctions);
     PetscErrorCode ierr;
     
     setupMatrices();
@@ -27,7 +28,7 @@ FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyDa
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
     EPSSetType(eps_, EPSARNOLDI);
     //EPSSetType(eps_, EPSARPACK);
-    vtkIdType numberOfPoints = polyData_->GetNumberOfPoints();
+    vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     
     EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
     ST st;
@@ -40,7 +41,7 @@ FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyDa
     EPSSetFromOptions(eps_);
     // Solve the eigensystem
     ierr = EPSSolve(eps_);
-
+    
     ierr = EPSView(eps_, PETSC_VIEWER_STDOUT_SELF);
     ierr = EPSPrintSolution(eps_, NULL);
 }
@@ -63,7 +64,7 @@ void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints,
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];
     for(vtkIdType i = 0; i < numberOfFaces; i++) {
-        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(polyData_->GetCell(i));
+        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(shape_->getPolyData()->GetCell(i));
         
         
         for(int i = 0; i < 3; i++) {
@@ -115,8 +116,8 @@ PetscScalar FEMLaplaceBeltramiOperator::getCotan(double *a, double *b, double *c
 void FEMLaplaceBeltramiOperator::setupMatrices() {    
     PetscErrorCode ierr;
 
-    vtkIdType numberOfPoints = polyData_->GetNumberOfPoints();
-    vtkIdType numberOfFaces = polyData_->GetNumberOfCells();
+    vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
+    vtkIdType numberOfFaces = shape_->getPolyData()->GetNumberOfCells();
     
     //compute number of non-zero elements per row (nnz is indexed by row index)
     PetscInt* nnz = new PetscInt[numberOfPoints];
@@ -132,7 +133,7 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     //fill matrices with their values
     //iterate over all faces
     for(vtkIdType x = 0; x < numberOfFaces; x++) {
-        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(polyData_->GetCell(x));
+        vtkTriangle* face = reinterpret_cast<vtkTriangle*>(shape_->getPolyData()->GetCell(x));
         
         //iterate over all edges ij of triangle ijk. k always lies on the opposite side of edge ij
         for(int i = 0; i < 3; i++) {
@@ -173,6 +174,13 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
+void FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &phi) {
+    Vec vec;
+    getEigenfunction(i, &vec);
+    
+    ScalarPointAttribute::petscVecToScalarPointAttribute(vec, phi);
+    VecDestroy(&vec);
+}
 
 
 void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {

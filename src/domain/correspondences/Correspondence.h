@@ -58,8 +58,7 @@ public:
     // vtk
     void remove();
     void add();
-    
-    void produceActorFromData();
+    void createActorFromData();
   
     
 protected:

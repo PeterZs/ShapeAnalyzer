@@ -20,13 +20,13 @@
 
 class HeatDiffusion {
 public:
-    HeatDiffusion(Shape* shape, ScalarPointAttribute& initialCondition, int numberOfEigenfunctions);
+    HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, ScalarPointAttribute& initialCondition);
     ~HeatDiffusion();
     void getHeat(ScalarPointAttribute& heat, double t);
 private:
     
     Shape* shape_;
-    PetscInt numberOfEigenfunctions_;
+    LaplaceBeltramiOperator* laplacian_;
 
     Vec PhiTMu0_;
 };

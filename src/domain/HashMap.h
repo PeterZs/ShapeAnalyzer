@@ -271,11 +271,7 @@ template<class KEY, class VALUE>
 VALUE HashMap<KEY, VALUE>::operator[](KEY key) {
     auto find = entries_.find(key);
     
-    if (find != entries_.end()) {
-        return find->second;
-    }
-    
-    return nullptr;
+    return find->second;
 }
 
 

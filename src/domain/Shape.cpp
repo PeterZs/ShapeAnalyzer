@@ -9,10 +9,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(
              vtkIdType shapeId,
+             string name,
              vtkSmartPointer<vtkPolyData> polyData,
              vtkSmartPointer<vtkRenderer> renderer
              )
-: shapeId_(shapeId), polyData_(polyData), renderer_(renderer), laplacian_(nullptr)
+: shapeId_(shapeId), name_(name), polyData_(polyData), renderer_(renderer)
 {
     
     initialize();
@@ -21,7 +22,7 @@ Shape::Shape(
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
-: renderer_(renderer), laplacian_(nullptr)
+: renderer_(renderer)
 {/* do not call initialize here! Poly data is not yet initialized! */}
 
 void Shape::initialize() {
@@ -92,26 +93,6 @@ double Shape::calculateArea() {
 ///////////////////////////////////////////////////////////////////////////////
 vtkIdType Shape::getRandomPoint() {
     return std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
-}
-
-LaplaceBeltramiOperator* Shape::getLaplacian(int numberOfEigenfunctions) {
-    if(laplacian_ == nullptr || laplacian_->getNumberOfEigenfunctions() != numberOfEigenfunctions) {
-        laplacian_ = new FEMLaplaceBeltramiOperator(polyData_, numberOfEigenfunctions);
-    }
-    return laplacian_;
-}
-
-
-double Shape::getEigenvalue(int i) {
-    return getLaplacian(max(i, 100))->getEigenvalue(i);
-}
-
-void Shape::getEigenfunction(int i, ScalarPointAttribute &phi) {
-    Vec vec;
-    getLaplacian(max(i, 100))->getEigenfunction(i, &vec);
-
-    ScalarPointAttribute::petscVecToScalarPointAttribute(vec, phi);
-    VecDestroy(&vec);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

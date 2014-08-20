@@ -56,3 +56,25 @@ qtShapeInfoTab::qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent, Q
                    );
     
 }
+
+void qtShapeInfoTab::onShapeAdd(Shape* shape) {
+    ;
+}
+
+void qtShapeInfoTab::onShapeDelete(Shape* shape) {
+    
+}
+
+void qtShapeInfoTab::onShapeEdit(Shape* shape) {
+    
+}
+
+void qtShapeInfoTab::onShapeSelect(Shape* shape) {
+    
+}
+
+void qtShapeInfoTab::onClear() {
+    
+}
+
+

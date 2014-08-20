@@ -21,7 +21,7 @@ public:
     
     ComplexFaceAttribute(Shape* shape) {
         shape_ = shape;
-        values = new T[shape->getPolyData()->getNumberOfPoints()];
+        values = new T[shape->getPolyData()->getNumberOfCells()];
     }
         
     // the size of the returned array must be equal to the number of faces of the shape

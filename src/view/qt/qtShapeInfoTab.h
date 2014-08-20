@@ -20,17 +20,24 @@
 #include "../../domain/Shape.h"
 
 #include "qtListWidgetItem.h"
+#include "qtShapesTab.h"
 
 #include "ui_shapeInfo.h"
 
 
-class qtShapeInfoTab : public QWidget, private Ui::ShapeInfoWidget {
+class qtShapeInfoTab : public QWidget, private Ui::ShapeInfoWidget, public qtShapesTab {
     Q_OBJECT
     
 public:
     qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f = 0);
     qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent = 0, Qt::WindowFlags f = 0);
     
+    
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onShapeAdd(Shape* shape);
+    virtual void onShapeEdit(Shape* shape);
+    virtual void onShapeSelect(Shape* shape);
+    virtual void onClear();
 private:
     void qtSetupTableWidget();
 };

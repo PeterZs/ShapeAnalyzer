@@ -9,15 +9,13 @@
 #ifndef ShapeAnalyzer_ScalarPointAttribute_h
 #define ShapeAnalyzer_ScalarPointAttribute_h
 
-#include "../Shape.h"
-
 #include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 
 #include <slepceps.h>
 
-class Shape;
+#include "../Shape.h"
 
 class ScalarPointAttribute {
     
@@ -43,7 +41,7 @@ public:
     static void petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr);
     
 
-    //convert scalar point attribute to vector
+    //convert array to scalar point attribute
     static void arrayToScalarPointAttribute(const PetscScalar* array, ScalarPointAttribute& attr);
     
 private:

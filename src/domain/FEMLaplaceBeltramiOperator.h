@@ -23,9 +23,19 @@ using namespace std;
 
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
-    FEMLaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions);
-
+    static LaplaceBeltramiOperator* create() {
+        return new FEMLaplaceBeltramiOperator();
+    }
+    
+    static string getIdentifier() {
+        return "fem";
+    }
+    
+    virtual void initialize(Shape* shape, int numberOfEigenfunctions);
+    
     virtual double getEigenvalue(int i);
+    
+    virtual void getEigenfunction(int i, ScalarPointAttribute &phi);
     
     virtual void getEigenfunction(PetscInt i, Vec* phi);
     
@@ -37,7 +47,8 @@ public:
     virtual ~FEMLaplaceBeltramiOperator();
     
 private:
-
+    FEMLaplaceBeltramiOperator() {}
+    
     void setupMatrices();
     
     inline void getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces);

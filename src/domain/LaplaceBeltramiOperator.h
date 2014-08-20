@@ -14,15 +14,19 @@
 
 #include <slepceps.h>
 
+#include "Shape.h"
 #include "PetscHelper.h"
+#include "attributes/ScalarPointAttribute.h"
 
 class LaplaceBeltramiOperator {
 public:
-    LaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions);
-    
     virtual ~LaplaceBeltramiOperator() {
     }
-
+    
+    virtual void initialize(Shape* shape, int numberOfEigenfunctions);
+    
+    virtual void getEigenfunction(int i, ScalarPointAttribute &phi) = 0;
+    
     virtual double getEigenvalue(int i) = 0;
     
     virtual void getEigenfunction(PetscInt i, Vec* phi) = 0;
@@ -39,7 +43,10 @@ public:
         return numberOfEigenfunctions_;
     }
 protected:
-    vtkSmartPointer<vtkPolyData> polyData_; //the shape
+    LaplaceBeltramiOperator() {};
+    
+    
+    Shape* shape_; //the shape
     int numberOfEigenfunctions_;
 };
 

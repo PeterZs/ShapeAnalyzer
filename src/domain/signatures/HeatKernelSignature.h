@@ -9,15 +9,19 @@
 #ifndef __ShapeAnalyzer__HeatKernelSignature__
 #define __ShapeAnalyzer__HeatKernelSignature__
 
-#include "PointSignature.h"
+#include "Signature.h"
 
-class HeatKernelSignature : public PointSignature {
+class HeatKernelSignature : public Signature {
 public:
     
-    virtual void initialize(Shape* shape, int dimension);
+    virtual void initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension);
     
-    static PointSignature* create() {
+    static Signature* create() {
         return new HeatKernelSignature();
+    }
+    
+    static string getIdentifier() {
+        return "hks";
     }
     
 private:

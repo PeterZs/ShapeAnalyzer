@@ -10,17 +10,16 @@
 
 //Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
 
-void WaveKernelSignature::initialize(Shape* shape, int dimension) {
-    PointSignature::initialize(shape, dimension);
+void WaveKernelSignature::initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension) {
+    Signature::initialize(shape, laplacian, dimension);
+
+    PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];
     
-    PetscScalar* logLambda = new PetscScalar[numberOfEigenfunctions_];
-    
-    LaplaceBeltramiOperator* laplacian = shape_->getLaplacian(numberOfEigenfunctions_);
 
     
     double maximum = -std::numeric_limits<double>::infinity();
-    for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
-        PetscScalar lambda = laplacian->getEigenvalue(i);
+    for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
+        PetscScalar lambda = laplacian_->getEigenvalue(i);
         logLambda[i]= log(std::max((abs(lambda)), 1e-6));
         if(maximum < logLambda[i]) {
             maximum = logLambda[i];
@@ -44,9 +43,9 @@ void WaveKernelSignature::initialize(Shape* shape, int dimension) {
         VecCreateSeq(MPI_COMM_SELF, shape_->getPolyData()->GetNumberOfPoints(), &wksi);
         VecSet(wksi, 0.0);
         PetscScalar C = 0;
-        for(PetscInt k = 0; k < numberOfEigenfunctions_; k++) {
+        for(PetscInt k = 0; k < laplacian_->getNumberOfEigenfunctions(); k++) {
             Vec phi;
-            laplacian->getEigenfunction(k, &phi);
+            laplacian_->getEigenfunction(k, &phi);
             VecPow(phi, 2.0);
             
             PetscScalar c = exp( -pow(e[i] - logLambda[k], 2.0) / ( 2.0 * sigma * sigma ));

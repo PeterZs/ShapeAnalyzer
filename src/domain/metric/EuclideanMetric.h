@@ -27,6 +27,10 @@ public:
         return new EuclideanMetric();
     }
     
+    static string getIdentifier() {
+        return "euclidean";
+    }
+    
     virtual double getDistance(vtkIdType a, vtkIdType b);
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
     virtual vtkIdType getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources);

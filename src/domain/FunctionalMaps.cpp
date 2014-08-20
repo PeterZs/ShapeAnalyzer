@@ -8,16 +8,16 @@
 
 #include "FunctionalMaps.h"
 
-FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
+FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), laplacian1_(laplacian1), laplacian2_(laplacian2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
     
     numberOfConstraints_ = c1_.size();
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
-    setupPhiTM(shape1_, &Phi1_, &PhiTM1_);
-    setupPhiTM(shape2_, &Phi2_, &PhiTM2_);
+    setupPhiTM(shape1_, laplacian1_, &Phi1_, &PhiTM1_);
+    setupPhiTM(shape2_, laplacian2_, &Phi2_, &PhiTM2_);
     
     
-    // compute A^T which corresponds to all the constraits ci1 on shape M (shape1) and vec bi which corresponds to contraint ci2 on shape N (shape2)
+    // compute A^T which corresponds to all the constraits ci1 on shape M (shape1) and B which corresponds to contraints ci2 on shape N (shape2)
     Mat AT;
     Mat B;
     
@@ -196,17 +196,17 @@ void FunctionalMaps::transferFunction(ScalarPointAttribute &f1, ScalarPointAttri
     VecDestroy(&b);
 }
 
-void FunctionalMaps::setupPhiTM(Shape& shape, Mat* Phi, Mat *PhiTM) {
+void FunctionalMaps::setupPhiTM(Shape& shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
     PetscInt numberOfPoints = shape.getPolyData()->GetNumberOfPoints();
     
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, numberOfEigenfunctions_, NULL, Phi);
-    shape.getLaplacian(numberOfEigenfunctions_)->getEigenfunctionMatrix(Phi);
+    laplacian->getEigenfunctionMatrix(Phi);
     
     Mat PhiT;
     MatTranspose(*Phi, MAT_INITIAL_MATRIX, &PhiT);
     
     //get reference to mass matrix
-    Mat* M = shape.getLaplacian(numberOfEigenfunctions_)->getMassMatrix();
+    Mat* M = laplacian->getMassMatrix();
     MatMatMult(PhiT, *M, MAT_INITIAL_MATRIX, PETSC_DEFAULT, PhiTM);
     
     MatDestroy(&PhiT);

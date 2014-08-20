@@ -8,7 +8,9 @@
 
 #include "LaplaceBeltramiOperator.h"
 
-LaplaceBeltramiOperator::LaplaceBeltramiOperator(vtkSmartPointer<vtkPolyData> polyData, int numberOfEigenfunctions) : polyData_(polyData), numberOfEigenfunctions_(numberOfEigenfunctions) {
+void LaplaceBeltramiOperator::initialize(Shape* shape, int numberOfEigenfunctions) {
+    shape_ = shape;
+    numberOfEigenfunctions_ = numberOfEigenfunctions;
 }
 
 void LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {

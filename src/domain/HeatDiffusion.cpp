@@ -8,13 +8,13 @@
 
 #include "HeatDiffusion.h"
 
-HeatDiffusion::HeatDiffusion(Shape* shape, ScalarPointAttribute& initialCondition, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
+HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, ScalarPointAttribute& initialCondition) : shape_(shape), laplacian_(laplacian) {
 
     
     Mat Phi;
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
-    MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, numberOfEigenfunctions_, NULL, &Phi);
-    shape_->getLaplacian(numberOfEigenfunctions_)->getEigenfunctionMatrix(&Phi);
+    MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, laplacian_->getNumberOfEigenfunctions(), NULL, &Phi);
+    laplacian_->getEigenfunctionMatrix(&Phi);
     
     Mat PhiT;
     MatTranspose(Phi, MAT_INITIAL_MATRIX, &PhiT);
@@ -23,7 +23,7 @@ HeatDiffusion::HeatDiffusion(Shape* shape, ScalarPointAttribute& initialConditio
     Mat PhiTM;
     
     //get reference to mass matrix.
-    Mat* M = shape_->getLaplacian(numberOfEigenfunctions_)->getMassMatrix();
+    Mat* M = laplacian_->getMassMatrix();
     MatMatMult(PhiT, *M, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &PhiTM);
     MatDestroy(&PhiT);
     
@@ -49,10 +49,10 @@ void HeatDiffusion::getHeat(ScalarPointAttribute& heat, double t) {
     VecCreateSeq(PETSC_COMM_SELF, m, &ut);
     VecSet(ut, 0.0);
     
-    for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
+    for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
         Vec phi;
         PetscScalar lambda;
-        shape_->getLaplacian(numberOfEigenfunctions_)->getEigenpair(i, &phi, &lambda);
+        laplacian_->getEigenpair(i, &phi, &lambda);
         PetscScalar y;
         VecGetValues(PhiTMu0_, 1, &i, &y);
         

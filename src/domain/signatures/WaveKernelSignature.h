@@ -9,33 +9,34 @@
 #ifndef __ShapeAnalyzer__WaveKernelSignature__
 #define __ShapeAnalyzer__WaveKernelSignature__
 
-#include "PointSignature.h"
+#include "Signature.h"
 #include "../Shape.h"
+#include "../LaplaceBeltramiOperator.h"
+#include "../Factory.h"
 
 #include <vtkPolyData.h>
 
 #include <cmath>
 
-class WaveKernelSignature : public PointSignature {
+class WaveKernelSignature : public Signature {
 public:    
-    virtual void initialize(Shape* shape, int dimension);
-    
-    void setNumberOfEigenfunctions(int numberOfEigenfunctions) {
-        numberOfEigenfunctions_ = numberOfEigenfunctions;
-    }
+    virtual void initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension);
     
     void setWKSVariance(double wksVariance) {
         wksVariance_ = wksVariance;
     }
     
-    static PointSignature* create() {
+    static Signature* create() {
         return new WaveKernelSignature();
     }
     
-private:
-    WaveKernelSignature() : numberOfEigenfunctions_(-1), wksVariance_(6.0) {}
+    static string getIdentifier() {
+        return "wks";
+    }
     
-    int numberOfEigenfunctions_;
+private:
+    WaveKernelSignature() : wksVariance_(6.0) {}
+    
     double wksVariance_;
 };
 

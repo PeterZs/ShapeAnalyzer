@@ -34,17 +34,26 @@ public:
     
     //register new T with unique identifier, label (for GUI purposes) and "create-function-pointer"
     template<class C>
-    void Register(const string& identifier, const string& label){
+    void Register(const string& label){
         
-        createFns_.insert(pair<string, CreateFn>(identifier, &C::create));
-        labels_.insert(pair<string, string>(identifier, label));
+        createFns_.insert(pair<string, CreateFn>(C::getIdentifier(), &C::create));
+        labels_.insert(pair<string, string>(C::getIdentifier(), label));
     }
     
     //create a new instance of the desired object
     T* create(const string& identifier) {
-        
-        if(createFns_.find(identifier) != createFns_.end()) {
+        typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(identifier);
+        if(it != createFns_.end()) {
             return createFns_.find(identifier)->second();
+        }
+        return nullptr;
+    }
+    
+    template<class C>
+    T* create() {
+        typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(C::getIdentifier());
+        if(it != createFns_.end()) {
+            return it->second();
         }
         return nullptr;
     }

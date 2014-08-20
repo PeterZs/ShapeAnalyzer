@@ -81,7 +81,7 @@ int Correspondence::addShape(Shape* shape, vtkIdType id) {
     initializeActor(actors_[actors_.size()-1], shape, id);
     transform(shape);
     
-    data_->addData(shape->getId(), id);
+    data_->addShape(shape->getId(), id);
     
     if(shapes_.size() > 1) {
         //Visualize in vtk
@@ -120,7 +120,7 @@ void Correspondence::add() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void Correspondence::produceActorFromData() {
+void Correspondence::createActorFromData() {
     // fill poly data with all points
     for (int i = 0; i < data_->size(); i++) {
         // insert point

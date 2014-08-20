@@ -9,8 +9,8 @@
 #include "HeatKernelSignature.h"
 
 
-void HeatKernelSignature::initialize(Shape* shape, int dimension) {
-    PointSignature::initialize(shape, dimension);
+void HeatKernelSignature::initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension) {
+    Signature::initialize(shape, laplacian, dimension);
     
     //TODO
 }

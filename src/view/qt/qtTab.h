@@ -9,6 +9,8 @@
 #ifndef ShapeAnalyzer_qtTab_h
 #define ShapeAnalyzer_qtTab_h
 
+#include "../../domain/Shape.h"
+
 class qtTab {
 public:
     virtual void onShapeDelete(Shape* shape) = 0;

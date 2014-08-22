@@ -22,6 +22,7 @@
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 
 #include "qtListWidgetItem.h"
+#include "qtCorrespondencesTab.h"
 
 #include "../ShapeAnalyzer.h"
 
@@ -31,7 +32,7 @@ class ShapeAnalyzer;
 
 using namespace std;
 
-class qtPointCorrespondencesTab : public QWidget, private Ui::PointCorrespondencesWidget {
+class qtPointCorrespondencesTab : public QWidget, private Ui::PointCorrespondencesWidget, public qtCorrespondencesTab {
     Q_OBJECT
     
 public:
@@ -42,6 +43,13 @@ public:
                            );
     ~qtPointCorrespondencesTab() {}
 
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onClear();
+    virtual void onCorrespondenceAdd(Correspondence* correspondence);
+    virtual void onCorrespondenceDelete(Correspondence* correspondence);
+    virtual void onCorrespondenceEdit(Correspondence* correspondence);
+    virtual void onCorrespondenceSelect(Correspondence* correspondence);
+    virtual void onCorrespondencesClear();
     
 private slots:
     virtual void slotOpenContextMenu(const QPoint& point);

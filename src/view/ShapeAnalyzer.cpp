@@ -158,7 +158,6 @@ void ShapeAnalyzer::qtConnectListCorrespondences() {
             this,                                   SLOT(slotShowContextMenuCorrespondences(const QPoint&)));
     
     
-    //manually call slot set box widget
     slotSetSelectedCurrentCorrespondence(listCorrespondences->currentItem(), nullptr);
 }
 
@@ -170,6 +169,7 @@ void ShapeAnalyzer::qtConnectListShapes() {
     connect(this->listShapes,                       SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotShowContextMenuShapes(const QPoint&)));
     
+    //manually call slot set box widget
     slotSetCurrentBoxWidget(listShapes->currentItem(), nullptr);
 }
 

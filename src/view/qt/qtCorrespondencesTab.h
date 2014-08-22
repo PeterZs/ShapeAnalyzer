@@ -10,6 +10,7 @@
 #define ShapeAnalyzer_qtCorrespondencesTab_h
 
 #include "qtTab.h"
+#include "../../domain/correspondences/Correspondence.h"
 
 class qtCorrespondencesTab : public qtTab {
 public:

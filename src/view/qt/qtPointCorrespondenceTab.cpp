@@ -100,3 +100,40 @@ void qtPointCorrespondencesTab::slotSetSelectedCurrentCorrespondence(QListWidget
 void qtPointCorrespondencesTab::slotSample() {
     parent_->samplePointCorrespondences(this->spinBoxNumberOfDisplayedCorrespondences->value());
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Events
+///////////////////////////////////////////////////////////////////////////////
+void qtPointCorrespondencesTab::onShapeDelete(Shape* shape) {
+    
+}
+
+void qtPointCorrespondencesTab::onClear() {
+    
+}
+
+void qtPointCorrespondencesTab::onCorrespondenceAdd(Correspondence *correspondence) {
+    string label = "Point Correspondence ";
+    label.append(to_string(correspondence->getData()->getId()+1));
+    this->listPointCorrespondences->addItem(new qtListWidgetItem<PointCorrespondenceData>(
+                                                                                          QString(label.c_str()), (PointCorrespondenceData*) correspondence->getData())
+                                            );
+}
+
+void qtPointCorrespondencesTab::onCorrespondenceDelete(Correspondence* correspondence) {
+    
+}
+
+void qtPointCorrespondencesTab::onCorrespondenceEdit(Correspondence* correspondence) {
+    ;
+}
+
+void qtPointCorrespondencesTab::onCorrespondenceSelect(Correspondence* correspondence) {
+    
+}
+
+void qtPointCorrespondencesTab::onCorrespondencesClear() {
+    
+}
+
+

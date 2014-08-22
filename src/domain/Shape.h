@@ -42,17 +42,19 @@ class Shape : public Serializable {
 
 public:
     // Constructors and Destructor
-    Shape(vtkIdType shapeID, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
+    Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
     ~Shape() {
     }
     
-    double                      calculateArea();
-    vtkIdType                    getRandomPoint();
+    void initialize();
+    
+    double calculateArea();
+    vtkIdType getRandomPoint();
     
     // vtk functions
     
-    void remove();
+    void removeFromRenderer();
     
     // serialization functions
     
@@ -91,7 +93,7 @@ public:
     }
     
     vtkIdType getId() {
-        return shapeId_;
+        return id_;
     }
     
     string getName() {
@@ -103,9 +105,8 @@ public:
     }
 
 private:
-    void initialize();
     
-    vtkIdType shapeId_;
+    vtkIdType id_;
     string name_;
     
     // vtk objects

@@ -46,9 +46,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonRandomSubset">
+      <widget class="QPushButton" name="buttonSample">
        <property name="text">
-        <string>Show Random Subset</string>
+        <string>Show Random Sample</string>
        </property>
       </widget>
      </item>

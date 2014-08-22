@@ -27,50 +27,33 @@
 
 #include "ui_pointCorrespondences.h"
 
+class ShapeAnalyzer;
+
 using namespace std;
 
 class qtPointCorrespondencesTab : public QWidget, private Ui::PointCorrespondencesWidget {
     Q_OBJECT
     
 public:
-    // copy constructor
-    qtPointCorrespondencesTab(const qtPointCorrespondencesTab& copy) {
-        pointCorrespondences_ = copy.getPointCorrespondences();
-    }
-    
-    // normal constructor
     qtPointCorrespondencesTab(
                            HashMap<PointCorrespondenceData*, bool>* pointCorrespondences,
-                           HashMap<vtkActor*, PointCorrespondence*>* visiblePointCorrespondences,
-                           HashMap<vtkActor*, Shape*>* shapes,
-                           QListWidget* visiblePointCorrespondencesList,
-                           QAction* pointMode,
-                           vtkSmartPointer<vtkRenderer> renderer,
-                           QWidget * parent = 0,
+                           ShapeAnalyzer* parent,
                            Qt::WindowFlags f = 0
                            );
     ~qtPointCorrespondencesTab() {}
-    
-    HashMap<PointCorrespondenceData*, bool>* getPointCorrespondences() const  {
-        return pointCorrespondences_;
-    }
+
     
 private slots:
     virtual void slotOpenContextMenu(const QPoint& point);
     
     virtual void slotClear();
     
-    virtual void slotRandomSubset();
+    virtual void slotSample();
     
 private:
-    void addPointCorrespondence(PointCorrespondenceData*);
     
     HashMap<PointCorrespondenceData*, bool>*    pointCorrespondences_;
-    HashMap<vtkActor*, PointCorrespondence*>*   visiblePointCorrespondences_;
-    HashMap<vtkActor*, Shape*>*                 shapes_;
-    QListWidget*                                visiblePointCorrespondencesList_;
-    QAction*                                    pointMode_;
-    vtkSmartPointer<vtkRenderer>                renderer_;
+    ShapeAnalyzer*                              parent_;
 };
 
 

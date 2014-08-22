@@ -15,9 +15,12 @@
 
 class PointCorrespondenceData : public CorrespondenceData {
 public:
-    PointCorrespondenceData() {
+    PointCorrespondenceData(vtkIdType id) : CorrespondenceData(id) {
     }
     
+    virtual string getType() {
+        return "PointCorrespondenceData";
+    }
 };
 
 #endif /* defined(PointCorrespondeceData_H) */

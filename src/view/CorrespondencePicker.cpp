@@ -36,7 +36,7 @@ int CorrespondencePicker::addShape(Shape* shape, vtkIdType selectionId) {
     if(result == -1) { // clicked shape is already part of correspondence and not equal to the last added
         // reset selection
         counter_ = 1;
-        correspondence_->remove();
+        correspondence_->removeFromRenderer();
         delete correspondence_;
         correspondence_ = createCorrespondence();
         correspondence_->addShape(shape, selectionId);
@@ -125,7 +125,7 @@ void CorrespondencePicker::clearSelection() {
     if(counter_ > 0) {
         renderer_->RemoveActor(currentSelectionActor_);
         renderer_->RemoveActor(mouseLineActor_);
-        correspondence_->remove();
+        correspondence_->removeFromRenderer();
         renderer_->GetRenderWindow()->Render();
         delete correspondence_->getData();
         delete correspondence_;

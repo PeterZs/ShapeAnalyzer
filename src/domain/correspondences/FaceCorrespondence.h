@@ -21,11 +21,11 @@
 
 class FaceCorrespondence : public Correspondence {
 public:
-    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data);
+    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data);
 
     FaceCorrespondenceData* getData() { return (FaceCorrespondenceData*) data_; }
     
-private:
+protected:
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType faceId);
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType);

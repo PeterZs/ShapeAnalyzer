@@ -23,7 +23,7 @@ void qtShapeInfoTab::qtSetupTableWidget() {
     tableWidget->horizontalHeader()->hide();
     
     QStringList tableVerticalHeader;
-    tableVerticalHeader<<"Name"<<"#Vertices"<<"#Faces"<<"Area";
+    tableVerticalHeader<<"ID"<<"#Vertices"<<"#Faces"<<"Area";
     tableWidget->setVerticalHeaderLabels(tableVerticalHeader);
 }
 
@@ -35,7 +35,7 @@ qtShapeInfoTab::qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent, Q
 
 
     //insert data
-    tableWidget->setItem(0, 0, new QTableWidgetItem(item->text()));
+    tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(item->getItem()->getId())));
     tableWidget->setItem(1, 0, new QTableWidgetItem(
                                                  QString::number(
                                                                  (int) item->getItem()->getPolyData()->GetPoints()->GetNumberOfPoints()

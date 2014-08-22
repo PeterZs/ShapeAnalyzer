@@ -2,21 +2,19 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data) : renderer_(renderer), data_(data) {
-    initialize();
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data) : renderer_(renderer), label_(label), data_(data) {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// to call when the CorrespondenceData is not empty, call produceActor afterwards
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes) : renderer_(renderer), data_(data) {
-    initialize();
+// to call when the CorrespondenceData is not empty, call createActorFromData afterwards
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : renderer_(renderer), label_(label), data_(data) {
     
     // fill shape_ vector
     for (int i = 0; i < data_->size(); i++) {
         // find right shape
-        for (auto it = shapes->begin(); it != shapes->end(); it++) {
-            if(data_->getShapes()[i] == it->second->getId()) {
+        for (auto it = shapes.begin(); it != shapes.end(); it++) {
+            if(data_->getShapeIds()[i] == it->second->getId()) {
                 shapes_.push_back(it->second);
             }
         }
@@ -44,6 +42,37 @@ void Correspondence::initialize() {
     linesActor_->GetProperty()->SetLineWidth(1);
     linesActor_->GetProperty()->SetColor(0, 1, 0);
     renderer_->AddActor(linesActor_);
+    
+    // in case CorrespondenceData was not empty create actors.
+    if(data_->getShapeIds().size() > 0) {
+        // fill poly data with all points
+        for (int i = 0; i < data_->size(); i++) {
+            // insert point
+            double point[3];
+            getCorrespondencePoint(point, shapes_[i], data_->getCorrespondingIds()[i]);
+            lineReferencePoints_->InsertNextPoint(point);
+            linesPolyData_->GetPoints()->InsertNextPoint(point);
+            linesPolyData_->Modified();
+            actors_.push_back(vtkSmartPointer<vtkActor>::New());
+            initializeActor(actors_[actors_.size()-1], shapes_[i], data_->getCorrespondingIds()[i]);
+            transform(shapes_[i]);
+        }
+        
+        // produce lines
+        for (int i = 1; i < data_->size(); i++) {
+            vtkSmartPointer<vtkIdList> line = vtkSmartPointer<vtkIdList>::New();
+            line->InsertId(0, i-1);
+            line->InsertId(1, i);
+            linesPolyData_->InsertNextCell(VTK_LINE, line);
+            
+            linesPolyData_->Modified();
+        }
+        
+        // transform
+        for (int i = 0; i < shapes_.size(); i++) {
+            transform(shapes_[i]);
+        }
+    }
 }
 
 
@@ -98,9 +127,10 @@ int Correspondence::addShape(Shape* shape, vtkIdType id) {
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // removes correspondence actor from renderer
-void Correspondence::remove() {
+void Correspondence::removeFromRenderer() {
     for(int i = 0; i < actors_.size(); i++) {
         renderer_->RemoveActor(actors_[i]);
     }
@@ -110,41 +140,12 @@ void Correspondence::remove() {
 
 ///////////////////////////////////////////////////////////////////////////////
 // add correspondence actor to renderer
-void Correspondence::add() {
-    for(int i = 0; i < actors_.size(); i++) {
-        renderer_->AddActor(actors_[i]);
-    }
+void Correspondence::addToRenderer() {
+    setSelected(false);
     
     renderer_->AddActor(linesActor_);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-void Correspondence::createActorFromData() {
-    // fill poly data with all points
-    for (int i = 0; i < data_->size(); i++) {
-        // insert point
-        double point[3];
-        getCorrespondencePoint(point, shapes_[i], data_->getCorrespondingIds()[i]);
-        linesPolyData_->GetPoints()->InsertNextPoint(point);
-        lineReferencePoints_->InsertNextPoint(point);
-    }
-    
-    // produce lines
-    for (int i = 1; i < data_->size(); i++) {
-        vtkSmartPointer<vtkIdList> line = vtkSmartPointer<vtkIdList>::New();
-        line->InsertId(0, i-1);
-        line->InsertId(1, i);
-        linesPolyData_->InsertNextCell(VTK_LINE, line);
-        
-        linesPolyData_->Modified();
-    }
-    
-    // transform
-    for (int i = 0; i < shapes_.size(); i++) {
-        transform(shapes_[i]);
-    }
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////

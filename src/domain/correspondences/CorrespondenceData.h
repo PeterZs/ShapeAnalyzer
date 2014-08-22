@@ -32,7 +32,7 @@ public:
     }
     
     // getters
-    vector<vtkIdType>& getShapes() {
+    vector<vtkIdType>& getShapeIds() {
         return shapeIds_;
     }
     
@@ -42,11 +42,19 @@ public:
     
     int size() { return shapeIds_.size(); }
     
+    
+    vtkIdType getId() {
+        return id_;
+    }
+    
+    virtual string getType() = 0;
+    virtual ~CorrespondenceData() {}
 protected:
-    CorrespondenceData() {}
+    CorrespondenceData(vtkIdType id) : id_(id) {}
     
     vector<vtkIdType> shapeIds_;
     vector<vtkIdType> correspondingIds_; // either face or point ids depending on the implementing class
+    vtkIdType id_;
 };
 
 #endif /* defined(CorrespondenceData_H) */

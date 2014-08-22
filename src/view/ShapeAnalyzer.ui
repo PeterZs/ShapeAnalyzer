@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1176</width>
-    <height>770</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -182,7 +182,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenFile"/>
-    <addaction name="actionLoadCorrespondences"/>
+    <addaction name="actionImportCorrespondences"/>
     <addaction name="separator"/>
     <addaction name="actionSaveScene"/>
     <addaction name="actionExportScene"/>
@@ -326,9 +326,6 @@
    <property name="text">
     <string>Display Face Correspondences</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
-   </property>
   </action>
   <action name="actionDisplayPointCorrespondences">
    <property name="checkable">
@@ -339,9 +336,6 @@
    </property>
    <property name="text">
     <string>Display Point Correspondences</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionAllPointCorrespondences">
@@ -508,9 +502,9 @@
     <string>Ctrl+Shift+E</string>
    </property>
   </action>
-  <action name="actionLoadCorrespondences">
+  <action name="actionImportCorrespondences">
    <property name="text">
-    <string>Load Correspondences</string>
+    <string>Import Correspondences...</string>
    </property>
   </action>
   <action name="actionExportCorrespondences">
@@ -533,6 +527,9 @@
    <property name="text">
     <string>Point Correspondences</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionAddFaceCorrespondences">
    <property name="checkable">
@@ -540,6 +537,9 @@
    </property>
    <property name="text">
     <string>Face Correspondences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

@@ -9,7 +9,7 @@
 #include "FaceCorrespondence.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data) : Correspondence(renderer, data) {
+FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data) : Correspondence(renderer, label, data) {
 }
 
 

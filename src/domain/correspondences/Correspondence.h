@@ -34,6 +34,8 @@ class Correspondence {
 public:
     virtual ~Correspondence() {};
     
+    void initialize();
+    
     //apply current user transformation of shape to the reference points that belong to the transformed shape and update line source with the transformed point as well as the actors belonging to the corresponding faces or points.
     void transform(Shape* shape);
     
@@ -41,6 +43,8 @@ public:
 
     //add another shape + face ID (or vertex ID) pair to this correspondence returns 1 if shape id combi has successfully been added (i.e. shape has not been selected twice). Returns 0 if shape equals last added shape and updates coordinates. Returns -1 if shape equals another shape that has already been added and is not equals to last added shape
     int addShape(Shape* shape, vtkIdType);
+    
+    void addShapes(unordered_map<Shape*, vtkIdType>& shapes);
     
     // getters
     vtkActor* getLinesActor() {
@@ -55,26 +59,32 @@ public:
         return data_;
     }
     
+    string getLabel() {
+        return label_;
+    }
+    
+    void setLabel(string label) {
+        label_ = label;
+    }
+    
     // vtk
-    void remove();
-    void add();
-    void createActorFromData();
-  
+    void removeFromRenderer();
+    void addToRenderer();
     
 protected:
     //protected contructor since class is abstract
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
-    void initialize();
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
     
     vtkSmartPointer<vtkRenderer>    renderer_;
-    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs
+    string                          label_; //label displayed in the correspondence list
+    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs and the unique ID
     vector<Shape*>                  shapes_;
-    
+
     
     //vtk visualization stuff
     vector<vtkSmartPointer<vtkActor> >  actors_; // actors representing highlighted vertex or face (part of this correspondence) on corresponding shape. (Ordering corresponds to ordering of shapes)

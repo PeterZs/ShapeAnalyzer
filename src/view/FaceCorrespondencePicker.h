@@ -14,7 +14,7 @@
 
 class FaceCorrespondencePicker : public CorrespondencePicker {
 public:
-    FaceCorrespondencePicker(vtkRenderer* renderer) : CorrespondencePicker(renderer) {
+    FaceCorrespondencePicker(vtkRenderer* renderer, int& lastInsertCorrespondenceID) : CorrespondencePicker(renderer, lastInsertCorrespondenceID) {
     }
 private:
     virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]);

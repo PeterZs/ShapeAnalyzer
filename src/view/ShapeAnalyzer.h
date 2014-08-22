@@ -90,6 +90,14 @@
 
 using namespace std;
 
+class qtPointCorrespondencesTab;
+class qtFaceCorrespondencesTab;
+
+// needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
+// the elements can be made.
+struct ShapeComparator {
+    bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
+};
 
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
@@ -134,9 +142,20 @@ public:
         SlepcFinalize();
     };
     
-    QList<QListWidgetItem *> getShapes();
-    void switchCorrespondenceMode();
+    
+    // public functions accessable by custom qtTabs
+    void showCorrespondence(CorrespondenceData* data);
+    void hideCorrespondence(CorrespondenceData* data);
+    void deleteCorrespondence(CorrespondenceData* data);
+
+    
+    void samplePointCorrespondences(unsigned int size);
+    void sampleFaceCorrespondences(unsigned int size);
+    void clearPointCorrespondences();
+    void clearFaceCorrespondences();
+    
     void render();
+    
     
 private slots:
     //QT slots
@@ -144,11 +163,7 @@ private slots:
     virtual void slotResetCamera();
     virtual void slotClear();
 
-    virtual void slotOpenFile();
-    virtual void slotLoadCorrespondences();
-
-    virtual void slotOpenHelpWindow();
-
+    virtual void slotShowHelp();
     virtual void slotShowSettings();
     virtual void slotShowContextMenuShapes(const QPoint& pos);
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
@@ -171,10 +186,14 @@ private slots:
     virtual void slotSetBackgroundColor();
     virtual void slotToggleProjectionMode();
     
+    virtual void slotOpenFile();
     virtual void slotSaveScene();
     virtual void slotExportScene();
+    virtual void slotImportCorrespondences();
     virtual void slotExportCorrespondences();
+    
     virtual void slotSaveScreenshot();
+    
     
     virtual void slotTabShapeInfo(bool);
     virtual void slotTabCorrespondenceColoring(bool);
@@ -202,7 +221,8 @@ private:
     void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     void qtAddSamplingMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     
-    void qtInputDialogRename(QListWidgetItem* item);
+    void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
+    void qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspondence>* item);
     void qtInputDialogOpacity(Shape* shape);
     void qtShowEigenfunction(Shape* shape);
     void qtShowHeatDiffusion(Shape* shape);
@@ -228,19 +248,23 @@ private:
     PointCorrespondence*    findPointCorrespondenceByData(PointCorrespondenceData* data);
     
     void clear();
-    void clearCorrespondences();
-    void deleteCorrespondence(int i, bool deleteData);
     void deleteShape(int i);
+    void deleteCorrespondence(int i);
+    void hideCorrespondence(int i);
+    void hideCorrespondences(); // hides currently displayed correspondences
     void addShape(Shape* shape);
     void addCorrespondence();
+    
 
+    
+    
     //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
     HashMap<vtkActor*, Shape*> shapesByActor_;
     
     HashMap<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
     HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
-    // all face and point correspondences data, the bool indicates if the data is visible
+    // all face and point correspondences data, the bool indicates if for the data there exists a corresponding Correspondence object in "...CorrespondencesByActor_". In case we are in "view PointCorrespondences mode" this correspondence object is also visible in the qvtkWidget
     HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
     HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;
 
@@ -252,17 +276,17 @@ private:
     CorrespondencePicker* correspondencePicker_;
     
     //QT
-    QActionGroup* actionGroupCorrespondenceType;
-    QActionGroup* actionGroupMode;
-    QActionGroup* actionGroupShapeDisplayMode;
-    QActionGroup* actionGroupProjectionMode;
+    QActionGroup* actionGroupCorrespondenceType_;
+    QActionGroup* actionGroupMode_;
+    QActionGroup* actionGroupShapeDisplayMode_;
+    QActionGroup* actionGroupProjectionMode_;
     
     Ui_Settings uiSettings_;
     QDialog*    dialogSettings_;
     
     //counter for ids
     int lastInsertShapeID_;
-    int lastInsertCorresondenceID_;
+    int lastInsertCorresondenceID_; //correspondence data id
     
     int pickerCounter_;
 };

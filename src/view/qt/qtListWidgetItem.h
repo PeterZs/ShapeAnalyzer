@@ -28,10 +28,6 @@ public:
     T* getItem() {
         return item_;
     }
-    
-    void setName(char* name) {
-        setText(*(new QString(name)));
-    }
 private:
     T* item_;
 };

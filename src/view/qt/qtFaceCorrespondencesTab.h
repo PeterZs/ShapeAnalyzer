@@ -27,50 +27,33 @@
 
 #include "ui_faceCorrespondences.h"
 
+class ShapeAnalyzer;
+
 using namespace std;
 
 class qtFaceCorrespondencesTab : public QDialog, public Ui::FaceCorrespondencesWidget {
     Q_OBJECT
     
 public:
-    // copy constructor
-    qtFaceCorrespondencesTab(const qtFaceCorrespondencesTab& copy) {
-        faceCorrespondences_ = copy.getFaceCorrespondences();
-    }
-    
-    // normal constructor
     qtFaceCorrespondencesTab(
-                           HashMap<FaceCorrespondenceData*, bool>*  faceCorrespondences,
-                           HashMap<vtkActor*, FaceCorrespondence*>* visibleFaceCorrespondences,
-                           HashMap<vtkActor*, Shape*>* shapes,
-                           QListWidget* visibleFaceCorrespondencesList,
-                           QAction* pointMode,
-                           vtkSmartPointer<vtkRenderer> renderer,
-                           QWidget * parent = 0,
-                           Qt::WindowFlags f = 0
-                           );
+                             HashMap<FaceCorrespondenceData*, bool>* faceCorrespondences,
+                             ShapeAnalyzer* parent,
+                             Qt::WindowFlags f = 0
+                             );
     ~qtFaceCorrespondencesTab() {}
 
-    
-    HashMap<FaceCorrespondenceData*, bool>* getFaceCorrespondences() const  {
-        return faceCorrespondences_;
-    }
     
 private slots:
     virtual void slotOpenContextMenu(const QPoint& point);
 
     virtual void slotClear();
     
-    virtual void slotRandomSubset();
+    virtual void slotSample();
     
 private:
     
     HashMap<FaceCorrespondenceData*, bool>*     faceCorrespondences_;
-    HashMap<vtkActor*, FaceCorrespondence*>*    visibleFaceCorrespondences_;
-    HashMap<vtkActor*, Shape*>*                 shapes_;
-    QListWidget*                                visibleFaceCorrespondencesList_;
-    QAction*                                    pointMode_;
-    vtkSmartPointer<vtkRenderer>                renderer_;
+    ShapeAnalyzer*                              parent_;
 };
 
 

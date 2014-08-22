@@ -61,6 +61,10 @@ void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence* FaceCorrespondencePicker::createCorrespondence() {
-    return new FaceCorrespondence(renderer_, new FaceCorrespondenceData());
+    string label = "Correspondence ";
+    label+=std::to_string(lastInsertCorrespondenceID_+1);
+    Correspondence* correspondence = new FaceCorrespondence(renderer_, label, new FaceCorrespondenceData(lastInsertCorrespondenceID_));
+    correspondence->initialize();
+    return correspondence;
 }
 

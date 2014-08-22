@@ -63,7 +63,7 @@ void GeodesicMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType 
         
         double distance;
         try {
-        algorithm_->best_source(p,distance);		//for a given surface point, find closets source and distance to this source
+            algorithm_->best_source(p,distance); //for a given surface point, find closets source and distance to this source
         } catch (geodesic_error& e) {
             cout << e.what() << '\n';
         }

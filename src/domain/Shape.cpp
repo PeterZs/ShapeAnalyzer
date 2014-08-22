@@ -8,15 +8,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(
-             vtkIdType shapeId,
+             vtkIdType id,
              string name,
              vtkSmartPointer<vtkPolyData> polyData,
              vtkSmartPointer<vtkRenderer> renderer
              )
-: shapeId_(shapeId), name_(name), polyData_(polyData), renderer_(renderer)
+: id_(id), name_(name), polyData_(polyData), renderer_(renderer)
 {
-    
-    initialize();
 }
 
 
@@ -52,7 +50,7 @@ void Shape::initialize() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void Shape::remove() {
+void Shape::removeFromRenderer() {
     renderer_->RemoveActor(actor_);
     boxWidget_->SetInteractor(nullptr);
     boxWidget_->SetProp3D(nullptr);
@@ -104,8 +102,8 @@ vtkIdType Shape::getRandomPoint() {
 //write shape binary
 ostream& Shape::writeBinary(ostream& os) {
     //write shape ID.
-    int64_t shapeId = (int64_t) shapeId_;
-    os.write(reinterpret_cast<const char*>(&shapeId), sizeof(int64_t));
+    int64_t id = (int64_t) id_;
+    os.write(reinterpret_cast<const char*>(&id), sizeof(int64_t));
 
     vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
     //if user has not transformed shape write identity.
@@ -154,7 +152,7 @@ ostream& Shape::writeBinary(ostream& os) {
 ///////////////////////////////////////////////////////////////////////////////
 //write as ascii txt
 ostream& Shape::writeASCII(ostream& os) {
-    os << shapeId_<< endl;
+    os << id_<< endl;
     
     vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
     if(transform == nullptr) {
@@ -189,9 +187,9 @@ ostream& Shape::writeASCII(ostream& os) {
 //read shape binary
 istream& Shape::readBinary(istream& is) {
     //read shape ID
-    int64_t shapeId;
-    is.read(reinterpret_cast<char*>(&shapeId), sizeof(int64_t));
-    shapeId_ = shapeId;
+    int64_t id;
+    is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
+    id_ = id;
     
     //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
     vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
@@ -256,7 +254,7 @@ istream& Shape::readASCII(istream& is) {
         getline(is, line);
         stringstream ss;
         ss << line;
-        ss >> shapeId_;
+        ss >> id_;
     }
 
     //read user transform.

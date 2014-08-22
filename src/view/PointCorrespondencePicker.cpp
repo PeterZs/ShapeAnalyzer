@@ -41,7 +41,11 @@ void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdTyp
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence* PointCorrespondencePicker::createCorrespondence() {
-    return new PointCorrespondence(renderer_, new PointCorrespondenceData());
+    string label = "Correspondence ";
+    label+=std::to_string(lastInsertCorrespondenceID_+1);
+    Correspondence* correspondence = new PointCorrespondence(renderer_, label, new PointCorrespondenceData(lastInsertCorrespondenceID_));
+    correspondence->initialize();
+    return correspondence;
 }
 
 

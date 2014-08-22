@@ -47,7 +47,7 @@ public:
 
 protected:
     //protected contructor: abstract class
-    CorrespondencePicker(vtkRenderer* renderer) : renderer_(renderer), counter_(0) {
+    CorrespondencePicker(vtkRenderer* renderer, int& lastInsertCorrespondenceID) : renderer_(renderer), lastInsertCorrespondenceID_(lastInsertCorrespondenceID), counter_(0) {
         currentSelectionActor_ = vtkSmartPointer<vtkActor>::New();
         currentSelectionMapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
         
@@ -66,6 +66,7 @@ protected:
     vtkSmartPointer<vtkPolyDataMapper> currentSelectionMapper_;
     
     vtkRenderer* renderer_;
+    int& lastInsertCorrespondenceID_;
 private:
     void visualizeMouseLine(Shape* shape, double point[3]);
 

@@ -39,31 +39,29 @@ public:
     
     // correspondences
     static void exportPointCorrespondences(
-                               HashMap<PointCorrespondenceData*, bool>* pointCorr,
-                               HashMap<vtkActor*, Shape*>*              shapes,
-                               string                               filename
+                               HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
+                               vector<Shape*>&                          shapesOrderedById,
+                               string                                   filename
                                );
     static void exportFaceCorrespondences(
-                               HashMap<FaceCorrespondenceData*, bool>*  faceCorr,
-                               HashMap<vtkActor*, Shape*>*              shapes,
-                               string                               filename
+                               HashMap<FaceCorrespondenceData*, bool>&  faceCorrespondences,
+                               vector<Shape*>&                          shapesOrderedById,
+                               string                                   filename
                                );
-    static void importCorrespondences(
-                                    string                                  filename,
-                                    HashMap<PointCorrespondenceData*, bool>*    pointCorr,
-                                    HashMap<FaceCorrespondenceData*, bool>*     faceCorr,
-                                    QListWidget*                            shapes,
-                                    QWidget*                                parentWidget
-                                    );
+    
+    static void importCorrespondences(string                            filename,
+                                      int&                                      lastInsertCorrespondenceID_,
+                                      HashMap<PointCorrespondenceData*, bool>&  pointCorrespondences,
+                                      HashMap<FaceCorrespondenceData*, bool>&   faceCorrespondences,
+                                      vector<Shape*>&                           shapesOrderedById,
+                                      QWidget*                                  parentWidget);
     
 private:
-    static void exportCorrespondences(
-                               HashMap<CorrespondenceData*, bool>*  pointCorr,
-                               HashMap<vtkActor*, Shape*>*          shapeIds,
-                               ofstream*                        os
-                               );
-    static unordered_map<string, Shape*> createShapeMap(QListWidget* shapes);
-    static void createData(vector<Shape*> shapes, stringstream* ss, CorrespondenceData* data);
+    static void exportCorrespondences(HashMap<CorrespondenceData*, bool>&       correspondences,
+                                      vector<Shape*>&                           shapesOrderedById,
+                                      ostream&                                  os);
+
+    static void createCorrespondenceData(vector<Shape*>& shapes, stringstream& ss, CorrespondenceData* data);
 };
 
 #endif /* defined(__ShapeAnalyzer__SceneWriterReader__) */

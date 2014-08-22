@@ -19,12 +19,12 @@
 
 class PointCorrespondence : public Correspondence {
 public:
-    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);
-    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>* shapes);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
     PointCorrespondenceData* getData() { return (PointCorrespondenceData*) data_; }
     
-private:
+protected:
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType pointId);
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType);

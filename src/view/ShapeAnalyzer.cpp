@@ -1599,10 +1599,32 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
             if(vtkEvent == vtkCommand::RightButtonPressEvent) {
                 qtShowContextMenuCorrepondences(pos);
             }
+            break;
         }
     }
 }
 
+void ShapeAnalyzer::setSelected(CorrespondenceData* data) {
+    if(data->getType() == "PointCorrespondenceData") {
+        if(pointCorrespondenceData_[(PointCorrespondenceData*) data]) {
+            for(int i = 0; i < listCorrespondences->count(); i++) {
+                if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {
+                    listCorrespondences->setCurrentRow(i);
+                    break;
+                }
+            }
+        }
+    } else {
+        if(faceCorrespondenceData_[(FaceCorrespondenceData*) data]) {
+            for(int i = 0; i < listCorrespondences->count(); i++) {
+                if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {
+                    listCorrespondences->setCurrentRow(i);
+                    break;
+                }
+            }
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
@@ -2025,7 +2047,29 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
             actionDisplayPointCorrespondences->trigger();
         }
     } else {
-        // TODO
+        string label = "Correspondence ";
+        label+=std::to_string(data->getId()+1);
+        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, label, (FaceCorrespondenceData*) data, shapesByActor_);
+        
+        // create actor and add to vtk
+        correspondence->initialize();
+        correspondence->addToRenderer();
+        
+        faceCorrespondenceData_[(FaceCorrespondenceData*) data] = true;
+        
+        
+        faceCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
+        
+        // add shape to qt list widget
+        qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
+        this->listCorrespondences->addItem(item);
+        
+        this->qvtkWidget->GetRenderWindow()->Render();
+        
+        if(!actionDisplayFaceCorrespondences->isChecked()) {
+            actionDisplayFaceCorrespondences->setChecked(true);
+            actionDisplayFaceCorrespondences->trigger();
+        }
     }
 }
 
@@ -2038,38 +2082,6 @@ void ShapeAnalyzer::samplePointCorrespondences(unsigned int size) {
     
     vector<PointCorrespondenceData*> data;
     pointCorrespondenceData_.getRandomSampleKeys(size, data);
-    
-    
-    vector<string> vec;
-    vec.push_back("a");
-    vec.push_back("b");
-    vec.push_back("ghi");
-    
-    HashMap<string, int> map(vec, 55);
-    map.add("test", 6744);
-    map.add("bla", 434);
-    map.add("abc", 4124);
-    map.add(vec, 33);
-    
-    for(HashMap<string, int>::iterator it = map.begin(); it != map.end(); it++) {
-        cout << it->first << "=>" << it->second << endl;
-    }
-    cout << "MAp2"<<endl;
-    HashMap<string, int> map2 = map;
-
-    map2.remove(vec);
-    map2.remove("bla");
-    for(HashMap<string, int>::iterator it = map2.begin(); it != map2.end(); it++) {
-        cout << it->first << "=>" << it->second << endl;
-    }
-    vector<int> a;
-    vector<string> b;
-    map2.getKeys(b);
-    map2.getValues(a);
-    HashMap<string, int> n;
-    map2.getRandomSample(3, n);
-    vector<int> sdaf;
-    map2.getRandomSampleValues(7, sdaf);
     
     for(int i = 0; i < data.size(); i++) {
         string label = "Correspondence ";
@@ -2092,10 +2104,48 @@ void ShapeAnalyzer::samplePointCorrespondences(unsigned int size) {
 }
 
 void ShapeAnalyzer::sampleFaceCorrespondences(unsigned int size) {
+    if(!actionDisplayFaceCorrespondences->isChecked()) {
+        actionDisplayFaceCorrespondences->setChecked(true);
+        actionDisplayFaceCorrespondences->trigger();
+    }
+    hideCorrespondences();
     
+    vector<FaceCorrespondenceData*> data;
+    faceCorrespondenceData_.getRandomSampleKeys(size, data);
+    
+    for(int i = 0; i < data.size(); i++) {
+        string label = "Correspondence ";
+        label+=std::to_string(data[i]->getId()+1);
+        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, label, data[i], shapesByActor_);
+        
+        // create actor and add to vtk
+        correspondence->initialize();
+        correspondence->addToRenderer();
+        
+        faceCorrespondenceData_[data[i]] = true;
+        faceCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
+        
+        // add shape to qt list widget
+        qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
+        this->listCorrespondences->addItem(item);
+    }
+    
+    this->qvtkWidget->GetRenderWindow()->Render();
 }
 
-void ShapeAnalyzer::deleteCorrespondence(CorrespondenceData *data) {;
+void ShapeAnalyzer::deleteCorrespondence(CorrespondenceData *data) {
+    if(data->getType() == "PointCorrespondenceData") {
+        if(!actionDisplayPointCorrespondences->isChecked()) {
+            actionDisplayPointCorrespondences->setChecked(true);
+            actionDisplayPointCorrespondences->trigger();
+        }
+    } else {
+        if(!actionDisplayFaceCorrespondences->isChecked()) {
+            actionDisplayFaceCorrespondences->setChecked(true);
+            actionDisplayFaceCorrespondences->trigger();
+        }
+    }
+    
     // try to find correspondence in list
     bool found = false;
     for(int i = 0; i < listCorrespondences->count(); i++) {
@@ -2118,6 +2168,18 @@ void ShapeAnalyzer::deleteCorrespondence(CorrespondenceData *data) {;
 }
 
 void ShapeAnalyzer::hideCorrespondence(CorrespondenceData *data) {
+    if(data->getType() == "PointCorrespondenceData") {
+        if(!actionDisplayPointCorrespondences->isChecked()) {
+            actionDisplayPointCorrespondences->setChecked(true);
+            actionDisplayPointCorrespondences->trigger();
+        }
+    } else {
+        if(!actionDisplayFaceCorrespondences->isChecked()) {
+            actionDisplayFaceCorrespondences->setChecked(true);
+            actionDisplayFaceCorrespondences->trigger();
+        }
+    }
+    
     // try to find correspondence in list
     for(int i = 0; i < listCorrespondences->count(); i++) {
         if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {

@@ -37,6 +37,8 @@ qtPointCorrespondencesTab::qtPointCorrespondencesTab(
     connect(this->buttonSample,                     SIGNAL(released()),
             this,                                   SLOT(slotSample()));
     
+    connect(this->listPointCorrespondences,         SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
     // add all point correspondences to widget
     for(auto it = pointCorrespondences_->begin(); it != pointCorrespondences_->end(); it++) {
         string label = "Point Correspondence ";
@@ -87,12 +89,14 @@ void qtPointCorrespondencesTab::slotOpenContextMenu(const QPoint& pos) {
             parent_->showCorrespondence(current->getItem());
         }
     }
-    
+}
 
+void qtPointCorrespondencesTab::slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous) {
+    parent_->setSelected(((qtListWidgetItem<PointCorrespondenceData>*) current)->getItem());
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void qtPointCorrespondencesTab::slotSample() {
     parent_->samplePointCorrespondences(this->spinBoxNumberOfDisplayedCorrespondences->value());
-    
 }

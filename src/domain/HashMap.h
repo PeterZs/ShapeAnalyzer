@@ -17,7 +17,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <iostream>
 
 using namespace std;
 
@@ -73,7 +72,6 @@ private:
 template<class KEY, class VALUE>
 HashMap<KEY, VALUE>::HashMap() {
     entries_ = unordered_map<KEY, VALUE>(0);
-    cout << "construct"<<endl;
 }
 
 
@@ -82,7 +80,6 @@ HashMap<KEY, VALUE>::HashMap() {
 template<class KEY, class VALUE>
 HashMap<KEY, VALUE>::HashMap(HashMap<KEY, VALUE>& map) {
     entries_ = unordered_map<KEY, VALUE>(map.getEntries());
-    cout << "make copy"<<endl;
 }
 
 

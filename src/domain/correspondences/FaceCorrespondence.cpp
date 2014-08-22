@@ -12,6 +12,9 @@
 FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data) : Correspondence(renderer, label, data) {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+FaceCorrespondence::FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : Correspondence(renderer, label, data, shapes) {
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // create actor that visualizes selected point on shape

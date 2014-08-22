@@ -50,6 +50,8 @@ private slots:
     
     virtual void slotSample();
     
+    virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
+    
 private:
     
     HashMap<PointCorrespondenceData*, bool>*    pointCorrespondences_;

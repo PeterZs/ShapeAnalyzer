@@ -149,6 +149,7 @@ public:
     void deleteCorrespondence(CorrespondenceData* data);
 
     
+    void setSelected(CorrespondenceData* data);
     void samplePointCorrespondences(unsigned int size);
     void sampleFaceCorrespondences(unsigned int size);
     void clearPointCorrespondences();

@@ -83,8 +83,7 @@ void SceneWriterReader::importCorrespondences(string                            
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget)
 {
-    cout << "HELLO"<<endl;
-    
+
     ifstream is(filename);
     string line;
     
@@ -97,8 +96,7 @@ void SceneWriterReader::importCorrespondences(string                            
     ss << line;
     ss >> type >> numberOfShapes >> numberOfCorrespondences;
     
-    cout << type <<" "<< numberOfShapes <<" "<< numberOfCorrespondences<<endl;
-    
+
     // stop if there not enough shapes to match
     if (shapesOrderedById.size() < numberOfShapes) {
         //TODO throw reader exception here, catch by main program
@@ -109,7 +107,7 @@ void SceneWriterReader::importCorrespondences(string                            
     // add all shapes that have not been chosen yet
     for (int j = 0; j < shapesOrderedById.size(); j++) {
         QString label = "Shape ";
-        label.append(QString::number(shapesOrderedById[j]->getId()));
+        label.append(QString::number(shapesOrderedById[j]->getId()+1));
         labels << label;
     }
     
@@ -136,7 +134,7 @@ void SceneWriterReader::importCorrespondences(string                            
         Shape* shape = nullptr;
         // add chosen shape to vector
         for(int j = 0; j < shapesOrderedById.size(); j++) {
-            vtkIdType shapeId = chosen.split(' ')[1].toInt();
+            vtkIdType shapeId = chosen.split(' ')[1].toInt()-1;
             if(shapesOrderedById[j]->getId() == shapeId) {
                 shape = shapesOrderedById[j];
                 break;

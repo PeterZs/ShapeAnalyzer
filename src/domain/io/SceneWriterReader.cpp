@@ -78,8 +78,8 @@ void SceneWriterReader::exportFaceCorrespondences(HashMap<FaceCorrespondenceData
 ///////////////////////////////////////////////////////////////////////////////
 void SceneWriterReader::importCorrespondences(string                            filename,
                                       int&                                      lastInsertCorrespondenceID_,
-                                      HashMap<PointCorrespondenceData*, bool>&  pointCorrespondences,
-                                      HashMap<FaceCorrespondenceData*, bool>&   faceCorrespondences,
+                                      vector<PointCorrespondenceData*>&         pointCorrespondences,
+                                      vector<FaceCorrespondenceData*>&          faceCorrespondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget)
 {
@@ -162,9 +162,9 @@ void SceneWriterReader::importCorrespondences(string                            
         createCorrespondenceData(correspondingShapes, ss, data);
         
         if (type == 'F') {
-            faceCorrespondences.add((FaceCorrespondenceData*) data, false);
+            faceCorrespondences.push_back((FaceCorrespondenceData*) data);
         } else {
-            pointCorrespondences.add((PointCorrespondenceData*) data, false);
+            pointCorrespondences.push_back((PointCorrespondenceData*) data);
         }
         lastInsertCorrespondenceID_++;
     }

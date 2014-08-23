@@ -43,14 +43,13 @@ public:
                            );
     ~qtPointCorrespondencesTab() {}
 
-    virtual void onShapeDelete(Shape* shape);
     virtual void onClear();
-    virtual void onCorrespondenceAdd(Correspondence* correspondence);
-    virtual void onCorrespondenceDelete(Correspondence* correspondence);
+    virtual void onCorrespondenceAdd(CorrespondenceData* correspondence);
+    virtual void onCorrespondenceDelete(CorrespondenceData* correspondence);
     virtual void onCorrespondenceEdit(Correspondence* correspondence);
     virtual void onCorrespondenceSelect(Correspondence* correspondence);
-    virtual void onCorrespondencesClear();
-    
+    virtual void onPointCorrespondencesClear();
+    virtual void onFaceCorrespondencesClear();
 private slots:
     virtual void slotOpenContextMenu(const QPoint& point);
     

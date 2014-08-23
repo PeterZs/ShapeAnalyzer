@@ -13,7 +13,6 @@
 
 class qtTab {
 public:
-    virtual void onShapeDelete(Shape* shape) = 0;
     virtual void onClear() = 0;
 };
 

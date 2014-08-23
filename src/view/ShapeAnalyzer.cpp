@@ -114,7 +114,8 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionCorrespondenceColoring,     SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabCorrespondenceColoring(bool)));
     
-    
+    connect(this->tabWidgetCorrespondences,         SIGNAL(currentChanged(int)),
+            this,                                   SLOT(slotTabCorrespondencesCurrentChanged(int)));
     
     //register metrics
     Factory<Metric>::getInstance()->Register<EuclideanMetric>("Euclidean Metric");
@@ -309,6 +310,11 @@ void ShapeAnalyzer::qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspon
     if (ok) {
         item->setText(label);
         item->getItem()->setLabel(label.toStdString());
+        
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+            it->second->onCorrespondenceEdit(item->getItem());
+        }
     }
 }
 
@@ -706,15 +712,20 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             actionAddFaceCorrespondences->trigger();
         }
         
+        if(correspondencesTabs_.containsKey("qtFaceCorrespondencesTab") && tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Face Correspondences") {
+            for(int i = 0; i < tabWidgetCorrespondences->count(); i++) {
+                if(tabWidgetCorrespondences->tabText(i) == "All Face Correspondences") {
+                    tabWidgetCorrespondences->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
         
-        
-        // current selection of picker is deleted
+        // current picker is deleted
         delete correspondencePicker_;
         correspondencePicker_ = new FaceCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
         
-        // clear gui
-        this->listCorrespondences->disconnect();
-        
+
         // vtk: remove all point correspondences from renderer
         for(int i = listCorrespondences->count()-1; i > -1; i--) {
             //get correspondence
@@ -723,9 +734,9 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             
             correspondence->removeFromRenderer();
         }
-        
         // clear list
         this->listCorrespondences->clear();
+        
         
         // add face correspondences from before
         for (auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
@@ -739,8 +750,10 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             it->second->addToRenderer();
             
         }
+
+        if(faceCorrespondencesByActor_.size() > 0)
+            listCorrespondences->setCurrentRow(0);
         
-        qtConnectListCorrespondences();
     } else {
         this->lineEditCurrentlyDisplayed->setText("Point Correspondences");
         if(!actionAddPointCorrespondences->isChecked() && actionAddFaceCorrespondences->isChecked()) {
@@ -748,12 +761,18 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             actionAddPointCorrespondences->trigger();
         }
         
+        if(correspondencesTabs_.containsKey("qtPointCorrespondencesTab") && tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Point Correspondences") {
+            for(int i = 0; i < tabWidgetCorrespondences->count(); i++) {
+                if(tabWidgetCorrespondences->tabText(i) == "All Point Correspondences") {
+                    tabWidgetCorrespondences->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        
         // current selection of picker is deleted
         delete correspondencePicker_;
         correspondencePicker_ = new PointCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
-        
-        // clear gui
-        this->listCorrespondences->disconnect();
         
         // vtk: remove all face correspondences from renderer
         for(int i = listCorrespondences->count()-1; i > -1; i--) {
@@ -763,9 +782,9 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             
             correspondence->removeFromRenderer();
         }
-        
         // clear list
         this->listCorrespondences->clear();
+        
         
         // add point correspondences from before
         unsigned counter = 0;
@@ -782,7 +801,8 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             
         }
         
-        qtConnectListCorrespondences();
+        if(pointCorrespondencesByActor_.size() > 0)
+            listCorrespondences->setCurrentRow(0);
     }
     
     this->qvtkWidget->GetRenderWindow()->Render();
@@ -915,9 +935,22 @@ void ShapeAnalyzer::slotImportCorrespondences() {
         shapesByActor_.getValues(shapes);
         
         ShapeComparator comp;
-        
+        // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
         std::sort(shapes.begin(), shapes.end(), comp);
-        reader.importCorrespondences(filename.toStdString(), lastInsertCorresondenceID_, pointCorrespondenceData_, faceCorrespondenceData_, shapes, this);
+        
+        vector<PointCorrespondenceData*> pointCorrespondences;
+        vector<FaceCorrespondenceData*> faceCorrespondences;
+        reader.importCorrespondences(filename.toStdString(), lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences, shapes, this);
+        
+        // insert point correspondences and fire corresponding events if vector not empty
+        for(int i = 0; i < pointCorrespondences.size(); i++) {
+            pointCorrespondenceData_.add(pointCorrespondences[i], false);
+            
+            // fire event for correspondenceTabs
+            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+                it->second->onCorrespondenceAdd(pointCorrespondences[i]);
+            }
+        }
     } else {
         //TODO Error handling
         ;
@@ -1049,9 +1082,7 @@ void ShapeAnalyzer::slotShowContextMenuCorrespondences(const QPoint& pos) {
     if(currentRow >= 0) {
         
         QPoint globalPos = this->listCorrespondences->mapToGlobal(pos);
-        // for QAbstractScrollArea and derived classes you would use:
-        // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-        
+
         qtShowContextMenuCorrepondences(globalPos);
     }
 }
@@ -1066,9 +1097,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
     if(currentRow >= 0) {
         
         QPoint globalPos = this->listShapes->mapToGlobal(pos);
-        // for QAbstractScrollArea and derived classes you would use:
-        // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-        
+
         qtShowContextMenuShapes(globalPos);
     }
 }
@@ -1116,43 +1145,59 @@ void ShapeAnalyzer::slotTabCorrespondenceColoring(bool checked) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotTabAllFaceCorrespondences(bool checked) {
     if(checked) {
-        int i = this->tabWidgetCorrespondences->addTab(
-                                          new qtFaceCorrespondencesTab(
-                                                                  &faceCorrespondenceData_,
-                                                                  this
-                                                                  ),
-                                          "All Face Correspondences");
+        qtFaceCorrespondencesTab* tab = new qtFaceCorrespondencesTab(&faceCorrespondenceData_, this);
+        int i = this->tabWidgetCorrespondences->addTab((QWidget*) tab, "All Face Correspondences");
+        correspondencesTabs_.add("qtFaceCorrespondencesTab", tab);
         this->tabWidgetCorrespondences->setCurrentIndex(i);
-    
     } else {
         for(int i = 0; i < this->tabWidgetCorrespondences->count(); i++) {
             if(this->tabWidgetCorrespondences->tabText(i) == "All Face Correspondences") {
                 this->tabWidgetCorrespondences->removeTab(i);
+                correspondencesTabs_.remove("qtFaceCorrespondencesTab");
             }
         }
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotTabAllPointCorrespondences(bool checked) {
     if(checked) {
-        int i = this->tabWidgetCorrespondences->addTab(
-                                          new qtPointCorrespondencesTab(
-                                                                  &pointCorrespondenceData_,
-                                                                  this
-                                                                  ),
-                                          "All Point Correspondences");
-        this->tabWidgetCorrespondences->setCurrentIndex(i);
+        qtPointCorrespondencesTab* tab = new qtPointCorrespondencesTab(&pointCorrespondenceData_, this);
         
+        int i = this->tabWidgetCorrespondences->addTab((QWidget*) tab, "All Point Correspondences");
+        correspondencesTabs_.add("qtPointCorrespondencesTab", tab);
+        this->tabWidgetCorrespondences->setCurrentIndex(i);
     } else {
         for(int i = 0; i < this->tabWidgetCorrespondences->count(); i++) {
             if(this->tabWidgetCorrespondences->tabText(i) == "All Point Correspondences") {
                 this->tabWidgetCorrespondences->removeTab(i);
+                correspondencesTabs_.remove("qtPointCorrespondencesTab");
             }
         }
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotTabCorrespondencesCurrentChanged(int i) {
+    if(correspondencesTabs_.containsKey("qtPointCorrespondencesTab") && this->tabWidgetCorrespondences->tabText(i) == "All Point Correspondences") {
+        if(!actionDisplayPointCorrespondences->isChecked()) {
+            actionDisplayPointCorrespondences->setChecked(true);
+            actionDisplayPointCorrespondences->trigger();
+        }
+
+    } else if(correspondencesTabs_.containsKey("qtFaceCorrespondencesTab") && this->tabWidgetCorrespondences->tabText(i) == "All Face Correspondences") {
+        if(!actionDisplayFaceCorrespondences->isChecked()) {
+            actionDisplayFaceCorrespondences->setChecked(true);
+            actionDisplayFaceCorrespondences->trigger();
+        }
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
@@ -1238,13 +1283,22 @@ void ShapeAnalyzer::slotResetCamera() {
 void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous) {
     // only change color if there is a selection
     if(current != nullptr) {
-        // set current correspondence red
-        ((qtListWidgetItem<Correspondence>*) current)->getItem()->setSelected(true);
-        
-        //if there exists a previous selection set previous correspondence to green
-        if(previous != nullptr) {
-            ((qtListWidgetItem<Correspondence>*) previous)->getItem()->setSelected(false);
+        Correspondence* currentCorrespondence = ((qtListWidgetItem<Correspondence>*) current)->getItem();
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+            it->second->onCorrespondenceSelect(currentCorrespondence);
         }
+        
+        // set current correspondence red
+        currentCorrespondence->setSelected(true);
+        
+        // update
+        this->qvtkWidget->GetRenderWindow()->Render();
+    }
+    
+    //if there exists a previous selection set previous correspondence to green
+    if(previous != nullptr) {
+        ((qtListWidgetItem<Correspondence>*) previous)->getItem()->setSelected(false);
         
         // update
         this->qvtkWidget->GetRenderWindow()->Render();
@@ -1259,7 +1313,7 @@ void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* curren
 void ShapeAnalyzer::vtkSetup() {
     this->qvtkWidget->installEventFilter(this);
     
-    //Connect qvtk widgets with this object
+    //Connect qvtk widget with this object
     this->connections_ = vtkSmartPointer<vtkEventQtSlotConnect>::New();
     
     this->connections_->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
@@ -1605,12 +1659,15 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 }
 
 void ShapeAnalyzer::setSelected(CorrespondenceData* data) {
+    if(data == nullptr) {
+        return;
+    }
     if(data->getType() == "PointCorrespondenceData") {
         if(pointCorrespondenceData_[(PointCorrespondenceData*) data]) {
             for(int i = 0; i < listCorrespondences->count(); i++) {
                 if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {
                     listCorrespondences->setCurrentRow(i);
-                    break;
+                    return;
                 }
             }
         }
@@ -1619,11 +1676,12 @@ void ShapeAnalyzer::setSelected(CorrespondenceData* data) {
             for(int i = 0; i < listCorrespondences->count(); i++) {
                 if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {
                     listCorrespondences->setCurrentRow(i);
-                    break;
+                    return;
                 }
             }
         }
     }
+    listCorrespondences->setCurrentRow(-1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1725,6 +1783,11 @@ PointCorrespondence* ShapeAnalyzer::findPointCorrespondenceByData(PointCorrespon
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
+    // fire event for correspondenceTabs
+    for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+        it->second->onClear();
+    }
+    
     // qt
     listShapes->disconnect();
     listCorrespondences->disconnect();
@@ -1742,6 +1805,10 @@ void ShapeAnalyzer::clear() {
         delete correspondence->getData();
         delete correspondence;
     }
+    
+    // clear correspondence data
+    pointCorrespondenceData_.clear();
+    faceCorrespondenceData_.clear();
     
     pointCorrespondencesByActor_.clear();
     faceCorrespondencesByActor_.clear();
@@ -1769,14 +1836,16 @@ void ShapeAnalyzer::clear() {
     
     qtConnectListCorrespondences();
     qtConnectListShapes();
-    
-    pointCorrespondenceData_.clear();
-    faceCorrespondenceData_.clear();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clearPointCorrespondences() {
+    // fire event for correspondenceTabs
+    for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+        it->second->onPointCorrespondencesClear();
+    }
+    
     listCorrespondences->disconnect();
     
     if(actionDisplayPointCorrespondences->isChecked()) {
@@ -1808,6 +1877,11 @@ void ShapeAnalyzer::clearPointCorrespondences() {
 }
 
 void ShapeAnalyzer::clearFaceCorrespondences() {
+    // fire event for correspondenceTabs
+    for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+        it->second->onFaceCorrespondencesClear();
+    }
+    
     listCorrespondences->disconnect();
     
     if(actionDisplayFaceCorrespondences->isChecked()) {
@@ -1845,10 +1919,17 @@ void ShapeAnalyzer::clearFaceCorrespondences() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteCorrespondence(int i) {
+
+    
     // qt
     listCorrespondences->disconnect();
     
     qtListWidgetItem<Correspondence> *item = (qtListWidgetItem<Correspondence>*) listCorrespondences->item(i);
+    
+    // fire event for correspondenceTabs
+    for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+        it->second->onCorrespondenceDelete(item->getItem()->getData());
+    }
     
     
     // correspondence deleting
@@ -1940,13 +2021,13 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteShape(int i) {
+    
     listCorrespondences->disconnect();
     listShapes->disconnect();
     
     // qt
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) this->listShapes->item(i);
     Shape* shape = item->getItem();
-    
     
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
@@ -1968,8 +2049,21 @@ void ShapeAnalyzer::deleteShape(int i) {
                 pointCorrespondencesByActor_.remove(correspondence->getLinesActor());
                 faceCorrespondencesByActor_.remove(correspondence->getLinesActor());
                 
-                //destroy correspondence object
+                //remove correspondence data from list
+                if(correspondence->getData()->getType() == "PointCorrespondenceData") {
+                    pointCorrespondenceData_.remove((PointCorrespondenceData*) correspondence->getData());
+                } else {
+                    faceCorrespondenceData_.remove((FaceCorrespondenceData*) correspondence->getData());
+                }
+                
+                // fire event for correspondenceTabs
+                for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+                    it->second->onCorrespondenceDelete(correspondence->getData());
+                }
+                
+                //destroy correspondence object and corresponding data object
                 correspondence->removeFromRenderer();
+                delete correspondence->getData();
                 delete correspondence;
             }
         }
@@ -2014,6 +2108,11 @@ void ShapeAnalyzer::addCorrespondence() {
             // add shape to qt list widget
             qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), faceCorrespondence);
             this->listCorrespondences->addItem(item);
+        }
+        
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+            it->second->onCorrespondenceAdd(correspondence->getData());
         }
     }
     
@@ -2151,18 +2250,27 @@ void ShapeAnalyzer::deleteCorrespondence(CorrespondenceData *data) {
     for(int i = 0; i < listCorrespondences->count(); i++) {
         if(((qtListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem()->getData() == data) {
             //correspondence found: delete list item, Correspondence object and CorrespondenceData object
+            listCorrespondences->setCurrentRow(i);
             deleteCorrespondence(i);
             found = true;
             break;
         }
     }
     
-    if(!found) { //correspondence not in list: only delete CorrespondenceData
+    if(!found) { //correspondence is hidden (Correspondence object does not exist): only delete CorrespondenceData
         if(data->getType() == "PointCorrespondenceData") {
             pointCorrespondenceData_.remove((PointCorrespondenceData*) data);
         } else {
             faceCorrespondenceData_.remove((FaceCorrespondenceData*) data);
         }
+        
+        
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+            it->second->onCorrespondenceDelete(data);
+        }
+        
+        // physically delete data object
         delete data;
     }
 }

@@ -51,8 +51,8 @@ public:
     
     static void importCorrespondences(string                            filename,
                                       int&                                      lastInsertCorrespondenceID_,
-                                      HashMap<PointCorrespondenceData*, bool>&  pointCorrespondences,
-                                      HashMap<FaceCorrespondenceData*, bool>&   faceCorrespondences,
+                                      vector<PointCorrespondenceData*>&         pointCorrespondences,
+                                      vector<FaceCorrespondenceData*>&          faceCorrespondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget);
     

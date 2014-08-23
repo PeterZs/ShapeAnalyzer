@@ -201,6 +201,8 @@ private slots:
     virtual void slotTabAllFaceCorrespondences(bool);
     virtual void slotTabAllPointCorrespondences(bool);
     
+    virtual void slotTabCorrespondencesCurrentChanged(int);
+    
     //vtk widget slots
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
     virtual void vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
@@ -259,7 +261,7 @@ private:
 
     
     
-    //index shapes & correspondences by their actors. unordered_map corresponds to hashmap. Faster access in linear time worst case. Usually constant time.
+    //index shapes & correspondences by their actors. Faster access in linear time worst case. Usually constant time.
     HashMap<vtkActor*, Shape*> shapesByActor_;
     
     HashMap<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
@@ -284,6 +286,10 @@ private:
     
     Ui_Settings uiSettings_;
     QDialog*    dialogSettings_;
+    
+    
+    HashMap<string, qtCorrespondencesTab*> correspondencesTabs_;
+    HashMap<string, qtShapesTab*> shapesTabs_;
     
     //counter for ids
     int lastInsertShapeID_;

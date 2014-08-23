@@ -15,11 +15,12 @@
 class qtCorrespondencesTab : public qtTab {
 public:
     //called after a new correspondence was added
-    virtual void onCorrespondenceAdd(Correspondence* correspondence) = 0;
-    virtual void onCorrespondenceDelete(Correspondence* correspondence) = 0;
+    virtual void onCorrespondenceAdd(CorrespondenceData* correspondence) = 0;
+    virtual void onCorrespondenceDelete(CorrespondenceData* correspondence) = 0;
     virtual void onCorrespondenceEdit(Correspondence* correspondence) = 0;
     virtual void onCorrespondenceSelect(Correspondence* correspondence) = 0;
-    virtual void onCorrespondencesClear() = 0;
+    virtual void onPointCorrespondencesClear() = 0;
+    virtual void onFaceCorrespondencesClear() = 0;
 };
 
 #endif

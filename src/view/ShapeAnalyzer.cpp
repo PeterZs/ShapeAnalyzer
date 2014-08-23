@@ -65,21 +65,21 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
             this,                                   SLOT(slotSaveScreenshot()));
     
     // delete correspondence picker visual response if mode was changed.
-    connect(this->actionGroupMode_,                  SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupMode_,                 SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotClearCurrentSelection()));
     
-    connect(this->actionGroupMode_,                  SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupMode_,                 SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotToggleBoxWidget()));
     
-    connect(this->actionGroupMode_,                  SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupMode_,                 SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotModeAddCorrespondences()));
 
     
 
-    connect(this->actionGroupCorrespondenceType_,    SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupCorrespondenceType_,   SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotSetCorrespondenceType()));
     
-    connect(this->actionGroupShapeDisplayMode_,      SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupShapeDisplayMode_,     SIGNAL(triggered(QAction*)),
                                                     SLOT(slotSetShapeDisplayMode()));
     
     connect(this->actionHelp,                       SIGNAL(triggered()),
@@ -91,7 +91,7 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
             this,                                   SLOT(slotSetBackgroundColor()));
     
-    connect(this->actionGroupProjectionMode_,        SIGNAL(triggered(QAction*)),
+    connect(this->actionGroupProjectionMode_,       SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotToggleProjectionMode()));
 
     
@@ -712,13 +712,8 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             actionAddFaceCorrespondences->trigger();
         }
         
-        if(correspondencesTabs_.containsKey("qtFaceCorrespondencesTab") && tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Face Correspondences") {
-            for(int i = 0; i < tabWidgetCorrespondences->count(); i++) {
-                if(tabWidgetCorrespondences->tabText(i) == "All Face Correspondences") {
-                    tabWidgetCorrespondences->setCurrentIndex(i);
-                    break;
-                }
-            }
+        if(tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Face Correspondences") {
+            tabWidgetCorrespondences->setCurrentIndex(0);
         }
         
         // current picker is deleted
@@ -761,13 +756,8 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             actionAddPointCorrespondences->trigger();
         }
         
-        if(correspondencesTabs_.containsKey("qtPointCorrespondencesTab") && tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Point Correspondences") {
-            for(int i = 0; i < tabWidgetCorrespondences->count(); i++) {
-                if(tabWidgetCorrespondences->tabText(i) == "All Point Correspondences") {
-                    tabWidgetCorrespondences->setCurrentIndex(i);
-                    break;
-                }
-            }
+        if(tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Point Correspondences") {
+            tabWidgetCorrespondences->setCurrentIndex(0);
         }
         
         // current selection of picker is deleted
@@ -787,14 +777,12 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         
         
         // add point correspondences from before
-        unsigned counter = 0;
         for (auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
             // add to list
             this->listCorrespondences->addItem(new qtListWidgetItem<Correspondence>(
                                                                                     QString::fromStdString(it->second->getLabel()),
                                                                                     it->second)
                                                );
-            counter++;
             
             // add to renderer
             it->second->addToRenderer();
@@ -1197,7 +1185,6 @@ void ShapeAnalyzer::slotTabCorrespondencesCurrentChanged(int i) {
         }
     }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
@@ -2138,6 +2125,7 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
         // add shape to qt list widget
         qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
         this->listCorrespondences->addItem(item);
+        this->listCorrespondences->setCurrentItem(item);
         
         this->qvtkWidget->GetRenderWindow()->Render();
         
@@ -2162,6 +2150,8 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
         // add shape to qt list widget
         qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
         this->listCorrespondences->addItem(item);
+        this->listCorrespondences->setCurrentItem(item);        
+        
         
         this->qvtkWidget->GetRenderWindow()->Render();
         

@@ -30,16 +30,16 @@ class qtShapeInfoTab : public QWidget, private Ui::ShapeInfoWidget, public qtSha
     
 public:
     qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f = 0);
-    qtShapeInfoTab(qtListWidgetItem<Shape> *item, QWidget *parent = 0, Qt::WindowFlags f = 0);
-    
+    qtShapeInfoTab(Shape* shape, QWidget *parent, Qt::WindowFlags f = 0);
     
     virtual void onShapeDelete(Shape* shape);
     virtual void onShapeAdd(Shape* shape);
     virtual void onShapeEdit(Shape* shape);
     virtual void onShapeSelect(Shape* shape);
     virtual void onClear();
+    
 private:
-    void qtSetupTableWidget();
+    void initialize();
 };
 
 #endif /* defined(__ShapeAnalyzer__qtShapeInfoTab__) */

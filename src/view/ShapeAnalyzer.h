@@ -176,9 +176,7 @@ private slots:
     virtual void slotModeAddCorrespondences();
     
     
-    virtual void slotShapeSelectionChanged(QListWidgetItem* current, QListWidgetItem* previous);
-    
-    virtual void slotSetCurrentBoxWidget(QListWidgetItem* current, QListWidgetItem* previous);
+    virtual void slotSetSelectedCurrentShape(QListWidgetItem* current, QListWidgetItem* previous);
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
     
     virtual void slotSetShapeDisplayMode();

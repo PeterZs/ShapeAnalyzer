@@ -14,7 +14,7 @@
 #include <vtkType.h>
 
 #include <vector>
-
+#include <iostream>
 using namespace std;
 
 class CorrespondenceData {
@@ -48,7 +48,8 @@ public:
     }
     
     virtual string getType() = 0;
-    virtual ~CorrespondenceData() {}
+    virtual ~CorrespondenceData() {
+    }
 protected:
     CorrespondenceData(vtkIdType id) : id_(id) {}
     

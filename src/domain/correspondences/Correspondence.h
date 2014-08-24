@@ -32,7 +32,9 @@ using namespace std;
 class Correspondence {
 
 public:
-    virtual ~Correspondence() {};
+    virtual ~Correspondence() {
+        actors_.clear();
+    }
     
     void initialize();
     

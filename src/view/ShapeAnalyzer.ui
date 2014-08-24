@@ -229,6 +229,7 @@
     </property>
     <addaction name="actionShapes"/>
     <addaction name="actionShapeInfo"/>
+    <addaction name="actionShapeInterpolation"/>
     <addaction name="separator"/>
     <addaction name="actionDisplayPointCorrespondences"/>
     <addaction name="actionDisplayFaceCorrespondences"/>
@@ -540,6 +541,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionShapeInterpolation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Shape Interpolation</string>
    </property>
   </action>
  </widget>

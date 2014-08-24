@@ -57,13 +57,16 @@
 #include "qt/qtPointCorrespondencesTab.h"
 #include "qt/qtFaceCorrespondencesTab.h"
 #include "qt/qtCorrespondenceColoringTab.h"
+#include "qt/qtShapeInterpolationTab.h"
 
+#include "../domain/Factory.h"
+#include "../domain/HashMap.h"
+#include "../domain/Shape.h"
 #include "../domain/correspondences/Correspondence.h"
+
 #include "../domain/io/SceneWriterReader.h"
 #include "../domain/io/vtkOFFReader.h"
 #include "../domain/io/vtkToscaASCIIReader.h"
-#include "../domain/HashMap.h"
-#include "../domain/Shape.h"
 
 #include "../domain/metric/Metric.h"
 #include "../domain/metric/EuclideanMetric.h"
@@ -74,7 +77,6 @@
 #include "../domain/signatures/WaveKernelSignature.h"
 #include "../domain/signatures/GlobalPointSignature.h"
 
-#include "../domain/Factory.h"
 #include "../domain/coloring/ScalarPointColoring.h"
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
@@ -92,6 +94,7 @@ using namespace std;
 
 class qtPointCorrespondencesTab;
 class qtFaceCorrespondencesTab;
+class qtShapeInterpolationTab;
 
 // needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
 // the elements can be made.
@@ -195,6 +198,7 @@ private slots:
     
     
     virtual void slotTabShapeInfo(bool);
+    virtual void slotTabShapeInterpolation(bool);
     virtual void slotTabCorrespondenceColoring(bool);
     virtual void slotTabAllFaceCorrespondences(bool);
     virtual void slotTabAllPointCorrespondences(bool);

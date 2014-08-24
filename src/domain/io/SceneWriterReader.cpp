@@ -115,10 +115,7 @@ void SceneWriterReader::importCorrespondences(string                            
     
     // user chooses numberOfShapes many shapes to correspond
     unsigned counter = 1;
-    for (int i = 0; i < numberOfShapes; i++) {
-
-        
-        // TODO the nullptr is not good, the windows move done...
+    for (int i = 0; i < numberOfShapes; i++) {        
         bool ok;
         QString chosen = QInputDialog::getItem(parentWidget,
                                                QObject::tr("Choose a shape:"),

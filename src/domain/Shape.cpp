@@ -15,6 +15,8 @@ Shape::Shape(
              )
 : id_(id), name_(name), polyData_(polyData), renderer_(renderer)
 {
+    originalPolyData_ = vtkSmartPointer<vtkPolyData>::New();
+    originalPolyData_->DeepCopy(polyData_);
 }
 
 

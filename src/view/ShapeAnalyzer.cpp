@@ -107,6 +107,9 @@ ShapeAnalyzer::ShapeAnalyzer() : lastInsertShapeID_(0), lastInsertCorresondenceI
     // tab signals
     connect(this->actionShapeInfo,                  SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabShapeInfo(bool)));
+    connect(this->actionShapeInterpolation,         SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotTabShapeInterpolation(bool)));
+    
     
     connect(this->actionCorrespondenceColoring,     SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabCorrespondenceColoring(bool)));
@@ -493,7 +496,8 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
     QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
-    QAction* matching = myMenu.addAction("Transfer current function");
+    QAction* transferFunction = myMenu.addAction("Transfer current function");
+    QAction* correspondencesIdentity = myMenu.addAction("Create Identity Correspondences");
     
     
     QAction* selectedItem = myMenu.exec(pos);
@@ -520,7 +524,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         
         qtShowHeatDiffusion(currentShape);
-    } else if(selectedItem == matching) {
+    } else if(selectedItem == transferFunction) {
         Shape* shape1;
         qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
         shape1 = item->getItem();
@@ -631,6 +635,61 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         ScalarPointColoring coloring2(shape2, Tf);
         coloring2.color();
+    } else if(selectedItem == correspondencesIdentity) {
+        Shape* shape1;
+        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+        shape1 = item->getItem();
+        QStringList labels;
+        for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+            if(it->second->getId() == shape1->getId())
+                continue;
+            
+            QString label = QString::number(it->second->getId());
+            label.append(QString::fromStdString(":"+it->second->getName()));
+            labels << label;
+            
+        }
+        bool ok;
+        QString chosen = QInputDialog::getItem(this,
+                                               "Choose a shape",
+                                               "Choose a shape:",
+                                               labels,
+                                               0,
+                                               true,
+                                               &ok);
+        if(!ok) {
+            return;
+        }
+        
+        
+        Shape* shape2 = nullptr;
+        // add chosen shape to vector
+        vtkIdType shapeId = chosen.split(':')[0].toInt();
+        for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+            if(it->second->getId() == shapeId) {
+                shape2 = it->second;
+                break;
+            }
+        }
+
+        
+        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i++) {
+            PointCorrespondenceData* data = new PointCorrespondenceData(lastInsertCorresondenceID_);
+            data->getShapeIds().push_back(shape1->getId());
+            data->getShapeIds().push_back(shape2->getId());
+            
+            data->getCorrespondingIds().push_back(i);
+            data->getCorrespondingIds().push_back(i);
+            
+            lastInsertCorresondenceID_++;
+            
+            pointCorrespondenceData_.add(data, false);
+            
+            // fire event for correspondenceTabs
+            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+                it->second->onCorrespondenceAdd(data);
+            }
+        }
     } else {
         // try if action is identifier for any factory
         Shape* currentShape;
@@ -1103,6 +1162,25 @@ void ShapeAnalyzer::slotTabShapeInfo(bool checked) {
             if(this->tabWidgetShapes->tabText(i) == "Shape Info") {
                 this->tabWidgetShapes->removeTab(i);
                 shapesTabs_.remove("qtShapeInfoTab");
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotTabShapeInterpolation(bool checked) {
+    if (checked) { // add Shape Info Tab
+        qtShapeInterpolationTab* tab = new qtShapeInterpolationTab(&shapesByActor_, &pointCorrespondenceData_, this);
+        
+        int i = this->tabWidgetShapes->addTab(tab, "Shape Interpolation");
+        this->tabWidgetShapes->setCurrentIndex(i);
+        shapesTabs_.add("qtShapeInterpolationTab", tab); // add tab to shapesTabs list.
+    } else { // remove shape info tab, if it was there
+        for(int i = 0; i < this->tabWidgetShapes->count(); i++) {
+            if(this->tabWidgetShapes->tabText(i) == "Shape Interpolation") {
+                this->tabWidgetShapes->removeTab(i);
+                shapesTabs_.remove("qtShapeInterpolationTab");
             }
         }
     }
@@ -1838,6 +1916,8 @@ void ShapeAnalyzer::clear() {
         
         shapesByActor_.remove(shape->getActor());
         delete item;
+        
+        delete shape;
     }
     
     
@@ -2178,6 +2258,8 @@ void ShapeAnalyzer::deleteShape(int i) {
     // delete shape
     shape->removeFromRenderer();
     shapesByActor_.remove(shape->getActor());
+    
+    delete shape;
     
     this->qvtkWidget->GetRenderWindow()->Render();
     

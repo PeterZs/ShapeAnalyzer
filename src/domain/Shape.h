@@ -35,6 +35,9 @@
 #include "io/Serializable.h"
 
 
+
+#include <vtkDebugLeaks.h>
+
 using namespace std;
 
 
@@ -44,7 +47,7 @@ public:
     // Constructors and Destructor
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
-    ~Shape() {
+    virtual ~Shape() {
     }
     
     void initialize();
@@ -78,6 +81,10 @@ public:
     
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
+    }
+
+    vtkSmartPointer<vtkPolyData> getOriginalPolyData() {
+        return originalPolyData_;
     }
     
     vtkSmartPointer<vtkRenderer> getRenderer() {
@@ -113,6 +120,7 @@ private:
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
+    vtkSmartPointer<vtkPolyData> originalPolyData_; // do not touch this
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     

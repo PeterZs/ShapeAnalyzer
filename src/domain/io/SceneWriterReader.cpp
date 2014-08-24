@@ -106,8 +106,8 @@ void SceneWriterReader::importCorrespondences(string                            
     QStringList labels;
     // add all shapes that have not been chosen yet
     for (int j = 0; j < shapesOrderedById.size(); j++) {
-        QString label = "Shape ";
-        label.append(QString::number(shapesOrderedById[j]->getId()+1));
+        QString label = QString::number(shapesOrderedById[j]->getId());
+        label.append(QString::fromStdString(":"+shapesOrderedById[j]->getName()));
         labels << label;
     }
     
@@ -134,7 +134,7 @@ void SceneWriterReader::importCorrespondences(string                            
         Shape* shape = nullptr;
         // add chosen shape to vector
         for(int j = 0; j < shapesOrderedById.size(); j++) {
-            vtkIdType shapeId = chosen.split(' ')[1].toInt()-1;
+            vtkIdType shapeId = chosen.split(':')[0].toInt();
             if(shapesOrderedById[j]->getId() == shapeId) {
                 shape = shapesOrderedById[j];
                 break;

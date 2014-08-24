@@ -26,13 +26,13 @@ public:
         createFns_.clear();
     }
     
-    //only way to obtain the unique Factory<T> object
+    // returs unique instance of Factory<T>. Only way to obtain the Factory object for type T.
     static Factory<T>* getInstance() {
         static Factory<T> instance;
         return &instance;
     }
     
-    //register new T with unique identifier, label (for GUI purposes) and "create-function-pointer"
+    //register a new class. Template argument class name 'C'. Argument label (for GUI purposes). Create-function pointer and identifier have to be provided via the static functions C::getIdentifier and C::create of the class 'C' itself.
     template<class C>
     void Register(const string& label){
         
@@ -40,7 +40,7 @@ public:
         labels_.insert(pair<string, string>(C::getIdentifier(), label));
     }
     
-    //create a new instance of the desired object
+    //create a new instance of the desired object using the identifier
     T* create(const string& identifier) {
         typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(identifier);
         if(it != createFns_.end()) {
@@ -49,6 +49,7 @@ public:
         return nullptr;
     }
     
+    //create a new instance of the desired object using just the Class name provided as template argument 'C'.
     template<class C>
     T* create() {
         typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(C::getIdentifier());
@@ -58,6 +59,8 @@ public:
         return nullptr;
     }
     
+    
+    // returns map of all labels that have been registered with this particular factory. Labels indexed by the identifier provided by each concrete class via static function C::getIdentifier
     unordered_map<string, string>& getLabels() {
         return labels_;
     }
@@ -73,8 +76,8 @@ private:
         return *this;
     }
     
-    unordered_map<string, CreateFn> createFns_;
-    unordered_map<string, string> labels_;
+    unordered_map<string, CreateFn> createFns_; // map of all create function pointers. Keys: identifiers
+    unordered_map<string, string> labels_; // map of all labels. Keys: identifiers
 };
 
 #endif /* defined(__ShapeAnalyzer__Factory__) */

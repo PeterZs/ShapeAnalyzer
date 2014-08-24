@@ -236,7 +236,7 @@ private:
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
     void vtkAddShape(Shape* shape);
-    void vtkOpenShape(vtkPolyDataAlgorithm* reader);
+    void vtkOpenShape(vtkPolyDataAlgorithm* reader, string name);
     void vtkOpenScene(string filename);
     void vtkSaveScene(string filename);
     void vtkImportScene(string filename);

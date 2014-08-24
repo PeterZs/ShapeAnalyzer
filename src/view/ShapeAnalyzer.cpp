@@ -887,12 +887,12 @@ void ShapeAnalyzer::slotOpenFile() {
         // read .off file
         vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
         reader->SetFileName(filename.toStdString().c_str());
-        vtkOpenShape(reader);
+        vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".vert"))) {
         // read .tri .vert files
         vtkSmartPointer<vtkToscaASCIIReader> reader = vtkSmartPointer<vtkToscaASCIIReader>::New();
         reader->SetFileName(filename.toStdString().c_str());
-        vtkOpenShape(reader);
+        vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".scene"))) {
         vtkOpenScene(filename.toStdString());
     } else if(filename.endsWith(".txt")) {
@@ -1368,7 +1368,7 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
+void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
     // the following will filter the shape for certain properties
     // filters can be choosen in the settings ui
     vtkAlgorithmOutput* output;
@@ -1406,8 +1406,6 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader) {
         
         // get vtk actor and add to renderer_
         vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
-        string name = "Shape ";
-        name.append(to_string(lastInsertShapeID_+1));
         Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
         shape->initialize();
         addShape(shape);
@@ -1477,11 +1475,7 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
             it->second->onShapeAdd(shape);
         }
         
-        // add shape to qt list widget
-        string name = "Shape ";
-        name.append(to_string(shape->getId()+1));
-        
-        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
+        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
         listShapes->addItem(item);
         
         //make sure that there always is exactly one item selected if there exists at least one item
@@ -1528,10 +1522,7 @@ void ShapeAnalyzer::vtkImportScene(string filename) {
         }
         
         // add shape to qt list widget
-        string name = "Shape ";
-        name.append(to_string(shape->getId()+1));
-        
-        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(name.c_str()), shape);
+        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
         listShapes->addItem(item);
         
         //make sure that there always is exactly one item selected if there exists at least one item

@@ -181,5 +181,3 @@ void Correspondence::transform(Shape* shape) {
         }
     }
 }
-
-

@@ -104,6 +104,12 @@ ostream& Shape::writeBinary(ostream& os) {
     //write shape ID.
     int64_t id = (int64_t) id_;
     os.write(reinterpret_cast<const char*>(&id), sizeof(int64_t));
+    
+    const char* name = name_.c_str();
+    
+    int64_t length = name_.length();
+    os.write(reinterpret_cast<const char*>(&length), sizeof(int64_t));
+    os.write(name, length*sizeof(char));
 
     vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
     //if user has not transformed shape write identity.
@@ -153,6 +159,7 @@ ostream& Shape::writeBinary(ostream& os) {
 //write as ascii txt
 ostream& Shape::writeASCII(ostream& os) {
     os << id_<< endl;
+    os << name_ << endl;
     
     vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
     if(transform == nullptr) {
@@ -190,6 +197,14 @@ istream& Shape::readBinary(istream& is) {
     int64_t id;
     is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
     id_ = id;
+    
+    int64_t length;
+    is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
+    char* name = new char[length];
+    is.read(name, length*sizeof(char));
+    
+    name_ = name;
+    delete name;
     
     //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
     vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
@@ -257,6 +272,13 @@ istream& Shape::readASCII(istream& is) {
         ss >> id_;
     }
 
+    {
+        getline(is, line);
+        stringstream ss;
+        ss << line;
+        ss >> name_;
+    }
+    
     //read user transform.
     vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(int i = 0; i < 4; i++) {

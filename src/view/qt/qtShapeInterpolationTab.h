@@ -10,6 +10,9 @@
 #define __ShapeAnalyzer__qtShapeInterpolationTab__
 
 #include <vtkActor.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkRenderer.h>
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
@@ -29,7 +32,9 @@ class qtShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationWi
     Q_OBJECT
     
 public:
-    qtShapeInterpolationTab(HashMap<vtkActor*, Shape*>* shapes, HashMap<PointCorrespondenceData*, bool>* correspondences, ShapeAnalyzer* parent, Qt::WindowFlags f = 0);
+    qtShapeInterpolationTab(HashMap<vtkActor*, Shape*>* shapes, HashMap<PointCorrespondenceData*, bool>* correspondences, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, ShapeAnalyzer* parent, Qt::WindowFlags f = 0);
+    
+    virtual ~qtShapeInterpolationTab();
     
     virtual void onShapeDelete(Shape* shape);
     virtual void onShapeAdd(Shape* shape);
@@ -39,12 +44,18 @@ public:
    
 private slots:
     virtual void slotInterpolate(int value);
+    virtual void slotChooseShapes();
+    virtual void slotAddShape();
     
 private:
-    void initialize();
-    
+    Shape* source_;
+    Shape* target_;
+    Shape* shape_; // interpolated shape.
     HashMap<vtkActor*, Shape*>* shapes_;
     HashMap<PointCorrespondenceData*, bool>* correspondences_;
+    
+    vtkSmartPointer<vtkRenderer> renderer_;
+    int& lastInsertShapeID_;
     ShapeAnalyzer* parent_;
 };
 

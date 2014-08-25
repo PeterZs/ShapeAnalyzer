@@ -110,10 +110,33 @@ void qtFaceCorrespondencesTab::slotSample() {
 // Events
 ///////////////////////////////////////////////////////////////////////////////
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 void qtFaceCorrespondencesTab::onClear() {
     listFaceCorrespondences->disconnect();
     listFaceCorrespondences->clear();
+    connect(this->listFaceCorrespondences,         SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(slotOpenContextMenu(const QPoint&)));
+    connect(this->listFaceCorrespondences,         SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void qtFaceCorrespondencesTab::onShapeDelete(Shape* shape) {
+    listFaceCorrespondences->disconnect();
+    
+    for(int i = listFaceCorrespondences->count()-1; i > -1; i--) {
+        FaceCorrespondenceData* data = ((qtListWidgetItem<FaceCorrespondenceData>*) listFaceCorrespondences->item(i))->getItem();
+        
+        for(int j = 0; j < data->getShapeIds().size(); j++) {
+            if(data->getShapeIds()[j] == shape->getId()) {
+                delete listFaceCorrespondences->item(i);
+                break;
+            }
+        }
+    }
     connect(this->listFaceCorrespondences,         SIGNAL(customContextMenuRequested(const QPoint&)),
             this,                                   SLOT(slotOpenContextMenu(const QPoint&)));
     connect(this->listFaceCorrespondences,         SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
@@ -137,7 +160,7 @@ void qtFaceCorrespondencesTab::onCorrespondenceAdd(CorrespondenceData *correspon
 void qtFaceCorrespondencesTab::onCorrespondenceDelete(CorrespondenceData* correspondence) {
     listFaceCorrespondences->disconnect();
     
-    for(int i = 0; i < listFaceCorrespondences->count(); i++) {
+    for(int i = listFaceCorrespondences->count()-1; i > -1; i--) {
         if(((qtListWidgetItem<FaceCorrespondenceData>*) listFaceCorrespondences->item(i))->getItem() == correspondence) {
             delete listFaceCorrespondences->item(i);
             listFaceCorrespondences->setCurrentRow(-1);

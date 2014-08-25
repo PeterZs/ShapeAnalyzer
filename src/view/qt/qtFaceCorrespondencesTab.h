@@ -44,6 +44,7 @@ public:
     ~qtFaceCorrespondencesTab() {}
 
     virtual void onClear();
+    virtual void onShapeDelete(Shape* shape);
     virtual void onCorrespondenceAdd(CorrespondenceData* correspondence);
     virtual void onCorrespondenceDelete(CorrespondenceData* correspondence);
     virtual void onCorrespondenceEdit(Correspondence* correspondence);

@@ -82,10 +82,6 @@ public:
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
     }
-
-    vtkSmartPointer<vtkPolyData> getOriginalPolyData() {
-        return originalPolyData_;
-    }
     
     vtkSmartPointer<vtkRenderer> getRenderer() {
         return renderer_;
@@ -120,7 +116,6 @@ private:
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
     vtkSmartPointer<vtkBoxWidget> boxWidget_;
-    vtkSmartPointer<vtkPolyData> originalPolyData_; // do not touch this
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     

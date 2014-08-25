@@ -16,6 +16,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 
 using namespace std;
@@ -28,6 +29,7 @@ public:
     
     // constructors and destructor
     HashMap();
+    HashMap(int n);
     HashMap(HashMap<KEY, VALUE>&);
     HashMap(vector<KEY>&, VALUE);
     ~HashMap() {}
@@ -35,6 +37,7 @@ public:
     // adding and deleting elements
     void add(KEY, VALUE);
     void add(vector<KEY>&, VALUE);
+    void add(vector<pair<KEY, VALUE> >&);
     
     bool remove(KEY);
     bool remove(vector<KEY>&);
@@ -71,9 +74,15 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
 HashMap<KEY, VALUE>::HashMap() {
-    entries_ = unordered_map<KEY, VALUE>(0);
+    entries_ = unordered_map<KEY, VALUE>(100);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+HashMap<KEY, VALUE>::HashMap(int n) {
+    entries_ = unordered_map<KEY, VALUE>(n);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // copy contructor
@@ -117,6 +126,19 @@ void HashMap<KEY, VALUE>::add(vector<KEY>& keys, VALUE value) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+void HashMap<KEY, VALUE>::add(vector<pair<KEY, VALUE> >& entries) {
+    // reserve enough memory for new keys
+    entries_.rehash(entries_.size() + entries.size());
+    
+    for (auto it = entries.begin(); it != entries.end(); it++) {
+        entries_.insert(*it);
+    }
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
 bool HashMap<KEY, VALUE>::remove(KEY key) {
@@ -132,7 +154,6 @@ bool HashMap<KEY, VALUE>::remove(vector<KEY>& keys) {
             success = false;
         }
     }
-    
     return success;
 }
 

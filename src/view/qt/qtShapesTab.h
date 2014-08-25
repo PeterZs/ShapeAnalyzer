@@ -13,9 +13,9 @@
 
 class qtShapesTab : public qtTab {
 public:
+    virtual ~qtShapesTab() {}
     virtual void onShapeAdd(Shape* shape) = 0;
     virtual void onShapeEdit(Shape* shape) = 0;
-    virtual void onShapeDelete(Shape* shape) = 0;
     virtual void onShapeSelect(Shape* shape) = 0;
 };
 

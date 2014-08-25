@@ -150,13 +150,15 @@ public:
     void showCorrespondence(CorrespondenceData* data);
     void hideCorrespondence(CorrespondenceData* data);
     void deleteCorrespondence(CorrespondenceData* data);
-
     
     void setSelected(CorrespondenceData* data);
     void samplePointCorrespondences(unsigned int size);
     void sampleFaceCorrespondences(unsigned int size);
     void clearPointCorrespondences();
     void clearFaceCorrespondences();
+    
+    void vtkAddShape(Shape* shape);
+    void showShape(Shape* shape);
     
     void render();
     
@@ -239,7 +241,6 @@ private:
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
-    void vtkAddShape(Shape* shape);
     void vtkOpenShape(vtkPolyDataAlgorithm* reader, string name);
     void vtkOpenScene(string filename);
     void vtkSaveScene(string filename);
@@ -270,8 +271,8 @@ private:
     HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
     // all face and point correspondences data, the bool indicates if for the data there exists a corresponding Correspondence object in "...CorrespondencesByActor_". In case we are in "view PointCorrespondences mode" this correspondence object is also visible in the qvtkWidget
+    HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;    
     HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
-    HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;
 
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;

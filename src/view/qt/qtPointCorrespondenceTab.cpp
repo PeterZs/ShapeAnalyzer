@@ -62,6 +62,28 @@ void qtPointCorrespondencesTab::slotClear() {
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+void qtPointCorrespondencesTab::onShapeDelete(Shape* shape) {
+    listPointCorrespondences->disconnect();
+    
+    for(int i = listPointCorrespondences->count()-1; i > -1; i--) {
+        PointCorrespondenceData* data = ((qtListWidgetItem<PointCorrespondenceData>*) listPointCorrespondences->item(i))->getItem();
+        
+        for(int j = 0; j < data->getShapeIds().size(); j++) {
+            if(data->getShapeIds()[j] == shape->getId()) {
+                delete listPointCorrespondences->item(i);
+                break;
+            }
+        }
+    }
+    connect(this->listPointCorrespondences,         SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,                                   SLOT(slotOpenContextMenu(const QPoint&)));
+    connect(this->listPointCorrespondences,         SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 void qtPointCorrespondencesTab::slotOpenContextMenu(const QPoint& pos) {
     // current correspondence
@@ -133,7 +155,7 @@ void qtPointCorrespondencesTab::onCorrespondenceAdd(CorrespondenceData *correspo
 void qtPointCorrespondencesTab::onCorrespondenceDelete(CorrespondenceData* correspondence) {
     listPointCorrespondences->disconnect();
 
-    for(int i = 0; i < listPointCorrespondences->count(); i++) {
+    for(int i = listPointCorrespondences->count()-1; i > -1; i--) {
         if(((qtListWidgetItem<PointCorrespondenceData>*) listPointCorrespondences->item(i))->getItem() == correspondence) {
             delete listPointCorrespondences->item(i);
             listPointCorrespondences->setCurrentRow(-1);

@@ -286,8 +286,11 @@ void ShapeAnalyzer::qtInputDialogRenameShape(qtListWidgetItem<Shape>* item) {
                                            );
     // rename if ok was given
     if (ok) {
+        scalarBar_->SetTitle(name.toStdString().c_str());
+        
         item->setText(name);
         item->getItem()->setName(name.toStdString());
+        
         
         // fire event for shapeTabs
         for(HashMap<string, qtShapesTab*>::iterator it = shapesTabs_.begin(); it != shapesTabs_.end(); it++) {

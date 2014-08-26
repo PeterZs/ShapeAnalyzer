@@ -82,24 +82,9 @@ private:
         vtkSmartPointer<vtkPolyData> polyData_;
     };
     
-    GeodesicMetric() : algorithm_(nullptr), points_(nullptr), faces_(nullptr) {
-        
-    }
-    
-    double  calculateLengthOfPath(vector<SurfacePoint> path);
-    
-    Mesh                                mesh_;
-    GeodesicAlgorithmExact*             algorithm_;
-    geodesicPoints*                     points_;
-    geodesicFaces*                      faces_;
-    vector<SurfacePoint>                sources_;
-    vtkSmartPointer<vtkIdList>          sourceList_;
-  
-    
-
-    
-    
 public:
+    virtual ~GeodesicMetric();
+    
     static Metric* create() {
         return new GeodesicMetric();
     }
@@ -108,22 +93,23 @@ public:
         return "geodesic";
     }
     
-    virtual void initialize(Shape* shape);
-    
-    virtual ~GeodesicMetric();
-    
     // from abstract class Metric
+    
+    virtual void initialize(Shape* shape);
     virtual double getDistance(vtkIdType a, vtkIdType b);
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
-    virtual vtkIdType getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources);
-    
-    // Geodesic functions
-    void        changeSourcePoint(vtkIdType source);
-    void        changeSourcePoints(vtkSmartPointer<vtkIdList> sources);
-    
-    vtkIdType   getPointFarthestFromAllSources();
+    virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
+    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
+private:
+    GeodesicMetric() : algorithm_(nullptr), points_(nullptr), faces_(nullptr) {
+        
+    }
 
     
+    Mesh                                mesh_;
+    GeodesicAlgorithmExact*             algorithm_;
+    geodesicPoints*                     points_;
+    geodesicFaces*                      faces_;
 };
 
 #endif /* defined(__ShapeAnalyzer__GeodesicMetric__) */

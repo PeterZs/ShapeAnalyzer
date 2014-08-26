@@ -25,9 +25,7 @@ public:
     
     virtual void initialize(Shape* shape, vtkIdType numberOfPoints);
     
-    vtkSmartPointer<vtkIdList> getPoints() {
-        return points_;
-    }
+    virtual vtkSmartPointer<vtkIdList> getPoints() = 0;
     
     Shape*  getShape()      { return shape_; }
     
@@ -37,9 +35,6 @@ protected:
 
     Shape* shape_;
     vtkIdType numberOfPoints_;
-    
-    // list of ids of the points in the sampling
-    vtkSmartPointer<vtkIdList> points_;
 };
 
 #endif /* defined(__ShapeAnalyzer__ShapeSampling__) */

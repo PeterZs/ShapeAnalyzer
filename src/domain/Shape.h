@@ -52,7 +52,7 @@ public:
     
     void initialize();
     
-    double calculateArea();
+    double getArea();
     vtkIdType getRandomPoint();
     
     // vtk functions

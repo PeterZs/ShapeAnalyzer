@@ -32,7 +32,7 @@ class ShapeAnalyzer;
 
 using namespace std;
 
-class qtFaceCorrespondencesTab : public QDialog, public Ui::FaceCorrespondencesWidget, public qtCorrespondencesTab {
+class qtFaceCorrespondencesTab : public QWidget, public Ui::FaceCorrespondencesWidget, public qtCorrespondencesTab {
     Q_OBJECT
     
 public:

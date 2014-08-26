@@ -9,14 +9,14 @@
 #ifndef __ShapeAnalyzer__GlobalPointSignature__
 #define __ShapeAnalyzer__GlobalPointSignature__
 
-#include "Signature.h"
+#include "LaplaceBeltramiSignature.h"
 
-class GlobalPointSignature : public Signature {
+class GlobalPointSignature : public LaplaceBeltramiSignature {
 public:
     
-    virtual void initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension);
+    virtual void initialize(Shape* shape, int dimension);
     
-    static Signature* create() {
+    static LaplaceBeltramiSignature* create() {
         return new GlobalPointSignature();
     }
     

@@ -39,7 +39,11 @@ public:
     
     // returns the id of the point with the greatest distance to all points
     // in the source list
-    virtual vtkIdType getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources) = 0;
+    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;
+    
+    // returns voronoi cells
+    virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
+    
     
     Shape*  getShape()          { return shape_; }
     

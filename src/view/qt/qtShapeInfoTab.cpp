@@ -68,7 +68,7 @@ void qtShapeInfoTab::onShapeSelect(Shape* shape) {
     
     tableWidget->setItem(4, 0, new QTableWidgetItem(
                                                     QString::number(
-                                                                    (double) shape->calculateArea()
+                                                                    (double) shape->getArea()
                                                                     )
                                                     )
                          );

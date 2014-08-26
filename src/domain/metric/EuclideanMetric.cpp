@@ -33,24 +33,45 @@ void EuclideanMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkIdType EuclideanMetric::getPointFarthestFromAllSources(vtkSmartPointer<vtkIdList> sources) {
-    double dist = 0;
+vtkIdType EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) {
+    double maxDist = 0;
     vtkIdType id;
     
     // iterate over all points on the shape
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
-        double d = getDistance(i, sources->GetId(0));
+        double dist = numeric_limits<double>::infinity();
         // iterate over all sources
-        for (vtkIdType j = 1; j < sources->GetNumberOfIds(); j++) {
+        for (vtkIdType j = 0; j < sources->GetNumberOfIds(); j++) {
             // test for minimum distance of sources
-            if (getDistance(i, sources->GetId(j)) < d)
-                d = getDistance(i, sources->GetId(j));
+            double d = getDistance(i, sources->GetId(j));
+            if (d < dist)
+                dist = d;
         }
         
         // test for maximum distance over all points
-        if (d > dist)
+        if (dist > maxDist)
             id = i;
     }
     
     return id;
+}
+
+vtkSmartPointer<vtkIdList> EuclideanMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
+    vtkSmartPointer<vtkIdList> voronoiCells = vtkSmartPointer<vtkIdList>::New();
+    voronoiCells->SetNumberOfIds(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
+    
+
+    for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
+        double minDist = numeric_limits<double>::infinity();
+        for(vtkIdType j = 0; j < seeds->GetNumberOfIds(); j++) {
+            double dist = getDistance(seeds->GetId(j), i);
+            if(dist < minDist) {
+                minDist = dist;
+                voronoiCells->SetId(i, j);
+            }
+        }
+            
+    }
+    
+    return voronoiCells;
 }

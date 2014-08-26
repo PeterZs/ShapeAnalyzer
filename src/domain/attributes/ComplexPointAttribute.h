@@ -21,11 +21,11 @@ class ComplexPointAttribute {
 public:
     ComplexPointAttribute(Shape* shape) {
         shape_ = shape;
-        values = new T[shape->getPolyData()->GetNumberOfPoints()];
+        values_ = new T[shape->getPolyData()->GetNumberOfPoints()];
     }
     
     ~ComplexPointAttribute() {
-        
+        delete [] values_;
     }
     
     // the size of the returned array must be equal to the number of vertices of the shape

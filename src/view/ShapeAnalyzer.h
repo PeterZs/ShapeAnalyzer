@@ -29,6 +29,9 @@
 #include <vtkPolyDataNormals.h>
 #include <vtkPointSet.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkScalarBarActor.h>
+#include <vtkTextProperty.h>
+#include <vtkTextMapper.h>
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -45,6 +48,7 @@
 #include <exception>
 #include <unordered_map>
 #include <algorithm>
+
 
 
 #include "CorrespondencePicker.h"
@@ -77,7 +81,14 @@
 #include "../domain/signatures/WaveKernelSignature.h"
 #include "../domain/signatures/GlobalPointSignature.h"
 
+#include "../domain/segmentation/Segmentation.h"
+#include "../domain/segmentation/VoronoiCellSegmentation.h"
+
 #include "../domain/coloring/ScalarPointColoring.h"
+#include "../domain/coloring/DiscretePointColoring.h"
+
+#include "../domain/attributes/ScalarPointAttribute.h"
+#include "../domain/attributes/DiscretePointAttribute.h"
 
 #include "../domain/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
@@ -226,7 +237,7 @@ private:
     
     void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    void qtAddSamplingMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    void qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     
     void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
     void qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspondence>* item);
@@ -235,7 +246,7 @@ private:
     void qtShowHeatDiffusion(Shape* shape);
     void qtShowSignature(string id, Shape* shape);
     void qtShowMetricColoring(string id, Shape* shape);
-    void qtShowSampling(string id, Shape* shape);
+    void qtShowVoronoiCells(string metricId, Shape* shape);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
@@ -248,11 +259,7 @@ private:
     void vtkExportScene(string filename);
 
     
-    // these are expensive, use with care
-    Correspondence*         findCorrespondenceByData(CorrespondenceData* data);
-    FaceCorrespondence*     findFaceCorrespondenceByData(FaceCorrespondenceData* data);
-    PointCorrespondence*    findPointCorrespondenceByData(PointCorrespondenceData* data);
-    
+
     void clear();
     void deleteShape(int i);
     void deleteCorrespondence(int i);
@@ -299,6 +306,9 @@ private:
     int lastInsertCorresondenceID_; //correspondence data id
     
     int pickerCounter_;
+    
+    
+    vtkSmartPointer<vtkScalarBarActor> scalarBar_;
 };
 
 

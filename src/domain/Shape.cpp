@@ -63,7 +63,7 @@ void Shape::removeFromRenderer() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-double Shape::calculateArea() {
+double Shape::getArea() {
     double area = 0.0;
     // add up the areas of all triangles
     for (int i = 0; i < polyData_->GetNumberOfCells(); i++) {
@@ -344,5 +344,3 @@ istream& Shape::readASCII(istream& is) {
     
     return is;
 }
-
-

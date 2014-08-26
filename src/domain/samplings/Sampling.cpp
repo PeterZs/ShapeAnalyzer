@@ -11,6 +11,4 @@
 void Sampling::initialize(Shape *shape, vtkIdType numberOfPoints) {
     shape_ = shape;
     numberOfPoints_ = numberOfPoints;
-    
-    points_ = vtkSmartPointer<vtkIdList>::New();
 }

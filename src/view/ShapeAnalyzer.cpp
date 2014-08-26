@@ -122,13 +122,16 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
     
     //register signatures
-    Factory<Signature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
-    Factory<Signature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
-    Factory<Signature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
+    Factory<LaplaceBeltramiSignature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
+    Factory<LaplaceBeltramiSignature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
+    Factory<LaplaceBeltramiSignature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
     
     //register samplings
-    Factory<Sampling>::getInstance()->Register<FarthestPointSampling<EuclideanMetric> >("FPS Euclidean Metric");
-    Factory<Sampling>::getInstance()->Register<FarthestPointSampling<GeodesicMetric> >("FPS Geodesic Metric");
+    Factory<Sampling>::getInstance()->Register<FarthestPointSampling>("Farthest Point Sampling");
+    
+    
+    //register segmentations
+    Factory<Segmentation>::getInstance()->Register<VoronoiCellSegmentation>("Voronoi Cells");
     
     //register Laplace-Beltrami Operators
     Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
@@ -203,7 +206,7 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* metricMenu = new QMenu();
+    QMenu* metricMenu = new QMenu(menu);
     metricMenu->setTitle("Visualize Metric");
     menu->addMenu(metricMenu);
     
@@ -216,38 +219,31 @@ void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entr
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* signatureMenu = new QMenu();
+    QMenu* signatureMenu = new QMenu(menu);
     signatureMenu->setTitle("Visualize Signature");
     menu->addMenu(signatureMenu);
-
     
-    unordered_map<string, string>& labels = Factory<Signature>::getInstance()->getLabels();
+    unordered_map<string, string>& labels = Factory<LaplaceBeltramiSignature>::getInstance()->getLabels();
     
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
         entries.add(signatureMenu->addAction(it->second.c_str()), it->first);
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtAddSamplingMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* samplingMenu = new QMenu();
-    samplingMenu->setTitle("Samplings");
-    menu->addMenu(samplingMenu);
-
-    unordered_map<string, string>& labels = Factory<Sampling>::getInstance()->getLabels();
+void ShapeAnalyzer::qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
+    QMenu* voronoiCellsMenu = new QMenu(menu);
+    voronoiCellsMenu->setTitle("Visualize Voronoi Cells");
+    menu->addMenu(voronoiCellsMenu);
     
+    unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        entries.add(samplingMenu->addAction(it->second.c_str()), it->first);
+        entries.add(voronoiCellsMenu->addAction(it->second.c_str()), it->first);
     }
-    
-    
-    
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtInitializeSettings() {
-    dialogSettings_ = new QDialog(0,0);
+    dialogSettings_ = new QDialog(this);
     
     //Ui_Settings settingsUi;
     uiSettings_.setupUi(dialogSettings_);
@@ -419,8 +415,9 @@ void ShapeAnalyzer::qtShowSignature(string id, Shape *shape) {
         LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
         laplacian->initialize(shape, 100);
         
-        Signature* s = Factory<Signature>::getInstance()->create(id);
-        s->initialize(shape, laplacian, 100);
+        LaplaceBeltramiSignature* s = Factory<LaplaceBeltramiSignature>::getInstance()->create(id);
+        s->setLaplacian(laplacian);
+        s->initialize(shape, 100);
         
         ScalarPointAttribute component(shape);
         s->getComponent(i, component);
@@ -457,12 +454,60 @@ void ShapeAnalyzer::qtShowMetricColoring(string id, Shape *shape) {
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowSampling(string id, Shape* shape) {
-    Sampling* s = Factory<Sampling>::getInstance()->create(id);
-    cout << s->getShape()<<endl;
-    delete s;
+void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
+    bool ok;
+    vtkIdType source = QInputDialog::getInt(
+                                            this,
+                                            tr("Source vertex"),
+                                            tr("Choose ID of source vertex."),
+                                            0,
+                                            0,
+                                            shape->getPolyData()->GetNumberOfPoints()-1,
+                                            1,
+                                            &ok
+                                            );
+    
+    if (!ok) {
+        return;
+    }
+    vtkIdType numberOfSegments = QInputDialog::getInt(
+                                            this,
+                                            tr("Number of segments"),
+                                            tr("Choose number of segments"),
+                                            0,
+                                            0,
+                                            shape->getPolyData()->GetNumberOfPoints()-1,
+                                            1,
+                                            &ok
+                                            );
+    if(ok) {
+        
+        VoronoiCellSegmentation* segmentation = (VoronoiCellSegmentation*) Factory<Segmentation>::getInstance()->create("VoronoiCellSegmentation");
+        
+        Metric* m = Factory<Metric>::getInstance()->create(metricId);
+        m->initialize(shape);
+        FarthestPointSampling* fps = (FarthestPointSampling*) Factory<Sampling>::getInstance()->create("fps");
+        fps->setMetric(m);
+        fps->setSource(source);
+        fps->initialize(shape, numberOfSegments);
+        ((VoronoiCellSegmentation*) segmentation)->setMetric(m);
+        ((VoronoiCellSegmentation*) segmentation)->setSampling(fps);
+        
+        segmentation->initialize(shape);
+        vtkSmartPointer<vtkIdList> values = segmentation->getSegmentation();
+        
+        DiscretePointAttribute voronoiCells(shape);
+        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
+            voronoiCells.getValues()->SetValue(i, values->GetId(i));
+        }
+        
+        DiscretePointColoring coloring(shape, voronoiCells);
+        coloring.color();
+        
+        delete m;
+        delete fps;
+        delete segmentation;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -493,8 +538,8 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     qtAddMetricMenu(&myMenu, metrics);
     HashMap<QAction*, string> signatures;
     qtAddSignatureMenu(&myMenu, signatures);
-    HashMap<QAction*, string> samplings;
-    qtAddSamplingMenu(&myMenu, samplings);
+    HashMap<QAction*, string> segmentations;
+    qtAddVoronoiCellsMenu(&myMenu, segmentations);
     
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
@@ -584,12 +629,14 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
         laplacian2->initialize(shape2, 100);
         
-        Signature* wks1 = Factory<Signature>::getInstance()->create("wks");
-        wks1->initialize(shape1, laplacian1, 200);
+        LaplaceBeltramiSignature* wks1 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
+        wks1->setLaplacian(laplacian1);
+        wks1->initialize(shape1, 200);
 
         
-        Signature* wks2 = Factory<Signature>::getInstance()->create("wks");
-        wks2->initialize(shape2, laplacian2, 200);
+        LaplaceBeltramiSignature* wks2 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
+        wks2->setLaplacian(laplacian2);
+        wks2->initialize(shape2, 200);
         
         
         for(int i = 0; i < 125; i++) {
@@ -746,9 +793,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
             return;
         }
         
-        // Samplings
-        if (samplings.containsKey(selectedItem)) {
-            qtShowSampling(samplings[selectedItem], currentShape);
+        // Segmentations
+        if(segmentations.containsKey(selectedItem)) {
+            qtShowVoronoiCells(segmentations[selectedItem], currentShape);
             
             
             return;
@@ -1342,7 +1389,11 @@ void ShapeAnalyzer::slotModeAddCorrespondences() {
 void ShapeAnalyzer::slotSetSelectedCurrentShape(QListWidgetItem* current, QListWidgetItem* previous) {
     if(current != nullptr) {
         Shape* currentShape = ((qtListWidgetItem<Shape>*) current)->getItem();
-    
+        
+        scalarBar_->SetLookupTable(currentShape->getMapper()->GetLookupTable());
+        scalarBar_->SetTitle(currentShape->getName().c_str());
+        scalarBar_->Modified();
+        
         if(this->actionTransformShapes->isChecked()) {
             currentShape->getBoxWidget()->On();
             
@@ -1431,7 +1482,18 @@ void ShapeAnalyzer::vtkSetup() {
                                 SLOT(vtkKeyPressHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
                                 nullptr, 1.0);
     
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(1, 1);
+    lookupTable->SetHueRange(0.667, 0.0);
+    lookupTable->Build();
+    
+    scalarBar_ = vtkSmartPointer<vtkScalarBarActor>::New();
+    scalarBar_->SetLookupTable(lookupTable);
+    scalarBar_->SetTitle(" ");
+    scalarBar_->SetNumberOfLabels(10);
+    
     renderer_ = vtkSmartPointer<vtkRenderer>::New();
+    renderer_->AddActor2D(scalarBar_);
     
     this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer_);
     
@@ -1439,8 +1501,6 @@ void ShapeAnalyzer::vtkSetup() {
     vtkSmartPointer<ShapeAnalyzerInteractorStyle> style =
     vtkSmartPointer<ShapeAnalyzerInteractorStyle>::New();
     this->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle( style );
-    
-    
     
     this->correspondencePicker_ = new PointCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
     
@@ -1453,10 +1513,17 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
     if(actionShowSurfaceNormals->isChecked()) {
         shape->getMapper()->SetInputData(shape->getPolyDataNormals()->GetOutput());
     }
+
     
     if(shapesByActor_.size() == 0)
         renderer_->ResetCamera();
     
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(1.0, 1.0);
+    lookupTable->SetHueRange(0.667, 0.0);
+    lookupTable->Build();
+    
+    shape->getMapper()->SetLookupTable(lookupTable);
     
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
@@ -1809,63 +1876,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Functions accessing data structures
-///////////////////////////////////////////////////////////////////////////////
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Returns pointer to first Correspondence object that contains the given
-// CorrespondenceData
-// Returns nullptr if no matching correspondence was found
-// Linear in number of Correspondences
-Correspondence* ShapeAnalyzer::findCorrespondenceByData(CorrespondenceData* data) {
-    for(auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
-        if (it->second->getData() == data) {
-            return it->second;
-        }
-    }
-    
-    for(auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
-        if (it->second->getData() == data) {
-            return it->second;
-        }
-    }
-    
-    return nullptr;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Returns pointer to first Correspondence object that contains the given
-// CorrespondenceData
-// Returns nullptr if no matching correspondence was found
-// Linear in number of FaceCorrespondences
-FaceCorrespondence* ShapeAnalyzer::findFaceCorrespondenceByData(FaceCorrespondenceData* data) {
-    for(auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
-        if (it->second->getData() == data) {
-            return it->second;
-        }
-    }
-    
-    return nullptr;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Returns pointer to first Correspondence object that contains the given
-// CorrespondenceData
-// Returns nullptr if no matching correspondence was found
-// Linear in number of PointCorrespondences
-PointCorrespondence* ShapeAnalyzer::findPointCorrespondenceByData(PointCorrespondenceData* data) {
-    for(auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
-        if (it->second->getData() == data) {
-            return it->second;
-        }
-    }
-    
-    return nullptr;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions managing data structures
@@ -1874,6 +1885,14 @@ PointCorrespondence* ShapeAnalyzer::findPointCorrespondenceByData(PointCorrespon
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(1.0, 1.0);
+    lookupTable->SetHueRange(0.667, 0.0);
+    lookupTable->Build();
+    scalarBar_->SetLookupTable(lookupTable);
+    scalarBar_->SetTitle(" ");
+    scalarBar_->Modified();
+    
     // fire event for correspondenceTabs
     for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
         it->second->onClear();
@@ -2144,6 +2163,15 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     listCorrespondences->disconnect();
     listShapes->disconnect();
+    
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(1.0, 1.0);
+    lookupTable->SetHueRange(0.667, 0.0);
+    lookupTable->Build();
+    scalarBar_->SetLookupTable(lookupTable);
+    scalarBar_->SetTitle(" ");
+    scalarBar_->Modified();
+    
     
     // qt
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) this->listShapes->item(i);

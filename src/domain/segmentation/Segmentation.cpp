@@ -7,3 +7,7 @@
 //
 
 #include "Segmentation.h"
+
+void Segmentation::initialize(Shape* shape) {
+    shape_ = shape;
+}

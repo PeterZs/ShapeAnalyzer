@@ -9,14 +9,14 @@
 #ifndef __ShapeAnalyzer__HeatKernelSignature__
 #define __ShapeAnalyzer__HeatKernelSignature__
 
-#include "Signature.h"
+#include "LaplaceBeltramiSignature.h"
 
-class HeatKernelSignature : public Signature {
+class HeatKernelSignature : public LaplaceBeltramiSignature {
 public:
     
-    virtual void initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension);
+    virtual void initialize(Shape* shape, int dimension);
     
-    static Signature* create() {
+    static LaplaceBeltramiSignature* create() {
         return new HeatKernelSignature();
     }
     

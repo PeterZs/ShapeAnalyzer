@@ -17,16 +17,18 @@ template<class T>
 class ComplexFaceAttribute {
     
 public:
-    ~ComplexFaceAttribute() {};
+    ~ComplexFaceAttribute() {
+        delete [] values_;
+    }
     
     ComplexFaceAttribute(Shape* shape) {
         shape_ = shape;
-        values = new T[shape->getPolyData()->getNumberOfCells()];
+        values_ = new T[shape->getPolyData()->GetNumberOfCells()];
     }
         
     // the size of the returned array must be equal to the number of faces of the shape
     // the order of the values must correspond to the one in the vtkPolyData structure of the shape
-    T* getValues() { return values_ }
+    T* getValues() { return values_; }
     Shape* getShape() { return shape_; }
     
 private:

@@ -9,7 +9,7 @@
 #ifndef __ShapeAnalyzer__WaveKernelSignature__
 #define __ShapeAnalyzer__WaveKernelSignature__
 
-#include "Signature.h"
+#include "LaplaceBeltramiSignature.h"
 #include "../Shape.h"
 #include "../LaplaceBeltramiOperator.h"
 #include "../Factory.h"
@@ -18,15 +18,15 @@
 
 #include <cmath>
 
-class WaveKernelSignature : public Signature {
+class WaveKernelSignature : public LaplaceBeltramiSignature {
 public:    
-    virtual void initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension);
+    virtual void initialize(Shape* shape, int dimension);
     
     void setWKSVariance(double wksVariance) {
         wksVariance_ = wksVariance;
     }
     
-    static Signature* create() {
+    static LaplaceBeltramiSignature* create() {
         return new WaveKernelSignature();
     }
     

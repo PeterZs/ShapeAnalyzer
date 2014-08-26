@@ -8,7 +8,6 @@
 
 #include "ScalarPointAttribute.h"
 
-
 ScalarPointAttribute::ScalarPointAttribute(Shape* shape) {
     shape_ = shape;
     scalars_ = vtkSmartPointer<vtkDoubleArray>::New();

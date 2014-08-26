@@ -10,8 +10,8 @@
 
 //Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
 
-void WaveKernelSignature::initialize(Shape* shape, LaplaceBeltramiOperator* laplacian, int dimension) {
-    Signature::initialize(shape, laplacian, dimension);
+void WaveKernelSignature::initialize(Shape* shape, int dimension) {
+    LaplaceBeltramiSignature::initialize(shape, dimension);
 
     PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];
     

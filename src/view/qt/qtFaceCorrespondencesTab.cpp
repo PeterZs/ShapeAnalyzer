@@ -19,7 +19,7 @@ qtFaceCorrespondencesTab::qtFaceCorrespondencesTab(
                                                 ShapeAnalyzer* parent,
                                                 Qt::WindowFlags f
                                                 )
-:   QDialog(parent, f),
+:   QWidget(parent, f),
     faceCorrespondences_(faceCorrespondences),
     parent_(parent)
 {
@@ -138,9 +138,9 @@ void qtFaceCorrespondencesTab::onShapeDelete(Shape* shape) {
         }
     }
     connect(this->listFaceCorrespondences,         SIGNAL(customContextMenuRequested(const QPoint&)),
-            this,                                   SLOT(slotOpenContextMenu(const QPoint&)));
+            this,                                  SLOT(slotOpenContextMenu(const QPoint&)));
     connect(this->listFaceCorrespondences,         SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
+            this,                                  SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
 }
 
 

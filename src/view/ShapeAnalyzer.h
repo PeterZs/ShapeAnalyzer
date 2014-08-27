@@ -191,6 +191,7 @@ private slots:
     virtual void slotToggleBoxWidget();
     virtual void slotModeAddCorrespondences();
     
+    virtual void slotShowScalarBar(bool);
     
     virtual void slotSetSelectedCurrentShape(QListWidgetItem* current, QListWidgetItem* previous);
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
@@ -232,7 +233,7 @@ private:
     void qtInitializeSettings();
     
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
-    void qtShowContextMenuShapes(const QPoint& pos);
+    void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
     void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
@@ -247,10 +248,14 @@ private:
     void qtShowSignature(string id, Shape* shape);
     void qtShowMetricColoring(string id, Shape* shape);
     void qtShowVoronoiCells(string metricId, Shape* shape);
+    void qtCreateIdentityCorrespondences(Shape* shape1);
+    void qtTransferCoordinateFunction(Shape* shape1);
+    void qtCreateShapeSegment(Shape *shape, vtkIdType pointId);
+    
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
-    void vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
+    void vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
     void vtkOpenShape(vtkPolyDataAlgorithm* reader, string name);
     void vtkOpenScene(string filename);
@@ -297,6 +302,9 @@ private:
     Ui_Settings uiSettings_;
     QDialog*    dialogSettings_;
     
+    
+    
+    HashMap<Shape*, vtkSmartPointer<vtkIdList> > segmentations_;
     
     HashMap<string, qtCorrespondencesTab*> correspondencesTabs_;
     HashMap<string, qtShapesTab*> shapesTabs_;

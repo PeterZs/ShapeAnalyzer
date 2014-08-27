@@ -26,7 +26,7 @@ void FEMLaplaceBeltramiOperator::initialize(Shape *shape, int numberOfEigenfunct
     EPSSetProblemType(eps_, EPS_GHEP);
     EPSSetTarget(eps_, -1e-5);
     EPSSetWhichEigenpairs(eps_, EPS_TARGET_MAGNITUDE);
-    EPSSetType(eps_, EPSARNOLDI);
+    //EPSSetType(eps_, EPSARNOLDI);
     //EPSSetType(eps_, EPSARPACK);
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     

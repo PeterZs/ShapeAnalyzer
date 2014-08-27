@@ -212,8 +212,8 @@
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>448</x>
-      <y>69</y>
+      <x>244</x>
+      <y>64</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -230,6 +230,7 @@
     <addaction name="actionShapes"/>
     <addaction name="actionShapeInfo"/>
     <addaction name="actionShapeInterpolation"/>
+    <addaction name="actionShowScalarBar"/>
     <addaction name="separator"/>
     <addaction name="actionDisplayPointCorrespondences"/>
     <addaction name="actionDisplayFaceCorrespondences"/>
@@ -549,6 +550,14 @@
    </property>
    <property name="text">
     <string>Shape Interpolation</string>
+   </property>
+  </action>
+  <action name="actionShowScalarBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Scalar Bar</string>
    </property>
   </action>
  </widget>

@@ -254,7 +254,6 @@ istream& Shape::readBinary(istream& is) {
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->SetMatrix(matrix);
     boxWidget_->SetTransform(transform);
-    
     return is;
 }
 

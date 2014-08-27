@@ -100,6 +100,10 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     connect(this->actionAllFaceCorrespondences,     SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabAllFaceCorrespondences(bool)));
+
+    
+    connect(this->actionShowScalarBar,              SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotShowScalarBar(bool)));
     
     connect(this->hideAllButton,                    SIGNAL(released()),
             this,                                   SLOT(slotHideCorrespondences()));
@@ -122,9 +126,9 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
     
     //register signatures
-    Factory<LaplaceBeltramiSignature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
+    // Factory<LaplaceBeltramiSignature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
     Factory<LaplaceBeltramiSignature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
-    Factory<LaplaceBeltramiSignature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
+    // Factory<LaplaceBeltramiSignature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
     
     //register samplings
     Factory<Sampling>::getInstance()->Register<FarthestPointSampling>("Farthest Point Sampling");
@@ -232,8 +236,10 @@ void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& e
 
 void ShapeAnalyzer::qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
     QMenu* voronoiCellsMenu = new QMenu(menu);
-    voronoiCellsMenu->setTitle("Visualize Voronoi Cells");
+    voronoiCellsMenu->setTitle("Segmentation");
     menu->addMenu(voronoiCellsMenu);
+    
+    
     
     unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
@@ -497,11 +503,13 @@ void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
         ((VoronoiCellSegmentation*) segmentation)->setSampling(fps);
         
         segmentation->initialize(shape);
-        vtkSmartPointer<vtkIdList> values = segmentation->getSegmentation();
+        
+        // save current segmentation for being able to create new shapes out of the segments
+        segmentations_.add(shape, segmentation->getSegmentation());
         
         DiscretePointAttribute voronoiCells(shape);
         for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
-            voronoiCells.getValues()->SetValue(i, values->GetId(i));
+            voronoiCells.getValues()->SetValue(i, segmentations_[shape]->GetId(i));
         }
         
         DiscretePointColoring coloring(shape, voronoiCells);
@@ -512,6 +520,285 @@ void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
         delete segmentation;
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
+    QStringList labels;
+    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+        if(it->second->getId() == shape1->getId())
+            continue;
+        
+        QString label = QString::number(it->second->getId());
+        label.append(QString::fromStdString(":"+it->second->getName()));
+        labels << label;
+        
+    }
+    bool ok;
+    QString chosen = QInputDialog::getItem(this,
+                                           "Choose a shape",
+                                           "Choose a shape:",
+                                           labels,
+                                           0,
+                                           true,
+                                           &ok);
+    if(!ok) {
+        return;
+    }
+    
+    
+    Shape* shape2 = nullptr;
+    vtkIdType shapeId = chosen.split(':')[0].toInt();
+    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+        if(it->second->getId() == shapeId) {
+            shape2 = it->second;
+            break;
+        }
+    }
+    
+    if(shape2 == nullptr) {
+        return;
+    }
+    
+    
+    
+    QStringList types;
+    types << "Point Correspondences" << "Face Correspondences";
+    
+    QString type = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
+    
+    if(!ok) {
+        return;
+    }
+    
+    if(type == "Point Correspondences") {
+        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i++) {
+            PointCorrespondenceData* data = new PointCorrespondenceData(lastInsertCorresondenceID_);
+            data->getShapeIds().push_back(shape1->getId());
+            data->getShapeIds().push_back(shape2->getId());
+            
+            data->getCorrespondingIds().push_back(i);
+            data->getCorrespondingIds().push_back(i);
+            
+            lastInsertCorresondenceID_++;
+            
+            pointCorrespondenceData_.add(data, false);
+            
+            // fire event for correspondenceTabs
+            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+                it->second->onCorrespondenceAdd(data);
+            }
+        }
+    } else {
+        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i++) {
+            FaceCorrespondenceData* data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
+            data->getShapeIds().push_back(shape1->getId());
+            data->getShapeIds().push_back(shape2->getId());
+            
+            data->getCorrespondingIds().push_back(i);
+            data->getCorrespondingIds().push_back(i);
+            
+            lastInsertCorresondenceID_++;
+            
+            faceCorrespondenceData_.add(data, false);
+            
+            // fire event for correspondenceTabs
+            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
+                it->second->onCorrespondenceAdd(data);
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtCreateShapeSegment(Shape *shape, vtkIdType pointId) {
+    if(segmentations_.containsKey(shape)) {
+        
+        vtkIdType segmentId = segmentations_[shape]->GetId(pointId);
+        
+        vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+        vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
+        
+        // remeber already added points
+        HashMap<vtkIdType, vtkIdType> pointIds;
+        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfCells(); i++) {
+            vtkTriangle* face = (vtkTriangle*) shape->getPolyData()->GetCell(i);
+            
+            for(vtkIdType j = 0; j < 3; j++) {
+                //check if current cell is contained in segment. I.e. on of the points of current cell must be contained in segment.
+                if(segmentations_[shape]->GetId(face->GetPointId(j)) == segmentId) {
+                    vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
+                    
+                    // copy all the points of face into points. Create new triangle that corresponds to currentFace
+                    for(vtkIdType k = 0; k < 3; k++) {
+                        if(pointIds.containsKey(face->GetPointId(k))) {
+                            triangle->GetPointIds()->SetId(k, pointIds[face->GetPointId(k)]);
+                        } else {
+                            double x[3];
+                            shape->getPolyData()->GetPoint(face->GetPointId(k), x);
+                            vtkIdType pointId = points->InsertNextPoint(x); // new point id
+                            triangle->GetPointIds()->SetId(k, pointId);
+                            pointIds.add(face->GetPointId(k), pointId);
+                        }
+                    }
+                    
+                    
+                    polys->InsertNextCell(triangle);
+                    break;
+                }
+            }
+        }
+        
+        polyData->SetPoints(points);
+        polyData->SetPolys(polys);
+        
+        vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+        vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+        connectivityFilter->SetInputData(polyData);
+        connectivityFilter->SetExtractionModeToAllRegions();
+        connectivityFilter->Update();
+        int numberOfRegions = connectivityFilter->GetNumberOfExtractedRegions();
+        
+        
+        // add all regions separatly
+        for (int i = 0; i < numberOfRegions; i++) {
+            vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+            vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+            connectivityFilter->SetInputData(polyData);
+            connectivityFilter->SetExtractionModeToSpecifiedRegions();
+            connectivityFilter->AddSpecifiedRegion(i);
+            connectivityFilter->Update();
+            
+            // get vtk actor and add to renderer_
+            vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();
+            string name = shape->getName();
+            name.append(":");
+            name.append(to_string(i));
+            Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
+            shape->initialize();
+            addShape(shape);
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
+    vector<ScalarPointAttribute> c1;
+    vector<ScalarPointAttribute> c2;
+    
+    Shape* shape2 = nullptr;
+    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+        if(it->second != shape1) {
+            shape2 = it->second;
+            break;
+        }
+    }
+    
+    segmentations_.remove(shape1);
+    segmentations_.remove(shape2);
+    
+    Metric* m1;
+    m1 = Factory<Metric>::getInstance()->create("geodesic");
+    m1->initialize(shape1);
+    
+    Metric* m2;
+    m2 = Factory<Metric>::getInstance()->create("geodesic");
+    m2->initialize(shape2);
+    
+    for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
+        PointCorrespondenceData* corr = it->first;
+        
+        for(int i = 0; i < corr->getShapeIds().size(); i++) {
+            if(corr->getShapeIds()[i] == shape1->getId()) {
+                
+                
+                ScalarPointAttribute distances(shape1);
+                m1->getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                c1.push_back(distances);
+                
+            }
+            
+            if(corr->getShapeIds()[i] == shape2->getId()) {
+                
+                ScalarPointAttribute distances(shape2);
+                m2->getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                c2.push_back(distances);
+                
+            }
+        }
+    }
+    
+    delete m1;
+    delete m2;
+    
+    LaplaceBeltramiOperator* laplacian1 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+    laplacian1->initialize(shape1, 100);
+    LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
+    laplacian2->initialize(shape2, 100);
+    
+    LaplaceBeltramiSignature* wks1 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
+    wks1->setLaplacian(laplacian1);
+    wks1->initialize(shape1, 200);
+    
+    
+    LaplaceBeltramiSignature* wks2 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
+    wks2->setLaplacian(laplacian2);
+    wks2->initialize(shape2, 200);
+    
+    
+    for(int i = 0; i < 125; i++) {
+        ScalarPointAttribute wksi1(shape1);
+        wks1->getComponent(i, wksi1);
+        c1.push_back(wksi1);
+        
+        ScalarPointAttribute wksi2(shape2);
+        wks2->getComponent(i, wksi2);
+        c2.push_back(wksi2);
+    }
+    
+    delete wks1;
+    delete wks2;
+    FunctionalMaps functionalMaps(*shape1, *shape2, laplacian1, laplacian2, c1, c2, 100);
+    
+    ScalarPointAttribute f(shape1);
+    
+    for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+        double p[3];
+        shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
+        f.getScalars()->SetValue(i, p[2]);
+    }
+    ScalarPointColoring coloring1(shape1, f);
+    coloring1.color();
+    
+    //        ScalarPointAttribute u0(shape1);
+    //        vtkIdType source = 1132;
+    //        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+    //            if(i == source) {
+    //                u0.getScalars()->SetValue(i, 1.0);
+    //            } else {
+    //                u0.getScalars()->SetValue(i, 0.0);
+    //            }
+    //        }
+    //        HeatDiffusion diffusion(shape1, laplacian1, u0);
+    //        ScalarPointAttribute f(shape1);
+    //        diffusion.getHeat(f, 100);
+    //        ScalarPointColoring coloring1(shape1, f);
+    //        coloring1.color();
+    
+    
+    ScalarPointAttribute Tf(shape2);
+    functionalMaps.transferFunction(f, Tf);
+    
+    delete laplacian1;
+    delete laplacian2;
+    
+    ScalarPointColoring coloring2(shape2, Tf);
+    coloring2.color();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
@@ -532,9 +819,18 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
+void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId) {
     
     QMenu myMenu;
+
+    
+    QAction* opacityAction  = myMenu.addAction("Set Opacity");
+    QAction* renameAction   = myMenu.addAction("Rename");
+    QAction* deleteAction   = myMenu.addAction("Delete");
+    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
+    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
+    QAction* transferCoordinateFunction = myMenu.addAction("Transfer coordinate function");
+    QAction* correspondencesIdentity = myMenu.addAction("Create Identity Correspondences");
     
     //map containing unique id of metric + corresponding QAction already set with corresponding label
     HashMap<QAction*, string> metrics;
@@ -542,16 +838,19 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     HashMap<QAction*, string> signatures;
     qtAddSignatureMenu(&myMenu, signatures);
     HashMap<QAction*, string> segmentations;
-    qtAddVoronoiCellsMenu(&myMenu, segmentations);
     
-    QAction* opacityAction  = myMenu.addAction("Set Opacity");
-    QAction* renameAction   = myMenu.addAction("Rename");
-    QAction* deleteAction   = myMenu.addAction("Delete");
-    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
-    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
-    QAction* transferFunction = myMenu.addAction("Transfer current function");
-    QAction* correspondencesIdentity = myMenu.addAction("Create Identity Correspondences");
+    QMenu segmentationMenu;
+    segmentationMenu.setTitle("Segmentation");
+    myMenu.addMenu(&segmentationMenu);
+    qtAddVoronoiCellsMenu(&segmentationMenu, segmentations);
     
+    QAction* createShapeSegment;
+    Shape* currentShape;
+    qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
+    currentShape = item->getItem();
+    if(pointId != -1 && segmentations_.containsKey(currentShape)) {
+        createShapeSegment = segmentationMenu.addAction("Segment to shapes...");
+    }
     
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
@@ -559,231 +858,23 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
     }  else if (selectedItem == renameAction) {
         qtInputDialogRenameShape((qtListWidgetItem<Shape>*) this->listShapes->currentItem());
     } else if (selectedItem == opacityAction) {
-        Shape* currentShape;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        currentShape = item->getItem();
-        
         qtInputDialogOpacity(currentShape);
     } else if (selectedItem == laplaceBeltramiAction) {
-        Shape* currentShape;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        currentShape = item->getItem();
-        
+        segmentations_.remove(currentShape);
         qtShowEigenfunction(currentShape);
     } else if(selectedItem == heatDiffusion) {
-        Shape* currentShape;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        currentShape = item->getItem();
-        
-        
+        segmentations_.remove(currentShape);
         qtShowHeatDiffusion(currentShape);
-    } else if(selectedItem == transferFunction) {
-        Shape* shape1;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        shape1 = item->getItem();
-        
-        vector<ScalarPointAttribute> c1;
-        vector<ScalarPointAttribute> c2;
-        
-        Shape* shape2 = nullptr;
-        for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-            if(it->second != shape1) {
-                shape2 = it->second;
-                break;
-            }
-        }
-        
-        Metric* m1;
-        m1 = Factory<Metric>::getInstance()->create("geodesic");
-        m1->initialize(shape1);
-        
-        Metric* m2;
-        m2 = Factory<Metric>::getInstance()->create("geodesic");
-        m2->initialize(shape2);
-        
-        for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
-            PointCorrespondenceData* corr = it->first;
-            
-            for(int i = 0; i < corr->getShapeIds().size(); i++) {
-                if(corr->getShapeIds()[i] == shape1->getId()) {
-
-
-                    ScalarPointAttribute distances(shape1);
-                    m1->getAllDistances(distances, corr->getCorrespondingIds()[i]);
-                    c1.push_back(distances);
-
-                }
-                
-                if(corr->getShapeIds()[i] == shape2->getId()) {
-
-                    ScalarPointAttribute distances(shape2);
-                    m2->getAllDistances(distances, corr->getCorrespondingIds()[i]);
-                    c2.push_back(distances);
-                    
-                }
-            }
-        }
-        
-        delete m1;
-        delete m2;
-        
-        LaplaceBeltramiOperator* laplacian1 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian1->initialize(shape1, 100);
-        LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian2->initialize(shape2, 100);
-        
-        LaplaceBeltramiSignature* wks1 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
-        wks1->setLaplacian(laplacian1);
-        wks1->initialize(shape1, 200);
-
-        
-        LaplaceBeltramiSignature* wks2 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
-        wks2->setLaplacian(laplacian2);
-        wks2->initialize(shape2, 200);
-        
-        
-        for(int i = 0; i < 125; i++) {
-            ScalarPointAttribute wksi1(shape1);
-            wks1->getComponent(i, wksi1);
-            c1.push_back(wksi1);
-            
-            ScalarPointAttribute wksi2(shape2);
-            wks2->getComponent(i, wksi2);
-            c2.push_back(wksi2);
-        }
-        
-        delete wks1;
-        delete wks2;
-        FunctionalMaps functionalMaps(*shape1, *shape2, laplacian1, laplacian2, c1, c2, 100);
-        
-        ScalarPointAttribute f(shape1);
-        
-        for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-            double p[3];
-            shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
-            f.getScalars()->SetValue(i, p[2]);
-        }
-        ScalarPointColoring coloring1(shape1, f);
-        coloring1.color();
-        
-//        ScalarPointAttribute u0(shape1);
-//        vtkIdType source = 1132;
-//        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-//            if(i == source) {
-//                u0.getScalars()->SetValue(i, 1.0);
-//            } else {
-//                u0.getScalars()->SetValue(i, 0.0);
-//            }
-//        }
-//        HeatDiffusion diffusion(shape1, laplacian1, u0);
-//        ScalarPointAttribute f(shape1);
-//        diffusion.getHeat(f, 100);
-//        ScalarPointColoring coloring1(shape1, f);
-//        coloring1.color();
-        
-        
-        ScalarPointAttribute Tf(shape2);
-        functionalMaps.transferFunction(f, Tf);
-        
-        delete laplacian1;
-        delete laplacian2;
-        
-        ScalarPointColoring coloring2(shape2, Tf);
-        coloring2.color();
+    } else if(selectedItem == transferCoordinateFunction) {
+        qtTransferCoordinateFunction(currentShape);
     } else if(selectedItem == correspondencesIdentity) {
-        Shape* shape1;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        shape1 = item->getItem();
-        
-        QStringList labels;
-        for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-            if(it->second->getId() == shape1->getId())
-                continue;
-            
-            QString label = QString::number(it->second->getId());
-            label.append(QString::fromStdString(":"+it->second->getName()));
-            labels << label;
-            
-        }
-        bool ok;
-        QString chosen = QInputDialog::getItem(this,
-                                               "Choose a shape",
-                                               "Choose a shape:",
-                                               labels,
-                                               0,
-                                               true,
-                                               &ok);
-        if(!ok) {
-            return;
-        }
-        
-        
-        Shape* shape2 = nullptr;
-        // add chosen shape to vector
-        vtkIdType shapeId = chosen.split(':')[0].toInt();
-        for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-            if(it->second->getId() == shapeId) {
-                shape2 = it->second;
-                break;
-            }
-        }
-        
-        
-        
-        QStringList types;
-        types << "Point Correspondences" << "Face Correspondences";
-
-        QString type = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
-        
-        if(!ok) {
-            return;
-        }
-        
-        if(type == "Point Correspondences") {
-            for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i++) {
-                PointCorrespondenceData* data = new PointCorrespondenceData(lastInsertCorresondenceID_);
-                data->getShapeIds().push_back(shape1->getId());
-                data->getShapeIds().push_back(shape2->getId());
-                
-                data->getCorrespondingIds().push_back(i);
-                data->getCorrespondingIds().push_back(i);
-                
-                lastInsertCorresondenceID_++;
-                
-                pointCorrespondenceData_.add(data, false);
-                
-                // fire event for correspondenceTabs
-                for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
-                    it->second->onCorrespondenceAdd(data);
-                }
-            }
-        } else {
-            for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i++) {
-                FaceCorrespondenceData* data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
-                data->getShapeIds().push_back(shape1->getId());
-                data->getShapeIds().push_back(shape2->getId());
-                
-                data->getCorrespondingIds().push_back(i);
-                data->getCorrespondingIds().push_back(i);
-                
-                lastInsertCorresondenceID_++;
-                
-                faceCorrespondenceData_.add(data, false);
-                
-                // fire event for correspondenceTabs
-                for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
-                    it->second->onCorrespondenceAdd(data);
-                }
-            }
-        }
+        qtCreateIdentityCorrespondences(currentShape);
+    } else if(pointId != -1 && selectedItem == createShapeSegment) {
+        qtCreateShapeSegment(currentShape, pointId);
     } else {
-        // try if action is identifier for any factory
-        Shape* currentShape;
-        qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
-        currentShape = item->getItem();
-        
         // Metric
         if(metrics.containsKey(selectedItem)) {
+            segmentations_.remove(currentShape);
             qtShowMetricColoring(metrics[selectedItem], currentShape);
             
             return;
@@ -791,6 +882,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         // Signatures
         if (signatures.containsKey(selectedItem)) {
+            segmentations_.remove(currentShape);
             qtShowSignature(signatures[selectedItem], currentShape);
             
             return;
@@ -798,6 +890,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos) {
         
         // Segmentations
         if(segmentations.containsKey(selectedItem)) {
+            segmentations_.remove(currentShape);
             qtShowVoronoiCells(segmentations[selectedItem], currentShape);
             
             
@@ -936,6 +1029,19 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
     }
     
     this->qvtkWidget->GetRenderWindow()->Render();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotShowScalarBar(bool checked) {
+    if(checked) {
+        scalarBar_->SetVisibility(1);
+        scalarBar_->Modified();
+        this->qvtkWidget->GetRenderWindow()->Render();
+    } else {
+        scalarBar_->SetVisibility(0);
+        scalarBar_->Modified();
+        this->qvtkWidget->GetRenderWindow()->Render();
+    }
 }
 
 
@@ -1226,7 +1332,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
         
         QPoint globalPos = this->listShapes->mapToGlobal(pos);
 
-        qtShowContextMenuShapes(globalPos);
+        qtShowContextMenuShapes(globalPos, -1);
     }
 }
 
@@ -1396,6 +1502,7 @@ void ShapeAnalyzer::slotSetSelectedCurrentShape(QListWidgetItem* current, QListW
         scalarBar_->SetLookupTable(currentShape->getMapper()->GetLookupTable());
         scalarBar_->SetTitle(currentShape->getName().c_str());
         scalarBar_->Modified();
+        qvtkWidget->GetRenderWindow()->Render();
         
         if(this->actionTransformShapes->isChecked()) {
             currentShape->getBoxWidget()->On();
@@ -1493,13 +1600,16 @@ void ShapeAnalyzer::vtkSetup() {
     scalarBar_ = vtkSmartPointer<vtkScalarBarActor>::New();
     scalarBar_->SetLookupTable(lookupTable);
     scalarBar_->SetTitle(" ");
-    scalarBar_->SetNumberOfLabels(10);
+    scalarBar_->SetWidth(0.1);
+    scalarBar_->SetHeight(0.9);
+    scalarBar_->SetPosition(0.9, 0);
+    scalarBar_->SetNumberOfLabels(15);
+    scalarBar_->SetVisibility(0);
     
     renderer_ = vtkSmartPointer<vtkRenderer>::New();
     renderer_->AddActor2D(scalarBar_);
     
     this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer_);
-    
     
     vtkSmartPointer<ShapeAnalyzerInteractorStyle> style =
     vtkSmartPointer<ShapeAnalyzerInteractorStyle>::New();
@@ -1542,25 +1652,25 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
     vtkAlgorithmOutput* output;
     output = reader->GetOutputPort();
     
+    
+    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+    vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
+    
     // filter to triangulate shape
     if(uiSettings_.checkTriangulation->isChecked()) {
         //make sure that all faces are triangles
-        vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
         triangleFilter->SetInputConnection(output);
         triangleFilter->Update();
-        vtkAlgorithmOutput* output;
         output = triangleFilter->GetOutputPort();
     }
-    
+
     //Remove all isolated points.
     if(uiSettings_.checkBoxDegenerated->isChecked()) {
-        vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
         cleanPolyData->SetInputConnection(output);
         cleanPolyData->Update();
-        vtkAlgorithmOutput* output;
         output = cleanPolyData->GetOutputPort();
     }
-    
+
     
     //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
     if(!uiSettings_.checkBoxComponents->isChecked()) {
@@ -1569,7 +1679,6 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
         connectivityFilter->SetInputConnection(output);
         connectivityFilter->SetExtractionModeToLargestRegion();
         connectivityFilter->Update();
-        vtkAlgorithmOutput* output;
         output = connectivityFilter->GetOutputPort();
         
         // get vtk actor and add to renderer_
@@ -1578,9 +1687,8 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
         shape->initialize();
         addShape(shape);
         
-    } else { // extract all regions in different shapes
-        // yeah theres a lot of overhead here... but it makes problems
-        
+    } else {
+        // extract all regions in different shapes
         vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
         vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
         connectivityFilter->SetInputConnection(output);
@@ -1597,22 +1705,24 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
             connectivityFilter->AddSpecifiedRegion(i);
             connectivityFilter->Update();
             
-            vtkAlgorithmOutput* output2;
-            output2 = connectivityFilter->GetOutputPort();
-            
             // get vtk actor and add to renderer_
-            vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output2->GetProducer();
+            vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();
             Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
-            
+            shape->initialize();
             addShape(shape);
-            
-            connectivityFilter->DeleteSpecifiedRegion(i);
         }
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkOpenScene(string filename) {
+    
+    // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
+    // This is probably a bug of VTK.
+    scalarBar_->SetVisibility(0);
+    scalarBar_->Modified();
+    qvtkWidget->GetRenderWindow()->Render();
+    
     clear();
     
     //open input file stream in binary mode
@@ -1653,12 +1763,24 @@ void ShapeAnalyzer::vtkOpenScene(string filename) {
     is.close();
     
     renderer_->ResetCamera();
+    
+    // Turn on scalarbar again.
+    scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
+    scalarBar_->Modified();
     qvtkWidget->GetRenderWindow()->Render();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkImportScene(string filename) {
+    
+    // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
+    // This is probably a bug of VTK.
+    scalarBar_->SetVisibility(0);
+    scalarBar_->Modified();
+    qvtkWidget->GetRenderWindow()->Render();
+    
     clear();
+    
     ifstream is(filename);
     
     string line;
@@ -1701,6 +1823,10 @@ void ShapeAnalyzer::vtkImportScene(string filename) {
     is.close();
     
     renderer_->ResetCamera();
+
+    // Turn on scalarbar again.
+    scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
+    scalarBar_->Modified();
     qvtkWidget->GetRenderWindow()->Render();
 }
 
@@ -1759,7 +1885,7 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
         if(shapesByActor_.containsKey(picker->GetActor())) {
             Shape* shape = shapesByActor_[picker->GetActor()];
             // depending on whether we want to add face or point correspondences provide picker->GetCellId or picker->GetPointId to vtkShapeClicked method
-            vtkShapeClicked(shape, (actionAddFaceCorrespondences->isChecked() ? picker->GetCellId() : picker->GetPointId()), globalPos, vtkEvent, command);
+            vtkShapeClicked(shape, picker->GetPointId(), picker->GetCellId(), globalPos, vtkEvent, command);
         } else {
             if(pointCorrespondencesByActor_.containsKey(picker->GetActor())) {
                 vtkCorrespondenceClicked(pointCorrespondencesByActor_[picker->GetActor()], picker->GetPointId(), globalPos, vtkEvent, command);
@@ -1846,10 +1972,10 @@ void ShapeAnalyzer::setSelected(CorrespondenceData* data) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
+void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if((this->actionAddFaceCorrespondences->isChecked() || this->actionAddPointCorrespondences->isChecked())&& vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
-        int result = correspondencePicker_->addShape(shape, cellId);
+        int result = correspondencePicker_->addShape(shape, this->actionAddFaceCorrespondences->isChecked() ? faceId : pointId);
         if(result == 1)
             pickerCounter_++;
         else if(result == -1)
@@ -1870,7 +1996,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType cellId, QPoint &pos,
                 listShapes->setCurrentRow(i);
                 if(vtkEvent == vtkCommand::RightButtonPressEvent && !this->actionTransformShapes->isChecked()) {
                     command->AbortFlagOn();
-                    qtShowContextMenuShapes(pos);
+                    qtShowContextMenuShapes(pos, pointId);
                 }
             }
         }
@@ -1895,6 +2021,9 @@ void ShapeAnalyzer::clear() {
     scalarBar_->SetLookupTable(lookupTable);
     scalarBar_->SetTitle(" ");
     scalarBar_->Modified();
+
+    segmentations_.clear();
+    
     
     // fire event for correspondenceTabs
     for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
@@ -2163,6 +2292,7 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::deleteShape(int i) {
+
     
     listCorrespondences->disconnect();
     listShapes->disconnect();
@@ -2179,6 +2309,8 @@ void ShapeAnalyzer::deleteShape(int i) {
     // qt
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape>*) this->listShapes->item(i);
     Shape* shape = item->getItem();
+    
+    segmentations_.remove(shape);
     
     // fire event for shapesTabs
     for(HashMap<string, qtShapesTab*>::iterator it = shapesTabs_.begin(); it != shapesTabs_.end(); it++) {

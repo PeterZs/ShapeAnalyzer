@@ -49,8 +49,10 @@ vtkIdType EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) 
         }
         
         // test for maximum distance over all points
-        if (dist > maxDist)
+        if (dist > maxDist) {
+            maxDist = dist;
             id = i;
+        }
     }
     
     return id;

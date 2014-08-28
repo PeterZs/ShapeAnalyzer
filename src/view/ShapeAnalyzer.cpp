@@ -1129,7 +1129,7 @@ void ShapeAnalyzer::slotOpenFile() {
     
     QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     tr(""),
-                                                    tr("Files (*.off *.vert *.scene *.txt)"));
+                                                    tr("Files (*.off *.vert *.scene *.txt *.ply *.obj)"));
     
     if(filename.count() == 0)
         return; //TODO Error handling...
@@ -1141,7 +1141,17 @@ void ShapeAnalyzer::slotOpenFile() {
         vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".vert"))) {
         // read .tri .vert files
-        vtkSmartPointer<vtkToscaASCIIReader> reader = vtkSmartPointer<vtkToscaASCIIReader>::New();
+        vtkSmartPointer<vtkToscaReader> reader = vtkSmartPointer<vtkToscaReader>::New();
+        reader->SetFileName(filename.toStdString().c_str());
+        vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+    } else if(filename.endsWith(".ply")) {
+        // read .tri .vert files
+        vtkSmartPointer<vtkPLYReader> reader = vtkSmartPointer<vtkPLYReader>::New();
+        reader->SetFileName(filename.toStdString().c_str());
+        vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+    } else if(filename.endsWith(".obj")) {
+        // read .tri .vert files
+        vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
         reader->SetFileName(filename.toStdString().c_str());
         vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".scene"))) {

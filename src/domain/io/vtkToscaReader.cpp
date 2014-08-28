@@ -1,19 +1,19 @@
-#include "vtkToscaASCIIReader.h"
+#include "vtkToscaReader.h"
 
-vtkStandardNewMacro(vtkToscaASCIIReader);
+vtkStandardNewMacro(vtkToscaReader);
 
 // Description:
 // Instantiate object with NULL filename.
-vtkToscaASCIIReader::vtkToscaASCIIReader() {
+vtkToscaReader::vtkToscaReader() {
     this->FileName = NULL;
     this->SetNumberOfInputPorts(0);
     this->SetNumberOfOutputPorts(1);
 }
 
-vtkToscaASCIIReader::~vtkToscaASCIIReader() {
+vtkToscaReader::~vtkToscaReader() {
 }
 
-int vtkToscaASCIIReader::FillOutputPortInformation(int port, vtkInformation* info) {
+int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
     if (port == 0) {
         info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData" );
         return 1;
@@ -22,7 +22,7 @@ int vtkToscaASCIIReader::FillOutputPortInformation(int port, vtkInformation* inf
     return 0;
 }
 
-int vtkToscaASCIIReader::RequestData(vtkInformation *vtkNotUsed(request),
+int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
                               vtkInformationVector **vtkNotUsed(inputVector),
                               vtkInformationVector *outputVector) {
     // get the info object
@@ -95,7 +95,7 @@ int vtkToscaASCIIReader::RequestData(vtkInformation *vtkNotUsed(request),
     return 1;
 }
 
-void vtkToscaASCIIReader::PrintSelf(ostream& os, vtkIndent indent) {
+void vtkToscaReader::PrintSelf(ostream& os, vtkIndent indent) {
     this->Superclass::PrintSelf(os,indent);
     os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";
 }

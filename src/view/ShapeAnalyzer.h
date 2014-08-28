@@ -32,6 +32,8 @@
 #include <vtkScalarBarActor.h>
 #include <vtkTextProperty.h>
 #include <vtkTextMapper.h>
+#include <vtkPLYReader.h>
+#include <vtkOBJReader.h>
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -70,7 +72,7 @@
 
 #include "../domain/io/SceneWriterReader.h"
 #include "../domain/io/vtkOFFReader.h"
-#include "../domain/io/vtkToscaASCIIReader.h"
+#include "../domain/io/vtkToscaReader.h"
 
 #include "../domain/metric/Metric.h"
 #include "../domain/metric/EuclideanMetric.h"

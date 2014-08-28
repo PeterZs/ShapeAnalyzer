@@ -8,6 +8,98 @@
 
 #include "SceneWriterReader.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes) {
+
+    
+    //open input file stream in binary mode
+    ifstream is(filename, ios::binary);
+    
+    //read number of shapes
+    int64_t numberOfShapes;
+    is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+    
+    
+    //read last insert shape ID
+    is.read(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
+    
+    //read shapes
+    for(unsigned int i = 0; i < numberOfShapes; i++) {
+        Shape* shape = new Shape(renderer);
+        
+        shape->readBinary(is);
+        shapes.push_back(shape);
+    }
+    
+    is.close();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportSceneBinary(string filename, vector<Shape*>& shapes, int lastInsertShapeID) {
+    ofstream os(filename, ios::binary);
+    int64_t numberOfShapes = (int64_t) shapes.size();
+    os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+    
+    int64_t lastInsertID = (int64_t) lastInsertShapeID;
+    os.write(reinterpret_cast<char*>(&lastInsertID), sizeof(int64_t));
+    
+    
+    for(int i = 0; i < shapes.size(); i++) {
+        shapes[i]->writeBinary(os);
+    }
+    
+    
+    os.close();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes) {
+    ifstream is(filename);
+    
+    string line;
+    
+    unsigned int numberOfShapes;
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> numberOfShapes;
+    }
+    
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> lastInsertShapeID;
+    }
+    
+    for(unsigned int i = 0; i < numberOfShapes; i++) {
+        Shape* shape = new Shape(renderer);
+        shape->readASCII(is);
+        shapes.push_back(shape);
+        
+    }
+    
+    is.close();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportSceneASCII(string filename, vector<Shape*>& shapes, int lastInsertShapeID) {
+    ofstream os(filename);
+    
+    os << shapes.size() << endl;
+    os << lastInsertShapeID << endl;
+    for(int i = 0; i < shapes.size(); i++) {
+        shapes[i]->writeASCII(os);
+    }
+    os.close();
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 void SceneWriterReader::exportCorrespondences(HashMap<CorrespondenceData*, bool>&   correspondences,
                                         vector<Shape*>&                             shapesOrderedById,

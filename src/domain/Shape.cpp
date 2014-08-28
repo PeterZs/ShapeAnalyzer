@@ -200,8 +200,9 @@ istream& Shape::readBinary(istream& is) {
     
     int64_t length;
     is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
-    char* name = new char[length];
+    char* name = new char[length+1];
     is.read(name, length*sizeof(char));
+    name[length] = '\0';
     
     name_ = name;
     delete name;

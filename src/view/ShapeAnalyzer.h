@@ -258,12 +258,7 @@ private:
     void vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
     void vtkOpenShape(vtkPolyDataAlgorithm* reader, string name);
-    void vtkOpenScene(string filename);
-    void vtkSaveScene(string filename);
-    void vtkImportScene(string filename);
-    void vtkExportScene(string filename);
 
-    
 
     void clear();
     void deleteShape(int i);

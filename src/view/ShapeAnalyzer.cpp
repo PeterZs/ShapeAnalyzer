@@ -1145,9 +1145,46 @@ void ShapeAnalyzer::slotOpenFile() {
         reader->SetFileName(filename.toStdString().c_str());
         vtkOpenShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".scene"))) {
-        vtkOpenScene(filename.toStdString());
+        // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
+        // This is probably a bug of VTK.
+        scalarBar_->SetVisibility(0);
+        scalarBar_->Modified();
+        qvtkWidget->GetRenderWindow()->Render();
+        clear();
+        
+        vector<Shape*> shapes;
+        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeID_, shapes);
+        for(int i = 0; i < shapes.size(); i++) {
+            addShape(shapes[i]);
+        }
+        
+        
+        renderer_->ResetCamera();
+        
+        // Turn on scalarbar again.
+        scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
+        scalarBar_->Modified();
+        qvtkWidget->GetRenderWindow()->Render();
     } else if(filename.endsWith(".txt")) {
-        vtkImportScene(filename.toStdString());
+        // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
+        // This is probably a bug of VTK.
+        scalarBar_->SetVisibility(0);
+        scalarBar_->Modified();
+        qvtkWidget->GetRenderWindow()->Render();
+        clear();
+        
+        vector<Shape*> shapes;
+        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeID_, shapes);
+        for(int i = 0; i < shapes.size(); i++) {
+            addShape(shapes[i]);
+        }
+        
+        renderer_->ResetCamera();
+        
+        // Turn on scalarbar again.
+        scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
+        scalarBar_->Modified();
+        qvtkWidget->GetRenderWindow()->Render();
     } else {
         //TODO Error handling
         ;
@@ -1208,7 +1245,13 @@ void ShapeAnalyzer::slotImportCorrespondences() {
 void ShapeAnalyzer::slotSaveScene() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.scene)"));
     
-    vtkSaveScene(filename.toStdString());
+    vector<Shape*> shapes;
+    shapesByActor_.getValues(shapes);
+    
+    ShapeComparator comp;
+    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+    std::sort(shapes.begin(), shapes.end(), comp);
+    SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeID_);
 }
 
 
@@ -1216,7 +1259,14 @@ void ShapeAnalyzer::slotSaveScene() {
 void ShapeAnalyzer::slotExportScene() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("ASCII Scene Files (*.txt)"));
     
-    vtkExportScene(filename.toStdString());
+    vector<Shape*> shapes;
+    shapesByActor_.getValues(shapes);
+    
+    ShapeComparator comp;
+    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+    std::sort(shapes.begin(), shapes.end(), comp);
+    SceneWriterReader::exportSceneASCII(filename.toStdString(), shapes, lastInsertShapeID_);
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1713,154 +1763,6 @@ void ShapeAnalyzer::vtkOpenShape(vtkPolyDataAlgorithm* reader, string name) {
         }
     }
 }
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkOpenScene(string filename) {
-    
-    // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
-    // This is probably a bug of VTK.
-    scalarBar_->SetVisibility(0);
-    scalarBar_->Modified();
-    qvtkWidget->GetRenderWindow()->Render();
-    
-    clear();
-    
-    //open input file stream in binary mode
-    ifstream is(filename, ios::binary);
-    
-    //read number of shapes
-    int64_t numberOfShapes;
-    is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
-    
-    
-    //read last insert shape ID
-    int64_t lastInsertShapeID;
-    is.read(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
-    lastInsertShapeID_ = lastInsertShapeID;
-    
-    //read shapes
-    for(unsigned int i = 0; i < numberOfShapes; i++) {
-        Shape* shape = new Shape(renderer_);
-        
-        shape->readBinary(is);
-        
-        vtkAddShape(shape);
-        shapesByActor_.add(shape->getActor(), shape);
-        
-        // fire event for shapesTabs
-        for(HashMap<string, qtShapesTab*>::iterator it = shapesTabs_.begin(); it != shapesTabs_.end(); it++) {
-            it->second->onShapeAdd(shape);
-        }
-        
-        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
-        listShapes->addItem(item);
-        
-        //make sure that there always is exactly one item selected if there exists at least one item
-        listShapes->setCurrentRow(listShapes->count()-1);
-        
-    }
-    
-    is.close();
-    
-    renderer_->ResetCamera();
-    
-    // Turn on scalarbar again.
-    scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
-    scalarBar_->Modified();
-    qvtkWidget->GetRenderWindow()->Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkImportScene(string filename) {
-    
-    // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
-    // This is probably a bug of VTK.
-    scalarBar_->SetVisibility(0);
-    scalarBar_->Modified();
-    qvtkWidget->GetRenderWindow()->Render();
-    
-    clear();
-    
-    ifstream is(filename);
-    
-    string line;
-    
-    unsigned int numberOfShapes;
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> numberOfShapes;
-    }
-    
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> lastInsertShapeID_;
-    }
-    
-    for(unsigned int i = 0; i < numberOfShapes; i++) {
-        Shape* shape = new Shape(renderer_);
-        shape->readASCII(is);
-        vtkAddShape(shape);
-        shapesByActor_.add(shape->getActor(), shape);
-        
-        // fire event for shapesTabs
-        for(HashMap<string, qtShapesTab*>::iterator it = shapesTabs_.begin(); it != shapesTabs_.end(); it++) {
-            it->second->onShapeAdd(shape);
-        }
-        
-        // add shape to qt list widget
-        qtListWidgetItem<Shape> *item = new qtListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
-        listShapes->addItem(item);
-        
-        //make sure that there always is exactly one item selected if there exists at least one item
-        listShapes->setCurrentRow(listShapes->count()-1);
-        
-    }
-    
-    is.close();
-    
-    renderer_->ResetCamera();
-
-    // Turn on scalarbar again.
-    scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
-    scalarBar_->Modified();
-    qvtkWidget->GetRenderWindow()->Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkSaveScene(string filename) {
-    ofstream os(filename, ios::binary);
-    int64_t numberOfShapes = (int64_t) shapesByActor_.size();
-    os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
-    
-    int64_t lastInsertShapeID = (int64_t) lastInsertShapeID_;
-    os.write(reinterpret_cast<char*>(&lastInsertShapeID), sizeof(int64_t));
-    
-    
-    for(int i = 0; i < listShapes->count(); i++) {
-        ((qtListWidgetItem<Shape>*) listShapes->item(i))->getItem()->writeBinary(os);
-    }
-    
-    
-    os.close();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkExportScene(string filename) {
-    ofstream os(filename);
-    
-    os << shapesByActor_.size() << endl;
-    os << lastInsertShapeID_ << endl;
-    for(int i = 0; i < listShapes->count(); i++) {
-        ((qtListWidgetItem<Shape>*) listShapes->item(i))->getItem()->writeASCII(os);
-    }
-    os.close();
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command) {

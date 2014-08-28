@@ -66,7 +66,15 @@ void qtShapeInterpolationTab::slotChooseShapes() {
     name.append(target_->getName());
     
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->DeepCopy(source_->getPolyData());
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
+    
+    points->DeepCopy(source_->getPolyData()->GetPoints());
+    polys->DeepCopy(source_->getPolyData()->GetPolys());
+    
+    polyData->SetPoints(points);
+    polyData->SetPolys(polys);
+    
     shape_ = new Shape(lastInsertShapeID_, name, polyData, renderer_);
     shape_->initialize();
     parent_->vtkAddShape(shape_);

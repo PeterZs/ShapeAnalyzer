@@ -37,6 +37,12 @@ public:
     SceneWriterReader() {};
     ~SceneWriterReader() {};
     
+
+    static void importSceneBinary(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes);
+    static void exportSceneBinary(string filename, vector<Shape*>& shapes, int lastInsertShapeID);
+    static void importSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes);
+    static void exportSceneASCII(string filename, vector<Shape*>& shapes, int lastInsertShapeID);
+    
     // correspondences
     static void exportPointCorrespondences(
                                HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,

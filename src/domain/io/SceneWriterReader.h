@@ -37,37 +37,60 @@ public:
     SceneWriterReader() {};
     ~SceneWriterReader() {};
     
-
+    // whole scenes
     static void importSceneBinary(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes);
     static void exportSceneBinary(string filename, vector<Shape*>& shapes, int lastInsertShapeID);
     static void importSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes);
     static void exportSceneASCII(string filename, vector<Shape*>& shapes, int lastInsertShapeID);
     
     // correspondences
-    static void exportPointCorrespondences(
+    static void exportPointCorrespondencesASCII(
                                HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
                                vector<Shape*>&                          shapesOrderedById,
                                string                                   filename
                                );
-    static void exportFaceCorrespondences(
+    static void exportFaceCorrespondencesASCII(
                                HashMap<FaceCorrespondenceData*, bool>&  faceCorrespondences,
                                vector<Shape*>&                          shapesOrderedById,
                                string                                   filename
                                );
     
-    static void importCorrespondences(string                            filename,
+    static void importCorrespondencesASCII(string                               filename,
                                       int&                                      lastInsertCorrespondenceID_,
                                       vector<PointCorrespondenceData*>&         pointCorrespondences,
                                       vector<FaceCorrespondenceData*>&          faceCorrespondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget);
+
     
+    static void exportPointCorrespondencesBinary(
+                                                HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
+                                                vector<Shape*>&                          shapesOrderedById,
+                                                string                                   filename
+                                                );
+    static void exportFaceCorrespondencesBinary(
+                                               HashMap<FaceCorrespondenceData*, bool>&  faceCorrespondences,
+                                               vector<Shape*>&                          shapesOrderedById,
+                                               string                                   filename
+                                               );
+    
+    static void importCorrespondencesBinary(string                                   filename,
+                                           int&                                      lastInsertCorrespondenceID_,
+                                           vector<PointCorrespondenceData*>&         pointCorrespondences,
+                                           vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                           vector<Shape*>&                           shapesOrderedById,
+                                           QWidget*                                  parentWidget);
 private:
-    static void exportCorrespondences(HashMap<CorrespondenceData*, bool>&       correspondences,
+    static void exportCorrespondencesASCII(HashMap<CorrespondenceData*, bool>&  correspondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       ostream&                                  os);
 
-    static void createCorrespondenceData(vector<Shape*>& shapes, stringstream& ss, CorrespondenceData* data);
+    static void createCorrespondenceDataASCII(vector<Shape*>& shapes, stringstream& ss, CorrespondenceData* data);
+    
+    static void exportCorrespondencesBinary(HashMap<CorrespondenceData*, bool>&  correspondences,
+                                           vector<Shape*>&                           shapesOrderedById,
+                                           ostream&                                  os);
+
 };
 
 #endif /* defined(__ShapeAnalyzer__SceneWriterReader__) */

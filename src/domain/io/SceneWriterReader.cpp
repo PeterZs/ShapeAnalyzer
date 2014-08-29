@@ -101,10 +101,11 @@ void SceneWriterReader::exportSceneASCII(string filename, vector<Shape*>& shapes
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportCorrespondences(HashMap<CorrespondenceData*, bool>&   correspondences,
+void SceneWriterReader::exportCorrespondencesASCII(HashMap<CorrespondenceData*, bool>&   correspondences,
                                         vector<Shape*>&                             shapesOrderedById,
                                         ostream&                                    os)
 {
+    os << shapesOrderedById.size() << " " << correspondences.size() << endl;
     // write down all correspondences
     for (auto it = correspondences.begin(); it != correspondences.end(); it++) {
         vector<vtkIdType> shapeIds = it->first->getShapeIds();
@@ -134,7 +135,7 @@ void SceneWriterReader::exportCorrespondences(HashMap<CorrespondenceData*, bool>
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportPointCorrespondences(HashMap<PointCorrespondenceData*, bool>& correspondences,
+void SceneWriterReader::exportPointCorrespondencesASCII(HashMap<PointCorrespondenceData*, bool>& correspondences,
                                              vector<Shape*>&                                shapesOrderedById,
                                              string                                         filename)
 {
@@ -142,16 +143,16 @@ void SceneWriterReader::exportPointCorrespondences(HashMap<PointCorrespondenceDa
     
     // basic information, point correspondences, number of shapes
     // number of correspondences
-    os << "P " << " " << shapesOrderedById.size() << " " << correspondences.size() << endl;
+    os << "P ";
     
-    exportCorrespondences((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
+    exportCorrespondencesASCII((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
     
     os.close();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportFaceCorrespondences(HashMap<FaceCorrespondenceData*, bool>&   correspondences,
+void SceneWriterReader::exportFaceCorrespondencesASCII(HashMap<FaceCorrespondenceData*, bool>&   correspondences,
                                             vector<Shape*>&                                 shapesOrderedById,
                                             string                                          filename)
 {
@@ -159,16 +160,16 @@ void SceneWriterReader::exportFaceCorrespondences(HashMap<FaceCorrespondenceData
     
     // basic information, face correspondences, number of shapes
     // number of correspondences
-    os << "F " << shapesOrderedById.size() << " " << correspondences.size() << endl;
+    os << "F ";
     
-    exportCorrespondences((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
+    exportCorrespondencesASCII((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
     
     os.close();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::importCorrespondences(string                            filename,
+void SceneWriterReader::importCorrespondencesASCII(string                            filename,
                                       int&                                      lastInsertCorrespondenceID_,
                                       vector<PointCorrespondenceData*>&         pointCorrespondences,
                                       vector<FaceCorrespondenceData*>&          faceCorrespondences,
@@ -248,7 +249,7 @@ void SceneWriterReader::importCorrespondences(string                            
         stringstream ss;
         getline(is, line);
         ss << line;
-        createCorrespondenceData(correspondingShapes, ss, data);
+        createCorrespondenceDataASCII(correspondingShapes, ss, data);
         
         if (type == 'F') {
             faceCorrespondences.push_back((FaceCorrespondenceData*) data);
@@ -260,12 +261,181 @@ void SceneWriterReader::importCorrespondences(string                            
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::createCorrespondenceData(vector<Shape*>& shapes, stringstream& ss, CorrespondenceData* data) {
+void SceneWriterReader::createCorrespondenceDataASCII(vector<Shape*>& shapes, stringstream& ss, CorrespondenceData* data) {
     for (auto it = shapes.begin(); it != shapes.end(); it++) {
         int id;
         ss >> id;
         if (id > -1) {
             data->addShape((*it)->getId(), id);
         }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportCorrespondencesBinary(HashMap<CorrespondenceData*, bool>&        correspondences,
+                                                   vector<Shape*>&                             shapesOrderedById,
+                                                   ostream&                                    os)
+{
+    int64_t numberOfShapes = shapesOrderedById.size();
+    os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+    
+    int64_t numberOfCorrespondences = correspondences.size();
+    os.write(reinterpret_cast<char*>(&numberOfCorrespondences), sizeof(int64_t));
+    
+    // write down all correspondences
+    for (auto it = correspondences.begin(); it != correspondences.end(); it++) {
+        vector<vtkIdType> shapeIds = it->first->getShapeIds();
+        vector<vtkIdType> correspondingIds = it->first->getCorrespondingIds();
+        
+        // get the same order of shapes for all lines
+        for (int i = 0; i < shapesOrderedById.size(); i++) {
+            bool contained = false;
+            // check for each possible shape whether it is in this correspondences or not
+            for (int j = 0; j < shapeIds.size(); j++) {
+                if (shapeIds[j] == shapesOrderedById[i]->getId()) {
+                    // data[i] is the id of the correspondence element on the shape[i]
+                    int64_t correspondingId = (int64_t) correspondingIds[j];
+                    os.write(reinterpret_cast<char*>(&correspondingId), sizeof(int64_t));
+                    contained = true;
+                    break;
+                }
+            }
+            // -1 indicates this shape is not in the correspondence
+            if (!contained) {
+                int64_t correspondingId = -1;
+                os.write(reinterpret_cast<char*>(&correspondingId), sizeof(int64_t));
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportPointCorrespondencesBinary(HashMap<PointCorrespondenceData*, bool>& correspondences,
+                                                        vector<Shape*>&                                shapesOrderedById,
+                                                        string                                         filename)
+{
+    ofstream os(filename, ios::binary);
+    
+    // write type
+    const char type = 'P';
+    os.write(&type, sizeof(char));
+
+    exportCorrespondencesBinary((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
+    
+    os.close();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportFaceCorrespondencesBinary(HashMap<FaceCorrespondenceData*, bool>&   correspondences,
+                                                       vector<Shape*>&                                 shapesOrderedById,
+                                                       string                                          filename)
+{
+    ofstream os(filename, ios::binary);
+    
+    // write type
+    const char type = 'F';
+    os.write(&type, sizeof(char));
+    
+    exportCorrespondencesBinary((HashMap<CorrespondenceData*, bool>&) correspondences, shapesOrderedById, os);
+    
+    os.close();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::importCorrespondencesBinary(string                            filename,
+                                                   int&                                      lastInsertCorrespondenceID_,
+                                                   vector<PointCorrespondenceData*>&         pointCorrespondences,
+                                                   vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                                   vector<Shape*>&                           shapesOrderedById,
+                                                   QWidget*                                  parentWidget)
+{
+    
+    ifstream is(filename, ios::binary);
+
+    // read 3 lines, type of correspondences, number of shapes, number of correspondences
+    char type;
+    int64_t numberOfShapes, numberOfCorrespondences;
+    
+    is.read(&type, sizeof(char));
+    is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+    is.read(reinterpret_cast<char*>(&numberOfCorrespondences), sizeof(int64_t));
+    
+    
+    // stop if there not enough shapes to match
+    if (shapesOrderedById.size() < numberOfShapes) {
+        //TODO throw reader exception here, catch by main program
+        return;
+    }
+    
+    QStringList labels;
+    // add all shapes that have not been chosen yet
+    for (int j = 0; j < shapesOrderedById.size(); j++) {
+        QString label = QString::number(shapesOrderedById[j]->getId());
+        label.append(QString::fromStdString(":"+shapesOrderedById[j]->getName()));
+        labels << label;
+    }
+    
+    vector<Shape*> correspondingShapes = vector<Shape*>(0);
+    
+    // user chooses numberOfShapes many shapes to correspond
+    unsigned counter = 1;
+    for (int i = 0; i < numberOfShapes; i++) {
+        bool ok;
+        QString chosen = QInputDialog::getItem(parentWidget,
+                                               QObject::tr("Choose a shape:"),
+                                               QString(QObject::tr("Shape for column ")).append(QString::number(counter)),
+                                               labels,
+                                               0,
+                                               true,
+                                               &ok);
+        if(!ok) {
+            return;
+        }
+        
+        Shape* shape = nullptr;
+        // add chosen shape to vector
+        for(int j = 0; j < shapesOrderedById.size(); j++) {
+            vtkIdType shapeId = chosen.split(':')[0].toInt();
+            if(shapesOrderedById[j]->getId() == shapeId) {
+                shape = shapesOrderedById[j];
+                break;
+            }
+        }
+        
+        correspondingShapes.push_back(shape);
+        // delete chosen shape from map, so it can not be chosen again
+        labels.removeOne(chosen);
+        counter++;
+    }
+    
+    // create correspondeneces
+    for (int i = 0; i < numberOfCorrespondences; i++) {
+        CorrespondenceData* data;
+        if (type == 'F') {
+            data = new FaceCorrespondenceData(lastInsertCorrespondenceID_);
+        } else {
+            data = new PointCorrespondenceData(lastInsertCorrespondenceID_);
+        }
+        
+        for (auto it = shapesOrderedById.begin(); it != shapesOrderedById.end(); it++) {
+            int64_t id;
+
+            is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
+            
+            if (id > -1) {
+                data->addShape((*it)->getId(), id);
+            }
+        }
+        
+        if (type == 'F') {
+            faceCorrespondences.push_back((FaceCorrespondenceData*) data);
+        } else {
+            pointCorrespondences.push_back((PointCorrespondenceData*) data);
+        }
+        lastInsertCorrespondenceID_++;
     }
 }

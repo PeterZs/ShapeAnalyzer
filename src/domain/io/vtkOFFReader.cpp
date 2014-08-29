@@ -29,9 +29,6 @@ quite complicated. To find a full specification,
 search the net for "OFF format", eg.:
 
 http://people.sc.fsu.edu/~burkardt/data/off/off.html
-
-We support only vertices and faces composed of 3 vertices.
-
 ---------------------------------------------------------*/
 
 int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
@@ -114,22 +111,19 @@ int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
     do {
         std::stringstream ssFace;
         ssFace << line;
-        unsigned int numFaceVerts, Vert0, Vert1, Vert2;
-        ssFace >> numFaceVerts >> Vert0 >> Vert1 >> Vert2;
+        unsigned int numFaceVerts;
+        ssFace >> numFaceVerts;
+
     
-        if(numFaceVerts != 3) {
-            vtkErrorMacro(<< "File " << this->FileName << " contains a face with >3 (" << numFaceVerts << ") vertices.");
-            return 0;
+        vtkIdType cell[256];
+    
+        for(int i = 0; i < numFaceVerts; i++) {
+            unsigned int vert;
+            ssFace >> vert;
+            cell[i] = vert;
         }
     
-        //std::cout << "adding triangle: " << Vert0 << " " << Vert1 << " " << Vert2 << std::endl;
-        vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-    
-        triangle->GetPointIds()->SetId(0, Vert0);
-        triangle->GetPointIds()->SetId(1, Vert1);
-        triangle->GetPointIds()->SetId(2, Vert2);
-    
-        polys->InsertNextCell(triangle);
+        polys->InsertNextCell(numFaceVerts, cell);
     
         faceCounter++;
     } while(getline(in, line) && faceCounter < numberOfFaces);

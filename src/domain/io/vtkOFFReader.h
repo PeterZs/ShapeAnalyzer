@@ -13,7 +13,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
-#include <vtkTriangle.h>
+#include <vtkGenericCell.h>
+#include <vtkCell.h>
 
 #include <sstream>
 #include <fstream>

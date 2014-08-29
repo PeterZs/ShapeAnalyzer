@@ -34,6 +34,7 @@
 #include <vtkTextMapper.h>
 #include <vtkPLYReader.h>
 #include <vtkOBJReader.h>
+#include <vtkPLYWriter.h>
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -73,6 +74,10 @@
 #include "../domain/io/SceneWriterReader.h"
 #include "../domain/io/vtkOFFReader.h"
 #include "../domain/io/vtkToscaReader.h"
+#include "../domain/io/vtkOFFWriter.h"
+#include "../domain/io/vtkToscaWriter.h"
+#include "../domain/io/vtkOBJWriter.h"
+
 
 #include "../domain/metric/Metric.h"
 #include "../domain/metric/EuclideanMetric.h"
@@ -204,9 +209,9 @@ private slots:
     virtual void slotSetBackgroundColor();
     virtual void slotToggleProjectionMode();
     
-    virtual void slotOpenFile();
+    virtual void slotOpenScene();
     virtual void slotSaveScene();
-    virtual void slotExportScene();
+    virtual void slotImportShape();
     virtual void slotImportCorrespondences();
     virtual void slotExportCorrespondences();
     
@@ -243,6 +248,7 @@ private:
     void qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     
     void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
+    void qtExportShapeDialog(Shape* shape);
     void qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspondence>* item);
     void qtInputDialogOpacity(Shape* shape);
     void qtShowEigenfunction(Shape* shape);
@@ -259,9 +265,8 @@ private:
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
-    void vtkOpenShape(vtkPolyDataAlgorithm* reader, string name);
 
-
+    void openShape(vtkPolyDataAlgorithm* reader, string name);
     void clear();
     void deleteShape(int i);
     void deleteCorrespondence(int i);

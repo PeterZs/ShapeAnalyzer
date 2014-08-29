@@ -181,15 +181,16 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpenFile"/>
+    <addaction name="actionOpenScene"/>
+    <addaction name="actionImportShape"/>
     <addaction name="actionImportCorrespondences"/>
     <addaction name="separator"/>
     <addaction name="actionSaveScene"/>
-    <addaction name="actionExportScene"/>
     <addaction name="actionExportCorrespondences"/>
     <addaction name="actionSaveScreenshot"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -262,9 +263,9 @@
    <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionOpenFile">
+  <action name="actionOpenScene">
    <property name="text">
-    <string>Open File...</string>
+    <string>Open Scene...</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+O</string>
@@ -389,11 +390,6 @@
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
-  <action name="actionExportScene">
-   <property name="text">
-    <string>Export Scene (ASCII)...</string>
-   </property>
-  </action>
   <action name="actionShapes">
    <property name="checkable">
     <bool>true</bool>
@@ -414,17 +410,6 @@
    </property>
    <property name="text">
     <string>Shape Info</string>
-   </property>
-  </action>
-  <action name="actionCorrespondences">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Point Correspondences</string>
    </property>
   </action>
   <action name="actionShowSurface">
@@ -511,7 +496,7 @@
   </action>
   <action name="actionExportCorrespondences">
    <property name="text">
-    <string>Export Correspondences (ASCII)...</string>
+    <string>Export Correspondences...</string>
    </property>
   </action>
   <action name="actionCorrespondenceColoring">
@@ -558,6 +543,11 @@
    </property>
    <property name="text">
     <string>Show Scalar Bar</string>
+   </property>
+  </action>
+  <action name="actionImportShape">
+   <property name="text">
+    <string>Import Shape...</string>
    </property>
   </action>
  </widget>

@@ -38,25 +38,25 @@ void vtkOFFWriter::WriteData() {
         return;
     }
     
-    std::ostream& out = *outfilep;
+    std::ostream& outfile = *outfilep;
     
-    out << "OFF"<<endl;
-    out << input->GetNumberOfPoints() <<" "<<input->GetNumberOfCells()<<"0"<<endl;
+    outfile << "OFF"<<endl;
+    outfile << input->GetNumberOfPoints() <<" "<<input->GetNumberOfCells()<<"0"<<endl;
     
     for(vtkIdType i = 0; i < input->GetNumberOfPoints(); i++) {
         double p[3];
         input->GetPoints()->GetPoint(i, p);
-        out << p[0] << p[1] << p[2]<<endl;
+        outfile << p[0] <<" "<< p[1]<<" " << p[2]<<endl;
     }
     
     
     for(vtkIdType i = 0; i < input->GetNumberOfCells(); i++) {
         vtkCell* cell = input->GetCell(i);
-        out << cell->GetNumberOfPoints();
+        outfile << cell->GetNumberOfPoints();
         for(vtkIdType j = 0; j < cell->GetNumberOfPoints(); j++) {
-            out <<" "<<cell->GetPointId(j);
+            outfile <<" "<<cell->GetPointId(j);
         }
-        out <<endl;
+        outfile <<endl;
     }
     
     

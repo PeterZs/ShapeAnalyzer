@@ -15,7 +15,7 @@ vtkToscaReader::~vtkToscaReader() {
 
 int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
     if (port == 0) {
-        info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData" );
+        info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData");
         return 1;
     }
     

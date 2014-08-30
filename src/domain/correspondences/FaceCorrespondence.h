@@ -21,8 +21,8 @@
 
 class FaceCorrespondence : public Correspondence {
 public:
-    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data);
-    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, FaceCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
+    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data);
+    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
     FaceCorrespondenceData* getData() { return (FaceCorrespondenceData*) data_; }
     

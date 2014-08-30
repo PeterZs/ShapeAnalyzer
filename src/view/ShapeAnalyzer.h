@@ -249,7 +249,6 @@ private:
     
     void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
     void qtExportShapeDialog(Shape* shape);
-    void qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspondence>* item);
     void qtInputDialogOpacity(Shape* shape);
     void qtShowEigenfunction(Shape* shape);
     void qtShowHeatDiffusion(Shape* shape);
@@ -260,6 +259,7 @@ private:
     void qtTransferCoordinateFunction(Shape* shape1);
     void qtCreateShapeSegment(Shape *shape, vtkIdType pointId);
     
+   qtListWidgetItem<Correspondence>* qtAddListCorrespondencesItem(Correspondence* correspondence);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);

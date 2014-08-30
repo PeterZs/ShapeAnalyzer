@@ -61,30 +61,21 @@ public:
         return data_;
     }
     
-    string getLabel() {
-        return label_;
-    }
-    
-    void setLabel(string label) {
-        label_ = label;
-    }
-    
     // vtk
     void removeFromRenderer();
     void addToRenderer();
     
 protected:
     //protected contructor since class is abstract
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data);
-    Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
+    Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;
     
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
     
     vtkSmartPointer<vtkRenderer>    renderer_;
-    string                          label_; //label displayed in the correspondence list
-    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs and the unique ID
+    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs and a unique correspondenceID
     vector<Shape*>                  shapes_;
 
     

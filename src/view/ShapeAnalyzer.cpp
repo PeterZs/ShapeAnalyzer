@@ -368,30 +368,6 @@ void ShapeAnalyzer::qtExportShapeDialog(Shape* shape) {
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtInputDialogRenameCorrespondence(qtListWidgetItem<Correspondence>* item) {
-    bool ok;
-    QString label = QInputDialog::getText (
-                                           this,
-                                           tr("Rename"),
-                                           tr("New Name"),
-                                           QLineEdit::Normal,
-                                           item->text(),
-                                           &ok
-                                           );
-    // rename if ok was given
-    if (ok) {
-        item->setText(label);
-        item->getItem()->setLabel(label.toStdString());
-        
-        // fire event for correspondenceTabs
-        for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
-            it->second->onCorrespondenceEdit(item->getItem());
-        }
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowEigenfunction(Shape* shape) {
     bool ok;
@@ -867,7 +843,6 @@ void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     QMenu menu;
-    QAction* renameAction   = menu.addAction("Rename");
     QAction* hideAction   = menu.addAction("Hide");
     QAction* deleteAction   = menu.addAction("Delete");
     // ...
@@ -875,8 +850,6 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     QAction* selectedItem = menu.exec(pos);
     if (selectedItem == deleteAction) { // deletes correspondence data
         deleteCorrespondence(this->listCorrespondences->currentRow());
-    } else if (selectedItem == renameAction) {
-        qtInputDialogRenameCorrespondence((qtListWidgetItem<Correspondence>*) this->listCorrespondences->currentItem());
     } else if (selectedItem == hideAction) { // correspondence data is stored, vtkActor is deleted
         hideCorrespondence(this->listCorrespondences->currentRow());
     }
@@ -884,10 +857,8 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId) {
-    
     QMenu myMenu;
 
-    
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
@@ -967,6 +938,18 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     
 }
 
+
+qtListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesItem(Correspondence* correspondence) {
+    string label = "Correspondence ";
+    label.append(to_string(correspondence->getData()->getId()));
+    qtListWidgetItem<Correspondence>* item = new qtListWidgetItem<Correspondence>(
+                                                                                  QString::fromStdString(label),
+                                                                                  correspondence);
+    item->setToolTip(correspondence->getData()->toString().c_str());
+    this->listCorrespondences->addItem(item);
+    return item;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // QT slots
 ///////////////////////////////////////////////////////////////////////////////
@@ -1038,10 +1021,7 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         // add face correspondences from before
         for (auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
             // add to list
-            this->listCorrespondences->addItem(new qtListWidgetItem<Correspondence>(
-                                                                                    QString::fromStdString(it->second->getLabel()),
-                                                                                    it->second)
-                                               );
+            qtAddListCorrespondencesItem(it->second);
             
             // add to renderer
             it->second->addToRenderer();
@@ -1081,10 +1061,7 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         // add point correspondences from before
         for (auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
             // add to list
-            this->listCorrespondences->addItem(new qtListWidgetItem<Correspondence>(
-                                                                                    QString::fromStdString(it->second->getLabel()),
-                                                                                    it->second)
-                                               );
+            qtAddListCorrespondencesItem(it->second);
             
             // add to renderer
             it->second->addToRenderer();
@@ -1233,8 +1210,8 @@ void ShapeAnalyzer::slotOpenScene() {
             // add correspondence to qt list widget
             if(actionDisplayPointCorrespondences->isChecked()) {
                 i->second->addToRenderer();
-                qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(i->second->getLabel().c_str()), i->second);
-                this->listCorrespondences->addItem(item);
+                
+                qtAddListCorrespondencesItem(i->second);
             }
         } else {
             pointCorrespondenceData_.add(i->first, false);
@@ -1257,8 +1234,8 @@ void ShapeAnalyzer::slotOpenScene() {
             // add correspondence to qt list widget
             if(actionDisplayFaceCorrespondences->isChecked()) {
                 i->second->addToRenderer();
-                qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(i->second->getLabel().c_str()), i->second);
-                this->listCorrespondences->addItem(item);
+                
+                qtAddListCorrespondencesItem(i->second);
             }
         } else {
             faceCorrespondenceData_.add(i->first, false);
@@ -2560,8 +2537,7 @@ void ShapeAnalyzer::addCorrespondence() {
             pointCorrespondencesByActor_.add(pointCorrespondence->getLinesActor(), pointCorrespondence);
             
             // add shape to qt list widget
-            qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(correspondence->getLabel().c_str()), pointCorrespondence);
-            this->listCorrespondences->addItem(item);
+            qtAddListCorrespondencesItem(correspondence);
         } else { // face correspondence
             FaceCorrespondence* faceCorrespondence = (FaceCorrespondence*) correspondence;
             faceCorrespondenceData_.add(faceCorrespondence->getData(), true);
@@ -2569,8 +2545,7 @@ void ShapeAnalyzer::addCorrespondence() {
             
             
             // add shape to qt list widget
-            qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), faceCorrespondence);
-            this->listCorrespondences->addItem(item);
+            qtAddListCorrespondencesItem(correspondence);
         }
         
         // fire event for correspondenceTabs
@@ -2585,9 +2560,7 @@ void ShapeAnalyzer::addCorrespondence() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
     if(data->getType() == "PointCorrespondenceData") {
-        string label = "Correspondence ";
-        label+=std::to_string(data->getId()+1);
-        PointCorrespondence* correspondence = new PointCorrespondence(renderer_, label, (PointCorrespondenceData*) data, shapesByActor_);
+        PointCorrespondence* correspondence = new PointCorrespondence(renderer_, (PointCorrespondenceData*) data, shapesByActor_);
         
         // create actor and add to vtk
         correspondence->initialize();
@@ -2599,8 +2572,7 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
         pointCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
         
         // add shape to qt list widget
-        qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
-        this->listCorrespondences->addItem(item);
+        qtListWidgetItem<Correspondence>* item = qtAddListCorrespondencesItem(correspondence);
         this->listCorrespondences->setCurrentItem(item);
         
         this->qvtkWidget->GetRenderWindow()->Render();
@@ -2610,9 +2582,7 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
             actionDisplayPointCorrespondences->trigger();
         }
     } else {
-        string label = "Correspondence ";
-        label+=std::to_string(data->getId()+1);
-        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, label, (FaceCorrespondenceData*) data, shapesByActor_);
+        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, (FaceCorrespondenceData*) data, shapesByActor_);
         
         // create actor and add to vtk
         correspondence->initialize();
@@ -2624,8 +2594,7 @@ void ShapeAnalyzer::showCorrespondence(CorrespondenceData* data) {
         faceCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
         
         // add shape to qt list widget
-        qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
-        this->listCorrespondences->addItem(item);
+        qtListWidgetItem<Correspondence>* item = qtAddListCorrespondencesItem(correspondence);
         this->listCorrespondences->setCurrentItem(item);        
         
         
@@ -2649,9 +2618,7 @@ void ShapeAnalyzer::samplePointCorrespondences(unsigned int size) {
     pointCorrespondenceData_.getRandomSampleKeys(size, data);
     
     for(int i = 0; i < data.size(); i++) {
-        string label = "Correspondence ";
-        label+=std::to_string(data[i]->getId()+1);
-        PointCorrespondence* correspondence = new PointCorrespondence(renderer_, label, data[i], shapesByActor_);
+        PointCorrespondence* correspondence = new PointCorrespondence(renderer_, data[i], shapesByActor_);
         
         // create actor and add to vtk
         correspondence->initialize();
@@ -2661,8 +2628,7 @@ void ShapeAnalyzer::samplePointCorrespondences(unsigned int size) {
         pointCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
         
         // add shape to qt list widget
-        qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
-        this->listCorrespondences->addItem(item);
+        qtAddListCorrespondencesItem(correspondence);
     }
     
     this->qvtkWidget->GetRenderWindow()->Render();
@@ -2679,9 +2645,7 @@ void ShapeAnalyzer::sampleFaceCorrespondences(unsigned int size) {
     faceCorrespondenceData_.getRandomSampleKeys(size, data);
     
     for(int i = 0; i < data.size(); i++) {
-        string label = "Correspondence ";
-        label+=std::to_string(data[i]->getId()+1);
-        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, label, data[i], shapesByActor_);
+        FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, data[i], shapesByActor_);
         
         // create actor and add to vtk
         correspondence->initialize();
@@ -2691,8 +2655,7 @@ void ShapeAnalyzer::sampleFaceCorrespondences(unsigned int size) {
         faceCorrespondencesByActor_.add(correspondence->getLinesActor(), correspondence);
         
         // add shape to qt list widget
-        qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(correspondence->getLabel().c_str()), correspondence);
-        this->listCorrespondences->addItem(item);
+        qtAddListCorrespondencesItem(correspondence);
     }
     
     this->qvtkWidget->GetRenderWindow()->Render();

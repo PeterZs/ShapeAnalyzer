@@ -10,12 +10,12 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data) : Correspondence(renderer, label, data) {
+PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data) : Correspondence(renderer, data) {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : Correspondence(renderer, label, data, shapes) {
+PointCorrespondence::PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : Correspondence(renderer, data, shapes) {
 }
 
 

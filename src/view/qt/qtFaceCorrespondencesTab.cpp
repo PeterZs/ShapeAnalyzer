@@ -43,10 +43,10 @@ qtFaceCorrespondencesTab::qtFaceCorrespondencesTab(
     // add all face correspondences to widget
     for(auto it = faceCorrespondences_->begin(); it != faceCorrespondences_->end(); it++) {
         string label = "Face Correspondence ";
-        label.append(to_string(it->first->getId()+1));
-        this->listFaceCorrespondences->addItem(new qtListWidgetItem<FaceCorrespondenceData>(
-                                                                                              QString(label.c_str()), it->first)
-                                                );
+        label.append(to_string(it->first->getId()));
+        qtListWidgetItem<FaceCorrespondenceData>* item = new qtListWidgetItem<FaceCorrespondenceData>(QString(label.c_str()), it->first);
+        item->setToolTip(it->first->toString().c_str());
+        this->listFaceCorrespondences->addItem(item);
     }
 }
 
@@ -148,10 +148,10 @@ void qtFaceCorrespondencesTab::onShapeDelete(Shape* shape) {
 void qtFaceCorrespondencesTab::onCorrespondenceAdd(CorrespondenceData *correspondence) {
     if(correspondence->getType() == "FaceCorrespondenceData") {
         string label = "Face Correspondence ";
-        label.append(to_string(correspondence->getId()+1));
-        this->listFaceCorrespondences->addItem(new qtListWidgetItem<FaceCorrespondenceData>(
-                                                                                              QString(label.c_str()), (FaceCorrespondenceData*) correspondence)
-                                                );
+        label.append(to_string(correspondence->getId()));
+        qtListWidgetItem<FaceCorrespondenceData>* item = new qtListWidgetItem<FaceCorrespondenceData>(QString(label.c_str()), (FaceCorrespondenceData*) correspondence);
+        item->setToolTip(correspondence->toString().c_str());
+        this->listFaceCorrespondences->addItem(item);
     }
 }
 

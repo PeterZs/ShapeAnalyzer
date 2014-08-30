@@ -47,6 +47,31 @@ public:
         return id_;
     }
     
+    string toString() {
+        string str;
+        
+        str.append("Type: ");
+        str.append(getType());
+        str.append("\n");
+        
+        str.append("ID: ");
+        str.append(to_string(id_));
+        str.append("\n");
+        
+
+        for(int i = 0; i < shapeIds_.size(); i++) {
+            str.append("S");
+            str.append(to_string(shapeIds_[i]));
+            str.append(":");
+            str.append(to_string(correspondingIds_[i]));
+            if(i < shapeIds_.size()-1) {
+                str.append("->");
+            }
+        }
+        
+        return str;
+    }
+    
     virtual string getType() = 0;
     virtual ~CorrespondenceData() {
     }

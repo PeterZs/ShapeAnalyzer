@@ -2,13 +2,13 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data) : renderer_(renderer), label_(label), data_(data) {
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data) : renderer_(renderer), data_(data) {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // to call when the CorrespondenceData is not empty, call createActorFromData afterwards
-Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, string label, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : renderer_(renderer), label_(label), data_(data) {
+Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : renderer_(renderer), data_(data) {
     
     // fill shape_ vector
     for (int i = 0; i < data_->size(); i++) {
@@ -180,3 +180,4 @@ void Correspondence::transform(Shape* shape) {
         }
     }
 }
+

@@ -52,17 +52,7 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
         
         bool visible;
         is.read(reinterpret_cast<char*>(&visible), sizeof(bool));
-        char* label;
-        if(visible) {
-            int64_t length;
-            is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
-            label = new char[length+1];
-            is.read(label, length*sizeof(char));
-            label[length] = '\0';
-        }
-        
 
-        
         int64_t numberOfShapes;
         is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
         
@@ -76,9 +66,8 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
         
         PointCorrespondence* correspondence = nullptr;
         if(visible) {
-            correspondence = new PointCorrespondence(renderer, string(label), data, shapesByActor);
+            correspondence = new PointCorrespondence(renderer, data, shapesByActor);
             correspondence->initialize();
-            delete label;
         }
         
         pointCorrespondences.add(data, correspondence);
@@ -95,16 +84,6 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
         
         bool visible;
         is.read(reinterpret_cast<char*>(&visible), sizeof(bool));
-        char* label;
-        if(visible) {
-            int64_t length;
-            is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
-            label = new char[length+1];
-            is.read(label, length*sizeof(char));
-            label[length] = '\0';
-        }
-        
-        
         
         int64_t numberOfShapes;
         is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
@@ -119,9 +98,8 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
         
         FaceCorrespondence* correspondence = nullptr;
         if(visible) {
-            correspondence = new FaceCorrespondence(renderer, string(label), data, shapesByActor);
+            correspondence = new FaceCorrespondence(renderer, data, shapesByActor);
             correspondence->initialize();
-            delete label;
         }
         
         faceCorrespondences.add(data, correspondence);
@@ -160,13 +138,6 @@ void SceneWriterReader::exportSceneBinary(string filename, vector<Shape*>& shape
         bool visible = it->second != nullptr;
         os.write(reinterpret_cast<char*>(&visible), sizeof(bool));
         
-        if(visible) {
-            int64_t length = it->second->getLabel().length();
-            const char* label = it->second->getLabel().c_str();
-            os.write(reinterpret_cast<const char*>(&length), sizeof(int64_t));
-            os.write(label, length*sizeof(char));
-        }
-        
         int64_t numberOfShapes = it->first->size();
         os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
         
@@ -189,13 +160,6 @@ void SceneWriterReader::exportSceneBinary(string filename, vector<Shape*>& shape
         
         bool visible = it->second != nullptr;
         os.write(reinterpret_cast<char*>(&visible), sizeof(bool));
-        
-        if(visible) {
-            int64_t length = it->second->getLabel().length();
-            const char* label = it->second->getLabel().c_str();
-            os.write(reinterpret_cast<const char*>(&length), sizeof(int64_t));
-            os.write(label, length*sizeof(char));
-        }
         
         int64_t numberOfShapes = it->first->size();
         os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));

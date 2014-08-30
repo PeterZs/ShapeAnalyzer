@@ -19,8 +19,8 @@
 
 class PointCorrespondence : public Correspondence {
 public:
-    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data);
-    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, string label, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);
+    PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
     PointCorrespondenceData* getData() { return (PointCorrespondenceData*) data_; }
     

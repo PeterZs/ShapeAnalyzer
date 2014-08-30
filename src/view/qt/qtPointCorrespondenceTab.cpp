@@ -42,10 +42,10 @@ qtPointCorrespondencesTab::qtPointCorrespondencesTab(
     // add all point correspondences to widget
     for(auto it = pointCorrespondences_->begin(); it != pointCorrespondences_->end(); it++) {
         string label = "Point Correspondence ";
-        label.append(to_string(it->first->getId()+1));
-        this->listPointCorrespondences->addItem(new qtListWidgetItem<PointCorrespondenceData>(
-                                                QString(label.c_str()), it->first)
-                                    );
+        label.append(to_string(it->first->getId()));
+        qtListWidgetItem<PointCorrespondenceData>* item = new qtListWidgetItem<PointCorrespondenceData>(QString(label.c_str()), it->first);
+        item->setToolTip(it->first->toString().c_str());
+        this->listPointCorrespondences->addItem(item);
     }
     
 }
@@ -144,10 +144,10 @@ void qtPointCorrespondencesTab::onClear() {
 void qtPointCorrespondencesTab::onCorrespondenceAdd(CorrespondenceData *correspondence) {
     if(correspondence->getType() == "PointCorrespondenceData") {
         string label = "Point Correspondence ";
-        label.append(to_string(correspondence->getId()+1));
-        this->listPointCorrespondences->addItem(new qtListWidgetItem<PointCorrespondenceData>(
-                                                                                              QString(label.c_str()), (PointCorrespondenceData*) correspondence)
-                                                );
+        label.append(to_string(correspondence->getId()));
+        qtListWidgetItem<PointCorrespondenceData>* item = new qtListWidgetItem<PointCorrespondenceData>(QString(label.c_str()), (PointCorrespondenceData*) correspondence);
+        item->setToolTip(correspondence->toString().c_str());
+        this->listPointCorrespondences->addItem(item);
     }
 }
 

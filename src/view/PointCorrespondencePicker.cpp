@@ -45,6 +45,7 @@ Correspondence* PointCorrespondencePicker::createCorrespondence() {
     label+=std::to_string(lastInsertCorrespondenceID_+1);
     Correspondence* correspondence = new PointCorrespondence(renderer_, label, new PointCorrespondenceData(lastInsertCorrespondenceID_));
     correspondence->initialize();
+    correspondence->addToRenderer();
     return correspondence;
 }
 

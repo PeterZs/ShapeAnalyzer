@@ -155,40 +155,6 @@ ostream& Shape::writeBinary(ostream& os) {
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-//write as ascii txt
-ostream& Shape::writeASCII(ostream& os) {
-    os << id_<< endl;
-    os << name_ << endl;
-    
-    vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
-    if(transform == nullptr) {
-        transform = vtkSmartPointer<vtkMatrix4x4>::New();
-        transform->Identity();
-    }
-    
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
-            os << transform->GetElement(i, j) << (j != 3 ? "\t" : "");
-        }
-        os << endl;
-    }
-    
-    os << polyData_->GetNumberOfPoints() << "\t" << polyData_->GetNumberOfCells() << endl;
-    
-    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
-        double point[3];
-        polyData_->GetPoints()->GetPoint(i, point);
-        os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
-    }
-    
-    for(vtkIdType i = 0; i < polyData_->GetNumberOfCells(); i++) {
-        os << polyData_->GetCell(i)->GetPointId(0) << "\t" << polyData_->GetCell(i)->GetPointId(1) << "\t" << polyData_->GetCell(i)->GetPointId(2) << endl;
-    }
-    
-    return os;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //read shape binary
@@ -258,6 +224,39 @@ istream& Shape::readBinary(istream& is) {
     return is;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//write as ascii txt
+ostream& Shape::writeASCII(ostream& os) {
+    os << id_<< endl;
+    os << name_ << endl;
+    
+    vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
+    if(transform == nullptr) {
+        transform = vtkSmartPointer<vtkMatrix4x4>::New();
+        transform->Identity();
+    }
+    
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+            os << transform->GetElement(i, j) << (j != 3 ? "\t" : "");
+        }
+        os << endl;
+    }
+    
+    os << polyData_->GetNumberOfPoints() << "\t" << polyData_->GetNumberOfCells() << endl;
+    
+    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
+        double point[3];
+        polyData_->GetPoints()->GetPoint(i, point);
+        os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
+    }
+    
+    for(vtkIdType i = 0; i < polyData_->GetNumberOfCells(); i++) {
+        os << polyData_->GetCell(i)->GetPointId(0) << "\t" << polyData_->GetCell(i)->GetPointId(1) << "\t" << polyData_->GetCell(i)->GetPointId(2) << endl;
+    }
+    
+    return os;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //read shape as ascii txt

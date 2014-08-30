@@ -41,7 +41,6 @@ void Correspondence::initialize() {
     linesActor_->SetMapper(linesMapper_);
     linesActor_->GetProperty()->SetLineWidth(1);
     linesActor_->GetProperty()->SetColor(0, 1, 0);
-    renderer_->AddActor(linesActor_);
     
     // in case CorrespondenceData was not empty create actors.
     if(data_->getShapeIds().size() > 0) {

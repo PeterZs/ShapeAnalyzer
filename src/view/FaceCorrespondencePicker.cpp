@@ -65,6 +65,7 @@ Correspondence* FaceCorrespondencePicker::createCorrespondence() {
     label+=std::to_string(lastInsertCorrespondenceID_+1);
     Correspondence* correspondence = new FaceCorrespondence(renderer_, label, new FaceCorrespondenceData(lastInsertCorrespondenceID_));
     correspondence->initialize();
+    correspondence->addToRenderer();
     return correspondence;
 }
 

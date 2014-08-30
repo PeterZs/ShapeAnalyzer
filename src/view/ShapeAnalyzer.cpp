@@ -1210,15 +1210,65 @@ void ShapeAnalyzer::slotOpenScene() {
     
     vector<Shape*> shapes;
     
+    HashMap<PointCorrespondenceData*, PointCorrespondence*> pointCorrespondences;
+    HashMap<FaceCorrespondenceData*, FaceCorrespondence*> faceCorrespondences;
+    
     if(filename.endsWith(tr(".bin"))) {
-        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeID_, shapes);
+        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeID_, shapes, lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences);
     } else {
-        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeID_, shapes);
-
+        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeID_, shapes, lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences);
     }
     
     for(int i = 0; i < shapes.size(); i++) {
         addShape(shapes[i]);
+    }
+    
+    for(HashMap<PointCorrespondenceData*, PointCorrespondence*>::iterator i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
+
+        
+        if(i->second != nullptr) {
+            pointCorrespondenceData_.add(i->first, true);
+            pointCorrespondencesByActor_.add(i->second->getLinesActor(), i->second);
+            
+            // add correspondence to qt list widget
+            if(actionDisplayPointCorrespondences->isChecked()) {
+                i->second->addToRenderer();
+                qtListWidgetItem<PointCorrespondence> *item = new qtListWidgetItem<PointCorrespondence>(QString(i->second->getLabel().c_str()), i->second);
+                this->listCorrespondences->addItem(item);
+            }
+        } else {
+            pointCorrespondenceData_.add(i->first, false);
+        }
+        
+
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator j = correspondencesTabs_.begin(); j != correspondencesTabs_.end(); j++) {
+            j->second->onCorrespondenceAdd(i->first);
+        }
+    }
+
+    for(HashMap<FaceCorrespondenceData*, FaceCorrespondence*>::iterator i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
+        
+        
+        if(i->second != nullptr) {
+            faceCorrespondenceData_.add(i->first, true);
+            faceCorrespondencesByActor_.add(i->second->getLinesActor(), i->second);
+            
+            // add correspondence to qt list widget
+            if(actionDisplayFaceCorrespondences->isChecked()) {
+                i->second->addToRenderer();
+                qtListWidgetItem<FaceCorrespondence> *item = new qtListWidgetItem<FaceCorrespondence>(QString(i->second->getLabel().c_str()), i->second);
+                this->listCorrespondences->addItem(item);
+            }
+        } else {
+            faceCorrespondenceData_.add(i->first, false);
+        }
+        
+        
+        // fire event for correspondenceTabs
+        for(HashMap<string, qtCorrespondencesTab*>::iterator j = correspondencesTabs_.begin(); j != correspondencesTabs_.end(); j++) {
+            j->second->onCorrespondenceAdd(i->first);
+        }
     }
     
     renderer_->ResetCamera();
@@ -1336,18 +1386,47 @@ void ShapeAnalyzer::slotSaveScene() {
     // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
     std::sort(shapes.begin(), shapes.end(), comp);
     
+    HashMap<PointCorrespondenceData*, PointCorrespondence*> pointCorrespondences;
+    HashMap<FaceCorrespondenceData*, FaceCorrespondence*> faceCorrespondences;
+    
+    for(HashMap<PointCorrespondenceData*, bool>::iterator i = pointCorrespondenceData_.begin(); i != pointCorrespondenceData_.end(); i++) {
+        if(i->second) {
+            for(HashMap<vtkActor*, PointCorrespondence*>::iterator j = pointCorrespondencesByActor_.begin(); j != pointCorrespondencesByActor_.end(); j++) {
+                if(j->second->getData() == i->first) {
+                    pointCorrespondences.add(i->first, j->second);
+                    break;
+                }
+            }
+        } else {
+            pointCorrespondences.add(i->first, nullptr);
+        }
+    }
+
+    for(HashMap<FaceCorrespondenceData*, bool>::iterator i = faceCorrespondenceData_.begin(); i != faceCorrespondenceData_.end(); i++) {
+        if(i->second) {
+            for(HashMap<vtkActor*, FaceCorrespondence*>::iterator j = faceCorrespondencesByActor_.begin(); j != faceCorrespondencesByActor_.end(); j++) {
+                if(j->second->getData() == i->first) {
+                    faceCorrespondences.add(i->first, j->second);
+                    break;
+                }
+            }
+        } else {
+            faceCorrespondences.add(i->first, nullptr);
+        }
+    }
+    
     if(format == formats.value(0)) {
         QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.bin)"));
         if(filename.isEmpty()) {
             return;
         }
-        SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeID_);
+        SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
     } else {
         QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Text (ASCII) Scene Files (*.txt)"));
         if(filename.isEmpty()) {
             return;
         }
-        SceneWriterReader::exportSceneASCII(filename.toStdString(), shapes, lastInsertShapeID_);
+        SceneWriterReader::exportSceneASCII(filename.toStdString(), shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
     }
 }
 
@@ -2198,7 +2277,6 @@ void ShapeAnalyzer::clearFaceCorrespondences() {
     
     
     // delete all correspondence data
-
     for(HashMap<FaceCorrespondenceData*, bool>::iterator it = faceCorrespondenceData_.begin(); it != faceCorrespondenceData_.end(); it++) {
         
         delete it->first;

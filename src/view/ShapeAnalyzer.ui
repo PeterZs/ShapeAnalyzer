@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QVTKWidget" name="qvtkWidget">
+      <widget class="QVTKWidget" name="qvtkWidget" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -232,6 +232,7 @@
     <addaction name="actionShapeInfo"/>
     <addaction name="actionShapeInterpolation"/>
     <addaction name="actionShowScalarBar"/>
+    <addaction name="actionMeshChecker"/>
     <addaction name="separator"/>
     <addaction name="actionDisplayPointCorrespondences"/>
     <addaction name="actionDisplayFaceCorrespondences"/>
@@ -548,6 +549,14 @@
   <action name="actionImportShape">
    <property name="text">
     <string>Import Shape...</string>
+   </property>
+  </action>
+  <action name="actionMeshChecker">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mesh Checker</string>
    </property>
   </action>
  </widget>

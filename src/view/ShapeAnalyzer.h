@@ -65,6 +65,7 @@
 #include "qt/qtFaceCorrespondencesTab.h"
 #include "qt/qtCorrespondenceColoringTab.h"
 #include "qt/qtShapeInterpolationTab.h"
+#include "qt/qtMeshCheckTab.h"
 
 #include "../domain/Factory.h"
 #include "../domain/HashMap.h"
@@ -223,6 +224,7 @@ private slots:
     virtual void slotTabCorrespondenceColoring(bool);
     virtual void slotTabAllFaceCorrespondences(bool);
     virtual void slotTabAllPointCorrespondences(bool);
+    virtual void slotTabMeshChecker(bool);
     
     virtual void slotTabCorrespondencesCurrentChanged(int);
     

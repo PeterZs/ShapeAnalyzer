@@ -121,6 +121,9 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->tabWidgetCorrespondences,         SIGNAL(currentChanged(int)),
             this,                                   SLOT(slotTabCorrespondencesCurrentChanged(int)));
     
+    connect(this->actionMeshChecker,                SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotTabMeshChecker(bool)));
+    
     //register metrics
     Factory<Metric>::getInstance()->Register<EuclideanMetric>("Euclidean Metric");
     Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
@@ -1592,6 +1595,21 @@ void ShapeAnalyzer::slotTabShapeInterpolation(bool checked) {
     } else { // remove shape info tab, if it was there
         delete shapesTabs_["qtShapeInterpolationTab"];
         shapesTabs_.remove("qtShapeInterpolationTab");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotTabMeshChecker(bool checked) {
+    if (checked) { // add Shape Info Tab
+        qtMeshCheckTab* tab = new qtMeshCheckTab(&shapesByActor_, this);
+        
+        int i = this->tabWidgetShapes->addTab(tab, "Mesh Checker");
+        this->tabWidgetShapes->setCurrentIndex(i);
+        shapesTabs_.add("qtMeshCheckTab", tab); // add tab to shapesTabs list.
+    } else { // remove shape info tab, if it was there
+        delete shapesTabs_["qtMeshCheckTab"];
+        shapesTabs_.remove("qtMeshCheckTab");
     }
 }
 

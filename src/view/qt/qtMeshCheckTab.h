@@ -19,6 +19,7 @@
 #include <vtkType.h>
 
 #include "../../domain/HashMap.h"
+#include "../../domain/MeshChecker.h"
 #include "../../domain/Shape.h"
 
 #include "qtShapesTab.h"
@@ -41,6 +42,8 @@ public:
     
 private slots:
     virtual void slotCheckMesh();
+    
+    void setUpComboBox(QString current = 0);
     
 private:
     HashMap<vtkActor*, Shape*>* shapes_;

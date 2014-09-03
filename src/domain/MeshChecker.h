@@ -20,17 +20,16 @@ using namespace std;
 class MeshChecker {
 public:
     MeshChecker(Shape* shape);
-    ~MeshChecker() { }
+    ~MeshChecker();
     
-    bool checkForBorders();
-    bool checkForBorders(vector<pair<vtkIdType, vtkIdType> >* borders);
-    bool checkForBorders(vector<vector<int> >& halfedges, vector<pair<vtkIdType, vtkIdType> >* borders = nullptr);
+    bool checkForBorders(vector<pair<vtkIdType, vtkIdType> >* borders = nullptr);
+    bool checkOrientation(vector<pair<vtkIdType, vtkIdType> >* unoriented = nullptr);
     
 private:
     void createHalfEdgeStructure();
     
     Shape*                  shape_;
-    vector<vector<int> >    halfEdges_;
+    vector<vector<int>* >    halfEdges_;
 };
 
 #endif /* defined(__ShapeAnalyzer__MeshChecker__) */

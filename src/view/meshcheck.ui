@@ -47,35 +47,35 @@
         <number>10</number>
        </property>
        <item row="0" column="0">
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="checkTriangles">
          <property name="text">
           <string>Non-Triangles</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QCheckBox" name="checkBox_2">
+        <widget class="QCheckBox" name="checkConnectivity">
          <property name="text">
           <string>Connectivity</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QCheckBox" name="checkBox_3">
+        <widget class="QCheckBox" name="checkDegenerated">
          <property name="text">
           <string>Degenerated Elements</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QCheckBox" name="checkBox_4">
+        <widget class="QCheckBox" name="checkOrientation">
          <property name="text">
           <string>Triangle orientation</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QCheckBox" name="checkBox_5">
+        <widget class="QCheckBox" name="checkBorders">
          <property name="text">
           <string>Borders</string>
          </property>
@@ -91,7 +91,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="textBrowser"/>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Might take some time and memory.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextBrowser" name="outputField"/>
      </item>
     </layout>
    </item>

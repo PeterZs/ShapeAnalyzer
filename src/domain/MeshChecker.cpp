@@ -9,13 +9,22 @@
 #include "MeshChecker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Constructors
+// Constructor and Destructor
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 MeshChecker::MeshChecker(Shape* shape) : shape_(shape) {
-    createHalfEdgeStructure();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+MeshChecker::~MeshChecker() {
+    if(!halfEdges_.empty()) {
+        for (int i = 0; i < halfEdges_.size(); i++) {
+            delete halfEdges_[i];
+        }
+    }
 }
 
 
@@ -25,41 +34,23 @@ MeshChecker::MeshChecker(Shape* shape) : shape_(shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-bool MeshChecker::checkForBorders() {
+bool MeshChecker::checkForBorders(vector<pair<vtkIdType, vtkIdType> >*  borders) {
     if(halfEdges_.empty()) {
         createHalfEdgeStructure();
     }
-    
-    return checkForBorders(halfEdges_);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-bool MeshChecker::checkForBorders(vector<pair<vtkIdType, vtkIdType> >* borders) {
-    if(halfEdges_.empty()) {
-        createHalfEdgeStructure();
-    }
-    
-    return checkForBorders(halfEdges_, borders);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-bool MeshChecker::checkForBorders(vector<vector<int> >&                 halfedges,
-                                  vector<pair<vtkIdType, vtkIdType> >*  borders) {
     
     bool borderFound = false;
     
-    for (int i = 0; i < halfedges.size(); i++) {
+    for (int i = 0; i < halfEdges_.size(); i++) {
         for (int j = 0; j < i; j++) {
-            // check symmetry
-            if(halfedges[i][j] != halfedges[j][i]) {
+            // unsymmetric edge
+            if((*(halfEdges_[i]))[j] + (*(halfEdges_[j]))[i] == 1) {
                 borderFound = true;
                 
                 // add border ids if requested
                 if (borders != nullptr) {
                     // all borders are oriented the same way
-                    if (halfedges[i][j] > halfedges[j][i]) {
+                    if ((*(halfEdges_[i]))[j] > (*(halfEdges_[j]))[i]) {
                         borders->push_back(make_pair(i, j));
                     } else {
                         borders->push_back(make_pair(j, i));
@@ -74,6 +65,33 @@ bool MeshChecker::checkForBorders(vector<vector<int> >&                 halfedge
 
 
 ///////////////////////////////////////////////////////////////////////////////
+bool MeshChecker::checkOrientation(vector<pair<vtkIdType, vtkIdType> >*  unorientedEdges) {
+    if(halfEdges_.empty()) {
+        createHalfEdgeStructure();
+    }
+    
+    bool unorientedEdgeFound = false;
+    
+    for (int i = 0; i < halfEdges_.size(); i++) {
+        for (int j = 0; j < i; j++) {
+            // symmetry if the sum of symmetric entries is 2
+            if(((*(halfEdges_[i]))[j] + (*(halfEdges_[j]))[i] == 2)
+               && ((*(halfEdges_[i]))[j] != (*(halfEdges_[j]))[i])) {
+                unorientedEdgeFound = true;
+                
+                // add ids if requested
+                if (unorientedEdges != nullptr) {
+                    unorientedEdges->push_back(make_pair(i, j));
+                }
+            }
+        }
+    }
+    
+    return unorientedEdgeFound;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -84,21 +102,30 @@ void MeshChecker::createHalfEdgeStructure() {
     
     halfEdges_.reserve(numberOfVertices);
     
+    cout << halfEdges_.size() << endl;
+    
     // create fake array with 0s everywhere
-    for (int i = 0; i < numberOfVertices; i++) {
-        halfEdges_[i] = vector<int>(numberOfVertices, 0);
+    for (vtkIdType i = 0; i < numberOfVertices; i++) {
+        halfEdges_.push_back(new vector<int>(numberOfVertices, 0));
     }
+    
+    cout << halfEdges_.size() << endl;
     
     // raise value [i, j] for every edge of an cell between the vertices i and j
     for (vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
         vtkSmartPointer<vtkIdList> ids = shape_->getPolyData()->GetCell(i)->GetPointIds();
         
         // first n - 1 edges
-        for(vtkIdType j = 0; j < ids->GetNumberOfIds() - 1; j++) {
-            halfEdges_[ids->GetId(j)][ids->GetId(j+1)]++;
+        for(vtkIdType j = 0; j < ids->GetNumberOfIds(); j++) {
+            vtkIdType id1 = ids->GetId(j);
+            vtkIdType id2;
+            if (j == ids->GetNumberOfIds() - 1) {
+                id2 = ids->GetId(0);
+            }
+            else {
+                id2 = ids->GetId(j+1);
+            }
+            (*halfEdges_[id1])[id2] = (*halfEdges_[id1])[id2] + 1;
         }
-        
-        // edge from n to 0
-        halfEdges_[ids->GetId(ids->GetNumberOfIds() - 1)][ids->GetId(0)]++;
     }
 }

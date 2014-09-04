@@ -11,6 +11,8 @@
 
 #include <vtkType.h>
 #include <vtkCell.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataConnectivityFilter.h>
 #include <vtkIdList.h>
 
 #include "Shape.h"
@@ -24,6 +26,9 @@ public:
     
     bool checkForBorders(vector<pair<vtkIdType, vtkIdType> >* borders = nullptr);
     bool checkOrientation(vector<pair<vtkIdType, vtkIdType> >* unoriented = nullptr);
+    bool checkTriangulation(vector<pair<vtkIdType, vtkIdType> >* nontriangles = nullptr);
+    
+    int checkNumberOfRegions();
     
 private:
     void createHalfEdgeStructure();

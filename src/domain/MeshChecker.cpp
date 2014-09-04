@@ -92,6 +92,37 @@ bool MeshChecker::checkOrientation(vector<pair<vtkIdType, vtkIdType> >*  unorien
 
 
 ///////////////////////////////////////////////////////////////////////////////
+bool MeshChecker::checkTriangulation(vector<pair<vtkIdType, vtkIdType> >*  nonTriangles) {
+    bool nonTriangleFound = false;
+    
+    // check if number of vertex ids is 3 for every cell
+    for (vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
+        vtkSmartPointer<vtkIdList> ids = shape_->getPolyData()->GetCell(i)->GetPointIds();
+        
+        if(ids->GetNumberOfIds() != 3 && nonTriangles != nullptr) {
+            nonTriangleFound = true;
+            // returns id of cell and number of vertices
+            nonTriangles->push_back(make_pair(i, ids->GetNumberOfIds()));
+        }
+    }
+    
+    return nonTriangleFound;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+int MeshChecker::checkNumberOfRegions() {
+    vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
+    vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+    
+    connectivityFilter->SetInputData(shape_->getPolyData());
+    connectivityFilter->Update();
+    
+    return connectivityFilter->GetNumberOfExtractedRegions();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////
 

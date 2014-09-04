@@ -58,6 +58,38 @@ void qtMeshCheckTab::slotCheckMesh() {
     // run all selected checks
     MeshChecker check = MeshChecker(shape);
     
+    // triangulation check
+    if (checkTriangles->isChecked()) {
+        vector<pair<vtkIdType, vtkIdType> > nonTriangles;
+        bool notTriangulated = check.checkTriangulation(&nonTriangles);
+        
+        if(notTriangulated) {
+            outputField->insertPlainText(QString::fromStdString("- Non-Triangles in form (cell-id, #vertices): "));
+            // list of all border edges
+            for (auto it = nonTriangles.begin(); it != nonTriangles.end(); it++) {
+                string tupel = "(";
+                tupel.append(to_string(it->first));
+                tupel.append(", ");
+                tupel.append(to_string(it->second));
+                tupel.append(") ");
+                outputField->insertPlainText(QString::fromStdString(tupel));
+            }
+            outputField->insertHtml(QString::fromStdString("<br />"));
+        } else {
+            outputField->insertPlainText(QString::fromStdString("- All cells are triangles."));
+            outputField->insertHtml(QString::fromStdString("<br />"));
+        }
+    }
+    
+    // number of regions
+    if (checkConnectivity->isChecked()) {
+        int numberRegions = check.checkNumberOfRegions();
+        string regions = "- Number of connected Regions: ";
+        regions.append(to_string(numberRegions));
+        outputField->insertPlainText(QString::fromStdString(regions));
+        outputField->insertHtml(QString::fromStdString("<br />"));
+    }
+    
     
     // orientation checking
     if (checkOrientation->isChecked()) {
@@ -66,7 +98,7 @@ void qtMeshCheckTab::slotCheckMesh() {
         
         // output
         if(isUnoriented) {
-            outputField->insertPlainText(QString::fromStdString("Inconsistent orientation at: "));
+            outputField->insertPlainText(QString::fromStdString("- Inconsistent orientation at: "));
             // list of all border edges
             for (auto it = unorientedEdges.begin(); it != unorientedEdges.end(); it++) {
                 string tupel = "(";
@@ -78,7 +110,7 @@ void qtMeshCheckTab::slotCheckMesh() {
             }
             outputField->insertHtml(QString::fromStdString("<br />"));
         } else {
-            outputField->insertPlainText(QString::fromStdString("Is consistently oriented."));
+            outputField->insertPlainText(QString::fromStdString("- Is consistently oriented."));
             outputField->insertHtml(QString::fromStdString("<br />"));
         }
     }
@@ -91,7 +123,7 @@ void qtMeshCheckTab::slotCheckMesh() {
         
         // output
         if(hasBorders) {
-            outputField->insertPlainText(QString::fromStdString("Has Borders: "));
+            outputField->insertPlainText(QString::fromStdString("- Has Borders: "));
             // list of all border edges
             for (auto it = borders.begin(); it != borders.end(); it++) {
                 string tupel = "(";
@@ -103,7 +135,7 @@ void qtMeshCheckTab::slotCheckMesh() {
             }
             outputField->insertHtml(QString::fromStdString("<br />"));
         } else {
-            outputField->insertPlainText(QString::fromStdString("No Borders."));
+            outputField->insertPlainText(QString::fromStdString("- No Borders."));
             outputField->insertHtml(QString::fromStdString("<br />"));
         }
     }
@@ -156,9 +188,9 @@ void qtMeshCheckTab::onClear() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Fills the ComboBox with the names of all shapes.
-// If an entry with the text of currentSelection is created, this entry will be
-// selected. Otherwise the blank entry will be selected.
+/* Fills the ComboBox with the names of all shapes.
+If an entry with the text of currentSelection is created, this entry will be 
+selected. Otherwise the blank entry will be selected. */
 void qtMeshCheckTab::setUpComboBox(QString currentSelection) {
     this->comboBox->clear();
     

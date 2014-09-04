@@ -16,9 +16,11 @@ public:
     virtual ~FarthestPointSampling() {
     }
     
+    
     void setSource(vtkIdType source) {
         source_ = source;
     }
+    
     
     static Sampling* create() {
         return new FarthestPointSampling();
@@ -28,6 +30,7 @@ public:
     static string getIdentifier() {
         return "fps";
     }
+    
     
     virtual vtkSmartPointer<vtkIdList> getPoints();
 private:

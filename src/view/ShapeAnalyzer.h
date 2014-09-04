@@ -35,6 +35,7 @@
 #include <vtkPLYReader.h>
 #include <vtkOBJReader.h>
 #include <vtkPLYWriter.h>
+#include <vtkGL2PSExporter.h>
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -107,6 +108,7 @@
 
 #include "ui_help.h"
 #include "ui_settings.h"
+#include "ui_saveScreenshot.h"
 #include "ui_ShapeAnalyzer.h"
 
 using namespace std;

@@ -40,10 +40,11 @@ public:
     //convert scalar point attribute to vector
     static void petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr);
     
-
+    
     //convert array to scalar point attribute
     static void arrayToScalarPointAttribute(const PetscScalar* array, ScalarPointAttribute& attr);
     
+
 private:
     Shape* shape_;
     vtkSmartPointer<vtkDoubleArray> scalars_;

@@ -44,6 +44,8 @@ public:
     //returns a reference to mass matrix. LaplaceOperator object itself is responsible for deleting the Mat object.
     virtual Mat* getMassMatrix();
     
+    Mat* getStiffnessMatrix();
+    
     virtual ~FEMLaplaceBeltramiOperator();
     
 private:
@@ -53,9 +55,9 @@ private:
     
     inline void getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces);
     inline PetscScalar getMass(double* a, double* b, double* c);
-    inline PetscScalar getCotan(double* a, double* b, double* c);
+    inline PetscScalar getStiffness(double* a, double* b, double* c);
     
-    Mat C_;
+    Mat L_;
     Mat M_;
     EPS eps_; // eigenproblem solver context
 };

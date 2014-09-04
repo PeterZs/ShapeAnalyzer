@@ -614,8 +614,25 @@ void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
         return;
     }
     
+    double percentage = QInputDialog::getDouble(
+                                          this,
+                                          tr("Percentage"),
+                                          tr("Percentage of correspondences"),
+                                          0,
+                                          0.1,
+                                          100.0,
+                                          1,
+                                          &ok
+                                          );
+    
+    if(!ok) {
+        return;
+    }
+    
+    int step = ceil(100.0 / percentage);
+    
     if(type == types.value(0)) {
-        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i++) {
+        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i+=step) {
             PointCorrespondenceData* data = new PointCorrespondenceData(lastInsertCorresondenceID_);
             data->getShapeIds().push_back(shape1->getId());
             data->getShapeIds().push_back(shape2->getId());
@@ -633,7 +650,7 @@ void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
             }
         }
     } else {
-        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i++) {
+        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
             FaceCorrespondenceData* data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
             data->getShapeIds().push_back(shape1->getId());
             data->getShapeIds().push_back(shape2->getId());
@@ -729,20 +746,82 @@ void ShapeAnalyzer::qtCreateShapeSegment(Shape *shape, vtkIdType pointId) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
-    vector<ScalarPointAttribute> c1;
-    vector<ScalarPointAttribute> c2;
+    QStringList labels;
+    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
+        if(it->second->getId() == shape1->getId())
+            continue;
+        
+        QString label = QString::number(it->second->getId());
+        label.append(QString::fromStdString(":"+it->second->getName()));
+        labels << label;
+        
+    }
+    bool ok;
+    QString chosen = QInputDialog::getItem(this,
+                                           "Choose a shape",
+                                           "Choose a shape:",
+                                           labels,
+                                           0,
+                                           true,
+                                           &ok);
+    if(!ok) {
+        return;
+    }
+    
     
     Shape* shape2 = nullptr;
+    vtkIdType shapeId = chosen.split(':')[0].toInt();
     for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-        if(it->second != shape1) {
+        if(it->second->getId() == shapeId) {
             shape2 = it->second;
             break;
         }
     }
     
+    if(shape2 == nullptr) {
+        return;
+    }
+    
     segmentations_.remove(shape1);
     segmentations_.remove(shape2);
     
+    
+    QStringList colorings;
+    colorings << "X-coordinate";
+    colorings << "Y-coordinate";
+    colorings << "Z-coordinate";
+
+    chosen = QInputDialog::getItem(this,
+                                           "Choose a coloring",
+                                           "Color shape according to",
+                                           colorings,
+                                           0,
+                                           true,
+                                           &ok);
+    if(!ok) {
+        return;
+    }
+    
+    int coordinate = colorings.indexOf(chosen);
+    
+    
+    // compute x-, y-, or z-coordinate coloring and color shape accordingly
+    ScalarPointAttribute f(shape1);
+    
+    for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
+        double p[3];
+        shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
+        f.getScalars()->SetValue(i, p[coordinate]);
+    }
+    ScalarPointColoring coloring1(shape1, f);
+    coloring1.color();
+    
+    // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
+    vector<ScalarPointAttribute> c1; // corresponds to contraints on shape1
+    vector<ScalarPointAttribute> c2;
+    
+    
+    // compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
     Metric* m1;
     m1 = Factory<Metric>::getInstance()->create("geodesic");
     m1->initialize(shape1);
@@ -782,6 +861,8 @@ void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
     LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
     laplacian2->initialize(shape2, 100);
     
+    
+    // compute 200-dimensional wave kernel discriptor on both shapes
     LaplaceBeltramiSignature* wks1 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
     wks1->setLaplacian(laplacian1);
     wks1->initialize(shape1, 200);
@@ -791,8 +872,8 @@ void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
     wks2->setLaplacian(laplacian2);
     wks2->initialize(shape2, 200);
     
-    
-    for(int i = 0; i < 125; i++) {
+    // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
+    for(int i = 0; i < 200; i++) {
         ScalarPointAttribute wksi1(shape1);
         wks1->getComponent(i, wksi1);
         c1.push_back(wksi1);
@@ -804,40 +885,18 @@ void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
     
     delete wks1;
     delete wks2;
+    
+    // compute correspondence matrix C
     FunctionalMaps functionalMaps(*shape1, *shape2, laplacian1, laplacian2, c1, c2, 100);
     
-    ScalarPointAttribute f(shape1);
-    
-    for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-        double p[3];
-        shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
-        f.getScalars()->SetValue(i, p[2]);
-    }
-    ScalarPointColoring coloring1(shape1, f);
-    coloring1.color();
-    
-    //        ScalarPointAttribute u0(shape1);
-    //        vtkIdType source = 1132;
-    //        for(vtkIdType i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-    //            if(i == source) {
-    //                u0.getScalars()->SetValue(i, 1.0);
-    //            } else {
-    //                u0.getScalars()->SetValue(i, 0.0);
-    //            }
-    //        }
-    //        HeatDiffusion diffusion(shape1, laplacian1, u0);
-    //        ScalarPointAttribute f(shape1);
-    //        diffusion.getHeat(f, 100);
-    //        ScalarPointColoring coloring1(shape1, f);
-    //        coloring1.color();
-    
-    
+    // transfer the coordinate function
     ScalarPointAttribute Tf(shape2);
     functionalMaps.transferFunction(f, Tf);
     
     delete laplacian1;
     delete laplacian2;
     
+    // color 2nd shape
     ScalarPointColoring coloring2(shape2, Tf);
     coloring2.color();
 }
@@ -1495,14 +1554,42 @@ void ShapeAnalyzer::slotExportCorrespondences() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveScreenshot() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
-    if(filename.isEmpty()) {
+    QDialog* dialog = new QDialog(this, 0);
+    Ui_SaveScreenshotDialog ui;
+    ui.setupUi(dialog);
+
+    if(dialog->exec() == QDialog::Rejected) {
         return;
     }
+    
+    
+    vtkSmartPointer<vtkGL2PSExporter> exporter = vtkSmartPointer<vtkGL2PSExporter>::New();
+    
+    
+    QString filename;
+    if(ui.comboBoxFileFormat->currentText() == "PNG") {
+        filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PNG (*.png)"));
+    } else if(ui.comboBoxFileFormat->currentText() == "PDF") {
+        filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PDF (*.pdf)"));
+        exporter->SetFileFormatToPDF();
+    } else if(ui.comboBoxFileFormat->currentText() == "SVG") {
+        filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("SVG (*.svg)"));
+        exporter->SetFileFormatToSVG();
+    } else if(ui.comboBoxFileFormat->currentText() == "PS") {
+        filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("PS (*.ps)"));
+        exporter->SetFileFormatToPS();
+    } else if(ui.comboBoxFileFormat->currentText() == "EPS") {
+        filename = QFileDialog::getSaveFileName(this, tr("Save scene as image"), tr(""), tr("EPS (*.eps)"));
+        exporter->SetFileFormatToEPS();
+    }
+    
+    if(filename.isEmpty())
+        return;
+    
     vtkSmartPointer<vtkCamera> oldCamera = renderer_->GetActiveCamera();
     
     // if checked, rerender to fit the whole scene
-    if(uiSettings_.checkWholeScene->isChecked()){
+    if(ui.checkBoxResetCamera->isChecked()){
         vtkSmartPointer<vtkCamera> newCamera = vtkSmartPointer<vtkCamera>::New();
         newCamera->DeepCopy(oldCamera);
         
@@ -1511,24 +1598,32 @@ void ShapeAnalyzer::slotSaveScreenshot() {
         renderer_->GetRenderWindow()->Render();
     }
     
-    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter =
-    vtkSmartPointer<vtkWindowToImageFilter>::New();
-    windowToImageFilter->SetInput(renderer_->GetRenderWindow());
-    // transparency settings
-    if (!(uiSettings_.checkNoTransparency->isChecked()))
-        windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
-    windowToImageFilter->ShouldRerenderOff();
-    windowToImageFilter->Update();
     
-    // save in file
-    vtkSmartPointer<vtkPNGWriter> writer =
-    vtkSmartPointer<vtkPNGWriter>::New();
-    writer->SetFileName((char*) filename.toStdString().c_str());
-    writer->SetInputConnection(windowToImageFilter->GetOutputPort());
-    writer->Write();
+    if(ui.comboBoxFileFormat->currentText() != "PNG") {
+        exporter->SetRenderWindow(renderer_->GetRenderWindow());
+        exporter->SetFilePrefix(filename.split('.')[0].toStdString().c_str());
+        exporter->SetCompress(0);
+        exporter->Write();
+    } else {
+        // save in file
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+        windowToImageFilter->SetInput(renderer_->GetRenderWindow());
+        // transparency settings
+        if (!(uiSettings_.checkNoTransparency->isChecked()))
+            windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
+        windowToImageFilter->ShouldRerenderOff();
+        windowToImageFilter->Update();
+        
+        vtkSmartPointer<vtkPNGWriter> writer = vtkSmartPointer<vtkPNGWriter>::New();
+        writer->SetFileName(filename.toStdString().c_str());
+        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+        writer->Write();
+    }
+    
+    
     
     // if checked, rerender to fit the whole scene
-    if(uiSettings_.checkWholeScene->isChecked()){
+    if(ui.checkBoxResetCamera->isChecked()){
         renderer_->SetActiveCamera(oldCamera);
         renderer_->GetRenderWindow()->Render();
     }

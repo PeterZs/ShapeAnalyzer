@@ -18,7 +18,7 @@ void FEMLaplaceBeltramiOperator::initialize(Shape *shape, int numberOfEigenfunct
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps_);
     
     // Set operators. In this case, it is a generalized eigenvalue problem
-    ierr = EPSSetOperators(eps_, C_, M_);
+    ierr = EPSSetOperators(eps_, L_, M_);
     
     
     // Set solver parameters at runtime
@@ -51,12 +51,16 @@ FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
     ierr = EPSDestroy(&eps_);
-    ierr = MatDestroy(&C_);
+    ierr = MatDestroy(&L_);
     ierr = MatDestroy(&M_);
 }
 
 Mat* FEMLaplaceBeltramiOperator::getMassMatrix() {
     return &M_;
+}
+
+Mat* FEMLaplaceBeltramiOperator::getStiffnessMatrix() {
+    return &L_;
 }
 
 //get number of non-zero elements per row (needed for efficient allocation of sparse matrices)
@@ -88,7 +92,7 @@ PetscScalar FEMLaplaceBeltramiOperator::getMass(double *a, double *b, double *c)
     return vtkTriangle::TriangleArea(a, b, c) / 12.0;
 }
 
-PetscScalar FEMLaplaceBeltramiOperator::getCotan(double *a, double *b, double *c) {
+PetscScalar FEMLaplaceBeltramiOperator::getStiffness(double *a, double *b, double *c) {
     double ca[3];
     ca[0] = a[0] - c[0];
     ca[1] = a[1] - c[1];
@@ -127,8 +131,8 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &M_);
     ierr = MatSetOption(M_, MAT_SPD, PETSC_TRUE);
     
-    ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &C_);
-    ierr = MatSetOption(C_, MAT_SYMMETRIC, PETSC_TRUE);
+    ierr = MatCreateSeqAIJ(PETSC_COMM_SELF, numberOfPoints, numberOfPoints, 0, nnz, &L_);
+    ierr = MatSetOption(L_, MAT_SYMMETRIC, PETSC_TRUE);
     
     //fill matrices with their values
     //iterate over all faces
@@ -154,11 +158,11 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
             ierr = MatSetValue(M_, face->GetPointId(i), face->GetPointId(i), mass, ADD_VALUES);
             ierr = MatSetValue(M_, face->GetPointId(j), face->GetPointId(j), mass, ADD_VALUES);
             
-            PetscScalar cotan = getCotan(a, b, c);
-            ierr = MatSetValue(C_, face->GetPointId(i), face->GetPointId(j), cotan, ADD_VALUES);
-            ierr = MatSetValue(C_, face->GetPointId(j), face->GetPointId(i), cotan, ADD_VALUES);
-            ierr = MatSetValue(C_, face->GetPointId(i), face->GetPointId(i), -cotan, ADD_VALUES);
-            ierr = MatSetValue(C_, face->GetPointId(j), face->GetPointId(j), -cotan, ADD_VALUES);
+            PetscScalar stiffness = getStiffness(a, b, c);
+            ierr = MatSetValue(L_, face->GetPointId(i), face->GetPointId(j), stiffness, ADD_VALUES);
+            ierr = MatSetValue(L_, face->GetPointId(j), face->GetPointId(i), stiffness, ADD_VALUES);
+            ierr = MatSetValue(L_, face->GetPointId(i), face->GetPointId(i), -stiffness, ADD_VALUES);
+            ierr = MatSetValue(L_, face->GetPointId(j), face->GetPointId(j), -stiffness, ADD_VALUES);
         }
     }
     
@@ -168,8 +172,8 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     
 
     
-    ierr = MatAssemblyBegin(C_, MAT_FINAL_ASSEMBLY);
-    ierr = MatAssemblyEnd(C_, MAT_FINAL_ASSEMBLY);
+    ierr = MatAssemblyBegin(L_, MAT_FINAL_ASSEMBLY);
+    ierr = MatAssemblyEnd(L_, MAT_FINAL_ASSEMBLY);
     
     delete [] nnz;
 }
@@ -185,7 +189,7 @@ void FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &p
 
 void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
     PetscErrorCode ierr;
-    MatGetVecs(C_, NULL, phi);
+    MatGetVecs(L_, NULL, phi);
     ierr = EPSGetEigenvector(eps_, i, *phi, NULL);
 }
 
@@ -200,7 +204,7 @@ double FEMLaplaceBeltramiOperator::getEigenvalue(int i) {
 
 void FEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) {
     PetscErrorCode ierr;
-    MatGetVecs(C_, NULL, phi);
+    MatGetVecs(L_, NULL, phi);
     ierr = EPSGetEigenpair(eps_, i, lambda, NULL, *phi, NULL);
 }
 

@@ -89,11 +89,8 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
     VecAssemblyEnd(b_);
     
     delete [] rowIdx;
-    //MatDestroy(&AT);
-    //MatDestroy(&B);
-    
-    
-    
+    MatDestroy(&AT);
+    MatDestroy(&B);
     
     
     //compute C
@@ -120,10 +117,11 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
     // Solve linear system
     for (int i = 0; i < 50; ++i) {
         ierr = KSPSolve(ksp_, b_, c);
-        cout << "iteration "<< i <<endl;
+        PetscReal residual;
+        KSPGetResidualNorm(ksp_, &residual);
+        PetscPrintf(PETSC_COMM_WORLD, "Iteration %d. Residual norm %f\n", i, residual);
     }
     
-
     ierr = KSPView(ksp_,PETSC_VIEWER_STDOUT_WORLD);
     
     MatCreateSeqDense(PETSC_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C_);
@@ -131,28 +129,6 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
     PetscHelper::reshape(C_, c, numberOfEigenfunctions_, numberOfEigenfunctions_);
     
     VecDestroy(&c);
-    
-    
-    MatView(C_, PETSC_VIEWER_STDOUT_SELF);
-    
-    Mat A;
-    MatTranspose(AT, MAT_INITIAL_MATRIX, &A);
-    Mat CA;
-    
-    MatMatMult(C_, A, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &CA);
-    
-    
-    MatAXPY(CA, -1.0, B, SAME_NONZERO_PATTERN);
-    
-    PetscReal res;
-    MatNorm(CA, NORM_FROBENIUS, &res);
-    cout << "residual "<< res <<endl;
-    
-    MatAXPY(A, -1.0, B, SAME_NONZERO_PATTERN);
-    
-    MatNorm(A, NORM_FROBENIUS, &res);
-    cout << "residual "<< res <<endl;
-
 }
 
 FunctionalMaps::~FunctionalMaps() {

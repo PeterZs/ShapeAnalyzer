@@ -17,6 +17,7 @@ CoordinateColoring::CoordinateColoring(Shape* shape) : Coloring(shape) {
 void CoordinateColoring::color() {
     shape_->getPolyData()->GetPointData()->SetScalars(colors_);
     shape_->getMapper()->SetScalarModeToUsePointData();
+    shape_->getMapper()->SetColorModeToDefault();
 }
 
 void CoordinateColoring::calculateColors() {

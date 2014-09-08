@@ -90,6 +90,8 @@ void CorrespondenceColoring::showPointCorrespondences() {
             vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(it->second->getId())->second;
             it->second->getPolyData()->GetPointData()->SetScalars(colors);
             it->second->getMapper()->SetScalarModeToUsePointData();
+            it->second->getMapper()->SetColorModeToDefault();
+            it->second->getMapper()->SetScalarRange(0, 1);
         }
     }
     

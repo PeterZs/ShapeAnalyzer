@@ -9,8 +9,11 @@
 #ifndef __ShapeAnalyzer__qtCorrespondenceColoringTab__
 #define __ShapeAnalyzer__qtCorrespondenceColoringTab__
 
+#include <QGridLayout.h>
+#include <QLabel.h>
 #include <QListWidget.h>
 #include <QString.h>
+#include <QStringList.h>
 #include <QWidget.h>
 
 #include <vtkActor.h>
@@ -19,6 +22,7 @@
 #include <vtkType.h>
 
 #include "qtListWidgetItem.h"
+#include "qtShapesTab.h"
 
 #include "../../domain/HashMap.h"
 #include "../../domain/Shape.h"
@@ -30,7 +34,7 @@
 
 #include "ui_correspondenceColoring.h"
 
-class qtCorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceColoringWidget {
+class qtCorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceColoringWidget, public qtShapesTab {
     Q_OBJECT
     
 public:
@@ -40,6 +44,12 @@ public:
                                 HashMap<PointCorrespondenceData*, bool>*    pointCorr,
                                 QWidget * parent,
                                 Qt::WindowFlags f = 0);
+    
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onShapeAdd(Shape* shape);
+    virtual void onShapeEdit(Shape* shape);
+    virtual void onShapeSelect(Shape* shape);
+    virtual void onClear();
     
 private slots:
     virtual void slotColorCorrespondences(QString);

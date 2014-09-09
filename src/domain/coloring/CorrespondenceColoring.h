@@ -39,8 +39,10 @@ public:
                            HashMap<FaceCorrespondenceData*, bool>*  faces,
                            Shape* reference = 0);
     
-    void showPointCorrespondences();
-    void showFaceCorrespondences();
+    void showPointCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched = 0,
+                                  vector<pair<vtkIdType, double> >* percentageMultiple = 0);
+    void showFaceCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched = 0,
+                                 vector<pair<vtkIdType, double> >* percentageMultiple = 0);
     
 protected:
     HashMap<vtkActor*, Shape*>*                 shapes_;

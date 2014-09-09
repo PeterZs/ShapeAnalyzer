@@ -1721,15 +1721,11 @@ void ShapeAnalyzer::slotTabCorrespondenceColoring(bool checked) {
                                                                            );
         int i = this->tabWidgetCorrespondences->addTab(tab, "Correspondence Coloring");
         this->tabWidgetCorrespondences->setCurrentIndex(i);
-        // correspondencesTabs_.add("qtCorrespondenceColoringTab", tab);
-    } else { // remove shape info tab, if it was there
-        //TODO remove for loop instead delete tab
-        for(int i = 0; i < this->tabWidgetCorrespondences->count(); i++) {
-            if(this->tabWidgetCorrespondences->tabText(i) == "Correspondence Coloring") {
-                this->tabWidgetCorrespondences->removeTab(i);
-                // correspondencesTabs_.remove("qtCorrespondenceColoringTab");
-            }
-        }
+        shapesTabs_.add("qtCorrespondenceColoringTab", tab);
+        this->tabWidgetCorrespondences->setCurrentIndex(i);
+    } else { // remove tab
+        delete shapesTabs_["qtCorrespondenceColoringTab"];
+        shapesTabs_.remove("qtCorrespondenceColoringTab");
     }
 }
 

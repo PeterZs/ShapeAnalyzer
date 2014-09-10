@@ -8,17 +8,22 @@
 
 #include "qtShapeInfoTab.h"
 
+///////////////////////////////////////////////////////////////////////////////
 // will create widget with empty table
 qtShapeInfoTab::qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f) {
     initialize();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 qtShapeInfoTab::qtShapeInfoTab(Shape* shape, QWidget *parent, Qt::WindowFlags f) {
     initialize();
     
     onShapeSelect(shape);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::initialize() {
     this->setupUi(this);
     
@@ -33,16 +38,22 @@ void qtShapeInfoTab::initialize() {
     tableWidget->setVerticalHeaderLabels(tableVerticalHeader);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onShapeAdd(Shape* shape) {
     ;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onShapeDelete(Shape* shape) {
     if(tableWidget->item(0, 0)->text().toInt() == shape->getId()) {
         tableWidget->clearContents();
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onShapeEdit(Shape* shape) {
     if(tableWidget->item(0, 0)->text().toInt() == shape->getId()) {
         // update name
@@ -50,6 +61,8 @@ void qtShapeInfoTab::onShapeEdit(Shape* shape) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onShapeSelect(Shape* shape) {
     //insert data
     tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(shape->getId())));
@@ -74,6 +87,8 @@ void qtShapeInfoTab::onShapeSelect(Shape* shape) {
                          );
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onClear() {
     tableWidget->clearContents();
 }

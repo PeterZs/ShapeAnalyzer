@@ -1712,9 +1712,7 @@ void ShapeAnalyzer::slotTabMeshChecker(bool checked) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotTabCorrespondenceColoring(bool checked) {
     if (checked) { // add Tab
-        qtCorrespondenceColoringTab* tab = new qtCorrespondenceColoringTab(
-                                                                           this->listShapes,
-                                                                           &shapesByActor_,
+        qtCorrespondenceColoringTab* tab = new qtCorrespondenceColoringTab(&shapesByActor_,
                                                                            &faceCorrespondenceData_,
                                                                            &pointCorrespondenceData_,
                                                                            this

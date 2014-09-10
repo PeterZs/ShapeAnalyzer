@@ -45,9 +45,10 @@ void qtMeshCheckTab::slotCheckMesh() {
     Shape* shape;
     bool shapeFound = false;
     for (auto it = shapes_->begin(); it != shapes_->end(); it++) {
-        if(comboBox->currentText().toStdString() == it->second->getName()) {
+        if(it->second->getId() == comboBox->currentText().split(':')[0].toInt()) {
             shape = it->second;
             shapeFound = true;
+            break;
         }
     }
     
@@ -148,24 +149,40 @@ void qtMeshCheckTab::slotCheckMesh() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// TODO
 void qtMeshCheckTab::onShapeDelete(Shape* shape) {
-    if (shape->getName() == comboBox->currentText().toStdString()) {
-        outputField->clear();
+    for(int i = comboBox->count()-1; i >= 0; i--) {
+        // check if items name matches the on in the combo box, if yes delete
+        if(comboBox->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            // clear grid, if the deleted shape was the reference shape
+            if (i == comboBox->currentIndex()) {
+                outputField->clear();
+            }
+            comboBox->removeItem(i);
+            break;
+        }
     }
-    setUpComboBox(comboBox->currentText());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void qtMeshCheckTab::onShapeAdd(Shape* shape) {
-    comboBox->addItem(QString::fromStdString(shape->getName()));
+    QString label = QString::number(shape->getId());
+    label.append(QString::fromStdString(":"+shape->getName()));
+    comboBox->addItem(label);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void qtMeshCheckTab::onShapeEdit(Shape* shape) {
-    setUpComboBox(comboBox->currentText());
+    QString label = QString::number(shape->getId());
+    label.append(QString::fromStdString(":"+shape->getName()));
+    
+    for(int i = comboBox->count()-1; i >= 0; i--) {
+        if(comboBox->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            comboBox->setItemText(i, label);
+            break;
+        }
+    }
 }
 
 
@@ -191,25 +208,21 @@ void qtMeshCheckTab::onClear() {
 /* Fills the ComboBox with the names of all shapes.
 If an entry with the text of currentSelection is created, this entry will be 
 selected. Otherwise the blank entry will be selected. */
-void qtMeshCheckTab::setUpComboBox(QString currentSelection) {
+void qtMeshCheckTab::setUpComboBox() {
     this->comboBox->clear();
     
-    // create combo selection for shapes
     this->comboBox->insertItem(0, QString(tr(" ")));
-    int currentIndex = 0;
-    int i = 0;
     
-    // add all shapes to combo box
-    for (auto it = shapes_->begin(); it != shapes_->end(); it++) {
-        this->comboBox->insertItem(i + 1, QString::fromStdString(it->second->getName()));
-        i++;
-        // remember index of given selection if required
-        if (QString::fromStdString(it->second->getName()) == currentSelection) {
-            currentIndex = i;
-        }
+    QStringList labels;
+    for(HashMap<vtkActor*, Shape*>::iterator it = shapes_->begin(); it != shapes_->end(); it++) {
+        
+        QString label = QString::number(it->second->getId());
+        label.append(QString::fromStdString(":"+it->second->getName()));
+        labels << label;
+        
     }
-    
-    comboBox->setCurrentIndex(currentIndex);
+    labels.sort();
+    this->comboBox->insertItems(1, labels);
 
 }
 

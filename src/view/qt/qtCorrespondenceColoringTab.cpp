@@ -14,15 +14,13 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-qtCorrespondenceColoringTab::qtCorrespondenceColoringTab( QListWidget* shapes,
-                                                         HashMap<vtkActor*, Shape*>*             map,
+qtCorrespondenceColoringTab::qtCorrespondenceColoringTab(HashMap<vtkActor*, Shape*>*             map,
                                                          HashMap<FaceCorrespondenceData*, bool>* faceCorr,
                                                          HashMap<PointCorrespondenceData*, bool>* pointCorr,
                                                          QWidget * parent,
                                                          Qt::WindowFlags f
                                                          )
 :   QWidget(parent, f),
-shapes_(shapes),
 map_(map),
 faceCorr_(faceCorr),
 pointCorr_(pointCorr)

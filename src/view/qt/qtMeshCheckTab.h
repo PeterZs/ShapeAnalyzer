@@ -43,7 +43,7 @@ public:
 private slots:
     virtual void slotCheckMesh();
     
-    void setUpComboBox(QString current = 0);
+    void setUpComboBox();
     
 private:
     HashMap<vtkActor*, Shape*>* shapes_;

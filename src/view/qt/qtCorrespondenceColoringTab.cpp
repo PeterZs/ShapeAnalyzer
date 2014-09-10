@@ -78,6 +78,8 @@ void qtCorrespondenceColoringTab::slotColorCorrespondences(const QString label) 
         if(pointRadio->isChecked()) {
             cc.showPointCorrespondences(&matched, &multiple);
             
+            clearGrid();
+            
             // fill in percentage of matched points
             int index = 1;
             for (auto it = map_->begin(); it != map_->end(); it++) {
@@ -109,7 +111,39 @@ void qtCorrespondenceColoringTab::slotColorCorrespondences(const QString label) 
             }
             
         } else {
-            cc.showFaceCorrespondences();
+            cc.showFaceCorrespondences(&matched, &multiple);
+            
+            clearGrid();
+            
+            // fill in percentage of matched points
+            int index = 1;
+            for (auto it = map_->begin(); it != map_->end(); it++) {
+                if (it->second->getId() != referenceId) {
+                    // shape name
+                    QString label = QString::fromStdString(it->second->getName());
+                    gridLayout->addWidget(new QLabel(label), index, 0);
+                    
+                    // % matched
+                    for (int i = 0; i < matched.size(); i++) {
+                        if (matched[i].first == it->second->getId()) {
+                            QString labelMatched = QString::fromStdString(std::to_string(matched[i].second));
+                            gridLayout->addWidget(new QLabel(labelMatched), index, 1);
+                            break;
+                        }
+                    }
+                    
+                    // % multiple
+                    for (int i = 0; i < multiple.size(); i++) {
+                        if (multiple[i].first == it->second->getId()) {
+                            QString labelMultiple = QString::fromStdString(std::to_string(multiple[i].second));
+                            gridLayout->addWidget(new QLabel(labelMultiple), index, 2);
+                            break;
+                        }
+                    }
+                    
+                    index++;
+                }
+            }
         }
 
     }
@@ -124,8 +158,13 @@ void qtCorrespondenceColoringTab::slotColorCorrespondences(const QString label) 
 ///////////////////////////////////////////////////////////////////////////////
 void qtCorrespondenceColoringTab::onShapeDelete(Shape *shape) {
     for(int i = comboBox->count()-1; i >= 0; i--) {
+        // check if items name matches the on in the combo box, if yes delete
         if(comboBox->itemText(i).split(':')[0].toInt() == shape->getId()) {
             comboBox->removeItem(i);
+            // clear grid, if the deleted shape was the reference shape
+            if (i == comboBox->currentIndex()) {
+                clearGrid();
+            }
             break;
         }
     }
@@ -163,4 +202,21 @@ void qtCorrespondenceColoringTab::onShapeSelect(Shape *shape) {
 ///////////////////////////////////////////////////////////////////////////////
 void qtCorrespondenceColoringTab::onClear() {
     comboBox->clear();
+    clearGrid();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Private Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+void qtCorrespondenceColoringTab::clearGrid() {
+    for (int i = 1; i < gridLayout->rowCount(); i++) {
+        for (int j = 0; j < gridLayout->columnCount(); j++) {
+            QWidget* item = gridLayout->itemAtPosition(i, j)->widget();
+            delete item;
+        }
+    }
 }

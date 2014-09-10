@@ -11,6 +11,7 @@
 
 #include <QGridLayout.h>
 #include <QLabel.h>
+#include <QLayoutItem.h>
 #include <QListWidget.h>
 #include <QString.h>
 #include <QStringList.h>
@@ -55,6 +56,8 @@ private slots:
     virtual void slotColorCorrespondences(QString);
     
 private:
+    void    clearGrid();
+    
     QListWidget*                            shapes_;
     HashMap<vtkActor*, Shape*>*                 map_;
     HashMap<FaceCorrespondenceData*, bool>*     faceCorr_;

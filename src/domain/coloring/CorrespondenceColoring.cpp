@@ -126,12 +126,14 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
                 
                 // add percentage matched points
                 if (percentageMatched != 0) {
-                    percentageMatched->push_back(make_pair<vtkIdType, double>(it->second->getId(), (numMatched / match->size())));
+                    double per = ((double) numMatched) * 100 / match->size();
+                    percentageMatched->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
                 }
                 
                 // add percentage mulitple matched points
                 if (percentageMultiple != 0) {
-                    percentageMultiple->push_back(make_pair<vtkIdType, double>(it->second->getId(), (numMultiple / match->size())));
+                    double per = ((double) numMultiple) * 100 / match->size();
+                    percentageMultiple->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
                 }
             }
             
@@ -160,6 +162,9 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
     faceAttributes_.insert(
                             make_pair<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >(referenceId, referenceColors));
     
+    // for evaluating matched points
+    unordered_map<vtkIdType, vector<int>* > matched;
+    
     // initialize color arrays for all shapes
     for (auto it = shapes_->begin(); it != shapes_->end(); it++) {
         if(it->second != reference_) {
@@ -173,6 +178,12 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             double white[3] = {255, 255, 255};
             for(vtkIdType i = 0; i < it->second->getPolyData()->GetNumberOfCells(); i++) {
                 array->SetTuple(i, white);
+            }
+            
+            // if requested, evaluate matched points
+            if (percentageMatched != 0 || percentageMultiple != 0) {
+                vector<int>* mArray = new vector<int>(it->second->getPolyData()->GetNumberOfCells(), 0);
+                matched.insert(make_pair<vtkIdType, vector<int>* >(it->second->getId(), mArray));
             }
         }
     }
@@ -204,6 +215,12 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
                         double color[3];
                         referenceColors->GetTuple(referenceCorrespondence, color);
                         colors->SetTuple(points[i], color);
+                        
+                        // if requested, evaluate matched points
+                        if (percentageMatched != 0 || percentageMultiple != 0) {
+                            vector<int>* match = matched.find(shapes[i])->second;
+                            (*match)[points[i]] = (*match)[points[i]] + 1;
+                        }
                     }
                 }
             }
@@ -216,6 +233,35 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(it->second->getId())->second;
             it->second->getPolyData()->GetCellData()->SetScalars(colors);
             it->second->getMapper()->SetScalarModeToUseCellData();
+            it->second->getMapper()->SetColorModeToDefault();
+            it->second->getMapper()->SetScalarRange(0, 1);
+            
+            // if requested, evaluate matched points
+            if (percentageMatched != 0 || percentageMultiple != 0) {
+                vector<int>* match = matched.find(it->second->getId())->second;
+                int numMatched = 0;
+                int numMultiple = 0;
+                
+                // count matched / multiple matched points
+                for (int i = 0; i < match->size(); i++) {
+                    if ((*match)[i] > 0)
+                        numMatched++;
+                    if ((*match)[i] > 1)
+                        numMultiple++;
+                }
+                
+                // add percentage matched points
+                if (percentageMatched != 0) {
+                    double per = ((double) numMatched) * 100 / match->size();
+                    percentageMatched->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                }
+                
+                // add percentage mulitple matched points
+                if (percentageMultiple != 0) {
+                    double per = ((double) numMultiple) * 100 / match->size();
+                    percentageMultiple->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                }
+            }
         }
     }
     

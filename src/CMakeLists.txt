@@ -8,7 +8,6 @@ PROJECT(ShapeAnalyzer)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
-set(VTK_DIR "/usr/wiss/windheus/usr/vtk-6.1.0/")
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 

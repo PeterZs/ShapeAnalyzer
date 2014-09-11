@@ -102,6 +102,8 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
     ierr = VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_*numberOfEigenfunctions_, &c);
 
     ierr = KSPCreate(PETSC_COMM_WORLD, &ksp_);
+    //TODO Thomas: added third parameter to KSPSetOperators
+    //ierr = KSPSetOperators(ksp_, AT_, AT_,DIFFERENT_NONZERO_PATTERN);
     ierr = KSPSetOperators(ksp_, AT_, AT_);
     ierr = KSPSetType(ksp_, KSPLSQR);
 

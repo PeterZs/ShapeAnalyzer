@@ -7,7 +7,7 @@
 #include <vtkCellArray.h>
 #include <vtkGlyph3D.h>
 #include <vtkIdList.h>
-#include <vtkLookUpTable.h>
+#include <vtkLookupTable.h>
 #include <vtkLinearTransform.h>
 #include <vtkMatrix4x4.h>
 #include <vtkObjectBase.h>

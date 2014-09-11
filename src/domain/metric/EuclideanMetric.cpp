@@ -7,7 +7,7 @@
 //
 
 #include "EuclideanMetric.h"
-
+#include <limits>
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ vtkIdType EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) 
     
     // iterate over all points on the shape
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
-        double dist = numeric_limits<double>::infinity();
+        double dist = std::numeric_limits<double>::infinity();
         // iterate over all sources
         for (vtkIdType j = 0; j < sources->GetNumberOfIds(); j++) {
             // test for minimum distance of sources
@@ -64,7 +64,7 @@ vtkSmartPointer<vtkIdList> EuclideanMetric::getVoronoiCells(vtkSmartPointer<vtkI
     
 
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
-        double minDist = numeric_limits<double>::infinity();
+        double minDist = std::numeric_limits<double>::infinity();
         for(vtkIdType j = 0; j < seeds->GetNumberOfIds(); j++) {
             double dist = getDistance(seeds->GetId(j), i);
             if(dist < minDist) {

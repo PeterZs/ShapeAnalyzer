@@ -8,6 +8,8 @@
 
 #include "WaveKernelSignature.h"
 
+#include <limits>
+
 //Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
 
 void WaveKernelSignature::initialize(Shape* shape, int dimension) {
@@ -46,7 +48,9 @@ void WaveKernelSignature::initialize(Shape* shape, int dimension) {
         for(PetscInt k = 0; k < laplacian_->getNumberOfEigenfunctions(); k++) {
             Vec phi;
             laplacian_->getEigenfunction(k, &phi);
-            VecPow(phi, 2.0);
+            //TODO Thomas: check if VecPointwiseMult is a valid replacement of VecPow
+            VecPointwiseMult(phi,phi,phi);
+            //VecPow(phi, 2.0);
             
             PetscScalar c = exp( -pow(e[i] - logLambda[k], 2.0) / ( 2.0 * sigma * sigma ));
             VecAXPY(wksi, c, phi);

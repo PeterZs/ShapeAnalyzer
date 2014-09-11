@@ -8,10 +8,13 @@ PROJECT(ShapeAnalyzer)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
+set(VTK_DIR "/usr/wiss/windheus/usr/vtk-6.1.0/")
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 #set(CMAKE_CXX_FLAGS "-v")
+
+set(CMAKE_CXX_FLAGS "-std=c++11")
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   # Instruct CMake to run moc automatically when needed.
@@ -27,7 +30,7 @@ find_package(PETSc REQUIRED)
 find_package(SLEPc REQUIRED)
 
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${SLEPC_INCLUDES} ${PETSC_INCLUDES})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${VTK_USE_FILE} ${SLEPC_INCLUDES} ${PETSC_INCLUDES})
 
 file(GLOB_RECURSE UI_FILES *.ui)
 file(GLOB_RECURSE QT_AUTO_GEN (ui_*.h) | (moc*) | (*automoc) )

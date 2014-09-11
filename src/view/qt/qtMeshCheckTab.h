@@ -9,9 +9,9 @@
 #ifndef __ShapeAnalyzer__qtMeshCheckTab__
 #define __ShapeAnalyzer__qtMeshCheckTab__
 
-#include <QListWidget.h>
-#include <QString.h>
-#include <QWidget.h>
+#include <QListWidget>
+#include <QString>
+#include <QWidget>
 
 #include <vtkActor.h>
 #include <vtkPoints.h>

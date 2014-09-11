@@ -9,7 +9,7 @@
 #ifndef __ShapeAnalyzer__qtShapeInfoTab__
 #define __ShapeAnalyzer__qtShapeInfoTab__
 
-#include <QPushbutton>
+#include <QPushButton>
 #include <QStandardItemModel>
 #include <QTableWidget>
 #include <QWidget>

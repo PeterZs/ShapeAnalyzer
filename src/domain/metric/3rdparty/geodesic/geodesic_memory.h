@@ -5,6 +5,7 @@
 //two fast and simple memory allocators
 
 #include <vector>
+#include <memory>
 #include <math.h>
 
 #include "geodesic_error.h"

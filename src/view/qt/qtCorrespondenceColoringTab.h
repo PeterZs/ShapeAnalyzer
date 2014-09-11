@@ -9,13 +9,13 @@
 #ifndef __ShapeAnalyzer__qtCorrespondenceColoringTab__
 #define __ShapeAnalyzer__qtCorrespondenceColoringTab__
 
-#include <QGridLayout.h>
-#include <QLabel.h>
-#include <QLayoutItem.h>
-#include <QListWidget.h>
-#include <QString.h>
-#include <QStringList.h>
-#include <QWidget.h>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLayoutItem>
+#include <QListWidget>
+#include <QString>
+#include <QStringList>
+#include <QWidget>
 
 #include <vtkActor.h>
 #include <vtkPoints.h>

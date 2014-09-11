@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <utility>
 
 
 using namespace std;
@@ -111,7 +113,7 @@ HashMap<KEY, VALUE>::HashMap(vector<KEY>& keys, VALUE value) {
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
 void HashMap<KEY, VALUE>::add(KEY key, VALUE value) {
-    entries_.insert(make_pair<KEY, VALUE>(key, value));
+    entries_.insert(make_pair(key, value));
 }
 
 

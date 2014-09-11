@@ -7,7 +7,7 @@
 //
 
 #include "CorrespondenceColoring.h"
-
+#include <utility>
 ///////////////////////////////////////////////////////////////////////////////
 CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
                                                HashMap<PointCorrespondenceData*, bool>*  points,
@@ -33,7 +33,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
     vtkIdType referenceId = reference_->getId();
     vtkSmartPointer<vtkUnsignedCharArray> referenceColors = cc.getColors();
     pointAttributes_.insert(
-                        make_pair<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >(referenceId, referenceColors));
+                        make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
     unordered_map<vtkIdType, vector<int>* > matched;
@@ -45,7 +45,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
             array->SetNumberOfComponents(3);
             array->SetNumberOfTuples(it->second->getPolyData()->GetPoints()->GetNumberOfPoints());
             array->SetName("Colors");
-            pointAttributes_.insert(make_pair<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >(it->second->getId(), array));
+            pointAttributes_.insert(make_pair(it->second->getId(), array));
             
             // TODO sooo unschön, aber ich weiß nicht wie ich ihm vermittele, dass standardmäßig auf weiß gemappt werden soll
             double white[3] = {255, 255, 255};
@@ -56,7 +56,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
                 vector<int>* mArray = new vector<int>(it->second->getPolyData()->GetPoints()->GetNumberOfPoints(), 0);
-                matched.insert(make_pair<vtkIdType, vector<int>* >(it->second->getId(), mArray));
+                matched.insert(make_pair(it->second->getId(), mArray));
             }
         }
     }
@@ -127,13 +127,13 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
                 // add percentage matched points
                 if (percentageMatched != 0) {
                     double per = ((double) numMatched) * 100 / match->size();
-                    percentageMatched->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                    percentageMatched->push_back(make_pair(it->second->getId(), per));
                 }
                 
                 // add percentage mulitple matched points
                 if (percentageMultiple != 0) {
                     double per = ((double) numMultiple) * 100 / match->size();
-                    percentageMultiple->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                    percentageMultiple->push_back(make_pair(it->second->getId(), per));
                 }
             }
             
@@ -160,7 +160,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
     vtkIdType referenceId = reference_->getId();
     vtkSmartPointer<vtkUnsignedCharArray> referenceColors = cc.getColors();
     faceAttributes_.insert(
-                            make_pair<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >(referenceId, referenceColors));
+                            make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
     unordered_map<vtkIdType, vector<int>* > matched;
@@ -172,7 +172,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             array->SetNumberOfComponents(3);
             array->SetNumberOfTuples(it->second->getPolyData()->GetNumberOfCells());
             array->SetName("Colors");
-            faceAttributes_.insert(make_pair<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >(it->second->getId(), array));
+            faceAttributes_.insert(make_pair(it->second->getId(), array));
             
             // TODO sooo unschön, aber ich weiß nicht wie ich ihm vermittele, dass standardmäßig auf weiß gemappt werden soll
             double white[3] = {255, 255, 255};
@@ -183,7 +183,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
                 vector<int>* mArray = new vector<int>(it->second->getPolyData()->GetNumberOfCells(), 0);
-                matched.insert(make_pair<vtkIdType, vector<int>* >(it->second->getId(), mArray));
+                matched.insert(make_pair(it->second->getId(), mArray));
             }
         }
     }
@@ -253,13 +253,13 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
                 // add percentage matched points
                 if (percentageMatched != 0) {
                     double per = ((double) numMatched) * 100 / match->size();
-                    percentageMatched->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                    percentageMatched->push_back(make_pair(it->second->getId(), per));
                 }
                 
                 // add percentage mulitple matched points
                 if (percentageMultiple != 0) {
                     double per = ((double) numMultiple) * 100 / match->size();
-                    percentageMultiple->push_back(make_pair<vtkIdType, double>(it->second->getId(), per));
+                    percentageMultiple->push_back(make_pair(it->second->getId(), per));
                 }
             }
         }

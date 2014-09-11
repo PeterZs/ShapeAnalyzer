@@ -46,7 +46,7 @@ int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
 
     
     std::regex reg(".vert$", std::regex_constants::ECMAScript | std::regex_constants::icase);
-    std::string fileNameTri = std::regex_replace(FileName, reg, ".tri");
+    std::string fileNameTri = std::regex_replace(std::string(FileName), reg, std::string(".tri"));
     std::ifstream tri(fileNameTri);
     if (!tri) {
         vtkErrorMacro(<< "Tri file " << fileNameTri << " not found");

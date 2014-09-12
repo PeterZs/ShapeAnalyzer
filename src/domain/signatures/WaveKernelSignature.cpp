@@ -48,9 +48,14 @@ void WaveKernelSignature::initialize(Shape* shape, int dimension) {
         for(PetscInt k = 0; k < laplacian_->getNumberOfEigenfunctions(); k++) {
             Vec phi;
             laplacian_->getEigenfunction(k, &phi);
-            //TODO Thomas: check if VecPointwiseMult is a valid replacement of VecPow
+//VecPow was introduced in Petsc ver. 3.5.0
+//Ubuntu 14.04 only has only 3.4.8 so check version here.
+#if PETSC_VERSION_GE(3,5,0)
+            VecPow(phi, 2.0);
+#else
+            //we can subsitute VecPow(phi,2) by VecPointwiseMult(phi,phi,phi)
             VecPointwiseMult(phi,phi,phi);
-            //VecPow(phi, 2.0);
+#endif
             
             PetscScalar c = exp( -pow(e[i] - logLambda[k], 2.0) / ( 2.0 * sigma * sigma ));
             VecAXPY(wksi, c, phi);

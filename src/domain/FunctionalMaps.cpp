@@ -102,9 +102,13 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
     ierr = VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_*numberOfEigenfunctions_, &c);
 
     ierr = KSPCreate(PETSC_COMM_WORLD, &ksp_);
-    //TODO Thomas: added third parameter to KSPSetOperators
-    //ierr = KSPSetOperators(ksp_, AT_, AT_,DIFFERENT_NONZERO_PATTERN);
+//interface for KSPSetOperators changed in Petsc ver. 3.5.0
+//Ubuntu 14.04 only has only 3.4.8 so check version here.
+#if PETSC_VERSION_GE(3,5,0)
     ierr = KSPSetOperators(ksp_, AT_, AT_);
+#else
+    ierr = KSPSetOperators(ksp_, AT_, AT_,DIFFERENT_NONZERO_PATTERN);
+#endif
     ierr = KSPSetType(ksp_, KSPLSQR);
 
     PC pc;

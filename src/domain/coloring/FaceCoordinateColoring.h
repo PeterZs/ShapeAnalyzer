@@ -32,6 +32,7 @@ public:
     virtual void color() {
         shape_->getMapper()->SetScalarModeToUseCellData();
         shape_->getPolyData()->GetCellData()->SetScalars(colors_);
+        shape_->getMapper()->ScalarVisibilityOn();
     }
     
     vtkSmartPointer<vtkUnsignedCharArray> getColors() {

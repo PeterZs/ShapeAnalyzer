@@ -109,6 +109,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
             it->second->getMapper()->SetScalarModeToUsePointData();
             it->second->getMapper()->SetColorModeToDefault();
             it->second->getMapper()->SetScalarRange(0, 1);
+            it->second->getMapper()->ScalarVisibilityOn();
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
@@ -235,6 +236,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             it->second->getMapper()->SetScalarModeToUseCellData();
             it->second->getMapper()->SetColorModeToDefault();
             it->second->getMapper()->SetScalarRange(0, 1);
+            it->second->getMapper()->ScalarVisibilityOn();
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {

@@ -17,10 +17,10 @@ void ScalarFaceColoring::color() {
     shape_->getPolyData()->Modified();
     
     //shape_->getMapper()->SetLookupTable(lookupTable_);
-    shape_->getMapper()->ScalarVisibilityOn();
     shape_->getMapper()->SetScalarModeToUseCellData();
     shape_->getMapper()->SetColorModeToMapScalars();
     shape_->getMapper()->SetScalarRange(range[0], range[1]);
+    shape_->getMapper()->ScalarVisibilityOn();
     shape_->getMapper()->Modified();
     
     shape_->getPolyDataNormals()->Update();

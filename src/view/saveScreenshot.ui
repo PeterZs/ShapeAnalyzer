@@ -17,7 +17,7 @@
    <item>
     <widget class="QCheckBox" name="checkBoxTransparency">
      <property name="text">
-      <string>Ignore Transparency</string>
+      <string>Ignore Transparency (only for PNG)</string>
      </property>
     </widget>
    </item>

@@ -213,8 +213,8 @@
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>244</x>
-      <y>64</y>
+      <x>542</x>
+      <y>101</y>
       <width>167</width>
       <height>65</height>
      </rect>
@@ -231,7 +231,6 @@
     <addaction name="actionShapes"/>
     <addaction name="actionShapeInfo"/>
     <addaction name="actionShapeInterpolation"/>
-    <addaction name="actionShowScalarBar"/>
     <addaction name="actionMeshChecker"/>
     <addaction name="separator"/>
     <addaction name="actionDisplayPointCorrespondences"/>
@@ -253,6 +252,7 @@
     <addaction name="actionShowTriangulatedMesh"/>
     <addaction name="actionShowPointCloud"/>
     <addaction name="separator"/>
+    <addaction name="actionShowScalarBar"/>
     <addaction name="actionSetBackgroundColor"/>
     <addaction name="separator"/>
     <addaction name="actionProjectionPerspective"/>

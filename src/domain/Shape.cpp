@@ -58,6 +58,22 @@ void Shape::removeFromRenderer() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+void Shape::clearColoring() {
+    mapper_->CreateDefaultLookupTable();
+    mapper_->ScalarVisibilityOff();
+    mapper_->SetColorModeToDefault();
+    mapper_->InterpolateScalarsBeforeMappingOff();
+    //mapper_->UseLookupTableScalarRangeOn();
+    mapper_->SetScalarModeToDefault();
+    mapper_->SetScalarMaterialModeToDefault();
+    
+    mapper_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Public Functions
 ///////////////////////////////////////////////////////////////////////////////
 

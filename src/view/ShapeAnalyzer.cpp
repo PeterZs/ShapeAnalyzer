@@ -239,7 +239,7 @@ void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& e
 
 void ShapeAnalyzer::qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
     QMenu* voronoiCellsMenu = new QMenu(menu);
-    voronoiCellsMenu->setTitle("Segmentation");
+    voronoiCellsMenu->setTitle("Voronoi Segmentation");
     menu->addMenu(voronoiCellsMenu);
     
     
@@ -922,6 +922,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QMenu myMenu;
 
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
+    QAction* clearAction  = myMenu.addAction("Clear Coloring");
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* exportAction   = myMenu.addAction("Export Shape");
@@ -953,7 +954,10 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
-    } else if (selectedItem == renameAction) {
+    } else if (selectedItem == clearAction) {
+        ((qtListWidgetItem<Shape>*) this->listShapes->currentItem())->getItem()->clearColoring();
+    }
+    else if (selectedItem == renameAction) {
         qtInputDialogRenameShape((qtListWidgetItem<Shape>*) this->listShapes->currentItem());
     } else if (selectedItem == exportAction) {
         qtExportShapeDialog(currentShape);

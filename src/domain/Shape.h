@@ -58,6 +58,7 @@ public:
     // vtk functions
     
     void removeFromRenderer();
+    void clearColoring();
     
     // serialization functions
     

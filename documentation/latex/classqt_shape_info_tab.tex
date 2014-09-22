@@ -1,5 +1,14 @@
 \hypertarget{classqt_shape_info_tab}{}\section{qt\+Shape\+Info\+Tab Class Reference}
 \label{classqt_shape_info_tab}\index{qt\+Shape\+Info\+Tab@{qt\+Shape\+Info\+Tab}}
+
+
+Tab that shows basic information about the selected shape.  
+
+
+
+
+{\ttfamily \#include $<$qt\+Shape\+Info\+Tab.\+h$>$}
+
 Inheritance diagram for qt\+Shape\+Info\+Tab\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,27 +18,80 @@ Inheritance diagram for qt\+Shape\+Info\+Tab\+:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classqt_shape_info_tab_a1e24b3b05a98ebf3aec79cd7c0c3e8ba}{}{\bfseries qt\+Shape\+Info\+Tab} (Q\+Widget $\ast$parent, Qt\+::\+Window\+Flags f=0)\label{classqt_shape_info_tab_a1e24b3b05a98ebf3aec79cd7c0c3e8ba}
+\hypertarget{classqt_shape_info_tab_a1e24b3b05a98ebf3aec79cd7c0c3e8ba}{}\hyperlink{classqt_shape_info_tab_a1e24b3b05a98ebf3aec79cd7c0c3e8ba}{qt\+Shape\+Info\+Tab} (Q\+Widget $\ast$parent, Qt\+::\+Window\+Flags f=0)\label{classqt_shape_info_tab_a1e24b3b05a98ebf3aec79cd7c0c3e8ba}
 
+\begin{DoxyCompactList}\small\item\em Initializes an empty tab. \end{DoxyCompactList}\item 
+\hypertarget{classqt_shape_info_tab_ad110fe4c0e748e126ee030a078714b72}{}\hyperlink{classqt_shape_info_tab_ad110fe4c0e748e126ee030a078714b72}{qt\+Shape\+Info\+Tab} (\hyperlink{class_shape}{Shape} $\ast$shape, Q\+Widget $\ast$parent, Qt\+::\+Window\+Flags f=0)\label{classqt_shape_info_tab_ad110fe4c0e748e126ee030a078714b72}
+
+\begin{DoxyCompactList}\small\item\em Initializes an tab with information about the given shape. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}{\bf qt\+Tab / qt\+Shapes\+Tab Functions}\par
+{\em Implements abstract functions of \hyperlink{classqt_tab}{qt\+Tab} and \hyperlink{classqt_shapes_tab}{qt\+Shapes\+Tab}.
+
+Clears all content from the tab. }\begin{DoxyCompactItemize}
 \item 
-\hypertarget{classqt_shape_info_tab_ad110fe4c0e748e126ee030a078714b72}{}{\bfseries qt\+Shape\+Info\+Tab} (\hyperlink{class_shape}{Shape} $\ast$shape, Q\+Widget $\ast$parent, Qt\+::\+Window\+Flags f=0)\label{classqt_shape_info_tab_ad110fe4c0e748e126ee030a078714b72}
+virtual void \hyperlink{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}{on\+Shape\+Delete} (\hyperlink{class_shape}{Shape} $\ast$shape)
+\begin{DoxyCompactList}\small\item\em Virtual function that triggers when a shape is deleted. \end{DoxyCompactList}\item 
+\hypertarget{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}{}virtual void \hyperlink{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}{on\+Shape\+Add} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}
 
-\item 
-\hypertarget{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}{}virtual void {\bfseries on\+Shape\+Delete} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}
+\begin{DoxyCompactList}\small\item\em Empty. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}{on\+Shape\+Edit} (\hyperlink{class_shape}{Shape} $\ast$shape)
+\begin{DoxyCompactList}\small\item\em Updates the information if the edited shapes was the selected one. \end{DoxyCompactList}\item 
+\hypertarget{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}{}virtual void \hyperlink{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}{on\+Shape\+Select} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}
 
-\item 
-\hypertarget{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}{}virtual void {\bfseries on\+Shape\+Add} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}
+\begin{DoxyCompactList}\small\item\em Updates the tab to show information for the new selected shape. \end{DoxyCompactList}\item 
+\hypertarget{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}{}virtual void \hyperlink{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}{on\+Clear} ()\label{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}
 
-\item 
-\hypertarget{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}{}virtual void {\bfseries on\+Shape\+Edit} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}
+\begin{DoxyCompactList}\small\item\em Clears all content from the tab. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
 
-\item 
-\hypertarget{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}{}virtual void {\bfseries on\+Shape\+Select} (\hyperlink{class_shape}{Shape} $\ast$shape)\label{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}
 
-\item 
-\hypertarget{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}{}virtual void {\bfseries on\+Clear} ()\label{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}
+\subsection{Detailed Description}
+Tab that shows basic information about the selected shape. 
 
-\end{DoxyCompactItemize}
+\begin{DoxyAuthor}{Author}
+Zorah Lähner 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}{}\index{qt\+Shape\+Info\+Tab@{qt\+Shape\+Info\+Tab}!on\+Shape\+Delete@{on\+Shape\+Delete}}
+\index{on\+Shape\+Delete@{on\+Shape\+Delete}!qt\+Shape\+Info\+Tab@{qt\+Shape\+Info\+Tab}}
+\subsubsection[{on\+Shape\+Delete}]{\setlength{\rightskip}{0pt plus 5cm}void qt\+Shape\+Info\+Tab\+::on\+Shape\+Delete (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}
+
+
+Virtual function that triggers when a shape is deleted. 
+
+The function is triggered before it is actually deleted from the G\+U\+I or other data structures in the main application. 
+\begin{DoxyParams}{Parameters}
+{\em shape} & Pointer to the shape that is deleted. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}{qt\+Tab}.
+
+\hypertarget{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}{}\index{qt\+Shape\+Info\+Tab@{qt\+Shape\+Info\+Tab}!on\+Shape\+Edit@{on\+Shape\+Edit}}
+\index{on\+Shape\+Edit@{on\+Shape\+Edit}!qt\+Shape\+Info\+Tab@{qt\+Shape\+Info\+Tab}}
+\subsubsection[{on\+Shape\+Edit}]{\setlength{\rightskip}{0pt plus 5cm}void qt\+Shape\+Info\+Tab\+::on\+Shape\+Edit (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}
+
+
+Updates the information if the edited shapes was the selected one. 
+
+The only possible changing information is the name at the moment. Other entries will not be updated. \begin{DoxyNote}{Note}
+If further editing of shapes is implemented later on, this function has to be updated. 
+\end{DoxyNote}
+
+
+Implements \hyperlink{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}{qt\+Shapes\+Tab}.
+
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

@@ -122,11 +122,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                    QWidget *                   parent,</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                    Qt::WindowFlags             f = 0);</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeDelete(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeAdd(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeEdit(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeSelect(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onClear();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_mesh_check_tab.html#aa1f583fbc0604f8c34528efd581e0633">onShapeDelete</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_mesh_check_tab.html#a8182eeedc7be66ea9d377011ace81125">onShapeAdd</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_mesh_check_tab.html#a01aea7b3fd612932b7a19b244b4b44a0">onShapeEdit</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_mesh_check_tab.html#a72ed8ca09f9100689a41dec77523bf4e">onShapeSelect</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_mesh_check_tab.html#a5ca41a6c3c905f572632a2b754f86b7c">onClear</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    </div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span> slots:</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> slotCheckMesh();</div>
@@ -140,14 +140,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(__ShapeAnalyzer__qtCorrespondenceColoringTab__) */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="class_hash_map_html"><div class="ttname"><a href="class_hash_map.html">HashMap&lt; vtkActor *, Shape * &gt;</a></div></div>
+<div class="ttc" id="classqt_mesh_check_tab_html_a72ed8ca09f9100689a41dec77523bf4e"><div class="ttname"><a href="classqt_mesh_check_tab.html#a72ed8ca09f9100689a41dec77523bf4e">qtMeshCheckTab::onShapeSelect</a></div><div class="ttdeci">virtual void onShapeSelect(Shape *shape)</div><div class="ttdoc">Virtual trigger function for selecting shapes. </div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.cpp:190</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:44</div></div>
-<div class="ttc" id="classqt_shapes_tab_html"><div class="ttname"><a href="classqt_shapes_tab.html">qtShapesTab</a></div><div class="ttdef"><b>Definition:</b> qtShapesTab.h:14</div></div>
+<div class="ttc" id="classqt_shapes_tab_html"><div class="ttname"><a href="classqt_shapes_tab.html">qtShapesTab</a></div><div class="ttdoc">Abstract class for Tabs that include Shapes. </div><div class="ttdef"><b>Definition:</b> qtShapesTab.h:14</div></div>
+<div class="ttc" id="classqt_mesh_check_tab_html_a01aea7b3fd612932b7a19b244b4b44a0"><div class="ttname"><a href="classqt_mesh_check_tab.html#a01aea7b3fd612932b7a19b244b4b44a0">qtMeshCheckTab::onShapeEdit</a></div><div class="ttdeci">virtual void onShapeEdit(Shape *shape)</div><div class="ttdoc">Virtual trigger function for edited shapes. </div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.cpp:176</div></div>
+<div class="ttc" id="classqt_mesh_check_tab_html_a8182eeedc7be66ea9d377011ace81125"><div class="ttname"><a href="classqt_mesh_check_tab.html#a8182eeedc7be66ea9d377011ace81125">qtMeshCheckTab::onShapeAdd</a></div><div class="ttdeci">virtual void onShapeAdd(Shape *shape)</div><div class="ttdoc">Virtual trigger function for new shapes. </div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.cpp:168</div></div>
 <div class="ttc" id="class_ui_1_1_mesh_check_widget_html"><div class="ttname"><a href="class_ui_1_1_mesh_check_widget.html">Ui::MeshCheckWidget</a></div><div class="ttdef"><b>Definition:</b> ui_meshcheck.h:139</div></div>
+<div class="ttc" id="classqt_mesh_check_tab_html_a5ca41a6c3c905f572632a2b754f86b7c"><div class="ttname"><a href="classqt_mesh_check_tab.html#a5ca41a6c3c905f572632a2b754f86b7c">qtMeshCheckTab::onClear</a></div><div class="ttdeci">virtual void onClear()</div><div class="ttdoc">Virtual function that triggers when the app is cleared. </div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.cpp:196</div></div>
 <div class="ttc" id="classqt_mesh_check_tab_html"><div class="ttname"><a href="classqt_mesh_check_tab.html">qtMeshCheckTab</a></div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.h:29</div></div>
+<div class="ttc" id="classqt_mesh_check_tab_html_aa1f583fbc0604f8c34528efd581e0633"><div class="ttname"><a href="classqt_mesh_check_tab.html#aa1f583fbc0604f8c34528efd581e0633">qtMeshCheckTab::onShapeDelete</a></div><div class="ttdeci">virtual void onShapeDelete(Shape *shape)</div><div class="ttdoc">Virtual function that triggers when a shape is deleted. </div><div class="ttdef"><b>Definition:</b> qtMeshCheckTab.cpp:152</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 15:20:05 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 22 2014 18:07:07 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

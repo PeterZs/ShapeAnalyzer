@@ -86,14 +86,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">qtShapesTab.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">//  qtShapesTab.h</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//  ShapeAnalyzer</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//  Created by Emanuel Laude on 19.08.14.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef ShapeAnalyzer_qtShapesTab_h</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ShapeAnalyzer_qtShapesTab_h</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
@@ -101,21 +94,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classqt_shapes_tab.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="classqt_shapes_tab.html">qtShapesTab</a> : <span class="keyword">public</span> <a class="code" href="classqt_tab.html">qtTab</a> {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classqt_shapes_tab.html">qtShapesTab</a>() {}</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeAdd(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeEdit(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> onShapeSelect(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classqt_tab_html"><div class="ttname"><a href="classqt_tab.html">qtTab</a></div><div class="ttdef"><b>Definition:</b> qtTab.h:14</div></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classqt_shapes_tab.html#a592ecb3f59fb56e5c978aea874bd9f90">   17</a></span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classqt_shapes_tab.html#a592ecb3f59fb56e5c978aea874bd9f90">~qtShapesTab</a>() {}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_shapes_tab.html#ac1785d1af606cd4ae0cd29708af7ae6f">onShapeAdd</a>(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_shapes_tab.html#a7e6ef278c299ef8934b6c1164b90574a">onShapeEdit</a>(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_shapes_tab.html#a50992777c7c5bcdf31adbb23e6bfb3a5">onShapeSelect</a>(<a class="code" href="class_shape.html">Shape</a>* shape) = 0;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;};</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classqt_tab_html"><div class="ttname"><a href="classqt_tab.html">qtTab</a></div><div class="ttdoc">Abstract class for Tabs. </div><div class="ttdef"><b>Definition:</b> qtTab.h:14</div></div>
+<div class="ttc" id="classqt_shapes_tab_html_a592ecb3f59fb56e5c978aea874bd9f90"><div class="ttname"><a href="classqt_shapes_tab.html#a592ecb3f59fb56e5c978aea874bd9f90">qtShapesTab::~qtShapesTab</a></div><div class="ttdeci">virtual ~qtShapesTab()</div><div class="ttdoc">Virtual Destructor. </div><div class="ttdef"><b>Definition:</b> qtShapesTab.h:17</div></div>
+<div class="ttc" id="classqt_shapes_tab_html_ac1785d1af606cd4ae0cd29708af7ae6f"><div class="ttname"><a href="classqt_shapes_tab.html#ac1785d1af606cd4ae0cd29708af7ae6f">qtShapesTab::onShapeAdd</a></div><div class="ttdeci">virtual void onShapeAdd(Shape *shape)=0</div><div class="ttdoc">Virtual trigger function for new shapes. </div></div>
+<div class="ttc" id="classqt_shapes_tab_html_a50992777c7c5bcdf31adbb23e6bfb3a5"><div class="ttname"><a href="classqt_shapes_tab.html#a50992777c7c5bcdf31adbb23e6bfb3a5">qtShapesTab::onShapeSelect</a></div><div class="ttdeci">virtual void onShapeSelect(Shape *shape)=0</div><div class="ttdoc">Virtual trigger function for selecting shapes. </div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:44</div></div>
-<div class="ttc" id="classqt_shapes_tab_html"><div class="ttname"><a href="classqt_shapes_tab.html">qtShapesTab</a></div><div class="ttdef"><b>Definition:</b> qtShapesTab.h:14</div></div>
+<div class="ttc" id="classqt_shapes_tab_html"><div class="ttname"><a href="classqt_shapes_tab.html">qtShapesTab</a></div><div class="ttdoc">Abstract class for Tabs that include Shapes. </div><div class="ttdef"><b>Definition:</b> qtShapesTab.h:14</div></div>
+<div class="ttc" id="classqt_shapes_tab_html_a7e6ef278c299ef8934b6c1164b90574a"><div class="ttname"><a href="classqt_shapes_tab.html#a7e6ef278c299ef8934b6c1164b90574a">qtShapesTab::onShapeEdit</a></div><div class="ttdeci">virtual void onShapeEdit(Shape *shape)=0</div><div class="ttdoc">Virtual trigger function for edited shapes. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 15:20:05 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 22 2014 18:07:07 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

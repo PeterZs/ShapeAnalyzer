@@ -1,5 +1,14 @@
 \hypertarget{classqt_shapes_tab}{}\section{qt\+Shapes\+Tab Class Reference}
 \label{classqt_shapes_tab}\index{qt\+Shapes\+Tab@{qt\+Shapes\+Tab}}
+
+
+Abstract class for Tabs that include Shapes.  
+
+
+
+
+{\ttfamily \#include $<$qt\+Shapes\+Tab.\+h$>$}
+
 Inheritance diagram for qt\+Shapes\+Tab\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,15 +18,88 @@ Inheritance diagram for qt\+Shapes\+Tab\+:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classqt_shapes_tab_ac1785d1af606cd4ae0cd29708af7ae6f}{}virtual void {\bfseries on\+Shape\+Add} (\hyperlink{class_shape}{Shape} $\ast$shape)=0\label{classqt_shapes_tab_ac1785d1af606cd4ae0cd29708af7ae6f}
+\hypertarget{classqt_shapes_tab_a592ecb3f59fb56e5c978aea874bd9f90}{}virtual \hyperlink{classqt_shapes_tab_a592ecb3f59fb56e5c978aea874bd9f90}{$\sim$qt\+Shapes\+Tab} ()\label{classqt_shapes_tab_a592ecb3f59fb56e5c978aea874bd9f90}
 
-\item 
-\hypertarget{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}{}virtual void {\bfseries on\+Shape\+Edit} (\hyperlink{class_shape}{Shape} $\ast$shape)=0\label{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}
+\begin{DoxyCompactList}\small\item\em Virtual Destructor. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_shapes_tab_ac1785d1af606cd4ae0cd29708af7ae6f}{on\+Shape\+Add} (\hyperlink{class_shape}{Shape} $\ast$shape)=0
+\begin{DoxyCompactList}\small\item\em Virtual trigger function for new shapes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}{on\+Shape\+Edit} (\hyperlink{class_shape}{Shape} $\ast$shape)=0
+\begin{DoxyCompactList}\small\item\em Virtual trigger function for edited shapes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_shapes_tab_a50992777c7c5bcdf31adbb23e6bfb3a5}{on\+Shape\+Select} (\hyperlink{class_shape}{Shape} $\ast$shape)=0
+\begin{DoxyCompactList}\small\item\em Virtual trigger function for selecting shapes. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
-\item 
-\hypertarget{classqt_shapes_tab_a50992777c7c5bcdf31adbb23e6bfb3a5}{}virtual void {\bfseries on\+Shape\+Select} (\hyperlink{class_shape}{Shape} $\ast$shape)=0\label{classqt_shapes_tab_a50992777c7c5bcdf31adbb23e6bfb3a5}
 
-\end{DoxyCompactItemize}
+\subsection{Detailed Description}
+Abstract class for Tabs that include Shapes. 
+
+Defines the trigger functions for new shapes, shapes changes and shape selection. Any tab that has to be updated in these events must inherit from this class.
+
+\begin{DoxyAuthor}{Author}
+Emanuel Laude 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classqt_shapes_tab_ac1785d1af606cd4ae0cd29708af7ae6f}{}\index{qt\+Shapes\+Tab@{qt\+Shapes\+Tab}!on\+Shape\+Add@{on\+Shape\+Add}}
+\index{on\+Shape\+Add@{on\+Shape\+Add}!qt\+Shapes\+Tab@{qt\+Shapes\+Tab}}
+\subsubsection[{on\+Shape\+Add}]{\setlength{\rightskip}{0pt plus 5cm}virtual void qt\+Shapes\+Tab\+::on\+Shape\+Add (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\label{classqt_shapes_tab_ac1785d1af606cd4ae0cd29708af7ae6f}
+
+
+Virtual trigger function for new shapes. 
+
+The function is triggered before the shape is added to the G\+U\+I or included in any data structures in the main application. 
+\begin{DoxyParams}{Parameters}
+{\em shape} & Pointer to added shape. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classqt_correspondence_coloring_tab_aa42744063025d9b0d29b9a83817c0f27}{qt\+Correspondence\+Coloring\+Tab}, \hyperlink{classqt_shape_info_tab_aec9838aa8baceca3a6045b5950e2881d}{qt\+Shape\+Info\+Tab}, \hyperlink{classqt_shape_interpolation_tab_a9801bcf3d2e1b31a79824d8b623e1762}{qt\+Shape\+Interpolation\+Tab}, and \hyperlink{classqt_mesh_check_tab_a8182eeedc7be66ea9d377011ace81125}{qt\+Mesh\+Check\+Tab}.
+
+\hypertarget{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}{}\index{qt\+Shapes\+Tab@{qt\+Shapes\+Tab}!on\+Shape\+Edit@{on\+Shape\+Edit}}
+\index{on\+Shape\+Edit@{on\+Shape\+Edit}!qt\+Shapes\+Tab@{qt\+Shapes\+Tab}}
+\subsubsection[{on\+Shape\+Edit}]{\setlength{\rightskip}{0pt plus 5cm}virtual void qt\+Shapes\+Tab\+::on\+Shape\+Edit (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\label{classqt_shapes_tab_a7e6ef278c299ef8934b6c1164b90574a}
+
+
+Virtual trigger function for edited shapes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shape} & Pointer to edited shape. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classqt_correspondence_coloring_tab_a30c174762eda93581d7f93bf4d247788}{qt\+Correspondence\+Coloring\+Tab}, \hyperlink{classqt_shape_info_tab_acc7e4b91ec5eff4e8a785730a21a44f8}{qt\+Shape\+Info\+Tab}, \hyperlink{classqt_shape_interpolation_tab_a556d7b2a445f0cd5f6a5fd1f912d144a}{qt\+Shape\+Interpolation\+Tab}, and \hyperlink{classqt_mesh_check_tab_a01aea7b3fd612932b7a19b244b4b44a0}{qt\+Mesh\+Check\+Tab}.
+
+\hypertarget{classqt_shapes_tab_a50992777c7c5bcdf31adbb23e6bfb3a5}{}\index{qt\+Shapes\+Tab@{qt\+Shapes\+Tab}!on\+Shape\+Select@{on\+Shape\+Select}}
+\index{on\+Shape\+Select@{on\+Shape\+Select}!qt\+Shapes\+Tab@{qt\+Shapes\+Tab}}
+\subsubsection[{on\+Shape\+Select}]{\setlength{\rightskip}{0pt plus 5cm}virtual void qt\+Shapes\+Tab\+::on\+Shape\+Select (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\label{classqt_shapes_tab_a50992777c7c5bcdf31adbb23e6bfb3a5}
+
+
+Virtual trigger function for selecting shapes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shape} & Pointer to selected shape. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classqt_correspondence_coloring_tab_af02e0bad7197ef2a4fba5e67a6d5f4e2}{qt\+Correspondence\+Coloring\+Tab}, \hyperlink{classqt_shape_info_tab_a785dda79e10dfd05845e08ab1b4cdfd9}{qt\+Shape\+Info\+Tab}, \hyperlink{classqt_shape_interpolation_tab_a4db77c18d8b2257ac14654ef7c9f5ecd}{qt\+Shape\+Interpolation\+Tab}, and \hyperlink{classqt_mesh_check_tab_a72ed8ca09f9100689a41dec77523bf4e}{qt\+Mesh\+Check\+Tab}.
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

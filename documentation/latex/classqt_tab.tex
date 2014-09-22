@@ -1,5 +1,14 @@
 \hypertarget{classqt_tab}{}\section{qt\+Tab Class Reference}
 \label{classqt_tab}\index{qt\+Tab@{qt\+Tab}}
+
+
+Abstract class for Tabs.  
+
+
+
+
+{\ttfamily \#include $<$qt\+Tab.\+h$>$}
+
 Inheritance diagram for qt\+Tab\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,12 +18,61 @@ Inheritance diagram for qt\+Tab\+:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}{}virtual void {\bfseries on\+Shape\+Delete} (\hyperlink{class_shape}{Shape} $\ast$shape)=0\label{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}
+\hypertarget{classqt_tab_a269279758bb0b73d3a04477ac3799965}{}virtual \hyperlink{classqt_tab_a269279758bb0b73d3a04477ac3799965}{$\sim$qt\+Tab} ()\label{classqt_tab_a269279758bb0b73d3a04477ac3799965}
 
-\item 
-\hypertarget{classqt_tab_aeca48d82349df4c61fbfb66c4273c9b6}{}virtual void {\bfseries on\+Clear} ()=0\label{classqt_tab_aeca48d82349df4c61fbfb66c4273c9b6}
+\begin{DoxyCompactList}\small\item\em Virtual Destructor. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}{on\+Shape\+Delete} (\hyperlink{class_shape}{Shape} $\ast$shape)=0
+\begin{DoxyCompactList}\small\item\em Virtual function that triggers when a shape is deleted. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classqt_tab_aeca48d82349df4c61fbfb66c4273c9b6}{on\+Clear} ()=0
+\begin{DoxyCompactList}\small\item\em Virtual function that triggers when the app is cleared. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
-\end{DoxyCompactItemize}
+
+\subsection{Detailed Description}
+Abstract class for Tabs. 
+
+Defines the trigger functions for clearing the app and deleting a shape. The abstract classes \hyperlink{classqt_shapes_tab}{qt\+Shapes\+Tab} and \hyperlink{classqt_correspondences_tab}{qt\+Correspondences\+Tab} inherit from this class.
+
+\begin{DoxyAuthor}{Author}
+Emanuel Laude 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classqt_tab_aeca48d82349df4c61fbfb66c4273c9b6}{}\index{qt\+Tab@{qt\+Tab}!on\+Clear@{on\+Clear}}
+\index{on\+Clear@{on\+Clear}!qt\+Tab@{qt\+Tab}}
+\subsubsection[{on\+Clear}]{\setlength{\rightskip}{0pt plus 5cm}virtual void qt\+Tab\+::on\+Clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\label{classqt_tab_aeca48d82349df4c61fbfb66c4273c9b6}
+
+
+Virtual function that triggers when the app is cleared. 
+
+The function is triggered before any objects are deleted from the G\+U\+I or other data structures in the main application. 
+
+Implemented in \hyperlink{classqt_correspondence_coloring_tab_a3f5f147052eb9b10c08af1160ff85f42}{qt\+Correspondence\+Coloring\+Tab}, \hyperlink{classqt_shape_info_tab_ae7f1b60ab068ec55b67830742e7534d8}{qt\+Shape\+Info\+Tab}, \hyperlink{classqt_face_correspondences_tab_a96fe4ebb18a3969b3576dddfffcaf044}{qt\+Face\+Correspondences\+Tab}, \hyperlink{classqt_point_correspondences_tab_a7e07cc3dbe7981215885d5b9ddab14a8}{qt\+Point\+Correspondences\+Tab}, \hyperlink{classqt_shape_interpolation_tab_a71ad9a70adc5408de4ceb94467953d8c}{qt\+Shape\+Interpolation\+Tab}, and \hyperlink{classqt_mesh_check_tab_a5ca41a6c3c905f572632a2b754f86b7c}{qt\+Mesh\+Check\+Tab}.
+
+\hypertarget{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}{}\index{qt\+Tab@{qt\+Tab}!on\+Shape\+Delete@{on\+Shape\+Delete}}
+\index{on\+Shape\+Delete@{on\+Shape\+Delete}!qt\+Tab@{qt\+Tab}}
+\subsubsection[{on\+Shape\+Delete}]{\setlength{\rightskip}{0pt plus 5cm}virtual void qt\+Tab\+::on\+Shape\+Delete (
+\begin{DoxyParamCaption}
+\item[{{\bf Shape} $\ast$}]{shape}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\label{classqt_tab_a8811879f2aaf15777025427eec7b9fd9}
+
+
+Virtual function that triggers when a shape is deleted. 
+
+The function is triggered before it is actually deleted from the G\+U\+I or other data structures in the main application. 
+\begin{DoxyParams}{Parameters}
+{\em shape} & Pointer to the shape that is deleted. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classqt_correspondence_coloring_tab_a731f7da293d21c87059515a10d36d1e3}{qt\+Correspondence\+Coloring\+Tab}, \hyperlink{classqt_face_correspondences_tab_a6e921225a7049a72fe4b24c355892160}{qt\+Face\+Correspondences\+Tab}, \hyperlink{classqt_point_correspondences_tab_a3fd3d809d1686a5397befe85feeac399}{qt\+Point\+Correspondences\+Tab}, \hyperlink{classqt_shape_interpolation_tab_aac6776b2f521abe2d9aa6f932665cf57}{qt\+Shape\+Interpolation\+Tab}, \hyperlink{classqt_shape_info_tab_a295e58538f2cebdfd9a4b5b40bf1e16c}{qt\+Shape\+Info\+Tab}, and \hyperlink{classqt_mesh_check_tab_aa1f583fbc0604f8c34528efd581e0633}{qt\+Mesh\+Check\+Tab}.
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

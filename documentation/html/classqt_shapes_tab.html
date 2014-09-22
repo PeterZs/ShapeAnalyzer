@@ -88,46 +88,166 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">qtShapesTab Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Abstract class for Tabs that include Shapes.  
+ <a href="classqt_shapes_tab.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="qt_shapes_tab_8h_source.html">qtShapesTab.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for qtShapesTab:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classqt_shapes_tab.png" usemap="#qtShapesTab_map" alt=""/>
   <map id="qtShapesTab_map" name="qtShapesTab_map">
-<area href="classqt_tab.html" alt="qtTab" shape="rect" coords="292,0,477,24"/>
+<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="292,0,477,24"/>
 <area href="classqt_correspondence_coloring_tab.html" alt="qtCorrespondenceColoringTab" shape="rect" coords="0,112,185,136"/>
 <area href="classqt_mesh_check_tab.html" alt="qtMeshCheckTab" shape="rect" coords="195,112,380,136"/>
-<area href="classqt_shape_info_tab.html" alt="qtShapeInfoTab" shape="rect" coords="390,112,575,136"/>
+<area href="classqt_shape_info_tab.html" title="Tab that shows basic information about the selected shape. " alt="qtShapeInfoTab" shape="rect" coords="390,112,575,136"/>
 <area href="classqt_shape_interpolation_tab.html" alt="qtShapeInterpolationTab" shape="rect" coords="585,112,770,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac1785d1af606cd4ae0cd29708af7ae6f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1785d1af606cd4ae0cd29708af7ae6f"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onShapeAdd</b> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memitem:a592ecb3f59fb56e5c978aea874bd9f90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a592ecb3f59fb56e5c978aea874bd9f90"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shapes_tab.html#a592ecb3f59fb56e5c978aea874bd9f90">~qtShapesTab</a> ()</td></tr>
+<tr class="memdesc:a592ecb3f59fb56e5c978aea874bd9f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Destructor. <br /></td></tr>
+<tr class="separator:a592ecb3f59fb56e5c978aea874bd9f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1785d1af606cd4ae0cd29708af7ae6f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shapes_tab.html#ac1785d1af606cd4ae0cd29708af7ae6f">onShapeAdd</a> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memdesc:ac1785d1af606cd4ae0cd29708af7ae6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual trigger function for new shapes.  <a href="#ac1785d1af606cd4ae0cd29708af7ae6f">More...</a><br /></td></tr>
 <tr class="separator:ac1785d1af606cd4ae0cd29708af7ae6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e6ef278c299ef8934b6c1164b90574a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e6ef278c299ef8934b6c1164b90574a"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onShapeEdit</b> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memitem:a7e6ef278c299ef8934b6c1164b90574a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shapes_tab.html#a7e6ef278c299ef8934b6c1164b90574a">onShapeEdit</a> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memdesc:a7e6ef278c299ef8934b6c1164b90574a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual trigger function for edited shapes.  <a href="#a7e6ef278c299ef8934b6c1164b90574a">More...</a><br /></td></tr>
 <tr class="separator:a7e6ef278c299ef8934b6c1164b90574a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50992777c7c5bcdf31adbb23e6bfb3a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50992777c7c5bcdf31adbb23e6bfb3a5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onShapeSelect</b> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memitem:a50992777c7c5bcdf31adbb23e6bfb3a5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shapes_tab.html#a50992777c7c5bcdf31adbb23e6bfb3a5">onShapeSelect</a> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memdesc:a50992777c7c5bcdf31adbb23e6bfb3a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual trigger function for selecting shapes.  <a href="#a50992777c7c5bcdf31adbb23e6bfb3a5">More...</a><br /></td></tr>
 <tr class="separator:a50992777c7c5bcdf31adbb23e6bfb3a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classqt_tab"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classqt_tab')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classqt_tab.html">qtTab</a></td></tr>
-<tr class="memitem:a8811879f2aaf15777025427eec7b9fd9 inherit pub_methods_classqt_tab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8811879f2aaf15777025427eec7b9fd9"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onShapeDelete</b> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memitem:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a269279758bb0b73d3a04477ac3799965"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_tab.html#a269279758bb0b73d3a04477ac3799965">~qtTab</a> ()</td></tr>
+<tr class="memdesc:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Destructor. <br /></td></tr>
+<tr class="separator:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8811879f2aaf15777025427eec7b9fd9 inherit pub_methods_classqt_tab"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_tab.html#a8811879f2aaf15777025427eec7b9fd9">onShapeDelete</a> (<a class="el" href="class_shape.html">Shape</a> *shape)=0</td></tr>
+<tr class="memdesc:a8811879f2aaf15777025427eec7b9fd9 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual function that triggers when a shape is deleted.  <a href="#a8811879f2aaf15777025427eec7b9fd9">More...</a><br /></td></tr>
 <tr class="separator:a8811879f2aaf15777025427eec7b9fd9 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeca48d82349df4c61fbfb66c4273c9b6 inherit pub_methods_classqt_tab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeca48d82349df4c61fbfb66c4273c9b6"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onClear</b> ()=0</td></tr>
+<tr class="memitem:aeca48d82349df4c61fbfb66c4273c9b6 inherit pub_methods_classqt_tab"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_tab.html#aeca48d82349df4c61fbfb66c4273c9b6">onClear</a> ()=0</td></tr>
+<tr class="memdesc:aeca48d82349df4c61fbfb66c4273c9b6 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual function that triggers when the app is cleared.  <a href="#aeca48d82349df4c61fbfb66c4273c9b6">More...</a><br /></td></tr>
 <tr class="separator:aeca48d82349df4c61fbfb66c4273c9b6 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract class for Tabs that include Shapes. </p>
+<p>Defines the trigger functions for new shapes, shapes changes and shape selection. Any tab that has to be updated in these events must inherit from this class.</p>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ac1785d1af606cd4ae0cd29708af7ae6f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void qtShapesTab::onShapeAdd </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Virtual trigger function for new shapes. </p>
+<p>The function is triggered before the shape is added to the GUI or included in any data structures in the main application. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shape</td><td>Pointer to added shape. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classqt_correspondence_coloring_tab.html#aa42744063025d9b0d29b9a83817c0f27">qtCorrespondenceColoringTab</a>, <a class="el" href="classqt_shape_info_tab.html#aec9838aa8baceca3a6045b5950e2881d">qtShapeInfoTab</a>, <a class="el" href="classqt_shape_interpolation_tab.html#a9801bcf3d2e1b31a79824d8b623e1762">qtShapeInterpolationTab</a>, and <a class="el" href="classqt_mesh_check_tab.html#a8182eeedc7be66ea9d377011ace81125">qtMeshCheckTab</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7e6ef278c299ef8934b6c1164b90574a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void qtShapesTab::onShapeEdit </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Virtual trigger function for edited shapes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shape</td><td>Pointer to edited shape. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classqt_correspondence_coloring_tab.html#a30c174762eda93581d7f93bf4d247788">qtCorrespondenceColoringTab</a>, <a class="el" href="classqt_shape_info_tab.html#acc7e4b91ec5eff4e8a785730a21a44f8">qtShapeInfoTab</a>, <a class="el" href="classqt_shape_interpolation_tab.html#a556d7b2a445f0cd5f6a5fd1f912d144a">qtShapeInterpolationTab</a>, and <a class="el" href="classqt_mesh_check_tab.html#a01aea7b3fd612932b7a19b244b4b44a0">qtMeshCheckTab</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a50992777c7c5bcdf31adbb23e6bfb3a5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void qtShapesTab::onShapeSelect </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Virtual trigger function for selecting shapes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shape</td><td>Pointer to selected shape. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classqt_correspondence_coloring_tab.html#af02e0bad7197ef2a4fba5e67a6d5f4e2">qtCorrespondenceColoringTab</a>, <a class="el" href="classqt_shape_info_tab.html#a785dda79e10dfd05845e08ab1b4cdfd9">qtShapeInfoTab</a>, <a class="el" href="classqt_shape_interpolation_tab.html#a4db77c18d8b2257ac14654ef7c9f5ecd">qtShapeInterpolationTab</a>, and <a class="el" href="classqt_mesh_check_tab.html#a72ed8ca09f9100689a41dec77523bf4e">qtMeshCheckTab</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/view/qt/<a class="el" href="qt_shapes_tab_8h_source.html">qtShapesTab.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 15:20:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 22 2014 18:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

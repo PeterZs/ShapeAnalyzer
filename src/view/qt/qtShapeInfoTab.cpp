@@ -9,7 +9,11 @@
 #include "qtShapeInfoTab.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// will create widget with empty table
+// Constructors
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 qtShapeInfoTab::qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f) {
     initialize();
 }
@@ -19,9 +23,13 @@ qtShapeInfoTab::qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f) : QWidget(par
 qtShapeInfoTab::qtShapeInfoTab(Shape* shape, QWidget *parent, Qt::WindowFlags f) {
     initialize();
     
-    onShapeSelect(shape);
+    fillInInformation(shape);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Private Functions
+///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::initialize() {
@@ -37,6 +45,42 @@ void qtShapeInfoTab::initialize() {
     tableVerticalHeader<<"ID"<<"Name"<<"#Vertices"<<"#Faces"<<"Area";
     tableWidget->setVerticalHeaderLabels(tableVerticalHeader);
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+void qtShapeInfoTab::fillInInformation(Shape* shape) {
+    //insert data
+    
+    // shape id
+    tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(shape->getId())));
+    // shape name
+    tableWidget->setItem(1, 0, new QTableWidgetItem(QString::fromStdString(shape->getName())));
+    // number of vertices
+    tableWidget->setItem(2, 0, new QTableWidgetItem(
+                                                    QString::number(
+                                                                    (int) shape->getPolyData()->GetPoints()->GetNumberOfPoints()
+                                                                    )
+                                                    ));
+    // number of cells
+    tableWidget->setItem(3, 0, new QTableWidgetItem(
+                                                    QString::number(
+                                                                    (int) shape->getPolyData()->GetNumberOfCells()
+                                                                    )
+                                                    )
+                         );
+    // area of the shape
+    tableWidget->setItem(4, 0, new QTableWidgetItem(
+                                                    QString::number(
+                                                                    (double) shape->getArea()
+                                                                    )
+                                                    )
+                         );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// qtTab / qtShapesTab Functions
+///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,27 +108,7 @@ void qtShapeInfoTab::onShapeEdit(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void qtShapeInfoTab::onShapeSelect(Shape* shape) {
-    //insert data
-    tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(shape->getId())));
-    tableWidget->setItem(1, 0, new QTableWidgetItem(QString::fromStdString(shape->getName())));
-    tableWidget->setItem(2, 0, new QTableWidgetItem(
-                                                    QString::number(
-                                                                    (int) shape->getPolyData()->GetPoints()->GetNumberOfPoints()
-                                                                    )
-                                                    ));
-    tableWidget->setItem(3, 0, new QTableWidgetItem(
-                                                    QString::number(
-                                                                    (int) shape->getPolyData()->GetNumberOfCells()
-                                                                    )
-                                                    )
-                         );
-    
-    tableWidget->setItem(4, 0, new QTableWidgetItem(
-                                                    QString::number(
-                                                                    (double) shape->getArea()
-                                                                    )
-                                                    )
-                         );
+    fillInInformation(shape);
 }
 
 

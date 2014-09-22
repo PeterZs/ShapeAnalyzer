@@ -1,0 +1,92 @@
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base}{}\section{geodesic\+:\+:Geodesic\+Algorithm\+Base Class Reference}
+\label{classgeodesic_1_1_geodesic_algorithm_base}\index{geodesic\+::\+Geodesic\+Algorithm\+Base@{geodesic\+::\+Geodesic\+Algorithm\+Base}}
+Inheritance diagram for geodesic\+:\+:Geodesic\+Algorithm\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=0.920548cm]{classgeodesic_1_1_geodesic_algorithm_base}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a92b104ecfd6664bba6e3e6089e62a568}{}enum {\bfseries Algorithm\+Type} \{ {\bfseries E\+X\+A\+C\+T}, 
+{\bfseries D\+I\+J\+K\+S\+T\+R\+A}, 
+{\bfseries S\+U\+B\+D\+I\+V\+I\+S\+I\+O\+N}, 
+{\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+A\+L\+G\+O\+R\+I\+T\+H\+M}
+ \}\label{classgeodesic_1_1_geodesic_algorithm_base_a92b104ecfd6664bba6e3e6089e62a568}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a023f9fe21f67dbd0ed75be639f519c9c}{}{\bfseries Geodesic\+Algorithm\+Base} (\hyperlink{classgeodesic_1_1_mesh}{geodesic\+::\+Mesh} $\ast$mesh)\label{classgeodesic_1_1_geodesic_algorithm_base_a023f9fe21f67dbd0ed75be639f519c9c}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_af1231184ca4215f90e5404dbfa05345e}{}virtual void {\bfseries propagate} (std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ \&sources, double max\+\_\+propagation\+\_\+distance=G\+E\+O\+D\+E\+S\+I\+C\+\_\+\+I\+N\+F, std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ $\ast$stop\+\_\+points=N\+U\+L\+L)=0\label{classgeodesic_1_1_geodesic_algorithm_base_af1231184ca4215f90e5404dbfa05345e}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a26d3226d68b102c74de5f8cca02472fe}{}virtual void {\bfseries trace\+\_\+back} (\hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} \&destination, std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ \&path)=0\label{classgeodesic_1_1_geodesic_algorithm_base_a26d3226d68b102c74de5f8cca02472fe}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_ad28b5eb5454e958c683647eb526543e4}{}void {\bfseries geodesic} (\hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} \&source, \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} \&destination, std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ \&path)\label{classgeodesic_1_1_geodesic_algorithm_base_ad28b5eb5454e958c683647eb526543e4}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_afc459d5951c9be476c3997f225e09872}{}void {\bfseries geodesic} (std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ \&sources, std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ \&destinations, std\+::vector$<$ std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ $>$ \&paths)\label{classgeodesic_1_1_geodesic_algorithm_base_afc459d5951c9be476c3997f225e09872}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a2cad02f242ef6781d451a539970a547a}{}virtual unsigned {\bfseries best\+\_\+source} (\hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} \&point, double \&best\+\_\+source\+\_\+distance)=0\label{classgeodesic_1_1_geodesic_algorithm_base_a2cad02f242ef6781d451a539970a547a}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a44790285937a918a466ed57cc22b327a}{}virtual void {\bfseries print\+\_\+statistics} ()\label{classgeodesic_1_1_geodesic_algorithm_base_a44790285937a918a466ed57cc22b327a}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a5618d753cb471af1b85c4d1843fd8bc9}{}Algorithm\+Type {\bfseries type} ()\label{classgeodesic_1_1_geodesic_algorithm_base_a5618d753cb471af1b85c4d1843fd8bc9}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_abe7d6bf87ab38b9cbac85c84b17ebf4c}{}virtual std\+::string {\bfseries name} ()\label{classgeodesic_1_1_geodesic_algorithm_base_abe7d6bf87ab38b9cbac85c84b17ebf4c}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_aeaeea45a3e01962834c160a1edbb68ef}{}\hyperlink{classgeodesic_1_1_mesh}{geodesic\+::\+Mesh} $\ast$ {\bfseries mesh} ()\label{classgeodesic_1_1_geodesic_algorithm_base_aeaeea45a3e01962834c160a1edbb68ef}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_afc97d6ccbe2c1603793936ec38e6f3a8}{}typedef std\+::pair$<$ \hyperlink{classgeodesic_1_1_vertex}{vertex\+\_\+pointer}, double $>$ {\bfseries stop\+\_\+vertex\+\_\+with\+\_\+distace\+\_\+type}\label{classgeodesic_1_1_geodesic_algorithm_base_afc97d6ccbe2c1603793936ec38e6f3a8}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a4f2040a2d68593a6c8792d46202bc5e6}{}void {\bfseries set\+\_\+stop\+\_\+conditions} (std\+::vector$<$ \hyperlink{classgeodesic_1_1_surface_point}{Surface\+Point} $>$ $\ast$stop\+\_\+points, double stop\+\_\+distance)\label{classgeodesic_1_1_geodesic_algorithm_base_a4f2040a2d68593a6c8792d46202bc5e6}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a0bb83e25e4ef90d92f6d79b783efd909}{}double {\bfseries stop\+\_\+distance} ()\label{classgeodesic_1_1_geodesic_algorithm_base_a0bb83e25e4ef90d92f6d79b783efd909}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_acfae8cd7708554fc43c3a4de82706a68}{}Algorithm\+Type {\bfseries m\+\_\+type}\label{classgeodesic_1_1_geodesic_algorithm_base_acfae8cd7708554fc43c3a4de82706a68}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_ad88f249e874b8445f3d92846bf39875f}{}std\+::vector$<$ stop\+\_\+vertex\+\_\+with\+\_\+distace\+\_\+type $>$ {\bfseries m\+\_\+stop\+\_\+vertices}\label{classgeodesic_1_1_geodesic_algorithm_base_ad88f249e874b8445f3d92846bf39875f}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_ac4f8f7cc46da5fc1b013a3a9b83d0843}{}double {\bfseries m\+\_\+max\+\_\+propagation\+\_\+distance}\label{classgeodesic_1_1_geodesic_algorithm_base_ac4f8f7cc46da5fc1b013a3a9b83d0843}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a60c4d6e286af80a84875bf2a15ebf7dc}{}\hyperlink{classgeodesic_1_1_mesh}{geodesic\+::\+Mesh} $\ast$ {\bfseries m\+\_\+mesh}\label{classgeodesic_1_1_geodesic_algorithm_base_a60c4d6e286af80a84875bf2a15ebf7dc}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_a5eab429056495d7709bb02d300d03e7a}{}double {\bfseries m\+\_\+time\+\_\+consumed}\label{classgeodesic_1_1_geodesic_algorithm_base_a5eab429056495d7709bb02d300d03e7a}
+
+\item 
+\hypertarget{classgeodesic_1_1_geodesic_algorithm_base_ac45e2667cee21ed383301029bfbcef9d}{}double {\bfseries m\+\_\+propagation\+\_\+distance\+\_\+stopped}\label{classgeodesic_1_1_geodesic_algorithm_base_ac45e2667cee21ed383301029bfbcef9d}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/domain/metric/3rdparty/geodesic/geodesic\+\_\+algorithm\+\_\+base.\+h\end{DoxyCompactItemize}

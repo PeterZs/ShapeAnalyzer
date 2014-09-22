@@ -1,0 +1,41 @@
+\hypertarget{class_scene_writer_reader}{}\section{Scene\+Writer\+Reader Class Reference}
+\label{class_scene_writer_reader}\index{Scene\+Writer\+Reader@{Scene\+Writer\+Reader}}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_scene_writer_reader_a73c721779d6e77eb47af4699a88b943b}{}static void {\bfseries import\+Scene\+Binary} (string filename, vtk\+Smart\+Pointer$<$ vtk\+Renderer $>$ renderer, int \&last\+Insert\+Shape\+I\+D, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes, int \&last\+Insert\+Correspondence\+I\+D, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, \hyperlink{class_point_correspondence}{Point\+Correspondence} $\ast$ $>$ \&point\+Correspondences, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, \hyperlink{class_face_correspondence}{Face\+Correspondence} $\ast$ $>$ \&face\+Correspondences)\label{class_scene_writer_reader_a73c721779d6e77eb47af4699a88b943b}
+
+\item 
+\hypertarget{class_scene_writer_reader_a09371c97032114bbb2d639de98bbd0c4}{}static void {\bfseries export\+Scene\+Binary} (string filename, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes, int last\+Insert\+Shape\+I\+D, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, \hyperlink{class_point_correspondence}{Point\+Correspondence} $\ast$ $>$ \&point\+Correspondences, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, \hyperlink{class_face_correspondence}{Face\+Correspondence} $\ast$ $>$ \&face\+Correspondences, int last\+Insert\+Correspondence\+I\+D)\label{class_scene_writer_reader_a09371c97032114bbb2d639de98bbd0c4}
+
+\item 
+\hypertarget{class_scene_writer_reader_a12ad397c3807354da56b1c5c9a985e47}{}static void {\bfseries import\+Scene\+A\+S\+C\+I\+I} (string filename, vtk\+Smart\+Pointer$<$ vtk\+Renderer $>$ renderer, int \&last\+Insert\+Shape\+I\+D, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes, int \&last\+Insert\+Correspondence\+I\+D, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, \hyperlink{class_point_correspondence}{Point\+Correspondence} $\ast$ $>$ \&point\+Correspondences, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, \hyperlink{class_face_correspondence}{Face\+Correspondence} $\ast$ $>$ \&face\+Correspondences)\label{class_scene_writer_reader_a12ad397c3807354da56b1c5c9a985e47}
+
+\item 
+\hypertarget{class_scene_writer_reader_a035bfd2f7adfe4c736d77311aca761da}{}static void {\bfseries export\+Scene\+A\+S\+C\+I\+I} (string filename, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes, int last\+Insert\+Shape\+I\+D, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, \hyperlink{class_point_correspondence}{Point\+Correspondence} $\ast$ $>$ \&point\+Correspondences, \hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, \hyperlink{class_face_correspondence}{Face\+Correspondence} $\ast$ $>$ \&face\+Correspondences, int last\+Insert\+Correspondence\+I\+D)\label{class_scene_writer_reader_a035bfd2f7adfe4c736d77311aca761da}
+
+\item 
+\hypertarget{class_scene_writer_reader_a68b6a5b9fc0ba76a0c873e351154994e}{}static void {\bfseries export\+Point\+Correspondences\+A\+S\+C\+I\+I} (\hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, bool $>$ \&point\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, string filename)\label{class_scene_writer_reader_a68b6a5b9fc0ba76a0c873e351154994e}
+
+\item 
+\hypertarget{class_scene_writer_reader_aac58f559b254213c548b3e48fd88f647}{}static void {\bfseries export\+Face\+Correspondences\+A\+S\+C\+I\+I} (\hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, bool $>$ \&face\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, string filename)\label{class_scene_writer_reader_aac58f559b254213c548b3e48fd88f647}
+
+\item 
+\hypertarget{class_scene_writer_reader_a2501e8be6b5d63cf57ada72be062a710}{}static void {\bfseries import\+Correspondences\+A\+S\+C\+I\+I} (string filename, int \&last\+Insert\+Correspondence\+I\+D\+\_\+, vector$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$ $>$ \&point\+Correspondences, vector$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$ $>$ \&face\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, Q\+Widget $\ast$parent\+Widget)\label{class_scene_writer_reader_a2501e8be6b5d63cf57ada72be062a710}
+
+\item 
+\hypertarget{class_scene_writer_reader_a26a4d2d7b9c940cf41d634a3938357f3}{}static void {\bfseries export\+Point\+Correspondences\+Binary} (\hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$, bool $>$ \&point\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, string filename)\label{class_scene_writer_reader_a26a4d2d7b9c940cf41d634a3938357f3}
+
+\item 
+\hypertarget{class_scene_writer_reader_acb61e5abf970c27188f4c3a403cb9c49}{}static void {\bfseries export\+Face\+Correspondences\+Binary} (\hyperlink{class_hash_map}{Hash\+Map}$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$, bool $>$ \&face\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, string filename)\label{class_scene_writer_reader_acb61e5abf970c27188f4c3a403cb9c49}
+
+\item 
+\hypertarget{class_scene_writer_reader_a79d7598a4a0c4280387d1e03f8128e46}{}static void {\bfseries import\+Correspondences\+Binary} (string filename, int \&last\+Insert\+Correspondence\+I\+D\+\_\+, vector$<$ \hyperlink{class_point_correspondence_data}{Point\+Correspondence\+Data} $\ast$ $>$ \&point\+Correspondences, vector$<$ \hyperlink{class_face_correspondence_data}{Face\+Correspondence\+Data} $\ast$ $>$ \&face\+Correspondences, vector$<$ \hyperlink{class_shape}{Shape} $\ast$ $>$ \&shapes\+Ordered\+By\+Id, Q\+Widget $\ast$parent\+Widget)\label{class_scene_writer_reader_a79d7598a4a0c4280387d1e03f8128e46}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/domain/io/Scene\+Writer\+Reader.\+h\item 
+src/domain/io/Scene\+Writer\+Reader.\+cpp\end{DoxyCompactItemize}

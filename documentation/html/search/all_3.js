@@ -1,13 +1,10 @@
 var searchData=
 [
-  ['face',['Face',['../classgeodesic_1_1_face.html',1,'geodesic']]],
-  ['facecoordinatecoloring',['FaceCoordinateColoring',['../class_face_coordinate_coloring.html',1,'']]],
-  ['facecorrespondence',['FaceCorrespondence',['../class_face_correspondence.html',1,'']]],
-  ['facecorrespondencedata',['FaceCorrespondenceData',['../class_face_correspondence_data.html',1,'']]],
-  ['facecorrespondencepicker',['FaceCorrespondencePicker',['../class_face_correspondence_picker.html',1,'']]],
-  ['facecorrespondenceswidget',['FaceCorrespondencesWidget',['../class_ui_1_1_face_correspondences_widget.html',1,'Ui']]],
-  ['factory',['Factory',['../class_factory.html',1,'']]],
-  ['farthestpointsampling',['FarthestPointSampling',['../class_farthest_point_sampling.html',1,'']]],
-  ['femlaplacebeltramioperator',['FEMLaplaceBeltramiOperator',['../class_f_e_m_laplace_beltrami_operator.html',1,'']]],
-  ['functionalmaps',['FunctionalMaps',['../class_functional_maps.html',1,'']]]
+  ['dialog',['Dialog',['../class_ui_1_1_dialog.html',1,'Ui']]],
+  ['dijkstranode',['DijkstraNode',['../classgeodesic_1_1_dijkstra_node.html',1,'geodesic']]],
+  ['dijkstranode1',['DijkstraNode1',['../classgeodesic_1_1_dijkstra_node1.html',1,'geodesic']]],
+  ['discretefaceattribute',['DiscreteFaceAttribute',['../class_discrete_face_attribute.html',1,'']]],
+  ['discretefacecoloring',['DiscreteFaceColoring',['../class_discrete_face_coloring.html',1,'']]],
+  ['discretepointattribute',['DiscretePointAttribute',['../class_discrete_point_attribute.html',1,'']]],
+  ['discretepointcoloring',['DiscretePointColoring',['../class_discrete_point_coloring.html',1,'']]]
 ];

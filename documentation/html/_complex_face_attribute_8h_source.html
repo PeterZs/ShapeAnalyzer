@@ -111,7 +111,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="class_complex_face_attribute.html">ComplexFaceAttribute</a>(<a class="code" href="class_shape.html">Shape</a>* shape) {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        shape_ = shape;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        values_ = <span class="keyword">new</span> T[shape-&gt;getPolyData()-&gt;GetNumberOfCells()];</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        values_ = <span class="keyword">new</span> T[shape-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetNumberOfCells()];</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    }</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="comment">// the size of the returned array must be equal to the number of faces of the shape</span></div>
@@ -126,12 +126,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:44</div></div>
+<div class="ttc" id="class_shape_html_a70b7e4429d766baf95cd24534eb1edb8"><div class="ttname"><a href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">Shape::getPolyData</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; getPolyData()</div><div class="ttdoc">Returns the mesh data. </div><div class="ttdef"><b>Definition:</b> Shape.h:102</div></div>
+<div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
 <div class="ttc" id="class_complex_face_attribute_html"><div class="ttname"><a href="class_complex_face_attribute.html">ComplexFaceAttribute</a></div><div class="ttdef"><b>Definition:</b> ComplexFaceAttribute.h:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 18:07:06 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

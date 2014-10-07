@@ -1,7 +1,19 @@
 var searchData=
 [
-  ['edge',['Edge',['../classgeodesic_1_1_edge.html',1,'geodesic']]],
-  ['edge_5fvisible_5ffrom_5fsource',['edge_visible_from_source',['../structgeodesic_1_1edge__visible__from__source.html',1,'geodesic']]],
-  ['errorobserver',['ErrorObserver',['../class_error_observer.html',1,'']]],
-  ['euclideanmetric',['EuclideanMetric',['../class_euclidean_metric.html',1,'']]]
+  ['checkforborders',['checkForBorders',['../class_mesh_checker.html#ae24c4e3f5feff68c83726fb23d97585f',1,'MeshChecker']]],
+  ['checknumberofregions',['checkNumberOfRegions',['../class_mesh_checker.html#a95c42fdfb234e0be1d70ba255dbb5703',1,'MeshChecker']]],
+  ['checkorientation',['checkOrientation',['../class_mesh_checker.html#af43afc7f2b3882664f0ee2391c147efb',1,'MeshChecker']]],
+  ['checktriangulation',['checkTriangulation',['../class_mesh_checker.html#a98cde65ece5f709e4ef3657cb8129fa4',1,'MeshChecker']]],
+  ['clear',['clear',['../class_hash_map.html#aa63e547f51d713c06d7e70c0a3fc23ad',1,'HashMap']]],
+  ['clearcoloring',['clearColoring',['../class_shape.html#a1face9516d3e6bebf44c2014bbdfe19f',1,'Shape']]],
+  ['coloring',['Coloring',['../class_coloring.html',1,'']]],
+  ['complexfaceattribute',['ComplexFaceAttribute',['../class_complex_face_attribute.html',1,'']]],
+  ['complexpointattribute',['ComplexPointAttribute',['../class_complex_point_attribute.html',1,'']]],
+  ['containskey',['containsKey',['../class_hash_map.html#a7391f737a46c640dde378655e347727f',1,'HashMap']]],
+  ['coordinatecoloring',['CoordinateColoring',['../class_coordinate_coloring.html',1,'']]],
+  ['correspondence',['Correspondence',['../class_correspondence.html',1,'']]],
+  ['correspondencecoloring',['CorrespondenceColoring',['../class_correspondence_coloring.html',1,'']]],
+  ['correspondencecoloringwidget',['CorrespondenceColoringWidget',['../class_ui_1_1_correspondence_coloring_widget.html',1,'Ui']]],
+  ['correspondencedata',['CorrespondenceData',['../class_correspondence_data.html',1,'']]],
+  ['correspondencepicker',['CorrespondencePicker',['../class_correspondence_picker.html',1,'']]]
 ];

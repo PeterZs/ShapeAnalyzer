@@ -1,10 +1,5 @@
 var searchData=
 [
-  ['vertex',['Vertex',['../classgeodesic_1_1_vertex.html',1,'geodesic']]],
-  ['voronoicellsegmentation',['VoronoiCellSegmentation',['../class_voronoi_cell_segmentation.html',1,'']]],
-  ['vtkobjwriter',['vtkOBJWriter',['../classvtk_o_b_j_writer.html',1,'']]],
-  ['vtkoffreader',['vtkOFFReader',['../classvtk_o_f_f_reader.html',1,'']]],
-  ['vtkoffwriter',['vtkOFFWriter',['../classvtk_o_f_f_writer.html',1,'']]],
-  ['vtktoscareader',['vtkToscaReader',['../classvtk_tosca_reader.html',1,'']]],
-  ['vtktoscawriter',['vtkToscaWriter',['../classvtk_tosca_writer.html',1,'']]]
+  ['remove',['remove',['../class_hash_map.html#a0cc42915eadab1175b35cbee6cd658c1',1,'HashMap::remove(KEY)'],['../class_hash_map.html#ac1997800708d2723afba29bbd4d494bf',1,'HashMap::remove(vector&lt; KEY &gt; &amp;)']]],
+  ['removefromrenderer',['removeFromRenderer',['../class_shape.html#a7f9810d48aa814bd5af8d536cc0d6a30',1,'Shape']]]
 ];

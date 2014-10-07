@@ -118,9 +118,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    ~<a class="code" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>() {}</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> color() {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        shape_-&gt;getMapper()-&gt;SetScalarModeToUseCellData();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        shape_-&gt;getPolyData()-&gt;GetCellData()-&gt;SetScalars(colors_);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        shape_-&gt;getMapper()-&gt;ScalarVisibilityOn();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        shape_-&gt;<a class="code" href="class_shape.html#a49ac6e4084a14b19c969e576f8068cc5">getMapper</a>()-&gt;SetScalarModeToUseCellData();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        shape_-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetCellData()-&gt;SetScalars(colors_);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        shape_-&gt;<a class="code" href="class_shape.html#a49ac6e4084a14b19c969e576f8068cc5">getMapper</a>()-&gt;ScalarVisibilityOn();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    </div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    vtkSmartPointer&lt;vtkUnsignedCharArray&gt; getColors() {</div>
@@ -128,11 +128,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> calculateColors() {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        vtkSmartPointer&lt;vtkPoints&gt; points = shape_-&gt;getPolyData()-&gt;GetPoints();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        vtkSmartPointer&lt;vtkPoints&gt; points = shape_-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetPoints();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">// color values</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        colors_-&gt;SetNumberOfComponents(3);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        colors_-&gt;SetNumberOfTuples(shape_-&gt;getPolyData()-&gt;GetNumberOfCells());</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        colors_-&gt;SetNumberOfTuples(shape_-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetNumberOfCells());</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        colors_-&gt;SetName(<span class="stringliteral">&quot;Colors&quot;</span>);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="comment">// calculate range</span></div>
@@ -170,8 +170,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        }</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="comment">// calculate colors</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">for</span> (vtkIdType i = 0; i &lt; shape_-&gt;getPolyData()-&gt;GetNumberOfCells(); i++) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            vtkSmartPointer&lt;vtkIdList&gt; pointIds = shape_-&gt;getPolyData()-&gt;GetCell(i)-&gt;GetPointIds();</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">for</span> (vtkIdType i = 0; i &lt; shape_-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetNumberOfCells(); i++) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            vtkSmartPointer&lt;vtkIdList&gt; pointIds = shape_-&gt;<a class="code" href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">getPolyData</a>()-&gt;GetCell(i)-&gt;GetPointIds();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            </div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordtype">double</span> point1[3], point2[3], point3[3], color[3];</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            </div>
@@ -198,12 +198,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="class_coordinate_coloring_html"><div class="ttname"><a href="class_coordinate_coloring.html">CoordinateColoring</a></div><div class="ttdef"><b>Definition:</b> CoordinateColoring.h:23</div></div>
+<div class="ttc" id="class_shape_html_a49ac6e4084a14b19c969e576f8068cc5"><div class="ttname"><a href="class_shape.html#a49ac6e4084a14b19c969e576f8068cc5">Shape::getMapper</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyDataMapper &gt; getMapper()</div><div class="ttdoc">Returns the mapper of the shape. </div><div class="ttdef"><b>Definition:</b> Shape.h:117</div></div>
+<div class="ttc" id="class_shape_html_a70b7e4429d766baf95cd24534eb1edb8"><div class="ttname"><a href="class_shape.html#a70b7e4429d766baf95cd24534eb1edb8">Shape::getPolyData</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; getPolyData()</div><div class="ttdoc">Returns the mesh data. </div><div class="ttdef"><b>Definition:</b> Shape.h:102</div></div>
 <div class="ttc" id="class_face_coordinate_coloring_html"><div class="ttname"><a href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></div><div class="ttdef"><b>Definition:</b> FaceCoordinateColoring.h:24</div></div>
-<div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:44</div></div>
+<div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 18:07:06 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

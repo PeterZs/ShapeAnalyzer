@@ -1,12 +1,4 @@
 var searchData=
 [
-  ['coloring',['Coloring',['../class_coloring.html',1,'']]],
-  ['complexfaceattribute',['ComplexFaceAttribute',['../class_complex_face_attribute.html',1,'']]],
-  ['complexpointattribute',['ComplexPointAttribute',['../class_complex_point_attribute.html',1,'']]],
-  ['coordinatecoloring',['CoordinateColoring',['../class_coordinate_coloring.html',1,'']]],
-  ['correspondence',['Correspondence',['../class_correspondence.html',1,'']]],
-  ['correspondencecoloring',['CorrespondenceColoring',['../class_correspondence_coloring.html',1,'']]],
-  ['correspondencecoloringwidget',['CorrespondenceColoringWidget',['../class_ui_1_1_correspondence_coloring_widget.html',1,'Ui']]],
-  ['correspondencedata',['CorrespondenceData',['../class_correspondence_data.html',1,'']]],
-  ['correspondencepicker',['CorrespondencePicker',['../class_correspondence_picker.html',1,'']]]
+  ['add',['add',['../class_hash_map.html#a6c177f77bc0b96cd6c6c1601b3e0714e',1,'HashMap::add(KEY, VALUE)'],['../class_hash_map.html#a8178f15b99b857b84ea88ebabf4fe53b',1,'HashMap::add(vector&lt; KEY &gt; &amp;, VALUE)'],['../class_hash_map.html#ac56f67e281f1bd91539035535c815121',1,'HashMap::add(vector&lt; pair&lt; KEY, VALUE &gt; &gt; &amp;)']]]
 ];

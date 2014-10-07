@@ -1,3 +1,10 @@
+///
+/// \brief The Shape contains all geometric information as well as VTK-related objects and basic information about the shape.
+/// \details Every shape has a unique and static id and a not necessarily unique name which can be changed. 
+/// \author Emanuel Laude and Zorah Lähner
+/// \note Documentation not finished.
+///
+
 #ifndef Shape_H
 #define Shape_H
 
@@ -34,8 +41,6 @@
 
 #include "io/Serializable.h"
 
-
-
 #include <vtkDebugLeaks.h>
 
 using namespace std;
@@ -52,15 +57,23 @@ public:
     
     void initialize();
     
+    /// \brief Returns the area of the shape.
+    /// \details Calculates the area of every cell in the poly data and adds them up. Assumes that all cells are
+    /// triangles, the results will be faulty for non-triangulated meshes.
     double getArea();
+    /// \brief Returns the index of an random point on the shape.
     vtkIdType getRandomPoint();
     
     // vtk functions
     
+    /// \brief Will remove the shape from the renderer. The shape will not be shown after the next rerender.
     void removeFromRenderer();
+    /// \brief Removes any Scalar information that is used to color the shape and resets all properties of the mapper to default.
     void clearColoring();
     
-    // serialization functions
+    /// @name Serialization functions
+    /// \brief Can write / read the shape into / from binary or ASCII format.
+    ///@{
     
     virtual ostream& writeBinary(ostream& os);
     
@@ -70,40 +83,53 @@ public:
     
     virtual istream& readASCII(istream& is);
     
+    ///@}
+    
     // Getters
     
+    
+    /// \brief Returns the actor of the shape.
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
     }
     
+    /// \brief Returns the box widget, that can be used to transform the shape independently from the scene.
     vtkSmartPointer<vtkBoxWidget> getBoxWidget() {
         return boxWidget_;
     }
     
+    /// \brief Returns the mesh data.
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
     }
     
+    /// \brief Returns the renderer.
     vtkSmartPointer<vtkRenderer> getRenderer() {
         return renderer_;
     }
     
+    /// \brief Returns the smoothed version of the mesh data.
     vtkSmartPointer<vtkPolyDataNormals> getPolyDataNormals() {
         return polyDataNormals_;
     }
     
+    /// \brief Returns the mapper of the shape.
     vtkSmartPointer<vtkPolyDataMapper> getMapper() {
         return mapper_;
     }
     
+    
+    /// \brief Returns the unique id of the shape.
     vtkIdType getId() {
         return id_;
     }
     
+    /// \brief Returns the name of the shape.
     string getName() {
         return name_;
     }
     
+    /// \brief Resets the name of the shape.
     void setName(string name) {
         name_ = name;
     }

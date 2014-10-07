@@ -92,21 +92,103 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9952333587b195bfa117aa4003218043"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9952333587b195bfa117aa4003218043"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MeshChecker</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#a9952333587b195bfa117aa4003218043">MeshChecker</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:a9952333587b195bfa117aa4003218043"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty Constructor. <br /></td></tr>
 <tr class="separator:a9952333587b195bfa117aa4003218043"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae24c4e3f5feff68c83726fb23d97585f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae24c4e3f5feff68c83726fb23d97585f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>checkForBorders</b> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *borders=nullptr)</td></tr>
+<tr class="memitem:a9fbab462b8dddb7de3d8f60de6486d93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9fbab462b8dddb7de3d8f60de6486d93"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#a9fbab462b8dddb7de3d8f60de6486d93">~MeshChecker</a> ()</td></tr>
+<tr class="memdesc:a9fbab462b8dddb7de3d8f60de6486d93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, will delete the halfEdge structure if it exists. <br /></td></tr>
+<tr class="separator:a9fbab462b8dddb7de3d8f60de6486d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae24c4e3f5feff68c83726fb23d97585f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#ae24c4e3f5feff68c83726fb23d97585f">checkForBorders</a> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *borders=nullptr)</td></tr>
+<tr class="memdesc:ae24c4e3f5feff68c83726fb23d97585f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the shape for borders.  <a href="#ae24c4e3f5feff68c83726fb23d97585f">More...</a><br /></td></tr>
 <tr class="separator:ae24c4e3f5feff68c83726fb23d97585f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af43afc7f2b3882664f0ee2391c147efb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af43afc7f2b3882664f0ee2391c147efb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>checkOrientation</b> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *unoriented=nullptr)</td></tr>
+<tr class="memitem:af43afc7f2b3882664f0ee2391c147efb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#af43afc7f2b3882664f0ee2391c147efb">checkOrientation</a> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *unoriented=nullptr)</td></tr>
+<tr class="memdesc:af43afc7f2b3882664f0ee2391c147efb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the shape for wrongly orientied edges.  <a href="#af43afc7f2b3882664f0ee2391c147efb">More...</a><br /></td></tr>
 <tr class="separator:af43afc7f2b3882664f0ee2391c147efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98cde65ece5f709e4ef3657cb8129fa4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98cde65ece5f709e4ef3657cb8129fa4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>checkTriangulation</b> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *nontriangles=nullptr)</td></tr>
+<tr class="memitem:a98cde65ece5f709e4ef3657cb8129fa4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#a98cde65ece5f709e4ef3657cb8129fa4">checkTriangulation</a> (vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *nontriangles=nullptr)</td></tr>
+<tr class="memdesc:a98cde65ece5f709e4ef3657cb8129fa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if all cells are triangles.  <a href="#a98cde65ece5f709e4ef3657cb8129fa4">More...</a><br /></td></tr>
 <tr class="separator:a98cde65ece5f709e4ef3657cb8129fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95c42fdfb234e0be1d70ba255dbb5703"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95c42fdfb234e0be1d70ba255dbb5703"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>checkNumberOfRegions</b> ()</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh_checker.html#a95c42fdfb234e0be1d70ba255dbb5703">checkNumberOfRegions</a> ()</td></tr>
+<tr class="memdesc:a95c42fdfb234e0be1d70ba255dbb5703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of connected regions in the shape. <br /></td></tr>
 <tr class="separator:a95c42fdfb234e0be1d70ba255dbb5703"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ae24c4e3f5feff68c83726fb23d97585f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshChecker::checkForBorders </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>borders</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks the shape for borders. </p>
+<p>Borders are found by checking the symmetry of the halfedge structure. If the half edge structure does not exist, it will be created which is quite time consuming. The halfedge structure counts the directed edges between all vertices. A border is recognized if the total number of edges between two vertices is 1. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">borders</td><td>Optional. If a pointer is given, the border segments will be returned as pairs of vertices. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the shape has borders, false otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af43afc7f2b3882664f0ee2391c147efb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshChecker::checkOrientation </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>unoriented</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks the shape for wrongly orientied edges. </p>
+<p>Orientation mistakes are found by checking the symmetry of the halfedge structure. If the half edge structure does not exist, it will be created which is quite time consuming. The halfedge structure counts the directed edges between all vertices. An edge is considered wrongly oriented if the total sum of directed edges between two vertices is 2, but they are both directed in the same direction. This is not a 100% correct indicatior for wrong orientation. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">unoriented</td><td>Optional. If a pointer is given, the wrongly oriented segments will be returned as pairs of vertices. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the shape has wrongly oriented edges, false otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a98cde65ece5f709e4ef3657cb8129fa4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshChecker::checkTriangulation </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, vtkIdType &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>nontriangles</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if all cells are triangles. </p>
+<p>Checks if the number of vertices is 3 for all cells. Degenerated triangles are recognized as triangles. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nontriangles</td><td>Optional. Returns tupels of the cell id and the number of vertices of the non-triangles. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if all cells are triangles, false otherwise </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/<a class="el" href="_mesh_checker_8h_source.html">MeshChecker.h</a></li>
 <li>src/domain/MeshChecker.cpp</li>
@@ -114,7 +196,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>checkNumberOfRegions</
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 22 2014 18:07:13 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 7 2014 14:07:14 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -1,15 +1,12 @@
-//
-//  HashMap.h
-//  ShapeAnalyzer
-//
-//  HashMap is a wrapper class for unordered_map.
-//  It manages an unordered_map with some extra features:
-//  E.g. a contains function and a random subset of the map can be generated.
-//
-//  Created by Zorah on 28.07.14.
-//
-//
-
+///
+/// \brief HashMap is a wrapper class for unordered_map with some extra features,
+/// e.g. a proper contains function and a random subset of the map can be generated.
+/// \details A HashMap<KEY, VALUE> maps objects from type KEY to objects from type value.
+/// It manages a unordered_map<KEY, VALUE> object and has some special features. The first one
+/// is that the [] operator does not add keys to the hash map when you try to access them
+/// although they did not exist. Additionally you can get random subsets of the elements, keys or values.
+/// \author Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_HashMap_h
 #define ShapeAnalyzer_HashMap_h
@@ -29,39 +26,89 @@ class HashMap {
 public:
     typedef typename unordered_map<KEY, VALUE>::iterator iterator;
     
-    // constructors and destructor
+    /// @{
+    /// \brief Empty Constructor.
     HashMap();
+    /// \brief Reserves memory for n elements.
     HashMap(int n);
+    /// \brief Copy Constructor.
     HashMap(HashMap<KEY, VALUE>&);
+    /// \brief Maps all keys to the given value.
     HashMap(vector<KEY>&, VALUE);
+    /// \brief Empty Destructor.
     ~HashMap() {}
+    ///@}
     
-    // adding and deleting elements
+    /// @{
+    /// \brief Adds the value with the given key.
+    /// \details If the key already exists the corresponding value is replaced.
     void add(KEY, VALUE);
+    /// \brief Maps all given keys to the given value.
+    /// \details If any of the keys already exist the corresponding value is replaced.
     void add(vector<KEY>&, VALUE);
+    /// \brief Adds all key, value pairs.
+    /// \details If any of the keys already exist the corresponding value is replaced.
     void add(vector<pair<KEY, VALUE> >&);
+    /// @}
     
+    /// @{
+    /// \brief If the key exists, its corresponding value is removed from the hash map.
     bool remove(KEY);
+    /// \brief Calls remove(KEY) on every element in the vector.
     bool remove(vector<KEY>&);
+    /// \brief Clears the whole hash map.
     void clear();
+    /// @}
     
-    // iterators
+    /// @{
+    /// \brief Returns iterator pointing to the first element of the hashmap.
     iterator begin();
+    /// \brief Returns iterator pointing to the end of the hash map.
     iterator end();
+    /// @}
     
-    // attributes
+    /// \brief Returns if the given key exists in the hash map.
+    /// \details This will not cause the key to be added to the hash map.
+    /// @return true if key exists, false otherwise
     bool        containsKey(KEY);
+    /// \brief Returns the value corresponding to the key.
+    /// \details If the key does not exist, the result will be a null pointer.
+    /// This will not cause the key to be added to the hash map.
+    /// @return pointer to the value corresponding to the key, null pointer if the key does not exist
     VALUE&      operator[](KEY); // this expression is assignable since it is a reference to the value
     
+    /// \brief Returns the number of elements in the hash map.
     unsigned    size();
     
-    void getRandomSample(unsigned size, HashMap<KEY, VALUE>&);
-    void getRandomSampleKeys(unsigned size, vector<KEY>&);
-    void getRandomSampleValues(unsigned size, vector<VALUE>&);
+    /// \brief Stores a random subset of size 'size' in the given hash map.
+    /// \details Keys that were in the given hashmap before are not deleted, but might get a new value.
+    /// If size is larger than the number of elements all elements are returned.
+    /// Reserving enough memory for the subset beforehand will speed up the process.
+    /// @param size size of the random subset, if it is larger than the size of the hash map, all values are returned
+    /// @param hashmap pointer to valid hashmap object to which the subset will be added
+    void getRandomSample(unsigned size, HashMap<KEY, VALUE>& hashmap);
+    /// \brief Stores a random subset of size 'size' of the keys in the given vector.
+    /// \details Elements that were in the vector before are not deleted.
+    /// If size is larger than the number of elements all keys are returned.
+    /// Reserving enough memory for the subset beforehand will speed up the process.
+    /// @param size size of the random subset, if it is larger than the size of the hash map, all keys are returned
+    /// @param vector pointer to valid vector object to which the subset will be added
+    void getRandomSampleKeys(unsigned size, vector<KEY>& vector);
+    /// \brief Stores a random subset of size 'size' of the values in the given vector.
+    /// \details Elements that were in the vector before are not deleted.
+    /// If size is larger than the number of elements all values are returned.
+    /// Reserving enough memory for the subset beforehand will speed up the process.
+    /// @param size size of the random subset, if it is larger than the size of the hash map, all values are returned
+    /// @param vector pointer to valid vector object to which the subset will be added
+    void getRandomSampleValues(unsigned size, vector<VALUE>& vector);
     
+    /// \brief Returns a pointer to the unordered_map.
     unordered_map<KEY, VALUE>& getEntries();
     
+    /// \brief Stores all values in the given vector.
+    /// \details The result is not checked for double entries.
     void getValues(vector<VALUE>&);
+    /// \brief Stores all keys in the given vector.
     void getKeys(vector<KEY>&);
     
 private:

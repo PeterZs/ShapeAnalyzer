@@ -1,15 +1,8 @@
 var searchData=
 [
-  ['geodesic_5ferror',['geodesic_error',['../classgeodesic__error.html',1,'']]],
-  ['geodesicalgorithmbase',['GeodesicAlgorithmBase',['../classgeodesic_1_1_geodesic_algorithm_base.html',1,'geodesic']]],
-  ['geodesicalgorithmdijkstra',['GeodesicAlgorithmDijkstra',['../classgeodesic_1_1_geodesic_algorithm_dijkstra.html',1,'geodesic']]],
-  ['geodesicalgorithmdijkstraalternative',['GeodesicAlgorithmDijkstraAlternative',['../classgeodesic_1_1_geodesic_algorithm_dijkstra_alternative.html',1,'geodesic']]],
-  ['geodesicalgorithmexact',['GeodesicAlgorithmExact',['../classgeodesic_1_1_geodesic_algorithm_exact.html',1,'geodesic']]],
-  ['geodesicalgorithmgraphbase',['GeodesicAlgorithmGraphBase',['../classgeodesic_1_1_geodesic_algorithm_graph_base.html',1,'geodesic']]],
-  ['geodesicalgorithmgraphbase_3c_20dijkstranode_20_3e',['GeodesicAlgorithmGraphBase&lt; DijkstraNode &gt;',['../classgeodesic_1_1_geodesic_algorithm_graph_base.html',1,'geodesic']]],
-  ['geodesicalgorithmgraphbase_3c_20subdivisionnode_20_3e',['GeodesicAlgorithmGraphBase&lt; SubdivisionNode &gt;',['../classgeodesic_1_1_geodesic_algorithm_graph_base.html',1,'geodesic']]],
-  ['geodesicalgorithmsubdivision',['GeodesicAlgorithmSubdivision',['../classgeodesic_1_1_geodesic_algorithm_subdivision.html',1,'geodesic']]],
-  ['geodesicalgorithmsubdivision',['GeodesicAlgorithmSubdivision',['../classgeodesic_1_1_geodesic_algorithm_subdivision.html#a72dacc31bf5f71a59ab7af93d9f798a9',1,'geodesic::GeodesicAlgorithmSubdivision']]],
-  ['geodesicmetric',['GeodesicMetric',['../class_geodesic_metric.html',1,'']]],
-  ['globalpointsignature',['GlobalPointSignature',['../class_global_point_signature.html',1,'']]]
+  ['edge',['Edge',['../classgeodesic_1_1_edge.html',1,'geodesic']]],
+  ['edge_5fvisible_5ffrom_5fsource',['edge_visible_from_source',['../structgeodesic_1_1edge__visible__from__source.html',1,'geodesic']]],
+  ['end',['end',['../class_hash_map.html#a37735a61fd58501770200671497f9388',1,'HashMap']]],
+  ['errorobserver',['ErrorObserver',['../class_error_observer.html',1,'']]],
+  ['euclideanmetric',['EuclideanMetric',['../class_euclidean_metric.html',1,'']]]
 ];

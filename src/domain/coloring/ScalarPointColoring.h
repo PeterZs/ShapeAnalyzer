@@ -1,10 +1,7 @@
-//
-//  ScalarPointColoring.h
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 03.06.14.
-//
-//
+///
+/// \brief Colors a shape given ScalarPointAttribute.
+/// \details The range of the attributes is automatically retrieved and the color range adjusted.
+///
 
 #ifndef ShapeAnalyzer_ScalarPointColoring_h
 #define ShapeAnalyzer_ScalarPointColoring_h
@@ -17,8 +14,12 @@
 
 class ScalarPointColoring : public Coloring {
 public:
+    /// Constructor.
+    /// @param Shape to be colored.
+    /// @param Scalar values that determine the colors.
     ScalarPointColoring(Shape* shape, ScalarPointAttribute& attribute) : Coloring(shape), attribute_(attribute) {}
 
+    /// Colors the shape, the values are interpolated on the faces.
     virtual void color();
 
 protected:

@@ -5,7 +5,7 @@
 /// It manages a unordered_map<KEY, VALUE> object and has some special features. The first one
 /// is that the [] operator does not add keys to the hash map when you try to access them
 /// although they did not exist. Additionally you can get random subsets of the elements, keys or values.
-/// \author Zorah Lähner
+/// \author Emanuel Laude and Zorah Lähner
 ///
 
 #ifndef ShapeAnalyzer_HashMap_h

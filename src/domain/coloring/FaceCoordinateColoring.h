@@ -1,10 +1,10 @@
-//
-//  FaceCoordinateColoring.h
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 06.08.14.
-//
-//
+///
+/// \brief Colors the shape using the coordinates of the faces as indicators for the rgb value.
+/// \details The entries are the interpolated values of the vertices of each face
+/// but normalized to values between 0 and 255. The class inherits from CoordinateColoring
+/// the only overwritten function is the calculation of the color for each face.
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_FaceCoordinateColoring_h
 #define ShapeAnalyzer_FaceCoordinateColoring_h
@@ -23,22 +23,30 @@
 
 class FaceCoordinateColoring : public CoordinateColoring {
 public:
+    /// \see CoordinateColoring::CoordinateColoring
     FaceCoordinateColoring(Shape* shape) : CoordinateColoring(shape) {
         colors_ = vtkSmartPointer<vtkUnsignedCharArray>::New();
         calculateColors();
     }
     ~FaceCoordinateColoring() {}
     
+    /// \brief Colors the shape by coordinates of the faces.
+    /// \details The values are not calculated, they are calculated
+    /// in the constructor. The Mapper property is set to use
+    /// cell data.
     virtual void color() {
         shape_->getMapper()->SetScalarModeToUseCellData();
         shape_->getPolyData()->GetCellData()->SetScalars(colors_);
         shape_->getMapper()->ScalarVisibilityOn();
     }
     
+    /// Return an vtkUnsignedCharArray with the rgb colors for every face.
     vtkSmartPointer<vtkUnsignedCharArray> getColors() {
         return colors_;
     }
 private:
+    /// \see CoordinateColoring::calculateColors
+    /// The only different is that each face gets the interpolated color of its vertices.
     void calculateColors() {
         vtkSmartPointer<vtkPoints> points = shape_->getPolyData()->GetPoints();
         

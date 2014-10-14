@@ -3,7 +3,7 @@
 /// \details The class uses the half edge structure for certain properties. It is implemented
 /// as large 2d-array and needs a lot of time and memory.
 /// \note Might change the array for something more optimal.
-/// \author Zorah Lähner
+/// \author Emanuel Laude and Zorah Lähner
 ///
 
 #ifndef __ShapeAnalyzer__MeshChecker__

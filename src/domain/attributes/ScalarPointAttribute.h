@@ -1,10 +1,12 @@
-//
-//  ScalarPointAttribute.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
+///
+/// \brief Assigns a double value to each vertex of the shape.
+/// \details Additionally the class has static methods to transform
+/// ScalarPointAttributes into Petsc-Vectors and back, as well as
+/// create a ScalarPointAttribute out of a
+/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_ScalarPointAttribute_h
 #define ShapeAnalyzer_ScalarPointAttribute_h
@@ -20,29 +22,36 @@
 class ScalarPointAttribute {
     
 public:
+    /// Basic Constructor.
     ScalarPointAttribute(Shape* shape);
     
+    /// Empty Destructor.
     ~ScalarPointAttribute() {
     };
     
-    // the size of the returned array must be equal to the number of vertices of the shape
-    // the order of the values must correspond to the one in the vtkPolyData structure of the shape
+    /// \brief Returns the vtkDoubleArray containing the attributes.
+    /// \details The size of the returned array should be equal to the number of vertices of the shape.
+    /// The order of the values normally corresponds to the one in the vtkPolyData structure of the shape.
     vtkSmartPointer<vtkDoubleArray> getScalars() { return scalars_; }
+    /// Returns the shape this attributes describe.
     Shape* getShape() { return shape_; }
     
     
     
-    //Petsc helper functions
+    ///@{
     
-    //convert scalar point attribute to vector
+    /// Converts a ScalarPointAttribute to a petsc vector.
     static void scalarPointAttributeToPetscVec(ScalarPointAttribute& attr, Vec& vec);
     
-    //convert scalar point attribute to vector
+    /// Converts a petsc vector to a ScalarPointAttribute.
     static void petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr);
     
     
-    //convert array to scalar point attribute
+    /// Converts a petsc array to a ScalarPointAttribute.
+    /// \note To Manu: Is that right?
     static void arrayToScalarPointAttribute(const PetscScalar* array, ScalarPointAttribute& attr);
+    
+    ///@}
     
 
 private:

@@ -1,10 +1,9 @@
-//
-//  ScalarFaceAttribute.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
+///
+/// \brief Assigns a double value to each face of the shape.
+/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_ScalarFaceAttribute_h
 #define ShapeAnalyzer_ScalarFaceAttribute_h
@@ -18,14 +17,17 @@
 class ScalarFaceAttribute {
     
 public:
+    /// Emtpty Destructor.
     ~ScalarFaceAttribute() {};
-    
+    /// Basic Constructor.
     ScalarFaceAttribute(Shape* shape);
 
     
-    // the size of the returned array must be equal to the number of faces of the shape
-    // the order of the values must correspond to the one in the vtkPolyData structure of the shape
+    /// \brief Returns the vtkDoubleArray containing the attributes.
+    /// \details The size of the returned array should be equal to the number face of the shape.
+    /// The order of the values normally corresponds to the one in the vtkPolyData structure of the shape.
     vtkSmartPointer<vtkDoubleArray> getScalars() { return scalars_; }
+    /// Returns the shape this attributes describe.
     Shape* getShape() { return shape_; }
     
 private:

@@ -13,7 +13,7 @@ CoordinateColoring::CoordinateColoring(Shape* shape) : Coloring(shape) {
     calculateColors();
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 void CoordinateColoring::color() {
     shape_->getPolyData()->GetPointData()->SetScalars(colors_);
     shape_->getMapper()->SetScalarModeToUsePointData();
@@ -21,6 +21,8 @@ void CoordinateColoring::color() {
     shape_->getMapper()->ScalarVisibilityOn();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void CoordinateColoring::calculateColors() {
     vtkSmartPointer<vtkPoints> points = shape_->getPolyData()->GetPoints();
     

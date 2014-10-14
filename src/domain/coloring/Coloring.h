@@ -1,10 +1,7 @@
-//
-//  Coloring.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
+///
+/// \brief Abstract class for all sorts of colorings.
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_Coloring_h
 #define ShapeAnalyzer_Coloring_h
@@ -13,11 +10,12 @@
 
 class Coloring {
 public:
-    Coloring(Shape* shape) : shape_(shape) {
-        
-    }
+    /// Constructor.
+    Coloring(Shape* shape) : shape_(shape) { }
     
+    /// Function will initiate coloring of the shape.
     virtual void color() = 0;
+    
 protected:
     Shape* shape_;
 };

@@ -8,6 +8,7 @@
 
 #include "ScalarPointAttribute.h"
 
+///////////////////////////////////////////////////////////////////////////////
 ScalarPointAttribute::ScalarPointAttribute(Shape* shape) {
     shape_ = shape;
     scalars_ = vtkSmartPointer<vtkDoubleArray>::New();
@@ -15,6 +16,7 @@ ScalarPointAttribute::ScalarPointAttribute(Shape* shape) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void ScalarPointAttribute::scalarPointAttributeToPetscVec(ScalarPointAttribute &attr, Vec &vec) {
     PetscInt size = attr.getShape()->getPolyData()->GetNumberOfPoints();
     
@@ -26,6 +28,8 @@ void ScalarPointAttribute::scalarPointAttributeToPetscVec(ScalarPointAttribute &
     VecAssemblyEnd(vec);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ScalarPointAttribute::petscVecToScalarPointAttribute(Vec& vec, ScalarPointAttribute& attr) {
     PetscScalar* arr;
     VecGetArray(vec, &arr);
@@ -34,6 +38,8 @@ void ScalarPointAttribute::petscVecToScalarPointAttribute(Vec& vec, ScalarPointA
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ScalarPointAttribute::arrayToScalarPointAttribute(const PetscScalar *array, ScalarPointAttribute &attr) {
     for(PetscInt j = 0; j < attr.getShape()->getPolyData()->GetNumberOfPoints(); j++) {
         attr.getScalars()->SetValue(j, array[j]);

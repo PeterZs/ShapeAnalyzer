@@ -1,11 +1,7 @@
 var searchData=
 [
-  ['memoryallocator',['MemoryAllocator',['../classgeodesic_1_1_memory_allocator.html',1,'geodesic']]],
-  ['memoryallocator_3c_20geodesic_3a_3ainterval_20_3e',['MemoryAllocator&lt; geodesic::Interval &gt;',['../classgeodesic_1_1_memory_allocator.html',1,'geodesic']]],
-  ['mesh',['Mesh',['../classgeodesic_1_1_mesh.html',1,'geodesic']]],
-  ['meshchecker',['MeshChecker',['../class_mesh_checker.html',1,'']]],
-  ['meshcheckwidget',['MeshCheckWidget',['../class_ui_1_1_mesh_check_widget.html',1,'Ui']]],
-  ['meshelementbase',['MeshElementBase',['../classgeodesic_1_1_mesh_element_base.html',1,'geodesic']]],
-  ['metric',['Metric',['../class_metric.html',1,'']]],
-  ['metricsampling',['MetricSampling',['../class_metric_sampling.html',1,'']]]
+  ['petschelper',['PetscHelper',['../class_petsc_helper.html',1,'']]],
+  ['pointcorrespondence',['PointCorrespondence',['../class_point_correspondence.html',1,'']]],
+  ['pointcorrespondencedata',['PointCorrespondenceData',['../class_point_correspondence_data.html',1,'']]],
+  ['pointcorrespondencepicker',['PointCorrespondencePicker',['../class_point_correspondence_picker.html',1,'']]]
 ];

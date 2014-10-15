@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_voronoi_cell_segmentation-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">VoronoiCellSegmentation Class Reference</div>  </div>
@@ -123,6 +124,15 @@ static string&#160;</td><td class="memItemRight" valign="bottom"><b>getIdentifie
 <tr class="memitem:a6ec81d90fed80c6d187da23c98a9fe70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ec81d90fed80c6d187da23c98a9fe70"></a>
 static <a class="el" href="class_segmentation.html">Segmentation</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>create</b> ()</td></tr>
 <tr class="separator:a6ec81d90fed80c6d187da23c98a9fe70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a7ad5e4740ece76cccc73a76990c7609e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ad5e4740ece76cccc73a76990c7609e"></a>
+<a class="el" href="class_metric.html">Metric</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>metric_</b></td></tr>
+<tr class="separator:a7ad5e4740ece76cccc73a76990c7609e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019b63a92bc89b04e646d3c0be351829"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a019b63a92bc89b04e646d3c0be351829"></a>
+<a class="el" href="class_sampling.html">Sampling</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>sampling_</b></td></tr>
+<tr class="separator:a019b63a92bc89b04e646d3c0be351829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/segmentation/<a class="el" href="_voronoi_cell_segmentation_8h_source.html">VoronoiCellSegmentation.h</a></li>
@@ -131,7 +141,7 @@ static <a class="el" href="class_segmentation.html">Segmentation</a> *&#160;</td
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:20 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

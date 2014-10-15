@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -85,6 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvtk_tosca_reader-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vtkToscaReader Class Reference</div>  </div>
@@ -128,6 +130,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>FillOutputPortInformat
 <tr class="memitem:a7b6c50fd9574bd6c15ea784413288ea3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b6c50fd9574bd6c15ea784413288ea3"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>RequestData</b> (vtkInformation *, vtkInformationVector **, vtkInformationVector *)</td></tr>
 <tr class="separator:a7b6c50fd9574bd6c15ea784413288ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a60ff7798f5ab917d52b45dc52029e1ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60ff7798f5ab917d52b45dc52029e1ed"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>vtkToscaReader</b> (const <a class="el" href="classvtk_tosca_reader.html">vtkToscaReader</a> &amp;)</td></tr>
+<tr class="separator:a60ff7798f5ab917d52b45dc52029e1ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa19e6b22cdf354fa3734687245e6d0ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa19e6b22cdf354fa3734687245e6d0ad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classvtk_tosca_reader.html">vtkToscaReader</a> &amp;)</td></tr>
+<tr class="separator:aa19e6b22cdf354fa3734687245e6d0ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:af8e5fe2cfee4e8063b4fefab82fd3cfa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8e5fe2cfee4e8063b4fefab82fd3cfa"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>FileName</b></td></tr>
+<tr class="separator:af8e5fe2cfee4e8063b4fefab82fd3cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/io/<a class="el" href="vtk_tosca_reader_8h_source.html">vtkToscaReader.h</a></li>
@@ -136,7 +153,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>RequestData</b> (vtkIn
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:21 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

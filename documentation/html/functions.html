@@ -69,6 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -76,14 +77,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_a"><span>a</span></a></li>
       <li><a href="#index_b"><span>b</span></a></li>
       <li><a href="#index_c"><span>c</span></a></li>
+      <li><a href="#index_d"><span>d</span></a></li>
       <li><a href="#index_e"><span>e</span></a></li>
+      <li><a href="#index_f"><span>f</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
       <li><a href="#index_h"><span>h</span></a></li>
+      <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
       <li><a href="#index_o"><span>o</span></a></li>
+      <li><a href="#index_p"><span>p</span></a></li>
       <li><a href="#index_q"><span>q</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
       <li><a href="#index_s"><span>s</span></a></li>
+      <li><a href="#index_t"><span>t</span></a></li>
+      <li><a href="#index_v"><span>v</span></a></li>
       <li class="current"><a href="#index_~"><span>~</span></a></li>
     </ul>
   </div>
@@ -93,7 +100,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,6 +116,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>add()
 : <a class="el" href="class_hash_map.html#a6c177f77bc0b96cd6c6c1601b3e0714e">HashMap&lt; KEY, VALUE &gt;</a>
 </li>
+<li>addShape()
+: <a class="el" href="class_correspondence_data.html#abdf278997d70f654647ab521589733f8">CorrespondenceData</a>
+</li>
+<li>arrayToScalarPointAttribute()
+: <a class="el" href="class_scalar_point_attribute.html#a9145f6719149dae88f177ef927d7ebfd">ScalarPointAttribute</a>
+</li>
 </ul>
 
 
@@ -120,6 +133,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
+<li>calculateColors()
+: <a class="el" href="class_coordinate_coloring.html#aefccda04323fd7ac0feec68642e95807">CoordinateColoring</a>
+, <a class="el" href="class_face_coordinate_coloring.html#a0103465a1471c2a0433a0ed060a333f4">FaceCoordinateColoring</a>
+</li>
 <li>checkForBorders()
 : <a class="el" href="class_mesh_checker.html#ae24c4e3f5feff68c83726fb23d97585f">MeshChecker</a>
 </li>
@@ -133,13 +150,54 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="class_mesh_checker.html#a98cde65ece5f709e4ef3657cb8129fa4">MeshChecker</a>
 </li>
 <li>clear()
-: <a class="el" href="class_hash_map.html#aa63e547f51d713c06d7e70c0a3fc23ad">HashMap&lt; KEY, VALUE &gt;</a>
+: <a class="el" href="class_correspondence_data.html#a4bce18620695e23262206e7e1f8a860f">CorrespondenceData</a>
+, <a class="el" href="class_hash_map.html#aa63e547f51d713c06d7e70c0a3fc23ad">HashMap&lt; KEY, VALUE &gt;</a>
 </li>
 <li>clearColoring()
 : <a class="el" href="class_shape.html#a1face9516d3e6bebf44c2014bbdfe19f">Shape</a>
 </li>
+<li>color()
+: <a class="el" href="class_coloring.html#a06fe1ecd857c9f4ccff469bec6123dd9">Coloring</a>
+, <a class="el" href="class_coordinate_coloring.html#adfe81353e9b0791cceb013cc9a4e3f36">CoordinateColoring</a>
+, <a class="el" href="class_discrete_face_coloring.html#a9949374e0af166fdc322475971e9d612">DiscreteFaceColoring</a>
+, <a class="el" href="class_discrete_point_coloring.html#acbc9d6aee4a0fb0e3994d3ca41a459a1">DiscretePointColoring</a>
+, <a class="el" href="class_face_coordinate_coloring.html#a23935c52a6d31a017e8fb3e17c144cb5">FaceCoordinateColoring</a>
+, <a class="el" href="class_scalar_face_coloring.html#a5f39a3f0d8f29ae7a600b9a7ced7a1a1">ScalarFaceColoring</a>
+, <a class="el" href="class_scalar_point_coloring.html#aa16e206d19a206b60e64eeda8ce9d0d6">ScalarPointColoring</a>
+</li>
+<li>Coloring()
+: <a class="el" href="class_coloring.html#a5502d0c484ca5f675019887da011a885">Coloring</a>
+</li>
+<li>ComplexFaceAttribute()
+: <a class="el" href="class_complex_face_attribute.html#a0a368d357dc8c24147ba744d7aabce89">ComplexFaceAttribute&lt; T &gt;</a>
+</li>
+<li>ComplexPointAttribute()
+: <a class="el" href="class_complex_point_attribute.html#adab6b6a27e00392fc6c9813a882b04c8">ComplexPointAttribute&lt; T &gt;</a>
+</li>
 <li>containsKey()
 : <a class="el" href="class_hash_map.html#a7391f737a46c640dde378655e347727f">HashMap&lt; KEY, VALUE &gt;</a>
+</li>
+<li>CoordinateColoring()
+: <a class="el" href="class_coordinate_coloring.html#ab16ae41e2bac3e484a05a95f8c3c75c8">CoordinateColoring</a>
+</li>
+<li>CorrespondenceColoring()
+: <a class="el" href="class_correspondence_coloring.html#a1b933996e280406cc77f48c07e9c6dc7">CorrespondenceColoring</a>
+</li>
+<li>CorrespondenceData()
+: <a class="el" href="class_correspondence_data.html#a07e83374f490dc9039396a31561bd32a">CorrespondenceData</a>
+</li>
+<li>correspondingIds_
+: <a class="el" href="class_correspondence_data.html#a5a4e8a0ecbbf3a029a7b453407b363f8">CorrespondenceData</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>DiscreteFaceAttribute()
+: <a class="el" href="class_discrete_face_attribute.html#ad7183266e3e7d927f2b53ffe4dace110">DiscreteFaceAttribute</a>
+</li>
+<li>DiscretePointAttribute()
+: <a class="el" href="class_discrete_point_attribute.html#ae621f748d818a634a3048cb4a91722fa">DiscretePointAttribute</a>
 </li>
 </ul>
 
@@ -151,10 +209,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </ul>
 
 
-<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>GeodesicAlgorithmSubdivision()
-: <a class="el" href="classgeodesic_1_1_geodesic_algorithm_subdivision.html#a72dacc31bf5f71a59ab7af93d9f798a9">geodesic::GeodesicAlgorithmSubdivision</a>
+<h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
+<li>FaceCoordinateColoring()
+: <a class="el" href="class_face_coordinate_coloring.html#a4fc5101b5447c9ac5f4ea293ed389d11">FaceCoordinateColoring</a>
 </li>
+<li>fillInInformation()
+: <a class="el" href="classqt_shape_info_tab.html#ab06c5ddbdc7eff6d5a68b6b9851c1780">qtShapeInfoTab</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
 <li>getActor()
 : <a class="el" href="class_shape.html#a9342c008eaa5d312df8927a81a77960b">Shape</a>
 </li>
@@ -164,11 +229,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>getBoxWidget()
 : <a class="el" href="class_shape.html#aa6623c3ec6545de8f2182551142386be">Shape</a>
 </li>
+<li>getColors()
+: <a class="el" href="class_coordinate_coloring.html#acded67a88144659e774a09db49f58295">CoordinateColoring</a>
+, <a class="el" href="class_face_coordinate_coloring.html#a45397f5e7e5910df62be4c8d7cfeaf8a">FaceCoordinateColoring</a>
+</li>
+<li>getCorrespondingIds()
+: <a class="el" href="class_correspondence_data.html#a8b5c45708c2ca5e7a8671de9a7f9f635">CorrespondenceData</a>
+</li>
 <li>getEntries()
 : <a class="el" href="class_hash_map.html#a68db9203d908598b70b8325194c54819">HashMap&lt; KEY, VALUE &gt;</a>
 </li>
 <li>getId()
-: <a class="el" href="class_shape.html#a3bda0a588a5068b0e581650b5bebcd54">Shape</a>
+: <a class="el" href="class_correspondence_data.html#a990fb28e8aa665c9aa7c77b17b1ba64c">CorrespondenceData</a>
+, <a class="el" href="class_shape.html#a3bda0a588a5068b0e581650b5bebcd54">Shape</a>
 </li>
 <li>getKeys()
 : <a class="el" href="class_hash_map.html#ab7f911839bbe21bf582a8b69c9f500d1">HashMap&lt; KEY, VALUE &gt;</a>
@@ -200,8 +273,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>getRenderer()
 : <a class="el" href="class_shape.html#aabee8928d7e05344678e4144f995f80b">Shape</a>
 </li>
+<li>getScalars()
+: <a class="el" href="class_scalar_face_attribute.html#ab7958610eb0617eecaa372867f99abfa">ScalarFaceAttribute</a>
+, <a class="el" href="class_scalar_point_attribute.html#a50ffe08ff4da2d775f5e0ed1ddcec9d4">ScalarPointAttribute</a>
+</li>
+<li>getShape()
+: <a class="el" href="class_complex_face_attribute.html#a05013475941221a1ef50b374c2c3d2d4">ComplexFaceAttribute&lt; T &gt;</a>
+, <a class="el" href="class_complex_point_attribute.html#a4c173db22846017de47d7f0abf5cf0b7">ComplexPointAttribute&lt; T &gt;</a>
+, <a class="el" href="class_discrete_face_attribute.html#ac2411ea78be1cc03ef7cd003c802711d">DiscreteFaceAttribute</a>
+, <a class="el" href="class_discrete_point_attribute.html#a5b75b8aa4b8c0ad8b6b1752b15451337">DiscretePointAttribute</a>
+, <a class="el" href="class_scalar_face_attribute.html#a40fa60eda92082c42bc10edc1a21fe22">ScalarFaceAttribute</a>
+, <a class="el" href="class_scalar_point_attribute.html#aefadf25ab811fd43ad82de27563e0bcc">ScalarPointAttribute</a>
+</li>
+<li>getShapeIds()
+: <a class="el" href="class_correspondence_data.html#a094039b5f79ff82898d7a940b98203fe">CorrespondenceData</a>
+</li>
+<li>getType()
+: <a class="el" href="class_correspondence_data.html#a060f3788975ef1c3129114f191c41650">CorrespondenceData</a>
+, <a class="el" href="class_face_correspondence_data.html#abd6ce7468457b56e5e093915591a1b17">FaceCorrespondenceData</a>
+, <a class="el" href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">PointCorrespondenceData</a>
+</li>
 <li>getValues()
-: <a class="el" href="class_hash_map.html#abc87b6932fa1319156a3d5fa9c46a446">HashMap&lt; KEY, VALUE &gt;</a>
+: <a class="el" href="class_complex_face_attribute.html#a11a16213cd62e7ada0b8a36d75043406">ComplexFaceAttribute&lt; T &gt;</a>
+, <a class="el" href="class_complex_point_attribute.html#aaab75963a00adf77fbc0b01977e3362a">ComplexPointAttribute&lt; T &gt;</a>
+, <a class="el" href="class_discrete_face_attribute.html#a9767d19deae2768b95f06499cd6a4bda">DiscreteFaceAttribute</a>
+, <a class="el" href="class_discrete_point_attribute.html#a0516593a4f91658c1cbee796c700ca2e">DiscretePointAttribute</a>
+, <a class="el" href="class_hash_map.html#abc87b6932fa1319156a3d5fa9c46a446">HashMap&lt; KEY, VALUE &gt;</a>
 </li>
 </ul>
 
@@ -209,6 +306,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
 <li>HashMap()
 : <a class="el" href="class_hash_map.html#ace56e25bbddde14be403a9b2224dd364">HashMap&lt; KEY, VALUE &gt;</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>id_
+: <a class="el" href="class_correspondence_data.html#a5f5964ac0e1e46f9010dcef28f42bd35">CorrespondenceData</a>
+</li>
+<li>initialize()
+: <a class="el" href="classqt_shape_info_tab.html#ae178d22f6548407550e40d5d81053147">qtShapeInfoTab</a>
 </li>
 </ul>
 
@@ -266,6 +373,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </ul>
 
 
+<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>petscVecToScalarPointAttribute()
+: <a class="el" href="class_scalar_point_attribute.html#aac5d5ff1bff511f48e4f3b9c0445439e">ScalarPointAttribute</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_q"></a>- q -</h3><ul>
 <li>qtShapeInfoTab()
 : <a class="el" href="classqt_shape_info_tab.html#a1e24b3b05a98ebf3aec79cd7c0c3e8ba">qtShapeInfoTab</a>
@@ -284,16 +398,88 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>ScalarFaceAttribute()
+: <a class="el" href="class_scalar_face_attribute.html#ab91f55235326a8a46a4062fb944949c5">ScalarFaceAttribute</a>
+</li>
+<li>ScalarFaceColoring()
+: <a class="el" href="class_scalar_face_coloring.html#a3987b4f199203be0d5e56025c19ee076">ScalarFaceColoring</a>
+</li>
+<li>ScalarPointAttribute()
+: <a class="el" href="class_scalar_point_attribute.html#aabaf966fe5de34576710f3e3af9b293c">ScalarPointAttribute</a>
+</li>
+<li>scalarPointAttributeToPetscVec()
+: <a class="el" href="class_scalar_point_attribute.html#a868604d934009c0c827fe6dc80bde32f">ScalarPointAttribute</a>
+</li>
+<li>ScalarPointColoring()
+: <a class="el" href="class_scalar_point_coloring.html#adfcc6a0275934074de3bdb04e2746a63">ScalarPointColoring</a>
+</li>
+<li>scalars_
+: <a class="el" href="class_scalar_face_attribute.html#acf0a5f08e748e20a0e738eb5a343afa8">ScalarFaceAttribute</a>
+, <a class="el" href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">ScalarPointAttribute</a>
+</li>
 <li>setName()
 : <a class="el" href="class_shape.html#a489da86bf4290d678678621727c1303a">Shape</a>
 </li>
+<li>shape_
+: <a class="el" href="class_complex_face_attribute.html#aaeb0d53a6a5a407ebf58efce769e3964">ComplexFaceAttribute&lt; T &gt;</a>
+, <a class="el" href="class_complex_point_attribute.html#a4bc9b7a4caa4ca8c956f2f80ca2871e7">ComplexPointAttribute&lt; T &gt;</a>
+, <a class="el" href="class_discrete_face_attribute.html#a73c27fd26a6bd3c52ab01095693f7366">DiscreteFaceAttribute</a>
+, <a class="el" href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">DiscretePointAttribute</a>
+, <a class="el" href="class_scalar_face_attribute.html#a8e42ecff631c7fdb7dd6079a2fca9981">ScalarFaceAttribute</a>
+, <a class="el" href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">ScalarPointAttribute</a>
+</li>
+<li>shapeIds_
+: <a class="el" href="class_correspondence_data.html#a9d064aa6c9252072cdf8537929261dad">CorrespondenceData</a>
+</li>
+<li>showFaceCorrespondences()
+: <a class="el" href="class_correspondence_coloring.html#a01d90e7657d270d3420773f79ad6dbca">CorrespondenceColoring</a>
+</li>
+<li>showPointCorrespondences()
+: <a class="el" href="class_correspondence_coloring.html#a664467e021d1b49a693218ae56728537">CorrespondenceColoring</a>
+</li>
 <li>size()
-: <a class="el" href="class_hash_map.html#ae29dc2b5b58f05690e455a51aeb7341d">HashMap&lt; KEY, VALUE &gt;</a>
+: <a class="el" href="class_correspondence_data.html#ad6746b995840c277e0a0b2c0ae0afe81">CorrespondenceData</a>
+, <a class="el" href="class_hash_map.html#ae29dc2b5b58f05690e455a51aeb7341d">HashMap&lt; KEY, VALUE &gt;</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>toString()
+: <a class="el" href="class_correspondence_data.html#ab374d531599a7bf59e262191263dc147">CorrespondenceData</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
+<li>values_
+: <a class="el" href="class_complex_face_attribute.html#ad1e99b1220d1a175c0a4b8d69b9fca8f">ComplexFaceAttribute&lt; T &gt;</a>
+, <a class="el" href="class_complex_point_attribute.html#aa0224e3cdd2a1c12f629ae224507d8f6">ComplexPointAttribute&lt; T &gt;</a>
+, <a class="el" href="class_discrete_face_attribute.html#a530bbe7df58510f0aceab75d944c4e9b">DiscreteFaceAttribute</a>
+, <a class="el" href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">DiscretePointAttribute</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_~"></a>- ~ -</h3><ul>
+<li>~ComplexFaceAttribute()
+: <a class="el" href="class_complex_face_attribute.html#aee6b3c51b6f3d6dda482588ba122a612">ComplexFaceAttribute&lt; T &gt;</a>
+</li>
+<li>~ComplexPointAttribute()
+: <a class="el" href="class_complex_point_attribute.html#a76a787d2caef4a5880bcdb925cf73c3f">ComplexPointAttribute&lt; T &gt;</a>
+</li>
+<li>~CoordinateColoring()
+: <a class="el" href="class_coordinate_coloring.html#a9bf8cd56edee9180967ca6556f75d02b">CoordinateColoring</a>
+</li>
+<li>~CorrespondenceData()
+: <a class="el" href="class_correspondence_data.html#ae9e92f7181c825b365368a2e900d2339">CorrespondenceData</a>
+</li>
+<li>~DiscreteFaceAttribute()
+: <a class="el" href="class_discrete_face_attribute.html#a6594b77d5622244c3ada3b0ddfbb6805">DiscreteFaceAttribute</a>
+</li>
+<li>~DiscretePointAttribute()
+: <a class="el" href="class_discrete_point_attribute.html#a1ec856d640eac6a228d4cd4c4db58e99">DiscretePointAttribute</a>
+</li>
 <li>~HashMap()
 : <a class="el" href="class_hash_map.html#a92ad972027e37d1d8f3d311a441190fc">HashMap&lt; KEY, VALUE &gt;</a>
 </li>
@@ -306,11 +492,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>~qtTab()
 : <a class="el" href="classqt_tab.html#a269279758bb0b73d3a04477ac3799965">qtTab</a>
 </li>
+<li>~ScalarFaceAttribute()
+: <a class="el" href="class_scalar_face_attribute.html#a3cb95c1be163e5ee55a9a219307762c6">ScalarFaceAttribute</a>
+</li>
+<li>~ScalarPointAttribute()
+: <a class="el" href="class_scalar_point_attribute.html#a90636fcdf62c7deb0cfdffa8ddf1c0f7">ScalarPointAttribute</a>
+</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="class_face_correspondence_picker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FaceCorrespondencePicker Class Reference</div>  </div>
@@ -117,6 +118,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateMouseLine</b> (
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clearSelection</b> ()</td></tr>
 <tr class="separator:a2394504b680fc8344c26e57e899f08a9 inherit pub_methods_class_correspondence_picker"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aaf8954c8787b1d25de5caf0404bd155b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf8954c8787b1d25de5caf0404bd155b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentSelectionPoint</b> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType, double point[3])</td></tr>
+<tr class="separator:aaf8954c8787b1d25de5caf0404bd155b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9259a29af37dd9a0895664b64a7f94e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9259a29af37dd9a0895664b64a7f94e7"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>visualizeCurrentSelection</b> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType pointId)</td></tr>
+<tr class="separator:a9259a29af37dd9a0895664b64a7f94e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2ab5d1d8661980820d78c4b30022d89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2ab5d1d8661980820d78c4b30022d89"></a>
+virtual <a class="el" href="class_correspondence.html">Correspondence</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>createCorrespondence</b> ()</td></tr>
+<tr class="separator:ae2ab5d1d8661980820d78c4b30022d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_correspondence_picker"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_correspondence_picker')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_correspondence_picker.html">CorrespondencePicker</a></td></tr>
@@ -144,7 +157,7 @@ int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertCorres
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:13 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

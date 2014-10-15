@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-slots">Private Slots</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classqt_correspondence_coloring_tab-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">qtCorrespondenceColoringTab Class Reference</div>  </div>
@@ -94,10 +97,8 @@ Inheritance diagram for qtCorrespondenceColoringTab:</div>
  <div class="center">
   <img src="classqt_correspondence_coloring_tab.png" usemap="#qtCorrespondenceColoringTab_map" alt=""/>
   <map id="qtCorrespondenceColoringTab_map" name="qtCorrespondenceColoringTab_map">
-<area href="class_ui_1_1_correspondence_coloring_widget.html" alt="Ui::CorrespondenceColoringWidget" shape="rect" coords="221,56,432,80"/>
-<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="442,56,653,80"/>
-<area href="class_ui___correspondence_coloring_widget.html" alt="Ui_CorrespondenceColoringWidget" shape="rect" coords="221,0,432,24"/>
-<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="442,0,653,24"/>
+<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="406,56,599,80"/>
+<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="406,0,599,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -121,13 +122,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3f5f147052eb9b10c08af1160ff85f42"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_correspondence_coloring_tab.html#a3f5f147052eb9b10c08af1160ff85f42">onClear</a> ()</td></tr>
 <tr class="memdesc:a3f5f147052eb9b10c08af1160ff85f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual function that triggers when the app is cleared.  <a href="#a3f5f147052eb9b10c08af1160ff85f42">More...</a><br /></td></tr>
 <tr class="separator:a3f5f147052eb9b10c08af1160ff85f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_class_ui___correspondence_coloring_widget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_ui___correspondence_coloring_widget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_ui___correspondence_coloring_widget.html">Ui_CorrespondenceColoringWidget</a></td></tr>
-<tr class="memitem:a604eea657626eb852db231b2eaa9770c inherit pub_methods_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a604eea657626eb852db231b2eaa9770c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setupUi</b> (QWidget *CorrespondenceColoringWidget)</td></tr>
-<tr class="separator:a604eea657626eb852db231b2eaa9770c inherit pub_methods_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0069b4a6a474681af5663ea31a0ba42 inherit pub_methods_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0069b4a6a474681af5663ea31a0ba42"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>retranslateUi</b> (QWidget *CorrespondenceColoringWidget)</td></tr>
-<tr class="separator:ab0069b4a6a474681af5663ea31a0ba42 inherit pub_methods_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classqt_shapes_tab"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classqt_shapes_tab')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classqt_shapes_tab.html">qtShapesTab</a></td></tr>
 <tr class="memitem:a592ecb3f59fb56e5c978aea874bd9f90 inherit pub_methods_classqt_shapes_tab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a592ecb3f59fb56e5c978aea874bd9f90"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shapes_tab.html#a592ecb3f59fb56e5c978aea874bd9f90">~qtShapesTab</a> ()</td></tr>
@@ -139,42 +133,29 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memdesc:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Destructor. <br /></td></tr>
 <tr class="separator:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_attribs_class_ui___correspondence_coloring_widget"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_ui___correspondence_coloring_widget')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_ui___correspondence_coloring_widget.html">Ui_CorrespondenceColoringWidget</a></td></tr>
-<tr class="memitem:a0ba5cd7d686480318ddc029968e14c8c inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ba5cd7d686480318ddc029968e14c8c"></a>
-QVBoxLayout *&#160;</td><td class="memItemRight" valign="bottom"><b>verticalLayout</b></td></tr>
-<tr class="separator:a0ba5cd7d686480318ddc029968e14c8c inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60c037420846d55393118685216c2b3d inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60c037420846d55393118685216c2b3d"></a>
-QHBoxLayout *&#160;</td><td class="memItemRight" valign="bottom"><b>horizontalLayout</b></td></tr>
-<tr class="separator:a60c037420846d55393118685216c2b3d inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0daa768b7cd573e16cde556da024842 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae0daa768b7cd573e16cde556da024842"></a>
-QRadioButton *&#160;</td><td class="memItemRight" valign="bottom"><b>pointRadio</b></td></tr>
-<tr class="separator:ae0daa768b7cd573e16cde556da024842 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9b8c4d8554af8e7e8520eee2f53b40f inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9b8c4d8554af8e7e8520eee2f53b40f"></a>
-QRadioButton *&#160;</td><td class="memItemRight" valign="bottom"><b>faceRadio</b></td></tr>
-<tr class="separator:ae9b8c4d8554af8e7e8520eee2f53b40f inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac53f0b221f09dc96cdfb9d38c1145877 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac53f0b221f09dc96cdfb9d38c1145877"></a>
-QLabel *&#160;</td><td class="memItemRight" valign="bottom"><b>label_4</b></td></tr>
-<tr class="separator:ac53f0b221f09dc96cdfb9d38c1145877 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f612762056e0e64e2e37caa95a24cb6 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f612762056e0e64e2e37caa95a24cb6"></a>
-QComboBox *&#160;</td><td class="memItemRight" valign="bottom"><b>comboBox</b></td></tr>
-<tr class="separator:a1f612762056e0e64e2e37caa95a24cb6 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5e440efba4814b2543bd99f3de8e3cc inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5e440efba4814b2543bd99f3de8e3cc"></a>
-QGridLayout *&#160;</td><td class="memItemRight" valign="bottom"><b>gridLayout</b></td></tr>
-<tr class="separator:ae5e440efba4814b2543bd99f3de8e3cc inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3de5ba3053c6a2cd3441ad5c7b2c6ad inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3de5ba3053c6a2cd3441ad5c7b2c6ad"></a>
-QLabel *&#160;</td><td class="memItemRight" valign="bottom"><b>label_2</b></td></tr>
-<tr class="separator:ac3de5ba3053c6a2cd3441ad5c7b2c6ad inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6f8c37719805077b326d3c7ccb3e067 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6f8c37719805077b326d3c7ccb3e067"></a>
-QLabel *&#160;</td><td class="memItemRight" valign="bottom"><b>label</b></td></tr>
-<tr class="separator:ab6f8c37719805077b326d3c7ccb3e067 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfcd3e94c1faa004607e7c58c64e12b8 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adfcd3e94c1faa004607e7c58c64e12b8"></a>
-QLabel *&#160;</td><td class="memItemRight" valign="bottom"><b>label_3</b></td></tr>
-<tr class="separator:adfcd3e94c1faa004607e7c58c64e12b8 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53af4eda1b667acb2616e4df753c4026 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53af4eda1b667acb2616e4df753c4026"></a>
-QSpacerItem *&#160;</td><td class="memItemRight" valign="bottom"><b>verticalSpacer</b></td></tr>
-<tr class="separator:a53af4eda1b667acb2616e4df753c4026 inherit pub_attribs_class_ui___correspondence_coloring_widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-slots"></a>
+Private Slots</h2></td></tr>
+<tr class="memitem:a6d546c63b3fc8386ab7e5acdbc2c8113"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d546c63b3fc8386ab7e5acdbc2c8113"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotColorCorrespondences</b> (QString)</td></tr>
+<tr class="separator:a6d546c63b3fc8386ab7e5acdbc2c8113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a7fcaba5271bda9bd0929987132110d8b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7fcaba5271bda9bd0929987132110d8b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clearGrid</b> ()</td></tr>
+<tr class="separator:a7fcaba5271bda9bd0929987132110d8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aa5cc85cc2bd998cda72f70fb95582ac6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5cc85cc2bd998cda72f70fb95582ac6"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>map_</b></td></tr>
+<tr class="separator:aa5cc85cc2bd998cda72f70fb95582ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbbc70a42a3173e2322ad7f19beaf10e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adbbc70a42a3173e2322ad7f19beaf10e"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> *, bool &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>faceCorr_</b></td></tr>
+<tr class="separator:adbbc70a42a3173e2322ad7f19beaf10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a733e4d3ce26d7898f7cfcf11edbc0d59"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a733e4d3ce26d7898f7cfcf11edbc0d59"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>pointCorr_</b></td></tr>
+<tr class="separator:a733e4d3ce26d7898f7cfcf11edbc0d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a3f5f147052eb9b10c08af1160ff85f42"></a>
@@ -348,7 +329,7 @@ QSpacerItem *&#160;</td><td class="memItemRight" valign="bottom"><b>verticalSpac
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:15 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

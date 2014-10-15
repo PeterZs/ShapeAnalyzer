@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -211,17 +211,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">bool</span> operator() (<a class="code" href="class_shape.html">Shape</a>* s1, <a class="code" href="class_shape.html">Shape</a>* s2) { <span class="keywordflow">return</span> (s1-&gt;<a class="code" href="class_shape.html#a3bda0a588a5068b0e581650b5bebcd54">getId</a>() &lt; s2-&gt;<a class="code" href="class_shape.html#a3bda0a588a5068b0e581650b5bebcd54">getId</a>()); }</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="class_shape_analyzer.html">  126</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_shape_analyzer.html">ShapeAnalyzer</a> : <span class="keyword">public</span> QMainWindow, <span class="keyword">private</span> <a class="code" href="class_ui_1_1_shape_analyzer.html">Ui::ShapeAnalyzer</a> {</div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="class_shape_analyzer.html">  126</a></span>&#160;<span class="keyword">class </span>ShapeAnalyzer : <span class="keyword">public</span> QMainWindow, <span class="keyword">private</span> Ui::ShapeAnalyzer {</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    Q_OBJECT</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    </div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    </div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="comment">// manages update of correspondences after scene transformation</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">class </span>vtkBoxWidgetCallback : <span class="keyword">public</span> vtkCommand {</div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="class_shape_analyzer_1_1vtk_box_widget_callback.html">  131</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_shape_analyzer_1_1vtk_box_widget_callback.html">vtkBoxWidgetCallback</a> : <span class="keyword">public</span> vtkCommand {</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <a class="code" href="class_shape_analyzer.html">ShapeAnalyzer</a> *sa;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        ShapeAnalyzer *sa;</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">static</span> vtkBoxWidgetCallback *New() {</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">new</span> vtkBoxWidgetCallback;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">static</span> <a class="code" href="class_shape_analyzer_1_1vtk_box_widget_callback.html">vtkBoxWidgetCallback</a> *New() {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">new</span> <a class="code" href="class_shape_analyzer_1_1vtk_box_widget_callback.html">vtkBoxWidgetCallback</a>;</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        }</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        </div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> Execute(vtkObject *caller, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">void</span>*) {</div>
@@ -233,10 +233,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <a class="code" href="class_shape.html">Shape</a>* shape = sa-&gt;shapesByActor_[<span class="keyword">reinterpret_cast&lt;</span>vtkActor*<span class="keyword">&gt;</span>(widget-&gt;GetProp3D())];</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            <span class="comment">// transform correspondences</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> it = sa-&gt;pointCorrespondencesByActor_.<a class="code" href="class_hash_map.html#a3b0a486bb4e801097ebb7fd40282a513">begin</a>(); it != sa-&gt;pointCorrespondencesByActor_.<a class="code" href="class_hash_map.html#a37735a61fd58501770200671497f9388">end</a>(); it++) {</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> it = sa-&gt;pointCorrespondencesByActor_.begin(); it != sa-&gt;pointCorrespondencesByActor_.end(); it++) {</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                it-&gt;second-&gt;transform(shape);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> it = sa-&gt;faceCorrespondencesByActor_.<a class="code" href="class_hash_map.html#a3b0a486bb4e801097ebb7fd40282a513">begin</a>(); it != sa-&gt;faceCorrespondencesByActor_.<a class="code" href="class_hash_map.html#a37735a61fd58501770200671497f9388">end</a>(); it++) {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> it = sa-&gt;faceCorrespondencesByActor_.begin(); it != sa-&gt;faceCorrespondencesByActor_.end(); it++) {</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                it-&gt;second-&gt;transform(shape);</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            }</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            </div>
@@ -245,8 +245,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    };</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    </div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <a class="code" href="class_shape_analyzer.html">ShapeAnalyzer</a>();</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    ~<a class="code" href="class_shape_analyzer.html">ShapeAnalyzer</a>() {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    ShapeAnalyzer();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    ~ShapeAnalyzer() {</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">delete</span> correspondencePicker_;</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keyword">delete</span> dialogSettings_;</div>
@@ -393,7 +393,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    QActionGroup* actionGroupShapeDisplayMode_;</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    QActionGroup* actionGroupProjectionMode_;</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    </div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <a class="code" href="class_ui___settings.html">Ui_Settings</a> uiSettings_;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    Ui_Settings uiSettings_;</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    QDialog*    dialogSettings_;</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    </div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    </div>
@@ -417,27 +417,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_ui_1_1_shape_analyzer_html"><div class="ttname"><a href="class_ui_1_1_shape_analyzer.html">Ui::ShapeAnalyzer</a></div><div class="ttdef"><b>Definition:</b> ui_ShapeAnalyzer.h:451</div></div>
-<div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
+<div class="ttc" id="class_shape_analyzer_1_1vtk_box_widget_callback_html"><div class="ttname"><a href="class_shape_analyzer_1_1vtk_box_widget_callback.html">ShapeAnalyzer::vtkBoxWidgetCallback</a></div><div class="ttdef"><b>Definition:</b> ShapeAnalyzer.h:131</div></div>
+<div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">Colors the given shapes to visualize the given correspondences. </div></div>
 <div class="ttc" id="class_correspondence_picker_html"><div class="ttname"><a href="class_correspondence_picker.html">CorrespondencePicker</a></div><div class="ttdef"><b>Definition:</b> CorrespondencePicker.h:33</div></div>
 <div class="ttc" id="class_hash_map_html"><div class="ttname"><a href="class_hash_map.html">HashMap</a></div><div class="ttdef"><b>Definition:</b> HashMap.h:25</div></div>
 <div class="ttc" id="classqt_list_widget_item_html"><div class="ttname"><a href="classqt_list_widget_item.html">qtListWidgetItem</a></div><div class="ttdef"><b>Definition:</b> qtListWidgetItem.h:19</div></div>
 <div class="ttc" id="classqt_point_correspondences_tab_html"><div class="ttname"><a href="classqt_point_correspondences_tab.html">qtPointCorrespondencesTab</a></div><div class="ttdef"><b>Definition:</b> qtPointCorrespondencesTab.h:35</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
-<div class="ttc" id="class_correspondence_html"><div class="ttname"><a href="class_correspondence.html">Correspondence</a></div><div class="ttdef"><b>Definition:</b> Correspondence.h:32</div></div>
-<div class="ttc" id="class_shape_analyzer_html"><div class="ttname"><a href="class_shape_analyzer.html">ShapeAnalyzer</a></div><div class="ttdef"><b>Definition:</b> ShapeAnalyzer.h:126</div></div>
+<div class="ttc" id="class_correspondence_html"><div class="ttname"><a href="class_correspondence.html">Correspondence</a></div><div class="ttdef"><b>Definition:</b> Correspondence.h:33</div></div>
 <div class="ttc" id="classqt_face_correspondences_tab_html"><div class="ttname"><a href="classqt_face_correspondences_tab.html">qtFaceCorrespondencesTab</a></div><div class="ttdef"><b>Definition:</b> qtFaceCorrespondencesTab.h:35</div></div>
 <div class="ttc" id="struct_shape_comparator_html"><div class="ttname"><a href="struct_shape_comparator.html">ShapeComparator</a></div><div class="ttdef"><b>Definition:</b> ShapeAnalyzer.h:122</div></div>
 <div class="ttc" id="class_shape_html_a3bda0a588a5068b0e581650b5bebcd54"><div class="ttname"><a href="class_shape.html#a3bda0a588a5068b0e581650b5bebcd54">Shape::getId</a></div><div class="ttdeci">vtkIdType getId()</div><div class="ttdoc">Returns the unique id of the shape. </div><div class="ttdef"><b>Definition:</b> Shape.h:123</div></div>
-<div class="ttc" id="class_ui___settings_html"><div class="ttname"><a href="class_ui___settings.html">Ui_Settings</a></div><div class="ttdef"><b>Definition:</b> ui_settings.h:31</div></div>
 <div class="ttc" id="classqt_shape_interpolation_tab_html"><div class="ttname"><a href="classqt_shape_interpolation_tab.html">qtShapeInterpolationTab</a></div><div class="ttdef"><b>Definition:</b> qtShapeInterpolationTab.h:31</div></div>
-<div class="ttc" id="class_hash_map_html_a3b0a486bb4e801097ebb7fd40282a513"><div class="ttname"><a href="class_hash_map.html#a3b0a486bb4e801097ebb7fd40282a513">HashMap::begin</a></div><div class="ttdeci">iterator begin()</div><div class="ttdoc">Returns iterator pointing to the first element of the hashmap. </div><div class="ttdef"><b>Definition:</b> HashMap.h:230</div></div>
-<div class="ttc" id="class_hash_map_html_a37735a61fd58501770200671497f9388"><div class="ttname"><a href="class_hash_map.html#a37735a61fd58501770200671497f9388">HashMap::end</a></div><div class="ttdeci">iterator end()</div><div class="ttdoc">Returns iterator pointing to the end of the hash map. </div><div class="ttdef"><b>Definition:</b> HashMap.h:237</div></div>
-<div class="ttc" id="class_correspondence_data_html"><div class="ttname"><a href="class_correspondence_data.html">CorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:20</div></div>
+<div class="ttc" id="class_correspondence_data_html"><div class="ttname"><a href="class_correspondence_data.html">CorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:23</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:11 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

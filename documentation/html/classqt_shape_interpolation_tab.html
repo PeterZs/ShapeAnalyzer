@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-slots">Private Slots</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classqt_shape_interpolation_tab-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">qtShapeInterpolationTab Class Reference</div>  </div>
@@ -94,9 +96,8 @@ Inheritance diagram for qtShapeInterpolationTab:</div>
  <div class="center">
   <img src="classqt_shape_interpolation_tab.png" usemap="#qtShapeInterpolationTab_map" alt=""/>
   <map id="qtShapeInterpolationTab_map" name="qtShapeInterpolationTab_map">
-<area href="class_ui_1_1_shape_interpolation_widget.html" alt="Ui::ShapeInterpolationWidget" shape="rect" coords="182,56,354,80"/>
-<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="364,56,536,80"/>
-<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="364,0,536,24"/>
+<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="330,56,485,80"/>
+<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="330,0,485,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -130,6 +131,45 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_tab.html#a269279758bb0b73d3a04477ac3799965">~qtTab</a> ()</td></tr>
 <tr class="memdesc:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Destructor. <br /></td></tr>
 <tr class="separator:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-slots"></a>
+Private Slots</h2></td></tr>
+<tr class="memitem:a31981bd0c2c4862805acb55269c9a5fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a31981bd0c2c4862805acb55269c9a5fb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotInterpolate</b> (int value)</td></tr>
+<tr class="separator:a31981bd0c2c4862805acb55269c9a5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1faef3560fc4892d0f3cdf4b0b919165"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1faef3560fc4892d0f3cdf4b0b919165"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotChooseShapes</b> ()</td></tr>
+<tr class="separator:a1faef3560fc4892d0f3cdf4b0b919165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8496c79e576a369020dad367421a8f62"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8496c79e576a369020dad367421a8f62"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotAddShape</b> ()</td></tr>
+<tr class="separator:a8496c79e576a369020dad367421a8f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a38fa564bf4e9febe7c869ff1679f2d2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38fa564bf4e9febe7c869ff1679f2d2c"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>source_</b></td></tr>
+<tr class="separator:a38fa564bf4e9febe7c869ff1679f2d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a939ca13b705b53b054d6bd256073d9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a939ca13b705b53b054d6bd256073d9"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>target_</b></td></tr>
+<tr class="separator:a5a939ca13b705b53b054d6bd256073d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48b5b9e38e456b74a490583fbc20a478"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48b5b9e38e456b74a490583fbc20a478"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>shape_</b></td></tr>
+<tr class="separator:a48b5b9e38e456b74a490583fbc20a478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9779c6ba0d43f1ab25f832c5519cce5d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9779c6ba0d43f1ab25f832c5519cce5d"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>shapes_</b></td></tr>
+<tr class="separator:a9779c6ba0d43f1ab25f832c5519cce5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacb9f16ba9bf844128560f76c79de7ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aacb9f16ba9bf844128560f76c79de7ed"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>correspondences_</b></td></tr>
+<tr class="separator:aacb9f16ba9bf844128560f76c79de7ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee4785eb46054bd9feb583c25c77d70f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee4785eb46054bd9feb583c25c77d70f"></a>
+vtkSmartPointer&lt; vtkRenderer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>renderer_</b></td></tr>
+<tr class="separator:aee4785eb46054bd9feb583c25c77d70f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fd0497c0627741bb0d4e1d7f0404233"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4fd0497c0627741bb0d4e1d7f0404233"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertShapeID_</b></td></tr>
+<tr class="separator:a4fd0497c0627741bb0d4e1d7f0404233"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa2187d70355e5732ab3f3d775d5996"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fa2187d70355e5732ab3f3d775d5996"></a>
+<a class="el" href="class_shape_analyzer.html">ShapeAnalyzer</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>parent_</b></td></tr>
+<tr class="separator:a5fa2187d70355e5732ab3f3d775d5996"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a71ad9a70adc5408de4ceb94467953d8c"></a>
@@ -303,7 +343,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:16 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,31 +83,165 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_complex_point_attribute-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ComplexPointAttribute&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Assigns an attribute of class T to each vertex.  
+ <a href="class_complex_point_attribute.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_complex_point_attribute_8h_source.html">ComplexPointAttribute.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adab6b6a27e00392fc6c9813a882b04c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adab6b6a27e00392fc6c9813a882b04c8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ComplexPointAttribute</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memitem:adab6b6a27e00392fc6c9813a882b04c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#adab6b6a27e00392fc6c9813a882b04c8">ComplexPointAttribute</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:adab6b6a27e00392fc6c9813a882b04c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic constructor.  <a href="#adab6b6a27e00392fc6c9813a882b04c8">More...</a><br /></td></tr>
 <tr class="separator:adab6b6a27e00392fc6c9813a882b04c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaab75963a00adf77fbc0b01977e3362a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaab75963a00adf77fbc0b01977e3362a"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><b>getValues</b> ()</td></tr>
+<tr class="memitem:a76a787d2caef4a5880bcdb925cf73c3f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#a76a787d2caef4a5880bcdb925cf73c3f">~ComplexPointAttribute</a> ()</td></tr>
+<tr class="separator:a76a787d2caef4a5880bcdb925cf73c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaab75963a00adf77fbc0b01977e3362a"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#aaab75963a00adf77fbc0b01977e3362a">getValues</a> ()</td></tr>
+<tr class="memdesc:aaab75963a00adf77fbc0b01977e3362a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the attribute array.  <a href="#aaab75963a00adf77fbc0b01977e3362a">More...</a><br /></td></tr>
 <tr class="separator:aaab75963a00adf77fbc0b01977e3362a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c173db22846017de47d7f0abf5cf0b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c173db22846017de47d7f0abf5cf0b7"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#a4c173db22846017de47d7f0abf5cf0b7">getShape</a> ()</td></tr>
+<tr class="memdesc:a4c173db22846017de47d7f0abf5cf0b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shape this attributes describe. <br /></td></tr>
 <tr class="separator:a4c173db22846017de47d7f0abf5cf0b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a4bc9b7a4caa4ca8c956f2f80ca2871e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4bc9b7a4caa4ca8c956f2f80ca2871e7"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#a4bc9b7a4caa4ca8c956f2f80ca2871e7">shape_</a></td></tr>
+<tr class="memdesc:a4bc9b7a4caa4ca8c956f2f80ca2871e7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_shape.html">Shape</a> the attributes describe. <br /></td></tr>
+<tr class="separator:a4bc9b7a4caa4ca8c956f2f80ca2871e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0224e3cdd2a1c12f629ae224507d8f6"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_point_attribute.html#aa0224e3cdd2a1c12f629ae224507d8f6">values_</a></td></tr>
+<tr class="separator:aa0224e3cdd2a1c12f629ae224507d8f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class ComplexPointAttribute&lt; T &gt;</h3>
+
+<p>Assigns an attribute of class T to each vertex. </p>
+<p>For the primitive types double and int the classes ScalarPointAtrribute and <a class="el" href="class_discrete_point_attribute.html" title="Assigns an int value to each vertex of the shape. ">DiscretePointAttribute</a> exist, they should be used instead of this class. </p><dl class="section note"><dt>Note</dt><dd>Not finished. Maybe add a function to fill with values without petsc stuff?</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="adab6b6a27e00392fc6c9813a882b04c8"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a>&lt; T &gt;::<a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Basic constructor. </p>
+<p>Constructs an array of T objects with the size of the number of vertices of the shape. </p>
+
+</div>
+</div>
+<a class="anchor" id="a76a787d2caef4a5880bcdb925cf73c3f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a>&lt; T &gt;::~<a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Deletes the array storing all attributes. If you are storing pointers, the attribute objects will not be deleted. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aaab75963a00adf77fbc0b01977e3362a"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a>&lt; T &gt;::getValues </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a pointer to the attribute array. </p>
+<dl class="section return"><dt>Returns</dt><dd>The array has the size of the number of vertices the shape has and will be deleted when the <a class="el" href="class_complex_point_attribute.html" title="Assigns an attribute of class T to each vertex. ">ComplexPointAttribute</a> is deleted. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aa0224e3cdd2a1c12f629ae224507d8f6"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="class_complex_point_attribute.html">ComplexPointAttribute</a>&lt; T &gt;::values_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Array of attributes. The size of the array is equal to the number of vertices of the shape. The order of the attributes should correspond the order of vertices in the the vtkPolData structure of the shape. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/attributes/<a class="el" href="_complex_point_attribute_8h_source.html">ComplexPointAttribute.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:11 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

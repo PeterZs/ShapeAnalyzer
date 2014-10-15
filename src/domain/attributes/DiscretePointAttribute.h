@@ -1,10 +1,8 @@
-//
-//  DiscretePointAttribute.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
+///
+/// \brief Assigns an int value to each vertex of the shape.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 #ifndef ShapeAnalyzer_DiscretePointAttribute_h
 #define ShapeAnalyzer_DiscretePointAttribute_h
@@ -18,18 +16,25 @@
 class DiscretePointAttribute {
     
 public:
+    /// Basic Constructor.
     DiscretePointAttribute(Shape* shape);
-    
+    /// Empty Destructor.
     ~DiscretePointAttribute() {
     };
     
-    // the size of the returned array must coincide with the number of vertices of the shape
-    // the ordering of the values must coincide with the ordering of the vertices in vtkPolyData
+    /// \brief Returns the vtkIntArray containing the attributes.
+    /// \details The size of the returned array should be equal to the number of vertices of the shape.
+    /// The order of the values normally corresponds to the one in the vtkPolyData structure of the shape.
     vtkSmartPointer<vtkIntArray> getValues() { return values_; }
+    /// Returns the shape this attributes describe.
     Shape* getShape() { return shape_; }
     
 private:
+    /// Shape the attributes describe.
     Shape* shape_;
+    /// Array of attributes. The size of the array is equal to the number of vertices of the shape.
+    /// The order of the attributes correspondes the order of vertices in the the vtkPolData
+    /// structure of the shape.
     vtkSmartPointer<vtkIntArray> values_;
 };
 

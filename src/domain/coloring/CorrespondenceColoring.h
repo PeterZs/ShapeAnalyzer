@@ -7,7 +7,7 @@
 /// Additionally it is possible to keep track of how many and which points are actually corresponding
 /// and if they are corresponding to multiple points on the reference shape.
 ///
-///  \author Emanuel Laude and Zorah Lähner
+/// \author Emanuel Laude and Zorah Lähner
 ///
 ///
 

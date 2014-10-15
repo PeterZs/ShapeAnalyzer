@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,37 +83,147 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_scalar_point_attribute-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ScalarPointAttribute Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Assigns a double value to each vertex of the shape.  
+ <a href="class_scalar_point_attribute.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_scalar_point_attribute_8h_source.html">ScalarPointAttribute.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aabaf966fe5de34576710f3e3af9b293c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabaf966fe5de34576710f3e3af9b293c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ScalarPointAttribute</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#aabaf966fe5de34576710f3e3af9b293c">ScalarPointAttribute</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:aabaf966fe5de34576710f3e3af9b293c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic Constructor. <br /></td></tr>
 <tr class="separator:aabaf966fe5de34576710f3e3af9b293c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50ffe08ff4da2d775f5e0ed1ddcec9d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50ffe08ff4da2d775f5e0ed1ddcec9d4"></a>
-vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getScalars</b> ()</td></tr>
+<tr class="memitem:a90636fcdf62c7deb0cfdffa8ddf1c0f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90636fcdf62c7deb0cfdffa8ddf1c0f7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a90636fcdf62c7deb0cfdffa8ddf1c0f7">~ScalarPointAttribute</a> ()</td></tr>
+<tr class="memdesc:a90636fcdf62c7deb0cfdffa8ddf1c0f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty Destructor. <br /></td></tr>
+<tr class="separator:a90636fcdf62c7deb0cfdffa8ddf1c0f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50ffe08ff4da2d775f5e0ed1ddcec9d4"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a50ffe08ff4da2d775f5e0ed1ddcec9d4">getScalars</a> ()</td></tr>
+<tr class="memdesc:a50ffe08ff4da2d775f5e0ed1ddcec9d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the vtkDoubleArray containing the attributes.  <a href="#a50ffe08ff4da2d775f5e0ed1ddcec9d4">More...</a><br /></td></tr>
 <tr class="separator:a50ffe08ff4da2d775f5e0ed1ddcec9d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefadf25ab811fd43ad82de27563e0bcc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aefadf25ab811fd43ad82de27563e0bcc"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#aefadf25ab811fd43ad82de27563e0bcc">getShape</a> ()</td></tr>
+<tr class="memdesc:aefadf25ab811fd43ad82de27563e0bcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shape this attributes describe. <br /></td></tr>
 <tr class="separator:aefadf25ab811fd43ad82de27563e0bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:a868604d934009c0c827fe6dc80bde32f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a868604d934009c0c827fe6dc80bde32f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>scalarPointAttributeToPetscVec</b> (<a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr, Vec &amp;vec)</td></tr>
+static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a868604d934009c0c827fe6dc80bde32f">scalarPointAttributeToPetscVec</a> (<a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr, Vec &amp;vec)</td></tr>
+<tr class="memdesc:a868604d934009c0c827fe6dc80bde32f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a <a class="el" href="class_scalar_point_attribute.html" title="Assigns a double value to each vertex of the shape. ">ScalarPointAttribute</a> to a petsc vector. <br /></td></tr>
 <tr class="separator:a868604d934009c0c827fe6dc80bde32f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac5d5ff1bff511f48e4f3b9c0445439e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aac5d5ff1bff511f48e4f3b9c0445439e"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>petscVecToScalarPointAttribute</b> (Vec &amp;vec, <a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr)</td></tr>
+static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#aac5d5ff1bff511f48e4f3b9c0445439e">petscVecToScalarPointAttribute</a> (Vec &amp;vec, <a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr)</td></tr>
+<tr class="memdesc:aac5d5ff1bff511f48e4f3b9c0445439e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a petsc vector to a <a class="el" href="class_scalar_point_attribute.html" title="Assigns a double value to each vertex of the shape. ">ScalarPointAttribute</a>. <br /></td></tr>
 <tr class="separator:aac5d5ff1bff511f48e4f3b9c0445439e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9145f6719149dae88f177ef927d7ebfd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9145f6719149dae88f177ef927d7ebfd"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>arrayToScalarPointAttribute</b> (const PetscScalar *array, <a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr)</td></tr>
+<tr class="memitem:a9145f6719149dae88f177ef927d7ebfd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a9145f6719149dae88f177ef927d7ebfd">arrayToScalarPointAttribute</a> (const PetscScalar *array, <a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;attr)</td></tr>
 <tr class="separator:a9145f6719149dae88f177ef927d7ebfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a3fff9e4955934e6f1e529f88df42dd49"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3fff9e4955934e6f1e529f88df42dd49"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">shape_</a></td></tr>
+<tr class="memdesc:a3fff9e4955934e6f1e529f88df42dd49"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_shape.html">Shape</a> the attributes describe. <br /></td></tr>
+<tr class="separator:a3fff9e4955934e6f1e529f88df42dd49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cdedac4b731c7f6bb2bd81eb7b1352e"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">scalars_</a></td></tr>
+<tr class="separator:a8cdedac4b731c7f6bb2bd81eb7b1352e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Assigns a double value to each vertex of the shape. </p>
+<p>Additionally the class has static methods to transform ScalarPointAttributes into Petsc-Vectors and back, as well as create a <a class="el" href="class_scalar_point_attribute.html" title="Assigns a double value to each vertex of the shape. ">ScalarPointAttribute</a> out of a </p><dl class="section note"><dt>Note</dt><dd>Not finished. Maybe add a function to fill with values without petsc stuff?</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a9145f6719149dae88f177ef927d7ebfd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ScalarPointAttribute::arrayToScalarPointAttribute </td>
+          <td>(</td>
+          <td class="paramtype">const PetscScalar *&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Converts a petsc array to a <a class="el" href="class_scalar_point_attribute.html" title="Assigns a double value to each vertex of the shape. ">ScalarPointAttribute</a>. </p><dl class="section note"><dt>Note</dt><dd>To Manu: Is that right? </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a50ffe08ff4da2d775f5e0ed1ddcec9d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkDoubleArray&gt; ScalarPointAttribute::getScalars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the vtkDoubleArray containing the attributes. </p>
+<p>The size of the returned array should be equal to the number of vertices of the shape. The order of the values normally corresponds to the one in the vtkPolyData structure of the shape. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a8cdedac4b731c7f6bb2bd81eb7b1352e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkDoubleArray&gt; ScalarPointAttribute::scalars_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Array of attributes. The size of the array is equal to the number of vertices of the shape. The order of the attributes correspondes the order of vertices in the the vtkPolData structure of the shape. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/attributes/<a class="el" href="_scalar_point_attribute_8h_source.html">ScalarPointAttribute.h</a></li>
 <li>src/domain/attributes/ScalarPointAttribute.cpp</li>
@@ -121,7 +231,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>arrayToScalarP
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

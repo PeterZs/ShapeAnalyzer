@@ -31,7 +31,11 @@ public:
     Shape* getShape() { return shape_; }
     
 private:
+    /// Shape the attributes describe.
     Shape* shape_;
+    /// Array of attributes. The size of the array is equal to the number of faces of the shape.
+    /// The order of the attributes correspondes the order of faces in the the vtkPolData
+    /// structure of the shape.
     vtkSmartPointer<vtkDoubleArray> scalars_;
 };
 

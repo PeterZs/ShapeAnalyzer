@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -84,6 +84,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_f_e_m_laplace_beltrami_operator-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FEMLaplaceBeltramiOperator Class Reference</div>  </div>
@@ -139,6 +141,33 @@ static <a class="el" href="class_laplace_beltrami_operator.html">LaplaceBeltrami
 static string&#160;</td><td class="memItemRight" valign="bottom"><b>getIdentifier</b> ()</td></tr>
 <tr class="separator:a94bfc4fd93c40e4825626b8116bd5759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ae111fed633c7f4d9e76761c59c5c83ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae111fed633c7f4d9e76761c59c5c83ac"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setupMatrices</b> ()</td></tr>
+<tr class="separator:ae111fed633c7f4d9e76761c59c5c83ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2cd50dbd531576a150d40d2b0c357aa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2cd50dbd531576a150d40d2b0c357aa"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>getNnz</b> (PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces)</td></tr>
+<tr class="separator:ad2cd50dbd531576a150d40d2b0c357aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd2dc399a150ec37303db9494c2aba69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd2dc399a150ec37303db9494c2aba69"></a>
+PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><b>getMass</b> (double *a, double *b, double *c)</td></tr>
+<tr class="separator:afd2dc399a150ec37303db9494c2aba69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ee2fa3c066a48d4ac4f1ec583e2487d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ee2fa3c066a48d4ac4f1ec583e2487d"></a>
+PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><b>getStiffness</b> (double *a, double *b, double *c)</td></tr>
+<tr class="separator:a5ee2fa3c066a48d4ac4f1ec583e2487d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a3028a45a059eee203bf2b57f8cb70e33"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3028a45a059eee203bf2b57f8cb70e33"></a>
+Mat&#160;</td><td class="memItemRight" valign="bottom"><b>L_</b></td></tr>
+<tr class="separator:a3028a45a059eee203bf2b57f8cb70e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d49c7115ad21acfc39d517c385b09d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d49c7115ad21acfc39d517c385b09d3"></a>
+Mat&#160;</td><td class="memItemRight" valign="bottom"><b>M_</b></td></tr>
+<tr class="separator:a5d49c7115ad21acfc39d517c385b09d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add427f69e48976e552fae3495a7a8351"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add427f69e48976e552fae3495a7a8351"></a>
+EPS&#160;</td><td class="memItemRight" valign="bottom"><b>eps_</b></td></tr>
+<tr class="separator:add427f69e48976e552fae3495a7a8351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_laplace_beltrami_operator"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_laplace_beltrami_operator')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_laplace_beltrami_operator.html">LaplaceBeltramiOperator</a></td></tr>
@@ -156,7 +185,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>numberOfEigenfunctions
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:13 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

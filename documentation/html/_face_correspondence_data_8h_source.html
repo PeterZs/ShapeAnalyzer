@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -102,21 +102,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">//serves as a marker class to ensure that variable &quot;HashMap&lt;...&gt; faceCorrespondences&quot; only contains face correspondences</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="class_face_correspondence_data.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> : <span class="keyword">public</span> <a class="code" href="class_correspondence_data.html">CorrespondenceData</a> {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="class_face_correspondence_data.html">FaceCorrespondenceData</a>(vtkIdType <span class="keywordtype">id</span>) : <a class="code" href="class_correspondence_data.html">CorrespondenceData</a>(<span class="keywordtype">id</span>) {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="class_face_correspondence_data.html">FaceCorrespondenceData</a>(vtkIdType <span class="keywordtype">id</span>) : <a class="code" href="class_correspondence_data.html#a07e83374f490dc9039396a31561bd32a">CorrespondenceData</a>(<span class="keywordtype">id</span>) {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    }</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">string</span> getType() {</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_face_correspondence_data.html#abd6ce7468457b56e5e093915591a1b17">   20</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">string</span> <a class="code" href="class_face_correspondence_data.html#abd6ce7468457b56e5e093915591a1b17">getType</a>() {</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;FaceCorrespondenceData&quot;</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    }</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(FaceCorrespondenceData_H) */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="class_face_correspondence_data_html_abd6ce7468457b56e5e093915591a1b17"><div class="ttname"><a href="class_face_correspondence_data.html#abd6ce7468457b56e5e093915591a1b17">FaceCorrespondenceData::getType</a></div><div class="ttdeci">virtual string getType()</div><div class="ttdoc">Virtual method, returns a string that describes the type of correspondence, i.e. point correspondence...</div><div class="ttdef"><b>Definition:</b> FaceCorrespondenceData.h:20</div></div>
 <div class="ttc" id="class_face_correspondence_data_html"><div class="ttname"><a href="class_face_correspondence_data.html">FaceCorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> FaceCorrespondenceData.h:15</div></div>
-<div class="ttc" id="class_correspondence_data_html"><div class="ttname"><a href="class_correspondence_data.html">CorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:20</div></div>
+<div class="ttc" id="class_correspondence_data_html_a07e83374f490dc9039396a31561bd32a"><div class="ttname"><a href="class_correspondence_data.html#a07e83374f490dc9039396a31561bd32a">CorrespondenceData::CorrespondenceData</a></div><div class="ttdeci">CorrespondenceData(vtkIdType id)</div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:101</div></div>
+<div class="ttc" id="class_correspondence_data_html"><div class="ttname"><a href="class_correspondence_data.html">CorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:23</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

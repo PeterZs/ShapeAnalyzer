@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -84,6 +84,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-slots">Private Slots</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_shape_analyzer-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ShapeAnalyzer Class Reference</div>  </div>
@@ -95,10 +98,14 @@ Inheritance diagram for ShapeAnalyzer:</div>
  <div class="center">
   <img src="class_shape_analyzer.png" usemap="#ShapeAnalyzer_map" alt=""/>
   <map id="ShapeAnalyzer_map" name="ShapeAnalyzer_map">
-<area href="class_ui_1_1_shape_analyzer.html" alt="Ui::ShapeAnalyzer" shape="rect" coords="126,0,242,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer_1_1vtk_box_widget_callback.html">vtkBoxWidgetCallback</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5395b2f99a8b319aa1253b1f78441227"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5395b2f99a8b319aa1253b1f78441227"></a>
@@ -134,6 +141,276 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>showShape</b> (<a cla
 <tr class="memitem:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a954d54ae2c6db1eb4afa37baf0d66bcd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> ()</td></tr>
 <tr class="separator:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-slots"></a>
+Private Slots</h2></td></tr>
+<tr class="memitem:a1d101e5a75dbb78fde72ed151a99f409"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d101e5a75dbb78fde72ed151a99f409"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotExit</b> ()</td></tr>
+<tr class="separator:a1d101e5a75dbb78fde72ed151a99f409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0871b8e64cc3ee6f74c6de208ff3b21b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0871b8e64cc3ee6f74c6de208ff3b21b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotResetCamera</b> ()</td></tr>
+<tr class="separator:a0871b8e64cc3ee6f74c6de208ff3b21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35541b65505f823f9a03088a3035ffc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35541b65505f823f9a03088a3035ffc9"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotClear</b> ()</td></tr>
+<tr class="separator:a35541b65505f823f9a03088a3035ffc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ffa6d22e8ab2edb54a30e3a242e2bda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ffa6d22e8ab2edb54a30e3a242e2bda"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowHelp</b> ()</td></tr>
+<tr class="separator:a3ffa6d22e8ab2edb54a30e3a242e2bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ea9d5a7c20cd62f40aca7b2887ddd8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ea9d5a7c20cd62f40aca7b2887ddd8d"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowSettings</b> ()</td></tr>
+<tr class="separator:a2ea9d5a7c20cd62f40aca7b2887ddd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fbfed6a3695bb006d72ac42bc169c69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6fbfed6a3695bb006d72ac42bc169c69"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowContextMenuShapes</b> (const QPoint &amp;pos)</td></tr>
+<tr class="separator:a6fbfed6a3695bb006d72ac42bc169c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b61a14ab8d90ee5e7a76da34d0e96b1"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowContextMenuCorrespondences</b> (const QPoint &amp;pos)</td></tr>
+<tr class="separator:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb1273627527c10a61e8e4f153f641a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb1273627527c10a61e8e4f153f641a5"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotClearCurrentSelection</b> ()</td></tr>
+<tr class="separator:acb1273627527c10a61e8e4f153f641a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1de4a5b600cbeabd7ae504485f602ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1de4a5b600cbeabd7ae504485f602ff"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotHideCorrespondences</b> ()</td></tr>
+<tr class="separator:af1de4a5b600cbeabd7ae504485f602ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa810c84ab3d9ee21e287a5255d2bad5b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa810c84ab3d9ee21e287a5255d2bad5b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotToggleBoxWidget</b> ()</td></tr>
+<tr class="separator:aa810c84ab3d9ee21e287a5255d2bad5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0463b14b7bde903f50d267752e1c1361"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0463b14b7bde903f50d267752e1c1361"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotModeAddCorrespondences</b> ()</td></tr>
+<tr class="separator:a0463b14b7bde903f50d267752e1c1361"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9bb9c67aa78f5a763b54ef3aa9d6446"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9bb9c67aa78f5a763b54ef3aa9d6446"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowScalarBar</b> (bool)</td></tr>
+<tr class="separator:aa9bb9c67aa78f5a763b54ef3aa9d6446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa33246ab3101ab31fcbc260b4570d4d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa33246ab3101ab31fcbc260b4570d4d4"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSetSelectedCurrentShape</b> (QListWidgetItem *current, QListWidgetItem *previous)</td></tr>
+<tr class="separator:aa33246ab3101ab31fcbc260b4570d4d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94a35d0b481272a9123ade8614914b91"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94a35d0b481272a9123ade8614914b91"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSetSelectedCurrentCorrespondence</b> (QListWidgetItem *current, QListWidgetItem *previous)</td></tr>
+<tr class="separator:a94a35d0b481272a9123ade8614914b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6988c76376e8af804c345b22e53df8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6988c76376e8af804c345b22e53df8c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSetShapeDisplayMode</b> ()</td></tr>
+<tr class="separator:aa6988c76376e8af804c345b22e53df8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc4549b1cd3abbf93bd584ad47785bf4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc4549b1cd3abbf93bd584ad47785bf4"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSetCorrespondenceType</b> ()</td></tr>
+<tr class="separator:afc4549b1cd3abbf93bd584ad47785bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e0d7f313c6a206424f7fff38565f2f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5e0d7f313c6a206424f7fff38565f2f2"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSetBackgroundColor</b> ()</td></tr>
+<tr class="separator:a5e0d7f313c6a206424f7fff38565f2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a110f23f5ee3fbfa658395f8b791684b5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a110f23f5ee3fbfa658395f8b791684b5"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotToggleProjectionMode</b> ()</td></tr>
+<tr class="separator:a110f23f5ee3fbfa658395f8b791684b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9767d3be67e9f84b8745a233e4d77c86"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9767d3be67e9f84b8745a233e4d77c86"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotOpenScene</b> ()</td></tr>
+<tr class="separator:a9767d3be67e9f84b8745a233e4d77c86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a812911e0fd1932500714aeeaf605cfa4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a812911e0fd1932500714aeeaf605cfa4"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSaveScene</b> ()</td></tr>
+<tr class="separator:a812911e0fd1932500714aeeaf605cfa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a353d456186aead584ae20038ed7c3cd8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a353d456186aead584ae20038ed7c3cd8"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotImportShape</b> ()</td></tr>
+<tr class="separator:a353d456186aead584ae20038ed7c3cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ca6fb2e0644f2720dc6946fa7ef2987"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ca6fb2e0644f2720dc6946fa7ef2987"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotImportCorrespondences</b> ()</td></tr>
+<tr class="separator:a1ca6fb2e0644f2720dc6946fa7ef2987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3ad3f72cd3ceefe6a41c1c3e78e30b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af3ad3f72cd3ceefe6a41c1c3e78e30b4"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotExportCorrespondences</b> ()</td></tr>
+<tr class="separator:af3ad3f72cd3ceefe6a41c1c3e78e30b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3efbc169600da08ea604cbbd3bd5ed8a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3efbc169600da08ea604cbbd3bd5ed8a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotSaveScreenshot</b> ()</td></tr>
+<tr class="separator:a3efbc169600da08ea604cbbd3bd5ed8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b3d8ef5d2bdef84dca372e7eb3de020"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b3d8ef5d2bdef84dca372e7eb3de020"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabShapeInfo</b> (bool)</td></tr>
+<tr class="separator:a5b3d8ef5d2bdef84dca372e7eb3de020"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64077fc4ae9c577b3d616dc30f6c68cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64077fc4ae9c577b3d616dc30f6c68cc"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabShapeInterpolation</b> (bool)</td></tr>
+<tr class="separator:a64077fc4ae9c577b3d616dc30f6c68cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3da182b5b9d799794ee80b11e46c113"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af3da182b5b9d799794ee80b11e46c113"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabCorrespondenceColoring</b> (bool)</td></tr>
+<tr class="separator:af3da182b5b9d799794ee80b11e46c113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbcd62bd489ef40914ea45c90b9f9dff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afbcd62bd489ef40914ea45c90b9f9dff"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabAllFaceCorrespondences</b> (bool)</td></tr>
+<tr class="separator:afbcd62bd489ef40914ea45c90b9f9dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afae161cfc60fd637dc024dc46117a26e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afae161cfc60fd637dc024dc46117a26e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabAllPointCorrespondences</b> (bool)</td></tr>
+<tr class="separator:afae161cfc60fd637dc024dc46117a26e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d2aba3a0c016096619ed9d0d48ba9f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3d2aba3a0c016096619ed9d0d48ba9f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabMeshChecker</b> (bool)</td></tr>
+<tr class="separator:aa3d2aba3a0c016096619ed9d0d48ba9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8c30f52a211f0ce8dc4fddfca034134"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8c30f52a211f0ce8dc4fddfca034134"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabCorrespondencesCurrentChanged</b> (int)</td></tr>
+<tr class="separator:ae8c30f52a211f0ce8dc4fddfca034134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e87dba49058422d8d5c8966183f7314"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e87dba49058422d8d5c8966183f7314"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkClickHandler</b> (vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command)</td></tr>
+<tr class="separator:a7e87dba49058422d8d5c8966183f7314"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdcd4d80c36539b45db0bcd87783da5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdcd4d80c36539b45db0bcd87783da5c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkMouseMoveHandler</b> (vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command)</td></tr>
+<tr class="separator:abdcd4d80c36539b45db0bcd87783da5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d109f6b99690add1c19d39ae48e5c81"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d109f6b99690add1c19d39ae48e5c81"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkKeyPressHandler</b> (vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command)</td></tr>
+<tr class="separator:a3d109f6b99690add1c19d39ae48e5c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a11662013bf4f15e63a82cace3d2344aa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11662013bf4f15e63a82cace3d2344aa"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtConnectListCorrespondences</b> ()</td></tr>
+<tr class="separator:a11662013bf4f15e63a82cace3d2344aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad72f2417720432a168b1dc48f98a1db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad72f2417720432a168b1dc48f98a1db"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtConnectListShapes</b> ()</td></tr>
+<tr class="separator:aad72f2417720432a168b1dc48f98a1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4e39883e4b33e6ed0e0c96a3db61d2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b4e39883e4b33e6ed0e0c96a3db61d2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>eventFilter</b> (QObject *object, QEvent *event)</td></tr>
+<tr class="separator:a6b4e39883e4b33e6ed0e0c96a3db61d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a621beafc946f91db4e340e31ddc84c5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a621beafc946f91db4e340e31ddc84c5c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtInitializeSettings</b> ()</td></tr>
+<tr class="separator:a621beafc946f91db4e340e31ddc84c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a8fb450b563865de6fb2e14cece8da0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a8fb450b563865de6fb2e14cece8da0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowContextMenuShapes</b> (const QPoint &amp;pos, vtkIdType pointId)</td></tr>
+<tr class="separator:a5a8fb450b563865de6fb2e14cece8da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64dbb62cb19455c57e16bf561cf33409"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64dbb62cb19455c57e16bf561cf33409"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowContextMenuCorrepondences</b> (const QPoint &amp;pos)</td></tr>
+<tr class="separator:a64dbb62cb19455c57e16bf561cf33409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15e13344e391ca8324450c6718c37d80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15e13344e391ca8324450c6718c37d80"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtAddMetricMenu</b> (QMenu *menu, <a class="el" href="class_hash_map.html">HashMap</a>&lt; QAction *, string &gt; &amp;entries)</td></tr>
+<tr class="separator:a15e13344e391ca8324450c6718c37d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17745ae39682ecf4fbe32aa516c46be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae17745ae39682ecf4fbe32aa516c46be"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtAddSignatureMenu</b> (QMenu *menu, <a class="el" href="class_hash_map.html">HashMap</a>&lt; QAction *, string &gt; &amp;entries)</td></tr>
+<tr class="separator:ae17745ae39682ecf4fbe32aa516c46be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e4765f6076dc658db303b7fb6bd9d85"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e4765f6076dc658db303b7fb6bd9d85"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtAddVoronoiCellsMenu</b> (QMenu *menu, <a class="el" href="class_hash_map.html">HashMap</a>&lt; QAction *, string &gt; &amp;entries)</td></tr>
+<tr class="separator:a6e4765f6076dc658db303b7fb6bd9d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b6e8e5184e08606cfe2d13984482715"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b6e8e5184e08606cfe2d13984482715"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtInputDialogRenameShape</b> (<a class="el" href="classqt_list_widget_item.html">qtListWidgetItem</a>&lt; <a class="el" href="class_shape.html">Shape</a> &gt; *item)</td></tr>
+<tr class="separator:a9b6e8e5184e08606cfe2d13984482715"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1565708f310a9987560f42165c52a815"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1565708f310a9987560f42165c52a815"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtExportShapeDialog</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:a1565708f310a9987560f42165c52a815"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af643ece941001370e5962b01d6a7be80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af643ece941001370e5962b01d6a7be80"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtInputDialogOpacity</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:af643ece941001370e5962b01d6a7be80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6529efbcac79042b2760e71d403fd40"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6529efbcac79042b2760e71d403fd40"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowEigenfunction</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:ad6529efbcac79042b2760e71d403fd40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5420a1360a64d189df0bf1caf3d79e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5420a1360a64d189df0bf1caf3d79e7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowHeatDiffusion</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:ad5420a1360a64d189df0bf1caf3d79e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab00a88116b233d341d1d9d1d9c10ffd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab00a88116b233d341d1d9d1d9c10ffd3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowSignature</b> (string id, <a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:ab00a88116b233d341d1d9d1d9c10ffd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2735e06c1011d128509769f3b83fe6a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2735e06c1011d128509769f3b83fe6a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowMetricColoring</b> (string id, <a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:ac2735e06c1011d128509769f3b83fe6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a117c690649bb7ba08d9d4b68be77b6eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a117c690649bb7ba08d9d4b68be77b6eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtShowVoronoiCells</b> (string metricId, <a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:a117c690649bb7ba08d9d4b68be77b6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc975ae87d4d2c1cb556e1e9ab37cdba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc975ae87d4d2c1cb556e1e9ab37cdba"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtCreateIdentityCorrespondences</b> (<a class="el" href="class_shape.html">Shape</a> *shape1)</td></tr>
+<tr class="separator:adc975ae87d4d2c1cb556e1e9ab37cdba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a735bd0b4a8d83593c7aece7b1e6f2766"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a735bd0b4a8d83593c7aece7b1e6f2766"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtTransferCoordinateFunction</b> (<a class="el" href="class_shape.html">Shape</a> *shape1)</td></tr>
+<tr class="separator:a735bd0b4a8d83593c7aece7b1e6f2766"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab043d6fc0445d0b6f0de5a908530734"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab043d6fc0445d0b6f0de5a908530734"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>qtCreateShapeSegment</b> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType pointId)</td></tr>
+<tr class="separator:aab043d6fc0445d0b6f0de5a908530734"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4169880dfc687e4f7bbdf96a463381c5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4169880dfc687e4f7bbdf96a463381c5"></a>
+<a class="el" href="classqt_list_widget_item.html">qtListWidgetItem</a>&lt; <a class="el" href="class_correspondence.html">Correspondence</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>qtAddListCorrespondencesItem</b> (<a class="el" href="class_correspondence.html">Correspondence</a> *correspondence)</td></tr>
+<tr class="separator:a4169880dfc687e4f7bbdf96a463381c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e9a24ed2113131bf1b560934543382a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e9a24ed2113131bf1b560934543382a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkCorrespondenceClicked</b> (<a class="el" href="class_correspondence.html">Correspondence</a> *correspondence, vtkIdType cellId, QPoint &amp;pos, unsigned long vtkEvent, vtkCommand *command)</td></tr>
+<tr class="separator:a8e9a24ed2113131bf1b560934543382a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a023eac57b92b9ef696918a83e63e12a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a023eac57b92b9ef696918a83e63e12a6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkShapeClicked</b> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType pointId, vtkIdType faceId, QPoint &amp;pos, unsigned long vtkEvent, vtkCommand *command)</td></tr>
+<tr class="separator:a023eac57b92b9ef696918a83e63e12a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a522e64b8d152e23817f8acba1ed0ef52"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a522e64b8d152e23817f8acba1ed0ef52"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkSetup</b> ()</td></tr>
+<tr class="separator:a522e64b8d152e23817f8acba1ed0ef52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa87748335f0e0e88a8bced15dea8c09"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa87748335f0e0e88a8bced15dea8c09"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>openShape</b> (vtkPolyDataAlgorithm *reader, string name)</td></tr>
+<tr class="separator:afa87748335f0e0e88a8bced15dea8c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8732e2e3978d1b4069a57aa316ac7cb8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8732e2e3978d1b4069a57aa316ac7cb8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
+<tr class="separator:a8732e2e3978d1b4069a57aa316ac7cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae156b6dd935bb508940f91f5eb609a35"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae156b6dd935bb508940f91f5eb609a35"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteShape</b> (int i)</td></tr>
+<tr class="separator:ae156b6dd935bb508940f91f5eb609a35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a026298cb67a9e9adbafb9eca9389a465"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a026298cb67a9e9adbafb9eca9389a465"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteCorrespondence</b> (int i)</td></tr>
+<tr class="separator:a026298cb67a9e9adbafb9eca9389a465"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ea25a92403cb13a0ade650871ff10bb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ea25a92403cb13a0ade650871ff10bb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>hideCorrespondence</b> (int i)</td></tr>
+<tr class="separator:a2ea25a92403cb13a0ade650871ff10bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5991d8434ba5f698419e316fef1b9db9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5991d8434ba5f698419e316fef1b9db9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>hideCorrespondences</b> ()</td></tr>
+<tr class="separator:a5991d8434ba5f698419e316fef1b9db9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac07d3a3f59c08be4d082ed38c1cfae9a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac07d3a3f59c08be4d082ed38c1cfae9a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addShape</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="separator:ac07d3a3f59c08be4d082ed38c1cfae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2727bff94f5b11cb8342873f495ae136"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2727bff94f5b11cb8342873f495ae136"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addCorrespondence</b> ()</td></tr>
+<tr class="separator:a2727bff94f5b11cb8342873f495ae136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a1be4c1b0397bc5e47378b462a38bfae3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1be4c1b0397bc5e47378b462a38bfae3"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>shapesByActor_</b></td></tr>
+<tr class="separator:a1be4c1b0397bc5e47378b462a38bfae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab67459136c734851bac7cefd42728960"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab67459136c734851bac7cefd42728960"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_face_correspondence.html">FaceCorrespondence</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faceCorrespondencesByActor_</b></td></tr>
+<tr class="separator:ab67459136c734851bac7cefd42728960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaff101dd214f1d2657cf665d8aac0699"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaff101dd214f1d2657cf665d8aac0699"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_point_correspondence.html">PointCorrespondence</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pointCorrespondencesByActor_</b></td></tr>
+<tr class="separator:aaff101dd214f1d2657cf665d8aac0699"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85f9290d5a39891fefeb755f22510df7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85f9290d5a39891fefeb755f22510df7"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faceCorrespondenceData_</b></td></tr>
+<tr class="separator:a85f9290d5a39891fefeb755f22510df7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1756372e93a3e293a2717c7a0ada0c2e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1756372e93a3e293a2717c7a0ada0c2e"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pointCorrespondenceData_</b></td></tr>
+<tr class="separator:a1756372e93a3e293a2717c7a0ada0c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20e1ba5ce7061cf657a69a9e724938fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a20e1ba5ce7061cf657a69a9e724938fa"></a>
+vtkSmartPointer&lt; vtkRenderer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>renderer_</b></td></tr>
+<tr class="separator:a20e1ba5ce7061cf657a69a9e724938fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a773aa41f995b54a142fa1f8ae6c4a2a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a773aa41f995b54a142fa1f8ae6c4a2a0"></a>
+vtkSmartPointer&lt; vtkEventQtSlotConnect &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>connections_</b></td></tr>
+<tr class="separator:a773aa41f995b54a142fa1f8ae6c4a2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1956d726d2042a1ab55f6c1646ee5164"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1956d726d2042a1ab55f6c1646ee5164"></a>
+<a class="el" href="class_correspondence_picker.html">CorrespondencePicker</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>correspondencePicker_</b></td></tr>
+<tr class="separator:a1956d726d2042a1ab55f6c1646ee5164"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47777052f6e7d04759415f1565aaf606"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47777052f6e7d04759415f1565aaf606"></a>
+QActionGroup *&#160;</td><td class="memItemRight" valign="bottom"><b>actionGroupCorrespondenceType_</b></td></tr>
+<tr class="separator:a47777052f6e7d04759415f1565aaf606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3299aa929b57fb682ed5bb0531efd8ee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3299aa929b57fb682ed5bb0531efd8ee"></a>
+QActionGroup *&#160;</td><td class="memItemRight" valign="bottom"><b>actionGroupMode_</b></td></tr>
+<tr class="separator:a3299aa929b57fb682ed5bb0531efd8ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af644d4c9b382043b61e334001ab158d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af644d4c9b382043b61e334001ab158d1"></a>
+QActionGroup *&#160;</td><td class="memItemRight" valign="bottom"><b>actionGroupShapeDisplayMode_</b></td></tr>
+<tr class="separator:af644d4c9b382043b61e334001ab158d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71c421c680d9fc311482e1544bdd0838"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71c421c680d9fc311482e1544bdd0838"></a>
+QActionGroup *&#160;</td><td class="memItemRight" valign="bottom"><b>actionGroupProjectionMode_</b></td></tr>
+<tr class="separator:a71c421c680d9fc311482e1544bdd0838"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa69548eaef1257a0cc1e1ce7bdd4132"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa69548eaef1257a0cc1e1ce7bdd4132"></a>
+Ui_Settings&#160;</td><td class="memItemRight" valign="bottom"><b>uiSettings_</b></td></tr>
+<tr class="separator:afa69548eaef1257a0cc1e1ce7bdd4132"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74ab8c39029a28a058217f766585fd57"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74ab8c39029a28a058217f766585fd57"></a>
+QDialog *&#160;</td><td class="memItemRight" valign="bottom"><b>dialogSettings_</b></td></tr>
+<tr class="separator:a74ab8c39029a28a058217f766585fd57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08f1ae3f448fbe9cb5276d2f7e7c41f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08f1ae3f448fbe9cb5276d2f7e7c41f2"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_shape.html">Shape</a> *, vtkSmartPointer&lt; vtkIdList &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>segmentations_</b></td></tr>
+<tr class="separator:a08f1ae3f448fbe9cb5276d2f7e7c41f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf8b4de2d98c89b51a5c1e349c5a372f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf8b4de2d98c89b51a5c1e349c5a372f"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; string, <a class="el" href="classqt_correspondences_tab.html">qtCorrespondencesTab</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>correspondencesTabs_</b></td></tr>
+<tr class="separator:aaf8b4de2d98c89b51a5c1e349c5a372f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acadf001521b3ef23f3e7cf3c85db7718"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acadf001521b3ef23f3e7cf3c85db7718"></a>
+<a class="el" href="class_hash_map.html">HashMap</a>&lt; string, <a class="el" href="classqt_shapes_tab.html">qtShapesTab</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>shapesTabs_</b></td></tr>
+<tr class="separator:acadf001521b3ef23f3e7cf3c85db7718"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab58b86538a244af0acca63411b85bd79"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab58b86538a244af0acca63411b85bd79"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertShapeID_</b></td></tr>
+<tr class="separator:ab58b86538a244af0acca63411b85bd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c5ea725b6e95c9d74a01e4a26b09b92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c5ea725b6e95c9d74a01e4a26b09b92"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertCorresondenceID_</b></td></tr>
+<tr class="separator:a9c5ea725b6e95c9d74a01e4a26b09b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd2ecc1f02619f812f062e3eaac7fcdb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd2ecc1f02619f812f062e3eaac7fcdb"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pickerCounter_</b></td></tr>
+<tr class="separator:afd2ecc1f02619f812f062e3eaac7fcdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2ae84b73c5afc8dc11c835c3fc255b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2ae84b73c5afc8dc11c835c3fc255b4"></a>
+vtkSmartPointer&lt; vtkScalarBarActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>scalarBar_</b></td></tr>
+<tr class="separator:ad2ae84b73c5afc8dc11c835c3fc255b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/view/<a class="el" href="_shape_analyzer_8h_source.html">ShapeAnalyzer.h</a></li>
@@ -142,7 +419,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> ()</td></t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:18 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

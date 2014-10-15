@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_segmentation-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Segmentation Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -106,6 +107,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b
 <tr class="memitem:ad8f544325cba3ec408378016ebeb8413"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8f544325cba3ec408378016ebeb8413"></a>
 virtual vtkSmartPointer&lt; vtkIdList &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getSegmentation</b> ()=0</td></tr>
 <tr class="separator:ad8f544325cba3ec408378016ebeb8413"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a13bb73f82376667fcbf27de90624d663"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13bb73f82376667fcbf27de90624d663"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>shape_</b></td></tr>
+<tr class="separator:a13bb73f82376667fcbf27de90624d663"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/segmentation/<a class="el" href="_segmentation_8h_source.html">Segmentation.h</a></li>
@@ -114,7 +121,7 @@ virtual vtkSmartPointer&lt; vtkIdList &gt;&#160;</td><td class="memItemRight" va
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

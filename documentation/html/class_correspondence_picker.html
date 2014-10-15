@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -85,6 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_correspondence_picker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">CorrespondencePicker Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -145,6 +147,27 @@ vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><b>renderer_</b
 <tr class="memitem:adae7b5e7bb605c1e93753bf4e42beadd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adae7b5e7bb605c1e93753bf4e42beadd"></a>
 int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertCorrespondenceID_</b></td></tr>
 <tr class="separator:adae7b5e7bb605c1e93753bf4e42beadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a2e99cfd7191d5ec1120aa3de12ea4526"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e99cfd7191d5ec1120aa3de12ea4526"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>visualizeMouseLine</b> (<a class="el" href="class_shape.html">Shape</a> *shape, double point[3])</td></tr>
+<tr class="separator:a2e99cfd7191d5ec1120aa3de12ea4526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a9159243c3898e128b6891554661e129e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9159243c3898e128b6891554661e129e"></a>
+<a class="el" href="class_correspondence.html">Correspondence</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>correspondence_</b></td></tr>
+<tr class="separator:a9159243c3898e128b6891554661e129e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7a46d2b663f6e6abf355aef3122b979"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7a46d2b663f6e6abf355aef3122b979"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>counter_</b></td></tr>
+<tr class="separator:af7a46d2b663f6e6abf355aef3122b979"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9330b61387c80625cb308fc16d3d1a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9330b61387c80625cb308fc16d3d1a8"></a>
+vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mouseLineActor_</b></td></tr>
+<tr class="separator:ab9330b61387c80625cb308fc16d3d1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b037d44fc75192ad9d2cc5241bf105a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b037d44fc75192ad9d2cc5241bf105a"></a>
+vtkSmartPointer&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mouseLineMapper_</b></td></tr>
+<tr class="separator:a1b037d44fc75192ad9d2cc5241bf105a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/view/<a class="el" href="_correspondence_picker_8h_source.html">CorrespondencePicker.h</a></li>
@@ -153,7 +176,7 @@ int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>lastInsertCorres
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:11 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

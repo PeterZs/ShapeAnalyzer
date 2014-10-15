@@ -1,5 +1,6 @@
 ///
 /// \brief Abstract class for all sorts of colorings.
+///
 /// \author Emanuel Laude and Zorah Lähner
 ///
 

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -92,14 +92,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1b933996e280406cc77f48c07e9c6dc7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b933996e280406cc77f48c07e9c6dc7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CorrespondenceColoring</b> (<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt; *set, <a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt; *points, <a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> *, bool &gt; *faces, <a class="el" href="class_shape.html">Shape</a> *reference=0)</td></tr>
+<tr class="memitem:a1b933996e280406cc77f48c07e9c6dc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_correspondence_coloring.html#a1b933996e280406cc77f48c07e9c6dc7">CorrespondenceColoring</a> (<a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt; *set, <a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt; *points, <a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> *, bool &gt; *faces, <a class="el" href="class_shape.html">Shape</a> *reference=0)</td></tr>
+<tr class="memdesc:a1b933996e280406cc77f48c07e9c6dc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1b933996e280406cc77f48c07e9c6dc7">More...</a><br /></td></tr>
 <tr class="separator:a1b933996e280406cc77f48c07e9c6dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a664467e021d1b49a693218ae56728537"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a664467e021d1b49a693218ae56728537"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>showPointCorrespondences</b> (vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMatched=0, vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMultiple=0)</td></tr>
+<tr class="memitem:a664467e021d1b49a693218ae56728537"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_correspondence_coloring.html#a664467e021d1b49a693218ae56728537">showPointCorrespondences</a> (vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMatched=0, vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMultiple=0)</td></tr>
+<tr class="memdesc:a664467e021d1b49a693218ae56728537"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visualizes the point correspondences going out from the reference shape.  <a href="#a664467e021d1b49a693218ae56728537">More...</a><br /></td></tr>
 <tr class="separator:a664467e021d1b49a693218ae56728537"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01d90e7657d270d3420773f79ad6dbca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01d90e7657d270d3420773f79ad6dbca"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>showFaceCorrespondences</b> (vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMatched=0, vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMultiple=0)</td></tr>
+<tr class="memitem:a01d90e7657d270d3420773f79ad6dbca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_correspondence_coloring.html#a01d90e7657d270d3420773f79ad6dbca">showFaceCorrespondences</a> (vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMatched=0, vector&lt; pair&lt; vtkIdType, double &gt; &gt; *percentageMultiple=0)</td></tr>
+<tr class="memdesc:a01d90e7657d270d3420773f79ad6dbca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visualizes the face correspondences going out from the reference shape.  <a href="#a01d90e7657d270d3420773f79ad6dbca">More...</a><br /></td></tr>
 <tr class="separator:a01d90e7657d270d3420773f79ad6dbca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -123,6 +123,127 @@ unordered_map&lt; vtkIdType, vtkSmartPointer&lt; vtkUnsignedCharArray &gt; &gt;&
 unordered_map&lt; vtkIdType, vtkSmartPointer&lt; vtkUnsignedCharArray &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faceAttributes_</b></td></tr>
 <tr class="separator:a964a931d8747f1c8c85e28c0f0ff8e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a1b933996e280406cc77f48c07e9c6dc7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CorrespondenceColoring::CorrespondenceColoring </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_hash_map.html">HashMap</a>&lt; vtkActor *, <a class="el" href="class_shape.html">Shape</a> * &gt; *&#160;</td>
+          <td class="paramname"><em>set</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_point_correspondence_data.html">PointCorrespondenceData</a> *, bool &gt; *&#160;</td>
+          <td class="paramname"><em>points</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_hash_map.html">HashMap</a>&lt; <a class="el" href="class_face_correspondence_data.html">FaceCorrespondenceData</a> *, bool &gt; *&#160;</td>
+          <td class="paramname"><em>faces</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>reference</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">set</td><td><a class="el" href="class_hash_map.html">HashMap</a> of all shapes that will be colored. </td></tr>
+    <tr><td class="paramname">points</td><td><a class="el" href="class_hash_map.html">HashMap</a> of all PointCorrespondences that will be considered </td></tr>
+    <tr><td class="paramname">faces</td><td><a class="el" href="class_hash_map.html">HashMap</a> of all FaceCorrespondences that will be considered </td></tr>
+    <tr><td class="paramname">reference</td><td>Optional. Pointer to shape that will be the reference. The first shape will be chosen if no reference is given. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a01d90e7657d270d3420773f79ad6dbca"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CorrespondenceColoring::showFaceCorrespondences </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, double &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>percentageMatched</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, double &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>percentageMultiple</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visualizes the face correspondences going out from the reference shape. </p>
+<p>The reference shape will be colored by coordinates using the <a class="el" href="class_coordinate_coloring.html" title="Colors the shape using the coordinates of the vertices as indicators for the rgb value. ">CoordinateColoring</a> class and all points with a corresponding face on another shape will be colored in the same way as the correspondence face on the reference shape. If a face is part of multiple correspondences, an arbitrary correspondence is visualized. The parameters can be used to get information of the density of the correspondence between two shapes and the percentage of doubly matched points. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">percentageMatched</td><td>Optional. For every shape that is not the reference shape - identified by the shape id - the vector will contain the percentage of its faces that are mapped (might be multiple times) to any face of the reference shape. </td></tr>
+    <tr><td class="paramname">percentageMultiple</td><td>Optional. For every shape that is not the reference shape - identified by the shape id - the vector will contain the percentage of its faces that are mapped to a face on the reference shape multiple times. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a664467e021d1b49a693218ae56728537"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CorrespondenceColoring::showPointCorrespondences </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, double &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>percentageMatched</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; pair&lt; vtkIdType, double &gt; &gt; *&#160;</td>
+          <td class="paramname"><em>percentageMultiple</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visualizes the point correspondences going out from the reference shape. </p>
+<p>The reference shape will be colored by coordinates using the <a class="el" href="class_coordinate_coloring.html" title="Colors the shape using the coordinates of the vertices as indicators for the rgb value. ">CoordinateColoring</a> class and all points with a corresponding point on another shape will be colored in the same way as the correspondence point on the reference shape. If a vertex is part of multiple correspondences, an arbitrary correspondence is visualized. The parameters can be used to get information of the density of the correspondence between two shapes and the percentage of doubly matched points. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">percentageMatched</td><td>Optional. For every shape that is not the reference shape - identified by the shape id - the vector will contain the percentage of its vertices that are mapped (might be multiple times) to any vertex of the reference shape. </td></tr>
+    <tr><td class="paramname">percentageMultiple</td><td>Optional. For every shape that is not the reference shape - identified by the shape id - the vector will contain the percentage of its vertices that are mapped to a vertex on the reference shape multiple times. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/coloring/<a class="el" href="_correspondence_coloring_8h_source.html">CorrespondenceColoring.h</a></li>
 <li>src/domain/coloring/CorrespondenceColoring.cpp</li>
@@ -130,7 +251,7 @@ unordered_map&lt; vtkIdType, vtkSmartPointer&lt; vtkUnsignedCharArray &gt; &gt;&
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:11 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

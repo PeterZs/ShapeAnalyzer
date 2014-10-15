@@ -6,7 +6,6 @@ var searchData=
   ['coordinatecoloring',['CoordinateColoring',['../class_coordinate_coloring.html',1,'']]],
   ['correspondence',['Correspondence',['../class_correspondence.html',1,'']]],
   ['correspondencecoloring',['CorrespondenceColoring',['../class_correspondence_coloring.html',1,'']]],
-  ['correspondencecoloringwidget',['CorrespondenceColoringWidget',['../class_ui_1_1_correspondence_coloring_widget.html',1,'Ui']]],
   ['correspondencedata',['CorrespondenceData',['../class_correspondence_data.html',1,'']]],
   ['correspondencepicker',['CorrespondencePicker',['../class_correspondence_picker.html',1,'']]]
 ];

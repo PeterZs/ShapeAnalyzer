@@ -1,9 +1,9 @@
-//
-//  CorrespondenceData.h
-//  ShapeAnalyzer
-//
-//  Abstract Class for Correspondences that are shown in the GUI. 
-//
+///
+/// \brief Abstract Class for Correspondences that are shown in the GUI.
+///
+/// \details Contains a CorrespondenceData Pointer and can visualize this data
+/// in the GUI with lines.
+///
 
 #ifndef __ShapeAnalyzer__Correspondence__
 #define __ShapeAnalyzer__Correspondence__
@@ -66,8 +66,9 @@ public:
     void addToRenderer();
     
 protected:
-    //protected contructor since class is abstract
+    /// protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
+    /// protected contructor since class is abstract
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;

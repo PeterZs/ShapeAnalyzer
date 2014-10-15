@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['halfedge',['HalfEdge',['../structgeodesic_1_1_half_edge.html',1,'geodesic']]],
   ['hashmap',['HashMap',['../class_hash_map.html',1,'']]],
   ['hashmap_3c_20facecorrespondencedata_20_2a_2c_20bool_20_3e',['HashMap&lt; FaceCorrespondenceData *, bool &gt;',['../class_hash_map.html',1,'']]],
   ['hashmap_3c_20pointcorrespondencedata_20_2a_2c_20bool_20_3e',['HashMap&lt; PointCorrespondenceData *, bool &gt;',['../class_hash_map.html',1,'']]],

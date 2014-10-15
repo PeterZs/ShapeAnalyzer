@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,6 +88,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>This is the complete list of members for <a class="el" href="class_shape.html">Shape</a>, including all inherited members.</p>
 <table class="directory">
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>actor_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>boxWidget_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_shape.html#a1face9516d3e6bebf44c2014bbdfe19f">clearColoring</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="class_shape.html#a9342c008eaa5d312df8927a81a77960b">getActor</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_shape.html#a24c101a3184c78884e8bf28a90d410c8">getArea</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
@@ -99,10 +101,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr class="even"><td class="entry"><a class="el" href="class_shape.html#a1fe4baf1f2a1223a48caa11dfc9914b1">getPolyDataNormals</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_shape.html#a0818ab153b73b62e9ffe79303c10eb18">getRandomPoint</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_shape.html#aabee8928d7e05344678e4144f995f80b">getRenderer</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>initialize</b>() (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>readASCII</b>(istream &amp;is) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>readBinary</b>(istream &amp;is) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_shape.html#a7f9810d48aa814bd5af8d536cc0d6a30">removeFromRenderer</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>id_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>initialize</b>() (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>mapper_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>name_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>polyData_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>polyDataNormals_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>readASCII</b>(istream &amp;is) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>readBinary</b>(istream &amp;is) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_shape.html#a7f9810d48aa814bd5af8d536cc0d6a30">removeFromRenderer</a>()</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>renderer_</b> (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_shape.html#a489da86bf4290d678678621727c1303a">setName</a>(string name)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Shape</b>(vtkIdType id, string name, vtkSmartPointer&lt; vtkPolyData &gt; polyData, vtkSmartPointer&lt; vtkRenderer &gt; renderer) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>Shape</b>(vtkSmartPointer&lt; vtkRenderer &gt; renderer) (defined in <a class="el" href="class_shape.html">Shape</a>)</td><td class="entry"><a class="el" href="class_shape.html">Shape</a></td><td class="entry"></td></tr>
@@ -112,7 +120,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classqt_shape_info_tab-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">qtShapeInfoTab Class Reference</div>  </div>
@@ -99,9 +100,8 @@ Inheritance diagram for qtShapeInfoTab:</div>
  <div class="center">
   <img src="classqt_shape_info_tab.png" usemap="#qtShapeInfoTab_map" alt=""/>
   <map id="qtShapeInfoTab_map" name="qtShapeInfoTab_map">
-<area href="class_ui_1_1_shape_info_widget.html" alt="Ui::ShapeInfoWidget" shape="rect" coords="134,56,258,80"/>
-<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="268,56,392,80"/>
-<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="268,0,392,24"/>
+<area href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. " alt="qtShapesTab" shape="rect" coords="234,56,341,80"/>
+<area href="classqt_tab.html" title="Abstract class for Tabs. " alt="qtTab" shape="rect" coords="234,0,341,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -147,12 +147,49 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_tab.html#a269279758bb0b73d3a04477ac3799965">~qtTab</a> ()</td></tr>
 <tr class="memdesc:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Destructor. <br /></td></tr>
 <tr class="separator:a269279758bb0b73d3a04477ac3799965 inherit pub_methods_classqt_tab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ae178d22f6548407550e40d5d81053147"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae178d22f6548407550e40d5d81053147"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shape_info_tab.html#ae178d22f6548407550e40d5d81053147">initialize</a> ()</td></tr>
+<tr class="memdesc:ae178d22f6548407550e40d5d81053147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up an empty table with description of all possible information. <br /></td></tr>
+<tr class="separator:ae178d22f6548407550e40d5d81053147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab06c5ddbdc7eff6d5a68b6b9851c1780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classqt_shape_info_tab.html#ab06c5ddbdc7eff6d5a68b6b9851c1780">fillInInformation</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:ab06c5ddbdc7eff6d5a68b6b9851c1780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fills the information of the given shape in the table.  <a href="#ab06c5ddbdc7eff6d5a68b6b9851c1780">More...</a><br /></td></tr>
+<tr class="separator:ab06c5ddbdc7eff6d5a68b6b9851c1780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Tab that shows basic information about the selected shape. </p>
 <p>The information shown is the shape id, name of the shape, number of vertices, number of cells and the area of the shape.</p>
 <dl class="section author"><dt>Author</dt><dd>Zorah Lähner </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab06c5ddbdc7eff6d5a68b6b9851c1780"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void qtShapeInfoTab::fillInInformation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Fills the information of the given shape in the table. </p>
+<p>This function includes computing the area of the shape. </p>
+
+</div>
+</div>
 <a class="anchor" id="a295e58538f2cebdfd9a4b5b40bf1e16c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -223,7 +260,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:16 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

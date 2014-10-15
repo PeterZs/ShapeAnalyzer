@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,24 +83,97 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_discrete_point_attribute-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">DiscretePointAttribute Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Assigns an int value to each vertex of the shape.  
+ <a href="class_discrete_point_attribute.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_discrete_point_attribute_8h_source.html">DiscretePointAttribute.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae621f748d818a634a3048cb4a91722fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae621f748d818a634a3048cb4a91722fa"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DiscretePointAttribute</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#ae621f748d818a634a3048cb4a91722fa">DiscretePointAttribute</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:ae621f748d818a634a3048cb4a91722fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic Constructor. <br /></td></tr>
 <tr class="separator:ae621f748d818a634a3048cb4a91722fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0516593a4f91658c1cbee796c700ca2e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0516593a4f91658c1cbee796c700ca2e"></a>
-vtkSmartPointer&lt; vtkIntArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getValues</b> ()</td></tr>
+<tr class="memitem:a1ec856d640eac6a228d4cd4c4db58e99"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ec856d640eac6a228d4cd4c4db58e99"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#a1ec856d640eac6a228d4cd4c4db58e99">~DiscretePointAttribute</a> ()</td></tr>
+<tr class="memdesc:a1ec856d640eac6a228d4cd4c4db58e99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty Destructor. <br /></td></tr>
+<tr class="separator:a1ec856d640eac6a228d4cd4c4db58e99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0516593a4f91658c1cbee796c700ca2e"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkIntArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#a0516593a4f91658c1cbee796c700ca2e">getValues</a> ()</td></tr>
+<tr class="memdesc:a0516593a4f91658c1cbee796c700ca2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the vtkIntArray containing the attributes.  <a href="#a0516593a4f91658c1cbee796c700ca2e">More...</a><br /></td></tr>
 <tr class="separator:a0516593a4f91658c1cbee796c700ca2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b75b8aa4b8c0ad8b6b1752b15451337"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b75b8aa4b8c0ad8b6b1752b15451337"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#a5b75b8aa4b8c0ad8b6b1752b15451337">getShape</a> ()</td></tr>
+<tr class="memdesc:a5b75b8aa4b8c0ad8b6b1752b15451337"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shape this attributes describe. <br /></td></tr>
 <tr class="separator:a5b75b8aa4b8c0ad8b6b1752b15451337"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a258386fc5b6ded85ba897fc47bc2723d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a258386fc5b6ded85ba897fc47bc2723d"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">shape_</a></td></tr>
+<tr class="memdesc:a258386fc5b6ded85ba897fc47bc2723d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_shape.html">Shape</a> the attributes describe. <br /></td></tr>
+<tr class="separator:a258386fc5b6ded85ba897fc47bc2723d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc73c801dca5bfc1c64619976331ecbf"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkIntArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">values_</a></td></tr>
+<tr class="separator:abc73c801dca5bfc1c64619976331ecbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Assigns an int value to each vertex of the shape. </p>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0516593a4f91658c1cbee796c700ca2e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkIntArray&gt; DiscretePointAttribute::getValues </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the vtkIntArray containing the attributes. </p>
+<p>The size of the returned array should be equal to the number of vertices of the shape. The order of the values normally corresponds to the one in the vtkPolyData structure of the shape. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="abc73c801dca5bfc1c64619976331ecbf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkIntArray&gt; DiscretePointAttribute::values_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Array of attributes. The size of the array is equal to the number of vertices of the shape. The order of the attributes correspondes the order of vertices in the the vtkPolData structure of the shape. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/attributes/<a class="el" href="_discrete_point_attribute_8h_source.html">DiscretePointAttribute.h</a></li>
 <li>src/domain/attributes/DiscretePointAttribute.cpp</li>
@@ -108,7 +181,7 @@ vtkSmartPointer&lt; vtkIntArray &gt;&#160;</td><td class="memItemRight" valign="
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:12 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

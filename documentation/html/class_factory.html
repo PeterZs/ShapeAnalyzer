@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -85,6 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_factory-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Factory&lt; T &gt; Class Template Reference</div>  </div>
@@ -119,6 +121,24 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8a05f8e1a60d57e297509a7a483cb46a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a05f8e1a60d57e297509a7a483cb46a"></a>
 static <a class="el" href="class_factory.html">Factory</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
 <tr class="separator:a8a05f8e1a60d57e297509a7a483cb46a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a111688346b88696150df284ed83f3e2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a111688346b88696150df284ed83f3e2d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Factory</b> (const <a class="el" href="class_factory.html">Factory</a> &amp;)</td></tr>
+<tr class="separator:a111688346b88696150df284ed83f3e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1985c4a009caa3b7b554c85c0554229a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1985c4a009caa3b7b554c85c0554229a"></a>
+<a class="el" href="class_factory.html">Factory</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_factory.html">Factory</a> &amp;)</td></tr>
+<tr class="separator:a1985c4a009caa3b7b554c85c0554229a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a7f5538372bde9420b288913a2c91b465"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f5538372bde9420b288913a2c91b465"></a>
+unordered_map&lt; string, CreateFn &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>createFns_</b></td></tr>
+<tr class="separator:a7f5538372bde9420b288913a2c91b465"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0679955396f7c26a0123a729d247631"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa0679955396f7c26a0123a729d247631"></a>
+unordered_map&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>labels_</b></td></tr>
+<tr class="separator:aa0679955396f7c26a0123a729d247631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/<a class="el" href="_factory_8h_source.html">Factory.h</a></li>
@@ -126,7 +146,7 @@ static <a class="el" href="class_factory.html">Factory</a>&lt; T &gt; *&#160;</t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:13 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

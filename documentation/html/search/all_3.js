@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['dialog',['Dialog',['../class_ui_1_1_dialog.html',1,'Ui']]],
-  ['dijkstranode',['DijkstraNode',['../classgeodesic_1_1_dijkstra_node.html',1,'geodesic']]],
-  ['dijkstranode1',['DijkstraNode1',['../classgeodesic_1_1_dijkstra_node1.html',1,'geodesic']]],
-  ['discretefaceattribute',['DiscreteFaceAttribute',['../class_discrete_face_attribute.html',1,'']]],
+  ['discretefaceattribute',['DiscreteFaceAttribute',['../class_discrete_face_attribute.html',1,'DiscreteFaceAttribute'],['../class_discrete_face_attribute.html#ad7183266e3e7d927f2b53ffe4dace110',1,'DiscreteFaceAttribute::DiscreteFaceAttribute()']]],
   ['discretefacecoloring',['DiscreteFaceColoring',['../class_discrete_face_coloring.html',1,'']]],
-  ['discretepointattribute',['DiscretePointAttribute',['../class_discrete_point_attribute.html',1,'']]],
+  ['discretepointattribute',['DiscretePointAttribute',['../class_discrete_point_attribute.html',1,'DiscretePointAttribute'],['../class_discrete_point_attribute.html#ae621f748d818a634a3048cb4a91722fa',1,'DiscretePointAttribute::DiscretePointAttribute()']]],
   ['discretepointcoloring',['DiscretePointColoring',['../class_discrete_point_coloring.html',1,'']]]
 ];

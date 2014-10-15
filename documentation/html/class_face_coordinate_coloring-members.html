@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,18 +88,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>This is the complete list of members for <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>color</b>() (defined in <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Coloring</b>(Shape *shape) (defined in <a class="el" href="class_coloring.html">Coloring</a>)</td><td class="entry"><a class="el" href="class_coloring.html">Coloring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>CoordinateColoring</b>(Shape *shape) (defined in <a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>FaceCoordinateColoring</b>(Shape *shape) (defined in <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getColors</b>() (defined in <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_face_coordinate_coloring.html#a0103465a1471c2a0433a0ed060a333f4">calculateColors</a>()</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_face_coordinate_coloring.html#a23935c52a6d31a017e8fb3e17c144cb5">color</a>()</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_coloring.html#a5502d0c484ca5f675019887da011a885">Coloring</a>(Shape *shape)</td><td class="entry"><a class="el" href="class_coloring.html">Coloring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>colors_</b> (defined in <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_coordinate_coloring.html#ab16ae41e2bac3e484a05a95f8c3c75c8">CoordinateColoring</a>(Shape *shape)</td><td class="entry"><a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_face_coordinate_coloring.html#a4fc5101b5447c9ac5f4ea293ed389d11">FaceCoordinateColoring</a>(Shape *shape)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_face_coordinate_coloring.html#a45397f5e7e5910df62be4c8d7cfeaf8a">getColors</a>()</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>shape_</b> (defined in <a class="el" href="class_coloring.html">Coloring</a>)</td><td class="entry"><a class="el" href="class_coloring.html">Coloring</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~CoordinateColoring</b>() (defined in <a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_coordinate_coloring.html#a9bf8cd56edee9180967ca6556f75d02b">~CoordinateColoring</a>()</td><td class="entry"><a class="el" href="class_coordinate_coloring.html">CoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>~FaceCoordinateColoring</b>() (defined in <a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a>)</td><td class="entry"><a class="el" href="class_face_coordinate_coloring.html">FaceCoordinateColoring</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:12 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -86,65 +86,62 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">ScalarPointAttribute.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">//  ScalarPointAttribute.h</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//  ShapeAnalyzer</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//  Created by Emanuel Laude on 30.07.14.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef ShapeAnalyzer_ScalarPointAttribute_h</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ShapeAnalyzer_ScalarPointAttribute_h</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;vtkDoubleArray.h&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vtkPolyData.h&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;slepceps.h&gt;</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifndef ShapeAnalyzer_ScalarPointAttribute_h</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define ShapeAnalyzer_ScalarPointAttribute_h</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vtkDoubleArray.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;vtkPolyData.h&gt;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;../Shape.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;slepceps.h&gt;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    ~<a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>() {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    };</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;../Shape.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="class_scalar_point_attribute.html#aabaf966fe5de34576710f3e3af9b293c">ScalarPointAttribute</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// the size of the returned array must be equal to the number of vertices of the shape</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="comment">// the order of the values must correspond to the one in the vtkPolyData structure of the shape</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    vtkSmartPointer&lt;vtkDoubleArray&gt; getScalars() { <span class="keywordflow">return</span> scalars_; }</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="class_shape.html">Shape</a>* getShape() { <span class="keywordflow">return</span> shape_; }</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="comment">//Petsc helper functions</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="comment">//convert scalar point attribute to vector</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> scalarPointAttributeToPetscVec(<a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr, Vec&amp; vec);</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html#a90636fcdf62c7deb0cfdffa8ddf1c0f7">   29</a></span>&#160;    <a class="code" href="class_scalar_point_attribute.html#a90636fcdf62c7deb0cfdffa8ddf1c0f7">~ScalarPointAttribute</a>() {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    };</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html#a50ffe08ff4da2d775f5e0ed1ddcec9d4">   35</a></span>&#160;    vtkSmartPointer&lt;vtkDoubleArray&gt; <a class="code" href="class_scalar_point_attribute.html#a50ffe08ff4da2d775f5e0ed1ddcec9d4">getScalars</a>() { <span class="keywordflow">return</span> <a class="code" href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">scalars_</a>; }</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html#aefadf25ab811fd43ad82de27563e0bcc">   37</a></span>&#160;    <a class="code" href="class_shape.html">Shape</a>* <a class="code" href="class_scalar_point_attribute.html#aefadf25ab811fd43ad82de27563e0bcc">getShape</a>() { <span class="keywordflow">return</span> <a class="code" href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">shape_</a>; }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    </div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">//convert scalar point attribute to vector</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> petscVecToScalarPointAttribute(Vec&amp; vec, <a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="comment">//convert array to scalar point attribute</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> arrayToScalarPointAttribute(<span class="keyword">const</span> PetscScalar* array, <a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="class_shape.html">Shape</a>* shape_;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    vtkSmartPointer&lt;vtkDoubleArray&gt; scalars_;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_scalar_point_attribute.html#a868604d934009c0c827fe6dc80bde32f">scalarPointAttributeToPetscVec</a>(<a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr, Vec&amp; vec);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_scalar_point_attribute.html#aac5d5ff1bff511f48e4f3b9c0445439e">petscVecToScalarPointAttribute</a>(Vec&amp; vec, <a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_scalar_point_attribute.html#a9145f6719149dae88f177ef927d7ebfd">arrayToScalarPointAttribute</a>(<span class="keyword">const</span> PetscScalar* array, <a class="code" href="class_scalar_point_attribute.html">ScalarPointAttribute</a>&amp; attr);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">   59</a></span>&#160;    <a class="code" href="class_shape.html">Shape</a>* <a class="code" href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">shape_</a>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">   63</a></span>&#160;    vtkSmartPointer&lt;vtkDoubleArray&gt; <a class="code" href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">scalars_</a>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a9145f6719149dae88f177ef927d7ebfd"><div class="ttname"><a href="class_scalar_point_attribute.html#a9145f6719149dae88f177ef927d7ebfd">ScalarPointAttribute::arrayToScalarPointAttribute</a></div><div class="ttdeci">static void arrayToScalarPointAttribute(const PetscScalar *array, ScalarPointAttribute &amp;attr)</div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.cpp:43</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_aac5d5ff1bff511f48e4f3b9c0445439e"><div class="ttname"><a href="class_scalar_point_attribute.html#aac5d5ff1bff511f48e4f3b9c0445439e">ScalarPointAttribute::petscVecToScalarPointAttribute</a></div><div class="ttdeci">static void petscVecToScalarPointAttribute(Vec &amp;vec, ScalarPointAttribute &amp;attr)</div><div class="ttdoc">Converts a petsc vector to a ScalarPointAttribute. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.cpp:33</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_aabaf966fe5de34576710f3e3af9b293c"><div class="ttname"><a href="class_scalar_point_attribute.html#aabaf966fe5de34576710f3e3af9b293c">ScalarPointAttribute::ScalarPointAttribute</a></div><div class="ttdeci">ScalarPointAttribute(Shape *shape)</div><div class="ttdoc">Basic Constructor. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.cpp:12</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a90636fcdf62c7deb0cfdffa8ddf1c0f7"><div class="ttname"><a href="class_scalar_point_attribute.html#a90636fcdf62c7deb0cfdffa8ddf1c0f7">ScalarPointAttribute::~ScalarPointAttribute</a></div><div class="ttdeci">~ScalarPointAttribute()</div><div class="ttdoc">Empty Destructor. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:29</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
-<div class="ttc" id="class_scalar_point_attribute_html"><div class="ttname"><a href="class_scalar_point_attribute.html">ScalarPointAttribute</a></div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:20</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a3fff9e4955934e6f1e529f88df42dd49"><div class="ttname"><a href="class_scalar_point_attribute.html#a3fff9e4955934e6f1e529f88df42dd49">ScalarPointAttribute::shape_</a></div><div class="ttdeci">Shape * shape_</div><div class="ttdoc">Shape the attributes describe. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:59</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a868604d934009c0c827fe6dc80bde32f"><div class="ttname"><a href="class_scalar_point_attribute.html#a868604d934009c0c827fe6dc80bde32f">ScalarPointAttribute::scalarPointAttributeToPetscVec</a></div><div class="ttdeci">static void scalarPointAttributeToPetscVec(ScalarPointAttribute &amp;attr, Vec &amp;vec)</div><div class="ttdoc">Converts a ScalarPointAttribute to a petsc vector. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.cpp:20</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a8cdedac4b731c7f6bb2bd81eb7b1352e"><div class="ttname"><a href="class_scalar_point_attribute.html#a8cdedac4b731c7f6bb2bd81eb7b1352e">ScalarPointAttribute::scalars_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkDoubleArray &gt; scalars_</div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:63</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_a50ffe08ff4da2d775f5e0ed1ddcec9d4"><div class="ttname"><a href="class_scalar_point_attribute.html#a50ffe08ff4da2d775f5e0ed1ddcec9d4">ScalarPointAttribute::getScalars</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkDoubleArray &gt; getScalars()</div><div class="ttdoc">Returns the vtkDoubleArray containing the attributes. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:35</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html"><div class="ttname"><a href="class_scalar_point_attribute.html">ScalarPointAttribute</a></div><div class="ttdoc">Assigns a double value to each vertex of the shape. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:22</div></div>
+<div class="ttc" id="class_scalar_point_attribute_html_aefadf25ab811fd43ad82de27563e0bcc"><div class="ttname"><a href="class_scalar_point_attribute.html#aefadf25ab811fd43ad82de27563e0bcc">ScalarPointAttribute::getShape</a></div><div class="ttdeci">Shape * getShape()</div><div class="ttdoc">Returns the shape this attributes describe. </div><div class="ttdef"><b>Definition:</b> ScalarPointAttribute.h:37</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

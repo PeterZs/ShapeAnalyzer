@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -86,48 +86,44 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">DiscretePointAttribute.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">//  DiscretePointAttribute.h</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//  ShapeAnalyzer</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//  Created by Emanuel Laude on 30.07.14.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef ShapeAnalyzer_DiscretePointAttribute_h</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ShapeAnalyzer_DiscretePointAttribute_h</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;vtkIntArray.h&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vtkPolyData.h&gt;</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef ShapeAnalyzer_DiscretePointAttribute_h</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define ShapeAnalyzer_DiscretePointAttribute_h</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vtkIntArray.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;vtkPolyData.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../Shape.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../Shape.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a> {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    ~<a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a>() {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    };</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">// the size of the returned array must coincide with the number of vertices of the shape</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">// the ordering of the values must coincide with the ordering of the vertices in vtkPolyData</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    vtkSmartPointer&lt;vtkIntArray&gt; getValues() { <span class="keywordflow">return</span> values_; }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="class_shape.html">Shape</a>* getShape() { <span class="keywordflow">return</span> shape_; }</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="class_shape.html">Shape</a>* shape_;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    vtkSmartPointer&lt;vtkIntArray&gt; values_;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a> {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_discrete_point_attribute.html#ae621f748d818a634a3048cb4a91722fa">DiscretePointAttribute</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html#a1ec856d640eac6a228d4cd4c4db58e99">   22</a></span>&#160;    <a class="code" href="class_discrete_point_attribute.html#a1ec856d640eac6a228d4cd4c4db58e99">~DiscretePointAttribute</a>() {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    };</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html#a0516593a4f91658c1cbee796c700ca2e">   28</a></span>&#160;    vtkSmartPointer&lt;vtkIntArray&gt; <a class="code" href="class_discrete_point_attribute.html#a0516593a4f91658c1cbee796c700ca2e">getValues</a>() { <span class="keywordflow">return</span> <a class="code" href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">values_</a>; }</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html#a5b75b8aa4b8c0ad8b6b1752b15451337">   30</a></span>&#160;    <a class="code" href="class_shape.html">Shape</a>* <a class="code" href="class_discrete_point_attribute.html#a5b75b8aa4b8c0ad8b6b1752b15451337">getShape</a>() { <span class="keywordflow">return</span> <a class="code" href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">shape_</a>; }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">   34</a></span>&#160;    <a class="code" href="class_shape.html">Shape</a>* <a class="code" href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">shape_</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">   38</a></span>&#160;    vtkSmartPointer&lt;vtkIntArray&gt; <a class="code" href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">values_</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_discrete_point_attribute_html_ae621f748d818a634a3048cb4a91722fa"><div class="ttname"><a href="class_discrete_point_attribute.html#ae621f748d818a634a3048cb4a91722fa">DiscretePointAttribute::DiscretePointAttribute</a></div><div class="ttdeci">DiscretePointAttribute(Shape *shape)</div><div class="ttdoc">Basic Constructor. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.cpp:12</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html_abc73c801dca5bfc1c64619976331ecbf"><div class="ttname"><a href="class_discrete_point_attribute.html#abc73c801dca5bfc1c64619976331ecbf">DiscretePointAttribute::values_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkIntArray &gt; values_</div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:38</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html_a0516593a4f91658c1cbee796c700ca2e"><div class="ttname"><a href="class_discrete_point_attribute.html#a0516593a4f91658c1cbee796c700ca2e">DiscretePointAttribute::getValues</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkIntArray &gt; getValues()</div><div class="ttdoc">Returns the vtkIntArray containing the attributes. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:28</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html_a5b75b8aa4b8c0ad8b6b1752b15451337"><div class="ttname"><a href="class_discrete_point_attribute.html#a5b75b8aa4b8c0ad8b6b1752b15451337">DiscretePointAttribute::getShape</a></div><div class="ttdeci">Shape * getShape()</div><div class="ttdoc">Returns the shape this attributes describe. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:30</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html_a258386fc5b6ded85ba897fc47bc2723d"><div class="ttname"><a href="class_discrete_point_attribute.html#a258386fc5b6ded85ba897fc47bc2723d">DiscretePointAttribute::shape_</a></div><div class="ttdeci">Shape * shape_</div><div class="ttdoc">Shape the attributes describe. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:34</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
-<div class="ttc" id="class_discrete_point_attribute_html"><div class="ttname"><a href="class_discrete_point_attribute.html">DiscretePointAttribute</a></div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:18</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html"><div class="ttname"><a href="class_discrete_point_attribute.html">DiscretePointAttribute</a></div><div class="ttdoc">Assigns an int value to each vertex of the shape. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:16</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html_a1ec856d640eac6a228d4cd4c4db58e99"><div class="ttname"><a href="class_discrete_point_attribute.html#a1ec856d640eac6a228d4cd4c4db58e99">DiscretePointAttribute::~DiscretePointAttribute</a></div><div class="ttdeci">~DiscretePointAttribute()</div><div class="ttdoc">Empty Destructor. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

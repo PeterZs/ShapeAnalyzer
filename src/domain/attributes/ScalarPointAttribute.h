@@ -55,7 +55,11 @@ public:
     
 
 private:
+    /// Shape the attributes describe.
     Shape* shape_;
+    /// Array of attributes. The size of the array is equal to the number of vertices of the shape.
+    /// The order of the attributes correspondes the order of vertices in the the vtkPolData
+    /// structure of the shape.
     vtkSmartPointer<vtkDoubleArray> scalars_;
 };
 

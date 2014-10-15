@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -82,6 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="class_serializable-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Serializable Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -96,13 +97,29 @@ Inheritance diagram for Serializable:</div>
 <area href="class_shape.html" alt="Shape" shape="rect" coords="0,56,78,80"/>
 </map>
  </div></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a605527ddde179434d3da0bffc8489150"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a605527ddde179434d3da0bffc8489150"></a>
+virtual ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>writeBinary</b> (ostream &amp;os)=0</td></tr>
+<tr class="separator:a605527ddde179434d3da0bffc8489150"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78842c93f622a6a8eb7c4dfbdbe6f0df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78842c93f622a6a8eb7c4dfbdbe6f0df"></a>
+virtual ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>writeASCII</b> (ostream &amp;os)=0</td></tr>
+<tr class="separator:a78842c93f622a6a8eb7c4dfbdbe6f0df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7005cf9680a3ccce212a169d04ee852"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7005cf9680a3ccce212a169d04ee852"></a>
+virtual istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>readBinary</b> (istream &amp;is)=0</td></tr>
+<tr class="separator:ab7005cf9680a3ccce212a169d04ee852"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8825730b10ebee4b46bca627e6aec2db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8825730b10ebee4b46bca627e6aec2db"></a>
+virtual istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>readASCII</b> (istream &amp;is)=0</td></tr>
+<tr class="separator:a8825730b10ebee4b46bca627e6aec2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/io/<a class="el" href="_serializable_8h_source.html">Serializable.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

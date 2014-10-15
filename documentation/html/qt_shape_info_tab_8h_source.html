@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,7 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;ui_shapeInfo.h&quot;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classqt_shape_info_tab.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classqt_shape_info_tab.html">qtShapeInfoTab</a> : <span class="keyword">public</span> QWidget, <span class="keyword">private</span> <a class="code" href="class_ui_1_1_shape_info_widget.html">Ui::ShapeInfoWidget</a>, <span class="keyword">public</span> <a class="code" href="classqt_shapes_tab.html">qtShapesTab</a> {</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classqt_shape_info_tab.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classqt_shape_info_tab.html">qtShapeInfoTab</a> : <span class="keyword">public</span> QWidget, <span class="keyword">private</span> Ui::ShapeInfoWidget, <span class="keyword">public</span> <a class="code" href="classqt_shapes_tab.html">qtShapesTab</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    Q_OBJECT</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">public</span>:</div>
@@ -118,14 +118,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classqt_shape_info_tab.html#ae7f1b60ab068ec55b67830742e7534d8">onClear</a>();</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> initialize();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> fillInInformation(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classqt_shape_info_tab.html#ae178d22f6548407550e40d5d81053147">initialize</a>();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classqt_shape_info_tab.html#ab06c5ddbdc7eff6d5a68b6b9851c1780">fillInInformation</a>(<a class="code" href="class_shape.html">Shape</a>* shape);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(__ShapeAnalyzer__qtShapeInfoTab__) */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classqt_shape_info_tab_html"><div class="ttname"><a href="classqt_shape_info_tab.html">qtShapeInfoTab</a></div><div class="ttdoc">Tab that shows basic information about the selected shape. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.h:26</div></div>
 <div class="ttc" id="classqt_shape_info_tab_html_ae7f1b60ab068ec55b67830742e7534d8"><div class="ttname"><a href="classqt_shape_info_tab.html#ae7f1b60ab068ec55b67830742e7534d8">qtShapeInfoTab::onClear</a></div><div class="ttdeci">virtual void onClear()</div><div class="ttdoc">Clears all content from the tab. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.cpp:116</div></div>
-<div class="ttc" id="class_ui_1_1_shape_info_widget_html"><div class="ttname"><a href="class_ui_1_1_shape_info_widget.html">Ui::ShapeInfoWidget</a></div><div class="ttdef"><b>Definition:</b> ui_shapeInfo.h:61</div></div>
+<div class="ttc" id="classqt_shape_info_tab_html_ae178d22f6548407550e40d5d81053147"><div class="ttname"><a href="classqt_shape_info_tab.html#ae178d22f6548407550e40d5d81053147">qtShapeInfoTab::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdoc">Sets up an empty table with description of all possible information. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.cpp:35</div></div>
+<div class="ttc" id="classqt_shape_info_tab_html_ab06c5ddbdc7eff6d5a68b6b9851c1780"><div class="ttname"><a href="classqt_shape_info_tab.html#ab06c5ddbdc7eff6d5a68b6b9851c1780">qtShapeInfoTab::fillInInformation</a></div><div class="ttdeci">void fillInInformation(Shape *shape)</div><div class="ttdoc">Fills the information of the given shape in the table. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.cpp:51</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
 <div class="ttc" id="classqt_shape_info_tab_html_acc7e4b91ec5eff4e8a785730a21a44f8"><div class="ttname"><a href="classqt_shape_info_tab.html#acc7e4b91ec5eff4e8a785730a21a44f8">qtShapeInfoTab::onShapeEdit</a></div><div class="ttdeci">virtual void onShapeEdit(Shape *shape)</div><div class="ttdoc">Updates the information if the edited shapes was the selected one. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.cpp:101</div></div>
 <div class="ttc" id="classqt_shape_info_tab_html_a1e24b3b05a98ebf3aec79cd7c0c3e8ba"><div class="ttname"><a href="classqt_shape_info_tab.html#a1e24b3b05a98ebf3aec79cd7c0c3e8ba">qtShapeInfoTab::qtShapeInfoTab</a></div><div class="ttdeci">qtShapeInfoTab(QWidget *parent, Qt::WindowFlags f=0)</div><div class="ttdoc">Initializes an empty tab. </div><div class="ttdef"><b>Definition:</b> qtShapeInfoTab.cpp:17</div></div>
@@ -136,7 +137,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

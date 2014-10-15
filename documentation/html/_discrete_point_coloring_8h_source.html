@@ -67,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,9 +105,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_discrete_point_coloring.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_discrete_point_coloring.html">DiscretePointColoring</a> : <span class="keyword">public</span> <a class="code" href="class_coloring.html">Coloring</a> {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_discrete_point_coloring.html">DiscretePointColoring</a>(<a class="code" href="class_shape.html">Shape</a>* shape, <a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a>&amp; attribute) : <a class="code" href="class_coloring.html">Coloring</a>(shape), attribute_(attribute) {}</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_discrete_point_coloring.html">DiscretePointColoring</a>(<a class="code" href="class_shape.html">Shape</a>* shape, <a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a>&amp; attribute) : <a class="code" href="class_coloring.html#a5502d0c484ca5f675019887da011a885">Coloring</a>(shape), attribute_(attribute) {}</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> color();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_discrete_point_coloring.html#acbc9d6aee4a0fb0e3994d3ca41a459a1">color</a>();</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="class_discrete_point_attribute.html">DiscretePointAttribute</a>&amp; attribute_;</div>
@@ -115,14 +115,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_coloring_html"><div class="ttname"><a href="class_coloring.html">Coloring</a></div><div class="ttdef"><b>Definition:</b> Coloring.h:14</div></div>
+<div class="ttc" id="class_coloring_html"><div class="ttname"><a href="class_coloring.html">Coloring</a></div><div class="ttdoc">Abstract class for all sorts of colorings. </div><div class="ttdef"><b>Definition:</b> Coloring.h:12</div></div>
+<div class="ttc" id="class_coloring_html_a5502d0c484ca5f675019887da011a885"><div class="ttname"><a href="class_coloring.html#a5502d0c484ca5f675019887da011a885">Coloring::Coloring</a></div><div class="ttdeci">Coloring(Shape *shape)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> Coloring.h:15</div></div>
 <div class="ttc" id="class_discrete_point_coloring_html"><div class="ttname"><a href="class_discrete_point_coloring.html">DiscretePointColoring</a></div><div class="ttdef"><b>Definition:</b> DiscretePointColoring.h:18</div></div>
 <div class="ttc" id="class_shape_html"><div class="ttname"><a href="class_shape.html">Shape</a></div><div class="ttdef"><b>Definition:</b> Shape.h:49</div></div>
-<div class="ttc" id="class_discrete_point_attribute_html"><div class="ttname"><a href="class_discrete_point_attribute.html">DiscretePointAttribute</a></div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:18</div></div>
+<div class="ttc" id="class_discrete_point_coloring_html_acbc9d6aee4a0fb0e3994d3ca41a459a1"><div class="ttname"><a href="class_discrete_point_coloring.html#acbc9d6aee4a0fb0e3994d3ca41a459a1">DiscretePointColoring::color</a></div><div class="ttdeci">virtual void color()</div><div class="ttdoc">Function will initiate coloring of the shape. </div><div class="ttdef"><b>Definition:</b> DiscretePointColoring.cpp:11</div></div>
+<div class="ttc" id="class_discrete_point_attribute_html"><div class="ttname"><a href="class_discrete_point_attribute.html">DiscretePointAttribute</a></div><div class="ttdoc">Assigns an int value to each vertex of the shape. </div><div class="ttdef"><b>Definition:</b> DiscretePointAttribute.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:10 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

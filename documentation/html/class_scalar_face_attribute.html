@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,24 +83,98 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_scalar_face_attribute-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ScalarFaceAttribute Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Assigns a double value to each face of the shape.  
+ <a href="class_scalar_face_attribute.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_scalar_face_attribute_8h_source.html">ScalarFaceAttribute.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a3cb95c1be163e5ee55a9a219307762c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3cb95c1be163e5ee55a9a219307762c6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#a3cb95c1be163e5ee55a9a219307762c6">~ScalarFaceAttribute</a> ()</td></tr>
+<tr class="memdesc:a3cb95c1be163e5ee55a9a219307762c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emtpty Destructor. <br /></td></tr>
+<tr class="separator:a3cb95c1be163e5ee55a9a219307762c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab91f55235326a8a46a4062fb944949c5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab91f55235326a8a46a4062fb944949c5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ScalarFaceAttribute</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#ab91f55235326a8a46a4062fb944949c5">ScalarFaceAttribute</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:ab91f55235326a8a46a4062fb944949c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic Constructor. <br /></td></tr>
 <tr class="separator:ab91f55235326a8a46a4062fb944949c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7958610eb0617eecaa372867f99abfa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7958610eb0617eecaa372867f99abfa"></a>
-vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getScalars</b> ()</td></tr>
+<tr class="memitem:ab7958610eb0617eecaa372867f99abfa"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#ab7958610eb0617eecaa372867f99abfa">getScalars</a> ()</td></tr>
+<tr class="memdesc:ab7958610eb0617eecaa372867f99abfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the vtkDoubleArray containing the attributes.  <a href="#ab7958610eb0617eecaa372867f99abfa">More...</a><br /></td></tr>
 <tr class="separator:ab7958610eb0617eecaa372867f99abfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40fa60eda92082c42bc10edc1a21fe22"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a40fa60eda92082c42bc10edc1a21fe22"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#a40fa60eda92082c42bc10edc1a21fe22">getShape</a> ()</td></tr>
+<tr class="memdesc:a40fa60eda92082c42bc10edc1a21fe22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shape this attributes describe. <br /></td></tr>
 <tr class="separator:a40fa60eda92082c42bc10edc1a21fe22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a8e42ecff631c7fdb7dd6079a2fca9981"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e42ecff631c7fdb7dd6079a2fca9981"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#a8e42ecff631c7fdb7dd6079a2fca9981">shape_</a></td></tr>
+<tr class="memdesc:a8e42ecff631c7fdb7dd6079a2fca9981"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_shape.html">Shape</a> the attributes describe. <br /></td></tr>
+<tr class="separator:a8e42ecff631c7fdb7dd6079a2fca9981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf0a5f08e748e20a0e738eb5a343afa8"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_face_attribute.html#acf0a5f08e748e20a0e738eb5a343afa8">scalars_</a></td></tr>
+<tr class="separator:acf0a5f08e748e20a0e738eb5a343afa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Assigns a double value to each face of the shape. </p>
+<dl class="section note"><dt>Note</dt><dd>Not finished. Maybe add a function to fill with values without petsc stuff?</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab7958610eb0617eecaa372867f99abfa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkDoubleArray&gt; ScalarFaceAttribute::getScalars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the vtkDoubleArray containing the attributes. </p>
+<p>The size of the returned array should be equal to the number face of the shape. The order of the values normally corresponds to the one in the vtkPolyData structure of the shape. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="acf0a5f08e748e20a0e738eb5a343afa8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkDoubleArray&gt; ScalarFaceAttribute::scalars_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Array of attributes. The size of the array is equal to the number of faces of the shape. The order of the attributes correspondes the order of faces in the the vtkPolData structure of the shape. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/domain/attributes/<a class="el" href="_scalar_face_attribute_8h_source.html">ScalarFaceAttribute.h</a></li>
 <li>src/domain/attributes/ScalarFaceAttribute.cpp</li>
@@ -108,7 +182,7 @@ vtkSmartPointer&lt; vtkDoubleArray &gt;&#160;</td><td class="memItemRight" valig
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

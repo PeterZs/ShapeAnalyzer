@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_farthest_point_sampling-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FarthestPointSampling Class Reference</div>  </div>
@@ -129,6 +130,12 @@ static <a class="el" href="class_sampling.html">Sampling</a> *&#160;</td><td cla
 static string&#160;</td><td class="memItemRight" valign="bottom"><b>getIdentifier</b> ()</td></tr>
 <tr class="separator:ae80cd0e1c311eb9f60603bf2ae24a0d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a01c1b03d4f4cbb00edebeba10030a513"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01c1b03d4f4cbb00edebeba10030a513"></a>
+vtkIdType&#160;</td><td class="memItemRight" valign="bottom"><b>source_</b></td></tr>
+<tr class="separator:a01c1b03d4f4cbb00edebeba10030a513"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_metric_sampling"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_metric_sampling')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_metric_sampling.html">MetricSampling</a></td></tr>
@@ -150,7 +157,7 @@ vtkIdType&#160;</td><td class="memItemRight" valign="bottom"><b>numberOfPoints_<
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:13 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_shape-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Shape Class Reference</div>  </div>
@@ -175,6 +176,33 @@ virtual istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>read
 <tr class="memitem:a0a6173c6cdb906d030fca93348bbcb34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a6173c6cdb906d030fca93348bbcb34"></a>
 virtual istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>readASCII</b> (istream &amp;is)</td></tr>
 <tr class="separator:a0a6173c6cdb906d030fca93348bbcb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a37a7387935c5778e46bbd8bf35902004"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37a7387935c5778e46bbd8bf35902004"></a>
+vtkIdType&#160;</td><td class="memItemRight" valign="bottom"><b>id_</b></td></tr>
+<tr class="separator:a37a7387935c5778e46bbd8bf35902004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a053fd751f9e9dc1663c43ae38f1a4f26"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a053fd751f9e9dc1663c43ae38f1a4f26"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><b>name_</b></td></tr>
+<tr class="separator:a053fd751f9e9dc1663c43ae38f1a4f26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a4858fef77a00760ae877ea0519d1a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a4858fef77a00760ae877ea0519d1a4"></a>
+vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>actor_</b></td></tr>
+<tr class="separator:a1a4858fef77a00760ae877ea0519d1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc0096b5d735482fc5fdd44dba05f8ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc0096b5d735482fc5fdd44dba05f8ed"></a>
+vtkSmartPointer&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mapper_</b></td></tr>
+<tr class="separator:adc0096b5d735482fc5fdd44dba05f8ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686fc5e28a60d0ae172fc7b24143f142"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a686fc5e28a60d0ae172fc7b24143f142"></a>
+vtkSmartPointer&lt; vtkBoxWidget &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>boxWidget_</b></td></tr>
+<tr class="separator:a686fc5e28a60d0ae172fc7b24143f142"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad85e7c30b26494bca152cc24b903b359"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad85e7c30b26494bca152cc24b903b359"></a>
+vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>polyData_</b></td></tr>
+<tr class="separator:ad85e7c30b26494bca152cc24b903b359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a302985d8e2dcab437efb0f3a85833a95"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a302985d8e2dcab437efb0f3a85833a95"></a>
+vtkSmartPointer&lt; vtkPolyDataNormals &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>polyDataNormals_</b></td></tr>
+<tr class="separator:a302985d8e2dcab437efb0f3a85833a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a312e44e974f12062ff7dcf665ce1b34a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a312e44e974f12062ff7dcf665ce1b34a"></a>
+vtkSmartPointer&lt; vtkRenderer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>renderer_</b></td></tr>
+<tr class="separator:a312e44e974f12062ff7dcf665ce1b34a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a24c101a3184c78884e8bf28a90d410c8"></a>
@@ -202,7 +230,7 @@ virtual istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>read
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:17 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,31 +83,165 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_complex_face_attribute-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ComplexFaceAttribute&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Assigns an attribute of class T to each face.  
+ <a href="class_complex_face_attribute.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_complex_face_attribute_8h_source.html">ComplexFaceAttribute.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0a368d357dc8c24147ba744d7aabce89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a368d357dc8c24147ba744d7aabce89"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ComplexFaceAttribute</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memitem:aee6b3c51b6f3d6dda482588ba122a612"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#aee6b3c51b6f3d6dda482588ba122a612">~ComplexFaceAttribute</a> ()</td></tr>
+<tr class="separator:aee6b3c51b6f3d6dda482588ba122a612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a368d357dc8c24147ba744d7aabce89"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#a0a368d357dc8c24147ba744d7aabce89">ComplexFaceAttribute</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:a0a368d357dc8c24147ba744d7aabce89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic constructor.  <a href="#a0a368d357dc8c24147ba744d7aabce89">More...</a><br /></td></tr>
 <tr class="separator:a0a368d357dc8c24147ba744d7aabce89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11a16213cd62e7ada0b8a36d75043406"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11a16213cd62e7ada0b8a36d75043406"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><b>getValues</b> ()</td></tr>
+<tr class="memitem:a11a16213cd62e7ada0b8a36d75043406"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#a11a16213cd62e7ada0b8a36d75043406">getValues</a> ()</td></tr>
+<tr class="memdesc:a11a16213cd62e7ada0b8a36d75043406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the attribute array.  <a href="#a11a16213cd62e7ada0b8a36d75043406">More...</a><br /></td></tr>
 <tr class="separator:a11a16213cd62e7ada0b8a36d75043406"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05013475941221a1ef50b374c2c3d2d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05013475941221a1ef50b374c2c3d2d4"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#a05013475941221a1ef50b374c2c3d2d4">getShape</a> ()</td></tr>
+<tr class="memdesc:a05013475941221a1ef50b374c2c3d2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shape this attributes describe. <br /></td></tr>
 <tr class="separator:a05013475941221a1ef50b374c2c3d2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aaeb0d53a6a5a407ebf58efce769e3964"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaeb0d53a6a5a407ebf58efce769e3964"></a>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#aaeb0d53a6a5a407ebf58efce769e3964">shape_</a></td></tr>
+<tr class="memdesc:aaeb0d53a6a5a407ebf58efce769e3964"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_shape.html">Shape</a> the attributes describe. <br /></td></tr>
+<tr class="separator:aaeb0d53a6a5a407ebf58efce769e3964"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1e99b1220d1a175c0a4b8d69b9fca8f"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_complex_face_attribute.html#ad1e99b1220d1a175c0a4b8d69b9fca8f">values_</a></td></tr>
+<tr class="separator:ad1e99b1220d1a175c0a4b8d69b9fca8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class ComplexFaceAttribute&lt; T &gt;</h3>
+
+<p>Assigns an attribute of class T to each face. </p>
+<p>For the primitive types double and int the classes ScalarFaceAtrribute and <a class="el" href="class_discrete_face_attribute.html" title="Assigns an int value to each face of the shape. ">DiscreteFaceAttribute</a> exist, they should be used instead of this class. </p><dl class="section note"><dt>Note</dt><dd>Not finished. Maybe add a function to fill with values without petsc stuff?</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aee6b3c51b6f3d6dda482588ba122a612"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a>&lt; T &gt;::~<a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Deletes the array storing all attributes. If you are storing pointers, the attribute objects will not be deleted. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0a368d357dc8c24147ba744d7aabce89"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a>&lt; T &gt;::<a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Basic constructor. </p>
+<p>Constructs an array of T objects with the size of the number of faces of the shape. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a11a16213cd62e7ada0b8a36d75043406"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a>&lt; T &gt;::getValues </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a pointer to the attribute array. </p>
+<dl class="section return"><dt>Returns</dt><dd>The array has the size of the number of face the shape has and will be deleted when the <a class="el" href="class_complex_face_attribute.html" title="Assigns an attribute of class T to each face. ">ComplexFaceAttribute</a> is deleted. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ad1e99b1220d1a175c0a4b8d69b9fca8f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="class_complex_face_attribute.html">ComplexFaceAttribute</a>&lt; T &gt;::values_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Array of attributes. The size of the array is equal to the number of faces of the shape. The order of the attributes should correspond the order of faces in the the vtkPolData structure of the shape. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/attributes/<a class="el" href="_complex_face_attribute_8h_source.html">ComplexFaceAttribute.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 14:07:11 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

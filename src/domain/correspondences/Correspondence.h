@@ -2,7 +2,8 @@
 /// \brief Abstract Class for Correspondences that are shown in the GUI.
 ///
 /// \details Contains a CorrespondenceData Pointer and can visualize this data
-/// in the GUI with lines.
+/// in the GUI with lines and highlighted faces.
+/// \note TODO not finished
 ///
 
 #ifndef __ShapeAnalyzer__Correspondence__
@@ -73,21 +74,41 @@ protected:
     
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;
     
+    /// \note TODO
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
     
+    /// \brief Renderer.
     vtkSmartPointer<vtkRenderer>    renderer_;
-    CorrespondenceData*             data_; //contains list of shape IDs and list of face or vertex IDs and a unique correspondenceID
+    /// \brief The CorrespondenceData this object is showing.
+    CorrespondenceData*             data_;
+    /// \brief Points to all shapes in the correspondence.
+    /// \details The order in the vector is the same as the one that can be received from
+    /// data_.
     vector<Shape*>                  shapes_;
 
     
-    //vtk visualization stuff
-    vector<vtkSmartPointer<vtkActor> >  actors_; // actors representing highlighted vertex or face (part of this correspondence) on corresponding shape. (Ordering corresponds to ordering of shapes)
+    ///@{
     
-    vtkSmartPointer<vtkPoints>          lineReferencePoints_; // save the reference line coordinates to be able to transform lines if shapes are transformed
+    /// \brief Actors highlighting the data (vertices of faces) on the corresponding shapes
+    /// \details The order correspondes to the order of the shapes in the CorrespondenesData
+    /// data_ and shapes_.
+    vector<vtkSmartPointer<vtkActor> >  actors_;
+    
+    /// \brief Reference coordinates for the lines.
+    /// \details The coordinates are used to transfrom the lines if the shape is transformed
+    /// independently of the scene.
+    vtkSmartPointer<vtkPoints>          lineReferencePoints_;
 
-    vtkSmartPointer<vtkPolyData>        linesPolyData_; // lines polydata. The points inside poly data have the same ordering as shapes.
+    /// \brief PolyData containing the end points of the lines.
+    /// \details The points are ordered in the same way as the shapes in data_ and shapes_, i.e.
+    /// the point with id i in this object correspondes to the shape on position i in shapes_.
+    vtkSmartPointer<vtkPolyData>        linesPolyData_;
+    /// \brief Mapper of the lines and highlightings.
     vtkSmartPointer<vtkPolyDataMapper>  linesMapper_;
-    vtkSmartPointer<vtkActor>           linesActor_; // lines actor
+    /// \brief Actors of the lines.
+    vtkSmartPointer<vtkActor>           linesActor_;
+    
+    ///@}
 };
 
 #endif /* defined(__ShapeAnalyzer__Correspondence__) */

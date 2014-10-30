@@ -1,3 +1,7 @@
+///
+/// \brief Starts the ShapeAnalyzer-App.
+///
+
 #include <QApplication>
 #include "ShapeAnalyzer.h"
 

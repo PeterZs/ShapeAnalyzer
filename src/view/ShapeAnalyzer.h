@@ -1,3 +1,10 @@
+///
+/// \brief Manages the interaction with the GUI.
+/// \details TODO
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
+
 #ifndef ShapeAnalyzer_H
 #define ShapeAnalyzer_H
 
@@ -157,7 +164,19 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     };
     
 public:
+    /// \brief Constructor.
+    /// \details Initializes all data structures, by default memory for 1000 visible point/face correspondences and 10,000
+    /// hidden point/face correspondences is allocated.
+    /// All QT-Objects are connected are connected to their respective slots.
+    /// Implemented abstract classes are registered in the respective factories (Factory). New implementation have to be added
+    /// here to appear in the GUI.
+    /// \note TODO Move this to an extra class?
+    /// The vtkWidget is initialized.
+    /// Slepc is initialized.
     ShapeAnalyzer();
+    /// \brief Destructor.
+    /// \details Deletes the CorrespondencePicker and the Settings Dialog.
+    /// Finalizes Slepc.
     ~ShapeAnalyzer() {
 
         delete correspondencePicker_;
@@ -166,21 +185,78 @@ public:
         SlepcFinalize();
     };
     
+    /// @{
+    /// Public functions accessable by custom qtTabs. All of them rerender the vtkWidget.
     
-    // public functions accessable by custom qtTabs
+    /// \brief Visualizes the correspondence data in the GUI.
+    /// \details Evaluates the type of CorrespondenceData and creates either a PointCorrespondence or a FaceCorrespondence
+    /// object. The new object is added to all necessary data structures and the visualization mode is switched to Point/
+    /// FaceCorrespondences respectively. The new correspondence will also be the one that is marked as selected.
+    /// @param data CorrespondenceData that should be visualized
     void showCorrespondence(CorrespondenceData* data);
+    /// \brief Hides the correspondence data in the GUI, if it was visible before.
+    /// \details Evaluates the type of CorrespondenceData and switches the visualisation mode to the right type.
+    /// Then iterates over all visible Correspondence to search for the one corresponding to the given data. If one
+    /// is found, it is hidden which means the Point/FaceCorrespondence object incl. the actors and vtk objects
+    /// is deleted and removed from
+    /// the point/faceCorrespondenceByActor_ data structure. If
+    /// the data is not found, only the mode is switched.
+    /// @param data CorrespondenceData that should be hidden
     void hideCorrespondence(CorrespondenceData* data);
+    /// \brief Deletes this correspondence data as well as any visualization of it.
+    /// \details Evaluates the type of CorrespondenceData and switches the visualisation mode to the right type.
+    /// Searches for this correspondence data in the visible correspondences. Then the CorrespondenceData and
+    /// Correspondence are removed from all data structures and the objects deleted.
+    /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
+    /// @param data CorrespondenceData that should be deleted
     void deleteCorrespondence(CorrespondenceData* data);
     
+    /// \brief Marks the visualisation of the given correspondence data as selected if possible.
+    /// \details Iterates over all visible correspondence until the one belonging to this data object is found.
+    /// In the ListWidget the current row will be set to the corresponding row causing the correspondence to be
+    /// marked red if visible. If no correspondence is found, nothing happens.
     void setSelected(CorrespondenceData* data);
+    /// \brief Visualises a subset of the given size of the point correspondence data.
+    /// \details Switches the visualisation mode to point correspondences and hides all previously visible
+    /// correspondences. A random subsample of size size is chosen from pointCorrespondenceData_ and
+    /// visualised (see HashMap for details about the random subset). This includes creating size many
+    /// PointCorrespondence objects.
+    /// @param size size of the subsample
     void samplePointCorrespondences(unsigned int size);
+    /// \brief Visualises a subset of the given size of the face correspondence data.
+    /// \details Switches the visualisation mode to face correspondences and hides all previously visible
+    /// correspondences. A random subsample of size size is chosen from faceCorrespondenceData_ and
+    /// visualised (see HashMap for details about the random subset). This includes creating size many
+    /// FaceCorrespondence objects.
+    /// @param size size of the subsample
     void sampleFaceCorrespondences(unsigned int size);
+    /// \brief Deletes all point correspondences.
+    /// \details This includes deleting all PointCorrespondence and PointCorrespondenceData objects.
+    /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
     void clearPointCorrespondences();
+    /// \brief Deletes all face correspondences.
+    /// \details This includes deleting all FaceCorrespondence and FaceCorrespondenceData objects.
+    /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
     void clearFaceCorrespondences();
+    ///@}
     
-    void vtkAddShape(Shape* shape);
+    /// \brief Adds the shape to the gui.
+    /// \details Creates an vtkActor for this shape and adds it to the vtkWidget. Adds the Shape to all
+    /// all datastructures managing shapes and rerenders the scene.
+    /// This will trigger all qtTabs inheriting from qtShapesTab.
     void showShape(Shape* shape);
+    /// \brief Adds this shape to the vtkWidget only.
+    /// The shape is added to the vtkWidget, but not to the shape data structures of ShapeAnalyzer. Use this
+    /// if you do not want the user to interact with the shape further. The shape can be deleted by accessing
+    /// the vtk objects referenced in the shape.
+    /// This will not trigger qtTabs inheriting from qtShapesTab.
+    /// If you want to properly add the shape to the GUI use the function showShape(Shape*) instead.
+    void vtkAddShape(Shape* shape);
     
+    /// \brief Rerenders the vtkWidget scene.
+    /// \details Any changes made for example by qtTabs to Correspondences or Shapes are not instantly visible.
+    /// Use this function after all changes are made to update the visualisation when you are not using
+    /// any functions of ShapeAnalyzer to make the changes. (i.e. deleteCorrespondence will rerender by itself)
     void render();
     
     

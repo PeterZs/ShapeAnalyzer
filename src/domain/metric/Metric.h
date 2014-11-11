@@ -30,16 +30,19 @@ class Metric {
  
     
 public:
+    /// empty Destructor
     virtual ~Metric() {};
     
+    /// initializes the Metric object with a Shape object to which it corresponds
     virtual void initialize(Shape* shape) {
         shape_ = shape;
     }
     
-    // returns distance between the points with id a and b
+    /// returns the distance between the points with the ids a and b
     virtual double getDistance(vtkIdType a, vtkIdType b) = 0;
-    // returns the distances from point with id source to all other points
-    // the result is ordered by point ids
+    
+    /// returns the distances from point with id source to all other points
+    /// the result is ordered by point ids
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) = 0;
     
     // returns the id of the point with the greatest distance to all points

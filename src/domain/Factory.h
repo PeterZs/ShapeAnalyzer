@@ -1,11 +1,3 @@
-//
-//  Factory.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 06.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__Factory__
 #define __ShapeAnalyzer__Factory__
 
@@ -15,7 +7,17 @@
 
 using namespace std;
 
-//Factory is a singleton
+///
+/// \brief Templated factory class for creating instances of concrete colorings, segmentations, signatures and so on.
+///
+/// \details Concrete classes are derived from an abstract superclass for example EuclideanMetric is derived from abstract class Metric. Moreover concrete classes
+/// have to provide both a create function that returns a new instance of this class and a getIdentifier function that returs a unique string that is used
+/// to register the concrete class in the factory.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
+
+
 template<class T>
 class Factory {
 public:

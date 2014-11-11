@@ -1,5 +1,6 @@
 ///
 /// \brief Assigns an int value to each face of the shape.
+/// \details This class is a wrapper class for vtkIntArray. It is needed to query the number of faces since this information cannot directly be queried from vtkIntArray. (Warning: The function getNumberOfComponents inherited from vtkAbstractArray does not return the number of elements in vtkIntArray)
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
@@ -25,6 +26,7 @@ public:
     /// \brief Returns the vtkIntArray containing the attributes.
     /// \details The size of the returned array should be equal to the number face of the shape.
     /// The order of the values normally corresponds to the one in the vtkPolyData structure of the shape.
+    /// 
     vtkSmartPointer<vtkIntArray> getValues() { return values_; }
     /// Returns the shape this attributes describe.
     Shape* getShape() { return shape_; }

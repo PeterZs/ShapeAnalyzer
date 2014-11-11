@@ -619,7 +619,7 @@ void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
                                           tr("Percentage"),
                                           tr("Percentage of correspondences"),
                                           0,
-                                          0.1,
+                                          0.001,
                                           100.0,
                                           1,
                                           &ok

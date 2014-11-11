@@ -12,12 +12,13 @@
 #include <string>
 #include <exception>
 
-class geodesic_error {
+class geodesic_error : exception {
 public:
     geodesic_error() : what_("An error occured while calculating the geodesic.") {}
-    geodesic_error(std::string str) : what_(str) {}
+    geodesic_error(const std::string& str) : what_(str) {
+    }
     
-    std::string what() { return what_; }
+    virtual const char* what() const throw() { return what_.c_str(); }
     
 private:
     std::string what_;

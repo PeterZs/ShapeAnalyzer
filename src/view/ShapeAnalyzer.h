@@ -125,7 +125,7 @@ struct ShapeComparator {
 
 ///
 /// \brief Manages the interaction with the GUI.
-/// \details TODO
+/// \details TODO blabla
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
@@ -133,6 +133,11 @@ struct ShapeComparator {
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
     
+    // needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
+    // the elements can be made.
+    struct ShapeComparator {
+        bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
+    };
     
     // manages update of correspondences after scene transformation
     class vtkBoxWidgetCallback : public vtkCommand {

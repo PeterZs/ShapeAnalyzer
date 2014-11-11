@@ -16,6 +16,7 @@ class qtCorrespondencesTab : public qtTab {
 public:
     virtual ~qtCorrespondencesTab() {}
     //called after a new correspondence was added
+    //virtual void onCorrespondencesAddAll(vector<CorrespondenceData*>& correspondences) = 0;
     virtual void onCorrespondenceAdd(CorrespondenceData* correspondence) = 0;
     virtual void onCorrespondenceDelete(CorrespondenceData* correspondence) = 0;
     virtual void onCorrespondenceEdit(Correspondence* correspondence) = 0;

@@ -1,9 +1,3 @@
-///
-/// \brief Assigns an int value to each vertex of the shape.
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_DiscretePointAttribute_h
 #define ShapeAnalyzer_DiscretePointAttribute_h
 
@@ -13,6 +7,11 @@
 
 #include "../Shape.h"
 
+///
+/// \brief Assigns an int value to each vertex of the shape.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class DiscretePointAttribute {
     
 public:

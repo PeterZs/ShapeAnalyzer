@@ -1,3 +1,12 @@
+#ifndef CorrespondenceData_H
+#define CorrespondenceData_H
+
+#include <vtkType.h>
+
+#include <vector>
+#include <iostream>
+using namespace std;
+
 ///
 /// \brief Abstract class to store correspondence information.
 ///
@@ -9,17 +18,6 @@
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
-
-
-#ifndef CorrespondenceData_H
-#define CorrespondenceData_H
-
-#include <vtkType.h>
-
-#include <vector>
-#include <iostream>
-using namespace std;
-
 class CorrespondenceData {
     
 public:    

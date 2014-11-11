@@ -1,10 +1,3 @@
-///
-/// \brief Assigns a double value to each face of the shape.
-/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_ScalarFaceAttribute_h
 #define ShapeAnalyzer_ScalarFaceAttribute_h
 
@@ -14,6 +7,12 @@
 
 #include "../Shape.h"
 
+///
+/// \brief Assigns a double value to each face of the shape.
+/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class ScalarFaceAttribute {
     
 public:

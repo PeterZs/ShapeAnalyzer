@@ -1,11 +1,3 @@
-///
-/// \brief Abstract Class for Correspondences that are shown in the GUI.
-///
-/// \details Contains a CorrespondenceData Pointer and can visualize this data
-/// in the GUI with lines and highlighted faces.
-/// \note TODO not finished
-///
-
 #ifndef __ShapeAnalyzer__Correspondence__
 #define __ShapeAnalyzer__Correspondence__
 
@@ -30,6 +22,13 @@
 
 using namespace std;
 
+///
+/// \brief Abstract Class for Correspondences that are shown in the GUI.
+///
+/// \details Contains a CorrespondenceData Pointer and can visualize this data
+/// in the GUI with lines and highlighted faces.
+/// \note TODO not finished
+///
 class Correspondence {
 
 public:

@@ -1,10 +1,3 @@
-///
-/// \brief Assigns an int value to each face of the shape.
-/// \details This class is a wrapper class for vtkIntArray. It is needed to query the number of faces since this information cannot directly be queried from vtkIntArray. (Warning: The function getNumberOfComponents inherited from vtkAbstractArray does not return the number of elements in vtkIntArray)
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_DiscreteFaceAttribute_h
 #define ShapeAnalyzer_DiscreteFaceAttribute_h
 
@@ -14,6 +7,12 @@
 
 #include "../Shape.h"
 
+///
+/// \brief Assigns an int value to each face of the shape.
+/// \details This class is a wrapper class for vtkIntArray. It is needed to query the number of faces since this information cannot directly be queried from vtkIntArray. (Warning: The function getNumberOfComponents inherited from vtkAbstractArray does not return the number of elements in vtkIntArray)
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class DiscreteFaceAttribute {
     
 public:

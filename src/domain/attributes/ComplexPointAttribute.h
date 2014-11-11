@@ -1,3 +1,10 @@
+#ifndef ShapeAnalyzer_PointAttribute_h
+#define ShapeAnalyzer_PointAttribute_h
+
+#include "../Shape.h"
+
+#include <vtkPolyData.h>
+
 ///
 /// \brief Assigns an attribute of class T to each vertex.
 /// \details For the primitive types double and int the classes ScalarPointAtrribute
@@ -6,14 +13,6 @@
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
-
-#ifndef ShapeAnalyzer_PointAttribute_h
-#define ShapeAnalyzer_PointAttribute_h
-
-#include "../Shape.h"
-
-#include <vtkPolyData.h>
-
 template<class T>
 class ComplexPointAttribute {
     

@@ -21,6 +21,9 @@ public:
         source_ = source;
     }
     
+    void setNumberOfPoints(vtkIdType numberOfPoints) {
+        numberOfPoints_ = numberOfPoints;
+    }
     
     static Sampling* create() {
         return new FarthestPointSampling();
@@ -37,7 +40,7 @@ private:
     FarthestPointSampling() {
     }
     vtkIdType source_;
-    
+    vtkIdType numberOfPoints_;
 };
 
 #endif /* defined(__ShapeAnalyzer__FarthestPointSampling__) */

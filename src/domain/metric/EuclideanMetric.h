@@ -1,11 +1,3 @@
-//
-//  EuclideanMetric.h
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 27.05.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__EuclideanMetric__
 #define __ShapeAnalyzer__EuclideanMetric__
 
@@ -18,15 +10,22 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
+///
+/// \brief Class for the representation and computation of the euclidean metric on a Shape.
+/// \author Emanuel Laude and Zorah Lähner
+///
 class EuclideanMetric : public Metric {
 private:
     EuclideanMetric() {}
     
 public:
+    /// Returns a new instance of the EuclideanMetric class. This function should not be called directly in your code since it is used internally by the corresponding Factory. Instead use the corresponding Factory class to create new instances of EuclideanMetric.
     static Metric* create() {
         return new EuclideanMetric();
     }
     
+    
+    /// Returns the unique identifier of this class. Used internally be the corresponding Factory.
     static string getIdentifier() {
         return "euclidean";
     }

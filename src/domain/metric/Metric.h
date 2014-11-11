@@ -22,7 +22,7 @@ using namespace std;
 
 ///
 /// \brief Abstract class for the representation of a metric on the vertices of a shape.
-/// \details Besides a pure pairwise distance function getDistance() this class provides functionality to obtion distance vectors getAllDistances(ScalarPointAttribute& distances, vtkIdType source) containing the distances from one source to all other vertices or a functions to create voronoi cells and farthest point samplings.
+/// \details Besides a pure pairwise distance function getDistance(vtkIdType, vtkIdType) this class provides functionality to obtion distance vectors getAllDistances(ScalarPointAttribute&, vtkIdType) containing the distances from one source vertex to all other vertices or a functions to create voronoi cells and farthest point samplings.
 /// \author Emanuel Laude and Zorah Lähner
 ///
 
@@ -30,34 +30,33 @@ class Metric {
  
     
 public:
-    /// empty Destructor
+    /// Empty destructor
     virtual ~Metric() {};
     
-    /// initializes the Metric object with a Shape object to which it corresponds
+    /// Initializes the Metric object with a Shape object to which it corresponds
     virtual void initialize(Shape* shape) {
         shape_ = shape;
     }
     
-    /// returns the distance between the points with the ids a and b
+    /// Returns the distance between the points with the ids a and b
     virtual double getDistance(vtkIdType a, vtkIdType b) = 0;
     
-    /// returns the distances from point with id source to all other points
-    /// the result is ordered by point ids
+    /// Returns the distances from vertex with id source to all other vertices. The result is stored in distances which is of type ScalarPointAttribute.
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) = 0;
     
-    /// returns the id of the point with the greatest distance to all points
-    /// in the source list
+    /// Returns the id of the point with the greatest distance to all points in the source list
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;
     
-    // returns voronoi cells
+    /// Returns voronoi cells that correspond to the vertices in argument seeds. The result is of type vtkIdList and it contains the corresponding cell id for each vertex.
     virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
     
-    
+    /// Returns the underlying shape.
     Shape*  getShape()          { return shape_; }
     
 protected:
     Shape* shape_;
   
+    /// Protected constructor since Metric should only be initialized via Factory
     Metric() {}
 };
 

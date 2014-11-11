@@ -20,11 +20,9 @@ public:
     /// Virtual empty destructor.
     virtual ~Sampling() {}
     
-    /// \brief Initializes the sampling.
-    /// \note TODO Why does this numberOfPoints is here? Does not make sense for epsilon-sampling for example.
-    virtual void initialize(Shape* shape, vtkIdType numberOfPoints) {
+    /// \brief Initializes the sampling with the corresponding Shape.
+    virtual void initialize(Shape* shape) {
         shape_ = shape;
-        numberOfPoints_ = numberOfPoints;
     }
     
     /// \brief Returns a list of the ids of the samples points.
@@ -38,7 +36,6 @@ protected:
     Sampling() {}
 
     Shape* shape_;
-    vtkIdType numberOfPoints_;
 };
 
 #endif /* defined(__ShapeAnalyzer__ShapeSampling__) */

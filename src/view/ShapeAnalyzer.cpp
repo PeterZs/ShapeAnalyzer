@@ -541,7 +541,8 @@ void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
         FarthestPointSampling* fps = (FarthestPointSampling*) Factory<Sampling>::getInstance()->create("fps");
         fps->setMetric(m);
         fps->setSource(source);
-        fps->initialize(shape, numberOfSegments);
+        fps->setNumberOfPoints(numberOfSegments);
+        fps->initialize(shape);
         ((VoronoiCellSegmentation*) segmentation)->setMetric(m);
         ((VoronoiCellSegmentation*) segmentation)->setSampling(fps);
         

@@ -117,11 +117,6 @@ class qtPointCorrespondencesTab;
 class qtFaceCorrespondencesTab;
 class qtShapeInterpolationTab;
 
-// needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
-// the elements can be made.
-struct ShapeComparator {
-    bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
-};
 
 ///
 /// \brief Manages the interaction with the GUI.
@@ -133,8 +128,8 @@ struct ShapeComparator {
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
     
-    // needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
-    // the elements can be made.
+    /// \brief needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
+    /// the elements can be made.
     struct ShapeComparator {
         bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
     };
@@ -233,7 +228,7 @@ public:
     /// correspondences. A random subsample of size size is chosen from faceCorrespondenceData_ and
     /// visualised (see HashMap for details about the random subset). This includes creating size many
     /// FaceCorrespondence objects.
-    /// @param size size of the subsample
+    /// @param size of the subsample
     void sampleFaceCorrespondences(unsigned int size);
     /// \brief Deletes all point correspondences.
     /// \details This includes deleting all PointCorrespondence and PointCorrespondenceData objects.

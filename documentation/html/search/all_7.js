@@ -10,5 +10,6 @@ var searchData=
   ['hashmap_3c_20vtkactor_20_2a_2c_20pointcorrespondence_20_2a_20_3e',['HashMap&lt; vtkActor *, PointCorrespondence * &gt;',['../class_hash_map.html',1,'']]],
   ['hashmap_3c_20vtkactor_20_2a_2c_20shape_20_2a_20_3e',['HashMap&lt; vtkActor *, Shape * &gt;',['../class_hash_map.html',1,'']]],
   ['heatdiffusion',['HeatDiffusion',['../class_heat_diffusion.html',1,'']]],
-  ['heatkernelsignature',['HeatKernelSignature',['../class_heat_kernel_signature.html',1,'']]]
+  ['heatkernelsignature',['HeatKernelSignature',['../class_heat_kernel_signature.html',1,'']]],
+  ['hidecorrespondence',['hideCorrespondence',['../class_shape_analyzer.html#a57f15af0c9408e7f81254b0b6b354282',1,'ShapeAnalyzer']]]
 ];

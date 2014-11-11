@@ -86,40 +86,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">PointCorrespondenceData.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">//  PointCorrespondeceData.h</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//  ShapeAnalyzer</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//  Created by Emanuel Laude on 08.05.14.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef PointCorrespondeceData_H</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define PointCorrespondeceData_H</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;CorrespondenceData.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">//serves as a marker class to ensure that variable &quot;HashMap&lt;...&gt; pointCorrespondences&quot; only contains point correspondences</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_point_correspondence_data.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_point_correspondence_data.html">PointCorrespondenceData</a> : <span class="keyword">public</span> <a class="code" href="class_correspondence_data.html">CorrespondenceData</a> {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="class_point_correspondence_data.html">PointCorrespondenceData</a>(vtkIdType <span class="keywordtype">id</span>) : <a class="code" href="class_correspondence_data.html#a07e83374f490dc9039396a31561bd32a">CorrespondenceData</a>(<span class="keywordtype">id</span>) {</div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef PointCorrespondeceData_H</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define PointCorrespondeceData_H</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;CorrespondenceData.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_point_correspondence_data.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_point_correspondence_data.html">PointCorrespondenceData</a> : <span class="keyword">public</span> <a class="code" href="class_correspondence_data.html">CorrespondenceData</a> {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_point_correspondence_data.html#adc639a5dff9489880a880bb990befd0e">   18</a></span>&#160;    <a class="code" href="class_point_correspondence_data.html#adc639a5dff9489880a880bb990befd0e">PointCorrespondenceData</a>(vtkIdType <span class="keywordtype">id</span>) : <a class="code" href="class_correspondence_data.html">CorrespondenceData</a>(id) {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    }</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">   21</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">string</span> <a class="code" href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">getType</a>() {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;PointCorrespondenceData&quot;</span>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(PointCorrespondeceData_H) */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="class_point_correspondence_data_html_afe00b9700744499a366075346025e41a"><div class="ttname"><a href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">PointCorrespondenceData::getType</a></div><div class="ttdeci">virtual string getType()</div><div class="ttdoc">Virtual method, returns a string that describes the type of correspondence, i.e. point correspondence...</div><div class="ttdef"><b>Definition:</b> PointCorrespondenceData.h:21</div></div>
-<div class="ttc" id="class_point_correspondence_data_html"><div class="ttname"><a href="class_point_correspondence_data.html">PointCorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> PointCorrespondenceData.h:16</div></div>
-<div class="ttc" id="class_correspondence_data_html_a07e83374f490dc9039396a31561bd32a"><div class="ttname"><a href="class_correspondence_data.html#a07e83374f490dc9039396a31561bd32a">CorrespondenceData::CorrespondenceData</a></div><div class="ttdeci">CorrespondenceData(vtkIdType id)</div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:101</div></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">   22</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">string</span> <a class="code" href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">getType</a>() {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;PointCorrespondenceData&quot;</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(PointCorrespondeceData_H) */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="class_point_correspondence_data_html_afe00b9700744499a366075346025e41a"><div class="ttname"><a href="class_point_correspondence_data.html#afe00b9700744499a366075346025e41a">PointCorrespondenceData::getType</a></div><div class="ttdeci">virtual string getType()</div><div class="ttdoc">Returns "PointCorrespondenceData". </div><div class="ttdef"><b>Definition:</b> PointCorrespondenceData.h:22</div></div>
+<div class="ttc" id="class_point_correspondence_data_html_adc639a5dff9489880a880bb990befd0e"><div class="ttname"><a href="class_point_correspondence_data.html#adc639a5dff9489880a880bb990befd0e">PointCorrespondenceData::PointCorrespondenceData</a></div><div class="ttdeci">PointCorrespondenceData(vtkIdType id)</div><div class="ttdoc">Basic Constructor. </div><div class="ttdef"><b>Definition:</b> PointCorrespondenceData.h:18</div></div>
+<div class="ttc" id="class_point_correspondence_data_html"><div class="ttname"><a href="class_point_correspondence_data.html">PointCorrespondenceData</a></div><div class="ttdoc">Stores multi correspondences between points of an arbitrary number of shapes. </div><div class="ttdef"><b>Definition:</b> PointCorrespondenceData.h:13</div></div>
 <div class="ttc" id="class_correspondence_data_html"><div class="ttname"><a href="class_correspondence_data.html">CorrespondenceData</a></div><div class="ttdef"><b>Definition:</b> CorrespondenceData.h:23</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 11 2014 14:02:38 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

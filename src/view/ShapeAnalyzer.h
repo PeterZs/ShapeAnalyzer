@@ -1,10 +1,3 @@
-///
-/// \brief Manages the interaction with the GUI.
-/// \details TODO
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_H
 #define ShapeAnalyzer_H
 
@@ -129,6 +122,13 @@ class qtShapeInterpolationTab;
 struct ShapeComparator {
     bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
 };
+
+///
+/// \brief Manages the interaction with the GUI.
+/// \details TODO
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
@@ -261,17 +261,32 @@ public:
     
     
 private slots:
-    //QT slots
+    ///@{
+    /// Terminates the program.
     virtual void slotExit();
+    /// Resets the camera to its default settings and renders the vtkWidget.
+    /// This does not effect individual transformations of the shapes.
     virtual void slotResetCamera();
+    /// Clears all data structures and the vtkWidget.
     virtual void slotClear();
 
+    /// Opens the Help-Window.
     virtual void slotShowHelp();
+    /// Opens the Settings-Window.
     virtual void slotShowSettings();
+    /// \brief Opens a context menu with shape interactions on the currently selected shape.
+    /// \details The shape will be the currently selected one in the qtListWidget listing all shapes.
+    /// Nothing will happen if no shape is selected there.
     virtual void slotShowContextMenuShapes(const QPoint& pos);
+    /// \brief Opens a context menu with correspondence interactions on the currently selected visible correspondence.
+    /// \details The correspondence will be the currently selected one in the qtListWidget listing all visible
+    /// correspondences.
+    /// Nothing will happen if no correspondence is selected there.
     virtual void slotShowContextMenuCorrespondences(const QPoint& pos);
 
+    /// Removes any selections that were made with the CorrespondencePicker so far.
     virtual void slotClearCurrentSelection();
+    /// Hides all visible correspondences.
     virtual void slotHideCorrespondences();
 
     virtual void slotToggleBoxWidget();
@@ -306,11 +321,15 @@ private slots:
     
     virtual void slotTabCorrespondencesCurrentChanged(int);
     
+    ///@}
+    
     //vtk widget slots
+    ///@{
     virtual void vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
     virtual void vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
 
     virtual void vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
+    ///@}
 private:
     //QT
     void qtConnectListCorrespondences();

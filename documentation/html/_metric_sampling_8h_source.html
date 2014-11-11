@@ -86,36 +86,30 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">MetricSampling.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">//  MetricSampling.h</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//  ShapeAnalyzer</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//  Created by Emanuel Laude on 26.08.14.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef __ShapeAnalyzer__MetricSampling__</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define __ShapeAnalyzer__MetricSampling__</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;Sampling.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../metric/Metric.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="class_metric_sampling.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_metric_sampling.html">MetricSampling</a> : <span class="keyword">public</span> <a class="code" href="class_sampling.html">Sampling</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> setMetric(<a class="code" href="class_metric.html">Metric</a>* metric);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="class_metric.html">Metric</a>* metric_;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(__ShapeAnalyzer__MetricSampling__) */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="class_metric_sampling_html"><div class="ttname"><a href="class_metric_sampling.html">MetricSampling</a></div><div class="ttdef"><b>Definition:</b> MetricSampling.h:15</div></div>
-<div class="ttc" id="class_sampling_html"><div class="ttname"><a href="class_sampling.html">Sampling</a></div><div class="ttdef"><b>Definition:</b> Sampling.h:21</div></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef __ShapeAnalyzer__MetricSampling__</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define __ShapeAnalyzer__MetricSampling__</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;Sampling.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;../metric/Metric.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="class_metric_sampling.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_metric_sampling.html">MetricSampling</a> : <span class="keyword">public</span> <a class="code" href="class_sampling.html">Sampling</a> {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_metric_sampling.html#aff86fe5597a6d0f49f07595cd2770296">setMetric</a>(<a class="code" href="class_metric.html">Metric</a>* metric);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="class_metric.html">Metric</a>* metric_;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;};</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* defined(__ShapeAnalyzer__MetricSampling__) */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="class_metric_sampling_html"><div class="ttname"><a href="class_metric_sampling.html">MetricSampling</a></div><div class="ttdoc">Abstract class for samplings that are based on a metric. </div><div class="ttdef"><b>Definition:</b> MetricSampling.h:11</div></div>
+<div class="ttc" id="class_metric_sampling_html_aff86fe5597a6d0f49f07595cd2770296"><div class="ttname"><a href="class_metric_sampling.html#aff86fe5597a6d0f49f07595cd2770296">MetricSampling::setMetric</a></div><div class="ttdeci">void setMetric(Metric *metric)</div><div class="ttdoc">Sets the metric. </div><div class="ttdef"><b>Definition:</b> MetricSampling.cpp:12</div></div>
+<div class="ttc" id="class_sampling_html"><div class="ttname"><a href="class_sampling.html">Sampling</a></div><div class="ttdef"><b>Definition:</b> Sampling.h:17</div></div>
 <div class="ttc" id="class_metric_html"><div class="ttname"><a href="class_metric.html">Metric</a></div><div class="ttdef"><b>Definition:</b> Metric.h:24</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 15 2014 14:04:26 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 11 2014 14:02:38 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

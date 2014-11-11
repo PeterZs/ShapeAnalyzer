@@ -2,7 +2,7 @@ var searchData=
 [
   ['facecoordinatecoloring',['FaceCoordinateColoring',['../class_face_coordinate_coloring.html',1,'FaceCoordinateColoring'],['../class_face_coordinate_coloring.html#a4fc5101b5447c9ac5f4ea293ed389d11',1,'FaceCoordinateColoring::FaceCoordinateColoring()']]],
   ['facecorrespondence',['FaceCorrespondence',['../class_face_correspondence.html',1,'']]],
-  ['facecorrespondencedata',['FaceCorrespondenceData',['../class_face_correspondence_data.html',1,'']]],
+  ['facecorrespondencedata',['FaceCorrespondenceData',['../class_face_correspondence_data.html',1,'FaceCorrespondenceData'],['../class_face_correspondence_data.html#a4890aed4edbf7842c051b121c30135bd',1,'FaceCorrespondenceData::FaceCorrespondenceData()']]],
   ['facecorrespondencepicker',['FaceCorrespondencePicker',['../class_face_correspondence_picker.html',1,'']]],
   ['factory',['Factory',['../class_factory.html',1,'']]],
   ['farthestpointsampling',['FarthestPointSampling',['../class_farthest_point_sampling.html',1,'']]],

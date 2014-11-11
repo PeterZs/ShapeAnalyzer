@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_sampling-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -95,22 +96,35 @@ Inheritance diagram for Sampling:</div>
  <div class="center">
   <img src="class_sampling.png" usemap="#Sampling_map" alt=""/>
   <map id="Sampling_map" name="Sampling_map">
-<area href="class_metric_sampling.html" alt="MetricSampling" shape="rect" coords="0,56,137,80"/>
+<area href="class_metric_sampling.html" title="Abstract class for samplings that are based on a metric. " alt="MetricSampling" shape="rect" coords="0,56,137,80"/>
 <area href="class_farthest_point_sampling.html" alt="FarthestPointSampling" shape="rect" coords="0,112,137,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7bdabbf5afa860cf22b616acfd1c80c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bdabbf5afa860cf22b616acfd1c80c4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType numberOfPoints)</td></tr>
-<tr class="separator:a7bdabbf5afa860cf22b616acfd1c80c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39e8d5b21ee213d0bcfd3f50c64974b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39e8d5b21ee213d0bcfd3f50c64974b9"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sampling.html#a39e8d5b21ee213d0bcfd3f50c64974b9">~Sampling</a> ()</td></tr>
+<tr class="memdesc:a39e8d5b21ee213d0bcfd3f50c64974b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual empty destructor. <br /></td></tr>
+<tr class="separator:a39e8d5b21ee213d0bcfd3f50c64974b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4643704f06d01c667fc71c2b08ca053"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sampling.html#ac4643704f06d01c667fc71c2b08ca053">initialize</a> (<a class="el" href="class_shape.html">Shape</a> *shape, vtkIdType numberOfPoints)</td></tr>
+<tr class="memdesc:ac4643704f06d01c667fc71c2b08ca053"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the sampling.  <a href="#ac4643704f06d01c667fc71c2b08ca053">More...</a><br /></td></tr>
+<tr class="separator:ac4643704f06d01c667fc71c2b08ca053"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af696e2f26de2992ec95b1711c71875e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af696e2f26de2992ec95b1711c71875e5"></a>
-virtual vtkSmartPointer&lt; vtkIdList &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPoints</b> ()=0</td></tr>
+virtual vtkSmartPointer&lt; vtkIdList &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sampling.html#af696e2f26de2992ec95b1711c71875e5">getPoints</a> ()=0</td></tr>
+<tr class="memdesc:af696e2f26de2992ec95b1711c71875e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of the ids of the samples points. <br /></td></tr>
 <tr class="separator:af696e2f26de2992ec95b1711c71875e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94772f103884bf1ee7f43f1b004af348"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94772f103884bf1ee7f43f1b004af348"></a>
-<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getShape</b> ()</td></tr>
+<a class="el" href="class_shape.html">Shape</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sampling.html#a94772f103884bf1ee7f43f1b004af348">getShape</a> ()</td></tr>
+<tr class="memdesc:a94772f103884bf1ee7f43f1b004af348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the shape. <br /></td></tr>
 <tr class="separator:a94772f103884bf1ee7f43f1b004af348"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:af9663da4dc646edd685544522fa39c0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9663da4dc646edd685544522fa39c0f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sampling.html#af9663da4dc646edd685544522fa39c0f">Sampling</a> ()</td></tr>
+<tr class="memdesc:af9663da4dc646edd685544522fa39c0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic constructor. <br /></td></tr>
+<tr class="separator:af9663da4dc646edd685544522fa39c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -121,14 +135,51 @@ Protected Attributes</h2></td></tr>
 vtkIdType&#160;</td><td class="memItemRight" valign="bottom"><b>numberOfPoints_</b></td></tr>
 <tr class="separator:a76155df4d929d58e47835a89142bb358"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ac4643704f06d01c667fc71c2b08ca053"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Sampling::initialize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkIdType&#160;</td>
+          <td class="paramname"><em>numberOfPoints</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes the sampling. </p>
+<dl class="section note"><dt>Note</dt><dd>TODO Why does this numberOfPoints is here? Does not make sense for epsilon-sampling for example. </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/samplings/<a class="el" href="_sampling_8h_source.html">Sampling.h</a></li>
-<li>src/domain/samplings/Sampling.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 11 2014 14:02:38 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

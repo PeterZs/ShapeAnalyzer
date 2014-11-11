@@ -84,7 +84,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-slots">Private Slots</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_shape_analyzer-members.html">List of all members</a>  </div>
@@ -92,6 +91,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">ShapeAnalyzer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Manages the interaction with the GUI.  
+ <a href="class_shape_analyzer.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_shape_analyzer_8h_source.html">ShapeAnalyzer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for ShapeAnalyzer:</div>
 <div class="dyncontent">
@@ -108,68 +112,80 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5395b2f99a8b319aa1253b1f78441227"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5395b2f99a8b319aa1253b1f78441227"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>showCorrespondence</b> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
-<tr class="separator:a5395b2f99a8b319aa1253b1f78441227"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57f15af0c9408e7f81254b0b6b354282"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57f15af0c9408e7f81254b0b6b354282"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>hideCorrespondence</b> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
-<tr class="separator:a57f15af0c9408e7f81254b0b6b354282"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef90f693092ea6d46d3543e1770e095b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aef90f693092ea6d46d3543e1770e095b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteCorrespondence</b> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
-<tr class="separator:aef90f693092ea6d46d3543e1770e095b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf67cbc53e62cca5b65a230d88708902"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf67cbc53e62cca5b65a230d88708902"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSelected</b> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
-<tr class="separator:acf67cbc53e62cca5b65a230d88708902"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1c47303779d1b08bb1a1df5d6ec3662"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1c47303779d1b08bb1a1df5d6ec3662"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>samplePointCorrespondences</b> (unsigned int size)</td></tr>
-<tr class="separator:ab1c47303779d1b08bb1a1df5d6ec3662"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eaddb1463e34e7d451148823d1687ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9eaddb1463e34e7d451148823d1687ef"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>sampleFaceCorrespondences</b> (unsigned int size)</td></tr>
-<tr class="separator:a9eaddb1463e34e7d451148823d1687ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa23b5c23bbe066fc5a9903e73e507b22"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa23b5c23bbe066fc5a9903e73e507b22"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>clearPointCorrespondences</b> ()</td></tr>
-<tr class="separator:aa23b5c23bbe066fc5a9903e73e507b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e5a2284dd96c95e6cb34ce7ce61d3e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e5a2284dd96c95e6cb34ce7ce61d3e9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>clearFaceCorrespondences</b> ()</td></tr>
-<tr class="separator:a2e5a2284dd96c95e6cb34ce7ce61d3e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb73f2981b546ea55f4a3e834133c055"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb73f2981b546ea55f4a3e834133c055"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkAddShape</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
-<tr class="separator:acb73f2981b546ea55f4a3e834133c055"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6224774de9e0dda3baef0ae4b35983ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6224774de9e0dda3baef0ae4b35983ea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>showShape</b> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memitem:ad90e518468c5c599c82b4fe06216fd5a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#ad90e518468c5c599c82b4fe06216fd5a">ShapeAnalyzer</a> ()</td></tr>
+<tr class="memdesc:ad90e518468c5c599c82b4fe06216fd5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad90e518468c5c599c82b4fe06216fd5a">More...</a><br /></td></tr>
+<tr class="separator:ad90e518468c5c599c82b4fe06216fd5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aeaccdf54f1d23a982518aade8ac512"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a6aeaccdf54f1d23a982518aade8ac512">~ShapeAnalyzer</a> ()</td></tr>
+<tr class="memdesc:a6aeaccdf54f1d23a982518aade8ac512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a6aeaccdf54f1d23a982518aade8ac512">More...</a><br /></td></tr>
+<tr class="separator:a6aeaccdf54f1d23a982518aade8ac512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6224774de9e0dda3baef0ae4b35983ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a6224774de9e0dda3baef0ae4b35983ea">showShape</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:a6224774de9e0dda3baef0ae4b35983ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the shape to the gui.  <a href="#a6224774de9e0dda3baef0ae4b35983ea">More...</a><br /></td></tr>
 <tr class="separator:a6224774de9e0dda3baef0ae4b35983ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a954d54ae2c6db1eb4afa37baf0d66bcd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> ()</td></tr>
+<tr class="memitem:acb73f2981b546ea55f4a3e834133c055"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb73f2981b546ea55f4a3e834133c055"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#acb73f2981b546ea55f4a3e834133c055">vtkAddShape</a> (<a class="el" href="class_shape.html">Shape</a> *shape)</td></tr>
+<tr class="memdesc:acb73f2981b546ea55f4a3e834133c055"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds this shape to the vtkWidget only. The shape is added to the vtkWidget, but not to the shape data structures of <a class="el" href="class_shape_analyzer.html" title="Manages the interaction with the GUI. ">ShapeAnalyzer</a>. Use this if you do not want the user to interact with the shape further. The shape can be deleted by accessing the vtk objects referenced in the shape. This will not trigger qtTabs inheriting from <a class="el" href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. ">qtShapesTab</a>. If you want to properly add the shape to the GUI use the function <a class="el" href="class_shape_analyzer.html#a6224774de9e0dda3baef0ae4b35983ea" title="Adds the shape to the gui. ">showShape(Shape*)</a> instead. <br /></td></tr>
+<tr class="separator:acb73f2981b546ea55f4a3e834133c055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a954d54ae2c6db1eb4afa37baf0d66bcd">render</a> ()</td></tr>
+<tr class="memdesc:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rerenders the vtkWidget scene.  <a href="#a954d54ae2c6db1eb4afa37baf0d66bcd">More...</a><br /></td></tr>
 <tr class="separator:a954d54ae2c6db1eb4afa37baf0d66bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
+<tr class="memitem:a5395b2f99a8b319aa1253b1f78441227"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a5395b2f99a8b319aa1253b1f78441227">showCorrespondence</a> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
+<tr class="memdesc:a5395b2f99a8b319aa1253b1f78441227"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visualizes the correspondence data in the GUI.  <a href="#a5395b2f99a8b319aa1253b1f78441227">More...</a><br /></td></tr>
+<tr class="separator:a5395b2f99a8b319aa1253b1f78441227"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57f15af0c9408e7f81254b0b6b354282"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a57f15af0c9408e7f81254b0b6b354282">hideCorrespondence</a> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
+<tr class="memdesc:a57f15af0c9408e7f81254b0b6b354282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the correspondence data in the GUI, if it was visible before.  <a href="#a57f15af0c9408e7f81254b0b6b354282">More...</a><br /></td></tr>
+<tr class="separator:a57f15af0c9408e7f81254b0b6b354282"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef90f693092ea6d46d3543e1770e095b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#aef90f693092ea6d46d3543e1770e095b">deleteCorrespondence</a> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
+<tr class="memdesc:aef90f693092ea6d46d3543e1770e095b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes this correspondence data as well as any visualization of it.  <a href="#aef90f693092ea6d46d3543e1770e095b">More...</a><br /></td></tr>
+<tr class="separator:aef90f693092ea6d46d3543e1770e095b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf67cbc53e62cca5b65a230d88708902"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#acf67cbc53e62cca5b65a230d88708902">setSelected</a> (<a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *data)</td></tr>
+<tr class="memdesc:acf67cbc53e62cca5b65a230d88708902"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks the visualisation of the given correspondence data as selected if possible.  <a href="#acf67cbc53e62cca5b65a230d88708902">More...</a><br /></td></tr>
+<tr class="separator:acf67cbc53e62cca5b65a230d88708902"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1c47303779d1b08bb1a1df5d6ec3662"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#ab1c47303779d1b08bb1a1df5d6ec3662">samplePointCorrespondences</a> (unsigned int size)</td></tr>
+<tr class="memdesc:ab1c47303779d1b08bb1a1df5d6ec3662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visualises a subset of the given size of the point correspondence data.  <a href="#ab1c47303779d1b08bb1a1df5d6ec3662">More...</a><br /></td></tr>
+<tr class="separator:ab1c47303779d1b08bb1a1df5d6ec3662"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eaddb1463e34e7d451148823d1687ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a9eaddb1463e34e7d451148823d1687ef">sampleFaceCorrespondences</a> (unsigned int size)</td></tr>
+<tr class="memdesc:a9eaddb1463e34e7d451148823d1687ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visualises a subset of the given size of the face correspondence data.  <a href="#a9eaddb1463e34e7d451148823d1687ef">More...</a><br /></td></tr>
+<tr class="separator:a9eaddb1463e34e7d451148823d1687ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa23b5c23bbe066fc5a9903e73e507b22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#aa23b5c23bbe066fc5a9903e73e507b22">clearPointCorrespondences</a> ()</td></tr>
+<tr class="memdesc:aa23b5c23bbe066fc5a9903e73e507b22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes all point correspondences.  <a href="#aa23b5c23bbe066fc5a9903e73e507b22">More...</a><br /></td></tr>
+<tr class="separator:aa23b5c23bbe066fc5a9903e73e507b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e5a2284dd96c95e6cb34ce7ce61d3e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a2e5a2284dd96c95e6cb34ce7ce61d3e9">clearFaceCorrespondences</a> ()</td></tr>
+<tr class="memdesc:a2e5a2284dd96c95e6cb34ce7ce61d3e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes all face correspondences.  <a href="#a2e5a2284dd96c95e6cb34ce7ce61d3e9">More...</a><br /></td></tr>
+<tr class="separator:a2e5a2284dd96c95e6cb34ce7ce61d3e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-slots"></a>
 Private Slots</h2></td></tr>
-<tr class="memitem:a1d101e5a75dbb78fde72ed151a99f409"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d101e5a75dbb78fde72ed151a99f409"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotExit</b> ()</td></tr>
+<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
+<tr class="memitem:a1d101e5a75dbb78fde72ed151a99f409"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a1d101e5a75dbb78fde72ed151a99f409">slotExit</a> ()</td></tr>
 <tr class="separator:a1d101e5a75dbb78fde72ed151a99f409"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0871b8e64cc3ee6f74c6de208ff3b21b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0871b8e64cc3ee6f74c6de208ff3b21b"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotResetCamera</b> ()</td></tr>
+<tr class="memitem:a0871b8e64cc3ee6f74c6de208ff3b21b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a0871b8e64cc3ee6f74c6de208ff3b21b">slotResetCamera</a> ()</td></tr>
 <tr class="separator:a0871b8e64cc3ee6f74c6de208ff3b21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35541b65505f823f9a03088a3035ffc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35541b65505f823f9a03088a3035ffc9"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotClear</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a35541b65505f823f9a03088a3035ffc9">slotClear</a> ()</td></tr>
+<tr class="memdesc:a35541b65505f823f9a03088a3035ffc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all data structures and the vtkWidget. <br /></td></tr>
 <tr class="separator:a35541b65505f823f9a03088a3035ffc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ffa6d22e8ab2edb54a30e3a242e2bda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ffa6d22e8ab2edb54a30e3a242e2bda"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowHelp</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a3ffa6d22e8ab2edb54a30e3a242e2bda">slotShowHelp</a> ()</td></tr>
+<tr class="memdesc:a3ffa6d22e8ab2edb54a30e3a242e2bda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens the Help-Window. <br /></td></tr>
 <tr class="separator:a3ffa6d22e8ab2edb54a30e3a242e2bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ea9d5a7c20cd62f40aca7b2887ddd8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ea9d5a7c20cd62f40aca7b2887ddd8d"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowSettings</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a2ea9d5a7c20cd62f40aca7b2887ddd8d">slotShowSettings</a> ()</td></tr>
+<tr class="memdesc:a2ea9d5a7c20cd62f40aca7b2887ddd8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens the Settings-Window. <br /></td></tr>
 <tr class="separator:a2ea9d5a7c20cd62f40aca7b2887ddd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fbfed6a3695bb006d72ac42bc169c69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6fbfed6a3695bb006d72ac42bc169c69"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowContextMenuShapes</b> (const QPoint &amp;pos)</td></tr>
+<tr class="memitem:a6fbfed6a3695bb006d72ac42bc169c69"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a6fbfed6a3695bb006d72ac42bc169c69">slotShowContextMenuShapes</a> (const QPoint &amp;pos)</td></tr>
+<tr class="memdesc:a6fbfed6a3695bb006d72ac42bc169c69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a context menu with shape interactions on the currently selected shape.  <a href="#a6fbfed6a3695bb006d72ac42bc169c69">More...</a><br /></td></tr>
 <tr class="separator:a6fbfed6a3695bb006d72ac42bc169c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b61a14ab8d90ee5e7a76da34d0e96b1"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotShowContextMenuCorrespondences</b> (const QPoint &amp;pos)</td></tr>
+<tr class="memitem:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#a1b61a14ab8d90ee5e7a76da34d0e96b1">slotShowContextMenuCorrespondences</a> (const QPoint &amp;pos)</td></tr>
+<tr class="memdesc:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a context menu with correspondence interactions on the currently selected visible correspondence.  <a href="#a1b61a14ab8d90ee5e7a76da34d0e96b1">More...</a><br /></td></tr>
 <tr class="separator:a1b61a14ab8d90ee5e7a76da34d0e96b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb1273627527c10a61e8e4f153f641a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb1273627527c10a61e8e4f153f641a5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotClearCurrentSelection</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#acb1273627527c10a61e8e4f153f641a5">slotClearCurrentSelection</a> ()</td></tr>
+<tr class="memdesc:acb1273627527c10a61e8e4f153f641a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes any selections that were made with the <a class="el" href="class_correspondence_picker.html">CorrespondencePicker</a> so far. <br /></td></tr>
 <tr class="separator:acb1273627527c10a61e8e4f153f641a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1de4a5b600cbeabd7ae504485f602ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1de4a5b600cbeabd7ae504485f602ff"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotHideCorrespondences</b> ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_shape_analyzer.html#af1de4a5b600cbeabd7ae504485f602ff">slotHideCorrespondences</a> ()</td></tr>
+<tr class="memdesc:af1de4a5b600cbeabd7ae504485f602ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides all visible correspondences. <br /></td></tr>
 <tr class="separator:af1de4a5b600cbeabd7ae504485f602ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa810c84ab3d9ee21e287a5255d2bad5b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa810c84ab3d9ee21e287a5255d2bad5b"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotToggleBoxWidget</b> ()</td></tr>
@@ -237,6 +253,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabMeshCh
 <tr class="memitem:ae8c30f52a211f0ce8dc4fddfca034134"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8c30f52a211f0ce8dc4fddfca034134"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>slotTabCorrespondencesCurrentChanged</b> (int)</td></tr>
 <tr class="separator:ae8c30f52a211f0ce8dc4fddfca034134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:a7e87dba49058422d8d5c8966183f7314"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e87dba49058422d8d5c8966183f7314"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>vtkClickHandler</b> (vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command)</td></tr>
 <tr class="separator:a7e87dba49058422d8d5c8966183f7314"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -412,6 +429,371 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>pickerCounter_</b></td
 vtkSmartPointer&lt; vtkScalarBarActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>scalarBar_</b></td></tr>
 <tr class="separator:ad2ae84b73c5afc8dc11c835c3fc255b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Manages the interaction with the GUI. </p>
+<p>TODO</p>
+<dl class="section author"><dt>Author</dt><dd>Emanuel Laude and Zorah Lähner </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ad90e518468c5c599c82b4fe06216fd5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ShapeAnalyzer::ShapeAnalyzer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor. </p>
+<p>Initializes all data structures, by default memory for 1000 visible point/face correspondences and 10,000 hidden point/face correspondences is allocated. All QT-Objects are connected are connected to their respective slots. Implemented abstract classes are registered in the respective factories (<a class="el" href="class_factory.html">Factory</a>). New implementation have to be added here to appear in the GUI. </p><dl class="section note"><dt>Note</dt><dd>TODO Move this to an extra class? The vtkWidget is initialized. Slepc is initialized. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6aeaccdf54f1d23a982518aade8ac512"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ShapeAnalyzer::~ShapeAnalyzer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Destructor. </p>
+<p>Deletes the <a class="el" href="class_correspondence_picker.html">CorrespondencePicker</a> and the Settings Dialog. Finalizes Slepc. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a2e5a2284dd96c95e6cb34ce7ce61d3e9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::clearFaceCorrespondences </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deletes all face correspondences. </p>
+<p>This includes deleting all <a class="el" href="class_face_correspondence.html">FaceCorrespondence</a> and <a class="el" href="class_face_correspondence_data.html" title="Stores multi correspondences between faces of an arbitrary number of shapes. ">FaceCorrespondenceData</a> objects. This will trigger all qtTabs inherting from qtCorrespondenceTab. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa23b5c23bbe066fc5a9903e73e507b22"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::clearPointCorrespondences </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deletes all point correspondences. </p>
+<p>This includes deleting all <a class="el" href="class_point_correspondence.html">PointCorrespondence</a> and <a class="el" href="class_point_correspondence_data.html" title="Stores multi correspondences between points of an arbitrary number of shapes. ">PointCorrespondenceData</a> objects. This will trigger all qtTabs inherting from qtCorrespondenceTab. </p>
+
+</div>
+</div>
+<a class="anchor" id="aef90f693092ea6d46d3543e1770e095b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::deleteCorrespondence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deletes this correspondence data as well as any visualization of it. </p>
+<p>Evaluates the type of <a class="el" href="class_correspondence_data.html">CorrespondenceData</a> and switches the visualisation mode to the right type. Searches for this correspondence data in the visible correspondences. Then the <a class="el" href="class_correspondence_data.html">CorrespondenceData</a> and <a class="el" href="class_correspondence.html">Correspondence</a> are removed from all data structures and the objects deleted. This will trigger all qtTabs inherting from qtCorrespondenceTab. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> that should be deleted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a57f15af0c9408e7f81254b0b6b354282"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::hideCorrespondence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Hides the correspondence data in the GUI, if it was visible before. </p>
+<p>Evaluates the type of <a class="el" href="class_correspondence_data.html">CorrespondenceData</a> and switches the visualisation mode to the right type. Then iterates over all visible <a class="el" href="class_correspondence.html">Correspondence</a> to search for the one corresponding to the given data. If one is found, it is hidden which means the Point/FaceCorrespondence object incl. the actors and vtk objects is deleted and removed from the point/faceCorrespondenceByActor_ data structure. If the data is not found, only the mode is switched. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> that should be hidden </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a954d54ae2c6db1eb4afa37baf0d66bcd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::render </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Rerenders the vtkWidget scene. </p>
+<p>Any changes made for example by qtTabs to Correspondences or Shapes are not instantly visible. Use this function after all changes are made to update the visualisation when you are not using any functions of <a class="el" href="class_shape_analyzer.html" title="Manages the interaction with the GUI. ">ShapeAnalyzer</a> to make the changes. (i.e. deleteCorrespondence will rerender by itself) </p>
+
+</div>
+</div>
+<a class="anchor" id="a9eaddb1463e34e7d451148823d1687ef"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::sampleFaceCorrespondences </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visualises a subset of the given size of the face correspondence data. </p>
+<p>Switches the visualisation mode to face correspondences and hides all previously visible correspondences. A random subsample of size size is chosen from faceCorrespondenceData_ and visualised (see <a class="el" href="class_hash_map.html">HashMap</a> for details about the random subset). This includes creating size many <a class="el" href="class_face_correspondence.html">FaceCorrespondence</a> objects. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>size of the subsample </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ab1c47303779d1b08bb1a1df5d6ec3662"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::samplePointCorrespondences </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visualises a subset of the given size of the point correspondence data. </p>
+<p>Switches the visualisation mode to point correspondences and hides all previously visible correspondences. A random subsample of size size is chosen from pointCorrespondenceData_ and visualised (see <a class="el" href="class_hash_map.html">HashMap</a> for details about the random subset). This includes creating size many <a class="el" href="class_point_correspondence.html">PointCorrespondence</a> objects. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>size of the subsample </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="acf67cbc53e62cca5b65a230d88708902"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::setSelected </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Marks the visualisation of the given correspondence data as selected if possible. </p>
+<p>Iterates over all visible correspondence until the one belonging to this data object is found. In the ListWidget the current row will be set to the corresponding row causing the correspondence to be marked red if visible. If no correspondence is found, nothing happens. </p>
+
+</div>
+</div>
+<a class="anchor" id="a5395b2f99a8b319aa1253b1f78441227"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::showCorrespondence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visualizes the correspondence data in the GUI. </p>
+<p>Public functions accessable by custom qtTabs. All of them rerender the vtkWidget.</p>
+<p>Evaluates the type of <a class="el" href="class_correspondence_data.html">CorrespondenceData</a> and creates either a <a class="el" href="class_point_correspondence.html">PointCorrespondence</a> or a <a class="el" href="class_face_correspondence.html">FaceCorrespondence</a> object. The new object is added to all necessary data structures and the visualization mode is switched to Point/ FaceCorrespondences respectively. The new correspondence will also be the one that is marked as selected. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td><a class="el" href="class_correspondence_data.html">CorrespondenceData</a> that should be visualized </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6224774de9e0dda3baef0ae4b35983ea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::showShape </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_shape.html">Shape</a> *&#160;</td>
+          <td class="paramname"><em>shape</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds the shape to the gui. </p>
+<p>Creates an vtkActor for this shape and adds it to the vtkWidget. Adds the <a class="el" href="class_shape.html">Shape</a> to all all datastructures managing shapes and rerenders the scene. This will trigger all qtTabs inheriting from <a class="el" href="classqt_shapes_tab.html" title="Abstract class for Tabs that include Shapes. ">qtShapesTab</a>. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1d101e5a75dbb78fde72ed151a99f409"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::slotExit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Terminates the program. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0871b8e64cc3ee6f74c6de208ff3b21b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::slotResetCamera </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Resets the camera to its default settings and renders the vtkWidget. This does not effect individual transformations of the shapes. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1b61a14ab8d90ee5e7a76da34d0e96b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::slotShowContextMenuCorrespondences </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opens a context menu with correspondence interactions on the currently selected visible correspondence. </p>
+<p>The correspondence will be the currently selected one in the qtListWidget listing all visible correspondences. Nothing will happen if no correspondence is selected there. </p>
+
+</div>
+</div>
+<a class="anchor" id="a6fbfed6a3695bb006d72ac42bc169c69"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ShapeAnalyzer::slotShowContextMenuShapes </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opens a context menu with shape interactions on the currently selected shape. </p>
+<p>The shape will be the currently selected one in the qtListWidget listing all shapes. Nothing will happen if no shape is selected there. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/view/<a class="el" href="_shape_analyzer_8h_source.html">ShapeAnalyzer.h</a></li>
 <li>src/view/ShapeAnalyzer.cpp</li>
@@ -419,7 +801,7 @@ vtkSmartPointer&lt; vtkScalarBarActor &gt;&#160;</td><td class="memItemRight" va
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 11 2014 14:02:38 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

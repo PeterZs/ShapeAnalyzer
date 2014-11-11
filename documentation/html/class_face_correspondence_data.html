@@ -88,6 +88,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">FaceCorrespondenceData Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Stores multi correspondences between faces of an arbitrary number of shapes.  
+ <a href="class_face_correspondence_data.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_face_correspondence_data_8h_source.html">FaceCorrespondenceData.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for FaceCorrespondenceData:</div>
 <div class="dyncontent">
@@ -100,12 +105,12 @@ Inheritance diagram for FaceCorrespondenceData:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4890aed4edbf7842c051b121c30135bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4890aed4edbf7842c051b121c30135bd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FaceCorrespondenceData</b> (vtkIdType id)</td></tr>
+<tr class="memitem:a4890aed4edbf7842c051b121c30135bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_correspondence_data.html#a4890aed4edbf7842c051b121c30135bd">FaceCorrespondenceData</a> (vtkIdType id)</td></tr>
+<tr class="memdesc:a4890aed4edbf7842c051b121c30135bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic Constructor.  <a href="#a4890aed4edbf7842c051b121c30135bd">More...</a><br /></td></tr>
 <tr class="separator:a4890aed4edbf7842c051b121c30135bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd6ce7468457b56e5e093915591a1b17"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd6ce7468457b56e5e093915591a1b17"></a>
 virtual string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_correspondence_data.html#abd6ce7468457b56e5e093915591a1b17">getType</a> ()</td></tr>
-<tr class="memdesc:abd6ce7468457b56e5e093915591a1b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual method, returns a string that describes the type of correspondence, i.e. point correspondence. <br /></td></tr>
+<tr class="memdesc:abd6ce7468457b56e5e093915591a1b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns "FaceCorrespondenceData". <br /></td></tr>
 <tr class="separator:abd6ce7468457b56e5e093915591a1b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_correspondence_data"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_correspondence_data')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_correspondence_data.html">CorrespondenceData</a></td></tr>
 <tr class="memitem:abdf278997d70f654647ab521589733f8 inherit pub_methods_class_correspondence_data"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdf278997d70f654647ab521589733f8"></a>
@@ -157,13 +162,49 @@ vtkIdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <tr class="memdesc:a5f5964ac0e1e46f9010dcef28f42bd35 inherit pro_attribs_class_correspondence_data"><td class="mdescLeft">&#160;</td><td class="mdescRight">correspondence id. <br /></td></tr>
 <tr class="separator:a5f5964ac0e1e46f9010dcef28f42bd35 inherit pro_attribs_class_correspondence_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Stores multi correspondences between faces of an arbitrary number of shapes. </p>
+<p>The main implementation can be seen in <a class="el" href="class_correspondence_data.html">CorrespondenceData</a>, this class purely insures that point and face correspondences can not be mixed up in some data structures (especially faceCorrespondencesData_ in <a class="el" href="class_shape_analyzer.html" title="Manages the interaction with the GUI. ">ShapeAnalyzer</a>). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a4890aed4edbf7842c051b121c30135bd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FaceCorrespondenceData::FaceCorrespondenceData </td>
+          <td>(</td>
+          <td class="paramtype">vtkIdType&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Basic Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>The final id of this correspondence data. It should be unique among all correspondence data, but this is not enforced. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/domain/correspondences/<a class="el" href="_face_correspondence_data_8h_source.html">FaceCorrespondenceData.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 15 2014 14:04:27 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 11 2014 14:02:38 for Shape Analyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

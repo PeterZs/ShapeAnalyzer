@@ -20,6 +20,11 @@
 
 using namespace std;
 
+///
+/// \brief Abstract class for the representation of a metric on the vertices of a shape.
+/// \details Besides a pure pairwise distance function getDistance(vtkIdType, vtkIdType) this class provides functionality to obtion distance vectors getAllDistances(ScalarPointAttribute& distances, vtkIdType source) containing the distances from one source to all other vertices or a functions to create voronoi cells and farthest point samplings.
+/// \author Emanuel Laude and Zorah Lähner
+///
 
 class Metric {
  

@@ -1,13 +1,3 @@
-///
-/// \brief Assigns a double value to each vertex of the shape.
-/// \details Additionally the class has static methods to transform
-/// ScalarPointAttributes into Petsc-Vectors and back, as well as
-/// create a ScalarPointAttribute out of a
-/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_ScalarPointAttribute_h
 #define ShapeAnalyzer_ScalarPointAttribute_h
 
@@ -19,6 +9,15 @@
 
 #include "../Shape.h"
 
+///
+/// \brief Assigns a double value to each vertex of the shape.
+/// \details Additionally the class has static methods to transform
+/// ScalarPointAttributes into Petsc-Vectors and back, as well as
+/// create a ScalarPointAttribute out of a
+/// \note Not finished. Maybe add a function to fill with values without petsc stuff?
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class ScalarPointAttribute {
     
 public:

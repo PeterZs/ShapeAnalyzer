@@ -13,11 +13,10 @@ using namespace std;
 /// \details Concrete classes are derived from an abstract superclass for example EuclideanMetric is derived from abstract class Metric. Moreover concrete classes
 /// have to provide both a create function that returns a new instance of this class and a getIdentifier function that returs a unique string that is used
 /// to register the concrete class in the factory.
+/// \tparam Abstract class for which the factory should be defined (for example Metric or LaplaceBeltramiSignature)
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
-
-
 template<class T>
 class Factory {
 public:

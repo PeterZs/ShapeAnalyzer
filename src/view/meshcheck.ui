@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
       <number>5</number>
      </property>
@@ -35,75 +35,72 @@
      <item>
       <widget class="QComboBox" name="comboBox"/>
      </item>
-     <item>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="labelAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="topMargin">
-        <number>10</number>
-       </property>
-       <property name="bottomMargin">
-        <number>10</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="checkTriangles">
-         <property name="text">
-          <string>Non-Triangles</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="checkConnectivity">
-         <property name="text">
-          <string>Connectivity</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="checkDegenerated">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Degenerated Elements</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="checkOrientation">
-         <property name="text">
-          <string>Triangle orientation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="checkBorders">
-         <property name="text">
-          <string>Borders</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCheckMesh">
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="topMargin">
+      <number>10</number>
+     </property>
+     <property name="bottomMargin">
+      <number>10</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="checkTriangles">
        <property name="text">
-        <string>Check Mesh</string>
+        <string>Non-Triangles</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="label_2">
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="checkConnectivity">
        <property name="text">
-        <string>Might take some time and memory.</string>
+        <string>Connectivity</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QTextBrowser" name="outputField"/>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="checkDegenerated">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Degenerated Elements</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="checkOrientation">
+       <property name="text">
+        <string>Triangle orientation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="checkBorders">
+       <property name="text">
+        <string>Borders</string>
+       </property>
+      </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonCheckMesh">
+     <property name="text">
+      <string>Check Mesh</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Might take some time and memory.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="outputField"/>
    </item>
   </layout>
  </widget>

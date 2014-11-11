@@ -22,7 +22,7 @@ using namespace std;
 
 ///
 /// \brief Abstract class for the representation of a metric on the vertices of a shape.
-/// \details Besides a pure pairwise distance function getDistance(vtkIdType, vtkIdType) this class provides functionality to obtion distance vectors getAllDistances(ScalarPointAttribute& distances, vtkIdType source) containing the distances from one source to all other vertices or a functions to create voronoi cells and farthest point samplings.
+/// \details Besides a pure pairwise distance function getDistance() this class provides functionality to obtion distance vectors getAllDistances(ScalarPointAttribute& distances, vtkIdType source) containing the distances from one source to all other vertices or a functions to create voronoi cells and farthest point samplings.
 /// \author Emanuel Laude and Zorah Lähner
 ///
 
@@ -45,8 +45,8 @@ public:
     /// the result is ordered by point ids
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) = 0;
     
-    // returns the id of the point with the greatest distance to all points
-    // in the source list
+    /// returns the id of the point with the greatest distance to all points
+    /// in the source list
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;
     
     // returns voronoi cells

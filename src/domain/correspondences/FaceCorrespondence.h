@@ -1,11 +1,3 @@
-//
-//  FaceCorrespondence.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 08.05.14.
-//
-//
-
 #ifndef FaceCorrespondence_H
 #define FaceCorrespondence_H
 
@@ -19,6 +11,13 @@
 #include "../HashMap.h"
 #include "../Shape.h"
 
+///
+/// \brief Class that represents a concrete FaceCorrespondence.
+///
+/// \details Implements the abstract functions initializeActor() and getCorrespondencePoint() of the superclass to provide a specific visualization behavior for face correspondences.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class FaceCorrespondence : public Correspondence {
 public:
     FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data);

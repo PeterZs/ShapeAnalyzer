@@ -26,54 +26,75 @@ using namespace std;
 /// \brief Abstract Class for Correspondences that are shown in the GUI.
 ///
 /// \details Contains a CorrespondenceData Pointer and can visualize this data
-/// in the GUI with lines and highlighted faces.
-/// \note TODO not finished
+/// in the GUI with lines and highlighted faces or points.
 ///
 class Correspondence {
 
 public:
+    /// \brief Virtual destructor.
     virtual ~Correspondence() {
         actors_.clear();
     }
     
+    /// \brief Initializes the internal data structures for visualization.
+    /// \details In case the CorrespondenceData object provided as an constructor argument is not empty it adds all the corresponding actors and lines.
     void initialize();
     
-    //apply current user transformation of shape to the reference points that belong to the transformed shape and update line source with the transformed point as well as the actors belonging to the corresponding faces or points.
+    /// \brief Transforms this correspondence in case the shape provided as a parameter is part of it.
+    /// \details To do so it applies the current user transformation of the shape to the original coordinates of the respective end point of the line representing the correspondence. Afterwards it updates the line with the transformed coordinates and sets the current user transformation of the actor representing the point or face of the transformed shape to the new one.
+    /// @param Shape * shape. The shape that was transformed by the user.
     void transform(Shape* shape);
     
+    
+    /// \brief Highlights this correspondence in case it was selected.
+    /// @param bool selected. Value is indicating whether the correspondence should be highlighted or not.
     void setSelected(bool selected);
 
-    //add another shape + face ID (or vertex ID) pair to this correspondence returns 1 if shape id combi has successfully been added (i.e. shape has not been selected twice). Returns 0 if shape equals last added shape and updates coordinates. Returns -1 if shape equals another shape that has already been added and is not equals to last added shape
+    /// \brief Adds another shape plus face ID (or vertex ID) pair to this correspondence.
+    /// \details Returns 1 if shape plus data id combination has successfully been added (shape has not been selected twice). Returns 0 if the shape equals the last added shape and updates the  coordinates of the lines end point with the new coordinates. Returns -1 if the shape is identical to another shape that has already been added before and the shape is not equals to the last added shape.
     int addShape(Shape* shape, vtkIdType);
     
-    void addShapes(unordered_map<Shape*, vtkIdType>& shapes);
-    
-    // getters
+
+    /// Returns the actor representing the line
     vtkActor* getLinesActor() {
         return linesActor_;
     }
     
+    /// Returns a vector of all shapes that are part of this correspondence.
     vector<Shape*>& getShapes() {
         return shapes_;
     }
     
+    /// Returns the CorrespondenceData object.
     CorrespondenceData* getData() {
         return data_;
     }
     
-    // vtk
+    /// Removes the correspondence from the renderer provided as a constructor argument.
     void removeFromRenderer();
-    void addToRenderer();
     
+    /// Adds the correspondence to the renderer provided as a contructor argument.
+    void addToRenderer();
 protected:
-    /// protected contructor since class is abstract
+    /// \brief Protected contructor since class is abstract. Empty CorrespondenceData. Call initialize afterwards.
+    /// @param vtkSmartPointer<vtkRenderer> renderer. The renderer to which the correspondence is added afterwards using the function addToRenderer().
+    /// @param CorrespondenceData * data. An empty CorrespondenceData object.
+    
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data);
-    /// protected contructor since class is abstract
+    /// \brief Protected contructor since class is abstract. To call when the CorrespondenceData is not empty. Call initialize afterwards.
+    /// @param vtkSmartPointer<vtkRenderer> renderer. The renderer to which the correspondence is added afterwards using addToRenderer().
+    /// @param CorrespondenceData * data. A CorrespondenceData object containing the actual correspondence data (vector of shape IDs and point or face IDs).
+    /// @param HashMap<vtkActor*, Shape *>& shapes. A list of shapes. Needed to get the actual Shape object from the shapeID provided via the CorrespondenceData object.
     Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
     
+    /// \brief Abstract protected function that initializes the actor representing either a face or a point correspondence. Implemented by FaceCorrespondence or PointCorrespondence.
     virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType) = 0;
     
-    /// \note TODO
+    /// \brief Abstract protected function that returns the coordinates of the lines end point given a Shape and a point or vertex ID. Implemented by FaceCorrespondence or PointCorrespondence.
+    /// \details FaceCorrespondence returns the center of the triangle face as an end point. PointCorrespondence simply returns the coordinates of the point. This function is used internally by the functions initialize() or addShape() to construct the correspondence lines.
+    /// @param double point[3]. The 3D coordinates of the point that is returned.
+    /// @param Shape * shape. The shape on which the point is located.
+    /// @param vtkIdType id. The point or face ID.
     virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType) = 0;
     
     /// \brief Renderer.

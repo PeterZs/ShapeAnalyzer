@@ -17,6 +17,13 @@
 #include "../HashMap.h"
 #include "../Shape.h"
 
+///
+/// \brief Class that represents a concrete PointCorrespondence.
+///
+/// \details Implements the abstract functions initializeActor() and getCorrespondencePoint() of the superclass to provide a specific visualization behavior for point correspondences.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class PointCorrespondence : public Correspondence {
 public:
     PointCorrespondence(vtkSmartPointer<vtkRenderer> renderer, PointCorrespondenceData* data);

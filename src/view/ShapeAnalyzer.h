@@ -107,7 +107,7 @@
 #include "../domain/samplings/FarthestPointSampling.h"
 
 #include "ui_help.h"
-#include "ui_settings.h"
+#include "ui_openshape.h"
 #include "ui_saveScreenshot.h"
 #include "ui_ShapeAnalyzer.h"
 
@@ -175,12 +175,11 @@ public:
     /// Slepc is initialized.
     ShapeAnalyzer();
     /// \brief Destructor.
-    /// \details Deletes the CorrespondencePicker and the Settings Dialog.
+    /// \details Deletes the CorrespondencePicker.
     /// Finalizes Slepc.
     ~ShapeAnalyzer() {
 
         delete correspondencePicker_;
-        delete dialogSettings_;
         
         SlepcFinalize();
     };
@@ -272,8 +271,6 @@ private slots:
 
     /// Opens the Help-Window.
     virtual void slotShowHelp();
-    /// Opens the Settings-Window.
-    virtual void slotShowSettings();
     /// \brief Opens a context menu with shape interactions on the currently selected shape.
     /// \details The shape will be the currently selected one in the qtListWidget listing all shapes.
     /// Nothing will happen if no shape is selected there.
@@ -394,8 +391,6 @@ private:
     /// Everything else will be handled normally by qt.
     bool eventFilter(QObject *object, QEvent *event);
     
-    void qtInitializeSettings();
-    
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
     void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
@@ -435,10 +430,13 @@ private:
 
     
     
-    //index shapes & correspondences by their actors. Faster access in linear time worst case. Usually constant time.
+    /// \brief Maps the vtkActor pointer to a shape pointer.
+    /// \details Access in linear time worst case. Usually constant time.
     HashMap<vtkActor*, Shape*> shapesByActor_;
     
+    /// Maps the vtkActor to a FaceCorrespondence pointer.
     HashMap<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
+    /// Maps the vtkActor to a PointCorrespondence pointer.
     HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
     // all face and point correspondences data, the bool indicates if for the data there exists a corresponding Correspondence object in "...CorrespondencesByActor_". In case we are in "view PointCorrespondences mode" this correspondence object is also visible in the qvtkWidget
@@ -457,10 +455,6 @@ private:
     QActionGroup* actionGroupMode_;
     QActionGroup* actionGroupShapeDisplayMode_;
     QActionGroup* actionGroupProjectionMode_;
-    
-    Ui_Settings uiSettings_;
-    QDialog*    dialogSettings_;
-    
     
     
     HashMap<Shape*, vtkSmartPointer<vtkIdList> > segmentations_;

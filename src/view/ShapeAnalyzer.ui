@@ -215,7 +215,7 @@
      <rect>
       <x>542</x>
       <y>101</y>
-      <width>167</width>
+      <width>159</width>
       <height>65</height>
      </rect>
     </property>
@@ -245,8 +245,6 @@
     <property name="title">
      <string>Settings</string>
     </property>
-    <addaction name="actionSettings"/>
-    <addaction name="separator"/>
     <addaction name="actionShowSurface"/>
     <addaction name="actionShowSurfaceNormals"/>
     <addaction name="actionShowTriangulatedMesh"/>

@@ -85,9 +85,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotShowHelp()));
     
-    connect(this->actionSettings,                   SIGNAL(triggered()),
-            this,                                   SLOT(slotShowSettings()));
-    
     connect(this->actionSetBackgroundColor,         SIGNAL(triggered()),
             this,                                   SLOT(slotSetBackgroundColor()));
     
@@ -152,8 +149,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     
     this->vtkSetup();
-    
-    qtInitializeSettings();
     
     //Initialize Slepc for eigenfunction computation
     SlepcInitializeNoArguments();
@@ -248,17 +243,6 @@ void ShapeAnalyzer::qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>
     for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
         entries.add(voronoiCellsMenu->addAction(it->second.c_str()), it->first);
     }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtInitializeSettings() {
-    dialogSettings_ = new QDialog(this);
-    
-    //Ui_Settings settingsUi;
-    uiSettings_.setupUi(dialogSettings_);
-    
-    uiSettings_.checkTriangulation->setChecked(true);
-    uiSettings_.checkBoxDegenerated->setChecked(true);
 }
 
 
@@ -1226,14 +1210,6 @@ void ShapeAnalyzer::slotShowHelp() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotShowSettings() {
-    
-    dialogSettings_->show();
-    
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenScene() {
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
@@ -1614,7 +1590,7 @@ void ShapeAnalyzer::slotSaveScreenshot() {
         vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
         windowToImageFilter->SetInput(renderer_->GetRenderWindow());
         // transparency settings
-        if (!(uiSettings_.checkNoTransparency->isChecked()))
+        if (!(ui.checkBoxTransparency->isChecked()))
             windowToImageFilter->SetInputBufferTypeToRGBA(); //also record the alpha (transparency) channel
         windowToImageFilter->ShouldRerenderOff();
         windowToImageFilter->Update();
@@ -1985,16 +1961,24 @@ void ShapeAnalyzer::vtkAddShape(Shape* shape) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::openShape(vtkPolyDataAlgorithm* reader, string name) {
     // the following will filter the shape for certain properties
-    // filters can be choosen in the settings ui
     vtkAlgorithmOutput* output;
     output = reader->GetOutputPort();
+    
+    // dialog for options
+    QDialog* dialog = new QDialog(this, 0);
+    Ui_OpenShape ui;
+    ui.setupUi(dialog);
+    
+    if(dialog->exec() == QDialog::Rejected) {
+        return;
+    }
     
     
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
     
     // filter to triangulate shape
-    if(uiSettings_.checkTriangulation->isChecked()) {
+    if(ui.checkTriangulation->isChecked()) {
         //make sure that all faces are triangles
         triangleFilter->SetInputConnection(output);
         triangleFilter->Update();
@@ -2002,7 +1986,7 @@ void ShapeAnalyzer::openShape(vtkPolyDataAlgorithm* reader, string name) {
     }
 
     //Remove all isolated points.
-    if(uiSettings_.checkBoxDegenerated->isChecked()) {
+    if(ui.checkDegeneratedElements->isChecked()) {
         cleanPolyData->SetInputConnection(output);
         cleanPolyData->Update();
         output = cleanPolyData->GetOutputPort();
@@ -2010,7 +1994,7 @@ void ShapeAnalyzer::openShape(vtkPolyDataAlgorithm* reader, string name) {
 
     
     //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
-    if(!uiSettings_.checkBoxComponents->isChecked()) {
+    if(ui.checkLargestComponent->isChecked()) {
         vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
         vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
         connectivityFilter->SetInputConnection(output);

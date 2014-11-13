@@ -112,5 +112,6 @@ private:
     geodesicFaces*                      faces_;
     /// @}
 };
+    
 
 #endif /* defined(__ShapeAnalyzer__GeodesicMetric__) */

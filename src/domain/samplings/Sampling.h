@@ -1,7 +1,3 @@
-///
-/// \brief Abstract class for sub sampling points on shapes.
-///
-
 #ifndef __ShapeAnalyzer__ShapeSampling__
 #define __ShapeAnalyzer__ShapeSampling__
 
@@ -14,6 +10,9 @@
 
 using namespace std;
 
+///
+/// \brief Abstract class for sub sampling points on shapes.
+///
 class Sampling {
     
 public:

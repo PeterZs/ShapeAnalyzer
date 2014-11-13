@@ -1,11 +1,3 @@
-///
-/// \brief Colors the shape using the coordinates of the faces as indicators for the rgb value.
-/// \details The entries are the interpolated values of the vertices of each face
-/// but normalized to values between 0 and 255. The class inherits from CoordinateColoring
-/// the only overwritten function is the calculation of the color for each face.
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_FaceCoordinateColoring_h
 #define ShapeAnalyzer_FaceCoordinateColoring_h
 
@@ -21,6 +13,14 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnsignedCharArray.h>
 
+
+///
+/// \brief Colors the shape using the coordinates of the faces as indicators for the rgb value.
+/// \details The entries are the interpolated values of the vertices of each face
+/// but normalized to values between 0 and 255. The class inherits from CoordinateColoring
+/// the only overwritten function is the calculation of the color for each face.
+/// \author Emanuel Laude and Zorah Lähner
+///
 class FaceCoordinateColoring : public CoordinateColoring {
 public:
     /// \see CoordinateColoring::CoordinateColoring

@@ -1,10 +1,3 @@
-///
-/// \brief Colors the shape using the coordinates of the vertices as indicators for the rgb value.
-/// \details The entries are
-/// the coordinates of each vertex but normalized to values between 0 and 255.
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_CoordinateColoring_h
 #define ShapeAnalyzer_CoordinateColoring_h
 
@@ -19,6 +12,12 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnsignedCharArray.h>
 
+///
+/// \brief Colors the shape using the coordinates of the vertices as indicators for the rgb value.
+/// \details The entries are
+/// the coordinates of each vertex but normalized to values between 0 and 255.
+/// \author Emanuel Laude and Zorah Lähner
+///
 class CoordinateColoring : public Coloring {
 public:
     /// \brief Constructor.

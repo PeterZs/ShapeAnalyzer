@@ -1,16 +1,3 @@
-///
-/// \brief Colors the given shapes to visualize the given correspondences.
-/// \details The reference shape will be colored by coordinates using the CoordinateColoring class and
-/// all points with a corresponding point on another shape will be colored
-/// in the same way as the correspondence point on the reference shape.
-///
-/// Additionally it is possible to keep track of how many and which points are actually corresponding
-/// and if they are corresponding to multiple points on the reference shape.
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-///
-
 #ifndef __ShapeAnalyzer__CorrespondenceColoring__
 #define __ShapeAnalyzer__CorrespondenceColoring__
 
@@ -32,6 +19,18 @@
 
 using namespace std;
 
+///
+/// \brief Colors the given shapes to visualize the given correspondences.
+/// \details The reference shape will be colored by coordinates using the CoordinateColoring class and
+/// all points with a corresponding point on another shape will be colored
+/// in the same way as the correspondence point on the reference shape.
+///
+/// Additionally it is possible to keep track of how many and which points are actually corresponding
+/// and if they are corresponding to multiple points on the reference shape.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
+///
 class CorrespondenceColoring {
 public:
     /// \brief Constructor.

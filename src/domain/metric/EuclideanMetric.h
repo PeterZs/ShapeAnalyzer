@@ -35,5 +35,6 @@ public:
     virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
 };
+    
 
 #endif /* defined(__ShapeAnalyzer__EuclideanMetric__) */

@@ -1,16 +1,15 @@
-///
-///  \brief Abstract class for Tabs that include Shapes.
-///  \details Defines the trigger functions for new shapes, shapes changes and shape selection.
-///  Any tab that has to be updated in these events must inherit from this class.
-///
-///  \author Emanuel Laude
-///
-
 #ifndef ShapeAnalyzer_qtShapesTab_h
 #define ShapeAnalyzer_qtShapesTab_h
 
 #include "qtTab.h"
 
+///
+///  \brief Abstract class for Tabs that include Shapes.
+///  \details Defines the trigger functions for new shapes, shapes changes and shape selection.
+///  Any tab that has to be updated in these events must inherit from this class.
+///
+///  \author Emanuel Laude and Zorah Lähner
+///
 class qtShapesTab : public qtTab {
 public:
     /// \brief Virtual Destructor

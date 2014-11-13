@@ -1,14 +1,13 @@
-///
-/// \brief Abstract class for all sorts of colorings.
-///
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_Coloring_h
 #define ShapeAnalyzer_Coloring_h
 
 #include "../Shape.h"
 
+///
+/// \brief Abstract class for defining colors on shape surfaces.
+///
+/// \author Emanuel Laude and Zorah Lähner
+///
 class Coloring {
 public:
     /// Constructor.

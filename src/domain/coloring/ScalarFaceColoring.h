@@ -1,7 +1,3 @@
-///
-/// \brief Colors a shape given a ScalarFaceAttribute.
-/// \details The range of the attributes is automatically retrieved and the color range adjusted.
-///
 
 #ifndef ShapeAnalyzer_ScalarFaceColoring_h
 #define ShapeAnalyzer_ScalarFaceColoring_h
@@ -12,6 +8,10 @@
 #include "../attributes/ScalarFaceAttribute.h"
 #include "../Shape.h"
 
+///
+/// \brief Colors a shape given a ScalarFaceAttribute.
+/// \details The range of the attributes is automatically retrieved and the color range adjusted.
+///
 class ScalarFaceColoring : public Coloring {
 public:
     /// Constructor.

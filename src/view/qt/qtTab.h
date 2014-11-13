@@ -1,16 +1,15 @@
-///
-///  \brief Abstract class for Tabs.
-///  \details Defines the trigger functions for clearing the app and deleting a shape.
-///  The abstract classes qtShapesTab and qtCorrespondencesTab inherit from this class.
-///
-///  \author Emanuel Laude
-///
-
 #ifndef ShapeAnalyzer_qtTab_h
 #define ShapeAnalyzer_qtTab_h
 
 #include "../../domain/Shape.h"
 
+///
+///  \brief Abstract class for Tabs.
+///  \details Defines the trigger functions for clearing the app and deleting a shape.
+///  The abstract classes qtShapesTab and qtCorrespondencesTab inherit from this class.
+///
+///  \author Emanuel Laude and Zorah Lähner
+///
 class qtTab {
 public:
     

@@ -1,13 +1,3 @@
-///
-/// \brief HashMap is a wrapper class for unordered_map with some extra features,
-/// e.g. a proper contains function and a random subset of the map can be generated.
-/// \details A HashMap<KEY, VALUE> maps objects from type KEY to objects from type value.
-/// It manages a unordered_map<KEY, VALUE> object and has some special features. The first one
-/// is that the [] operator does not add keys to the hash map when you try to access them
-/// although they did not exist. Additionally you can get random subsets of the elements, keys or values.
-/// \author Emanuel Laude and Zorah Lähner
-///
-
 #ifndef ShapeAnalyzer_HashMap_h
 #define ShapeAnalyzer_HashMap_h
 
@@ -22,6 +12,15 @@ using namespace std;
 
 template <class KEY, class VALUE>
 
+///
+/// \brief HashMap is a wrapper class for unordered_map with some extra features,
+/// e.g. a proper contains function and a random subset of the map can be generated.
+/// \details A HashMap<KEY, VALUE> maps objects from type KEY to objects from type value.
+/// It manages a unordered_map<KEY, VALUE> object and has some special features. The first one
+/// is that the [] operator does not add keys to the hash map when you try to access them
+/// although they did not exist. Additionally you can get random subsets of the elements, keys or values.
+/// \author Emanuel Laude and Zorah Lähner
+///
 class HashMap {
 public:
     typedef typename unordered_map<KEY, VALUE>::iterator iterator;

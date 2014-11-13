@@ -1,7 +1,3 @@
-///
-/// \brief Colors a shape given ScalarPointAttribute.
-/// \details The range of the attributes is automatically retrieved and the color range adjusted.
-///
 
 #ifndef ShapeAnalyzer_ScalarPointColoring_h
 #define ShapeAnalyzer_ScalarPointColoring_h
@@ -12,6 +8,10 @@
 #include "../attributes/ScalarPointAttribute.h"
 #include "../Shape.h"
 
+///
+/// \brief Colors a shape given ScalarPointAttribute.
+/// \details The range of the attributes is automatically retrieved and the color range adjusted.
+///
 class ScalarPointColoring : public Coloring {
 public:
     /// Constructor.

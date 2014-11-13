@@ -289,36 +289,81 @@ private slots:
     /// Hides all visible correspondences.
     virtual void slotHideCorrespondences();
 
+    /// Turns all Box Widget on or off, depending on the previous state.
     virtual void slotToggleBoxWidget();
+    /// Changes the visualisation settings to make correspondence adding possible.
+    /// For example face correspondences are not possible in the point cloud mode, so it will be
+    /// switched to the mesh visualisation.
     virtual void slotModeAddCorrespondences();
     
-    virtual void slotShowScalarBar(bool);
+    /// Changes the visibility of the Color Scalar Bar.
+    /// @param visible true correspondes to visible, false to not visible
+    virtual void slotShowScalarBar(bool visible);
     
+    /// \brief Triggers when another shape is selected in the QListWidget or the vtkWidget.
+    /// \details Will change the color scalar bar and the individual transform box widget to the
+    /// current shape and turn the individual transform box widget off for the previous one
+    /// if necessary. Triggers the qtShapesTab::onShapeSelect() functions of all registered
+    /// shape tabs, this might take time depending on the tabs.
     virtual void slotSetSelectedCurrentShape(QListWidgetItem* current, QListWidgetItem* previous);
+    /// \brief Triggers when another correspondence is selected in the QListWidget or the vtkWidget.
+    /// \details Will change the color of the current correspondence to red and of the previous one
+    /// to normal.
+    /// Triggers the qtCorrespondencesTab::onCorrespondenceSelect() function of all registered
+    /// correspondece tabs, this might take time depending on the tabs.
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
     
+    /// \brief Switches the display mode of the shape depending on the seleced action in the GUI.
+    /// \details If one of the following actions is activated: actionShowSurface, actionShowSurfaceNormals,
+    /// actionShowTriangulatedMesh or actionShowPointCloud, the display mode will be changed to
+    /// that for all shapes.
     virtual void slotSetShapeDisplayMode();
+    /// Switches the correspondence mode between point and face correspondences depending on the GUI.
     virtual void slotSetCorrespondenceType();
     
+    /// Opens a QDialog for selecting the background color of the vtkWidget.
     virtual void slotSetBackgroundColor();
+    /// Switches the projection mode between parallel and perspective projection.
     virtual void slotToggleProjectionMode();
     
+    /// Opens a dialog for loading a scene from a file.
     virtual void slotOpenScene();
+    /// Opens a dialog for saving the current scene in ASCII or binary format.
     virtual void slotSaveScene();
+    /// Opens a dialog for loading a shape from a file.
     virtual void slotImportShape();
+    /// Opens a dialog for importing correspondences from a files.
     virtual void slotImportCorrespondences();
+    /// Opens a dialog for exporting correspondences in ASCII or binary format.
     virtual void slotExportCorrespondences();
-    
+    /// Opens a dialog for making a screenshot of the current scene in the vtkWidget.
     virtual void slotSaveScreenshot();
     
-    
+    /// \brief Opens/Closes a qtShapeInfoTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabShapeInfo(bool);
+    /// \brief Opens/Closes a qtShapeInterpolationTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabShapeInterpolation(bool);
+    /// \brief Opens/Closes a qtCorrespondenceColoringTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabCorrespondenceColoring(bool);
+    /// \brief Opens/Closes a qtFaceCorrespondencesTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabAllFaceCorrespondences(bool);
+    /// \brief Opens/Closes a qtPointCorrespondencesTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabAllPointCorrespondences(bool);
+    /// \brief Opens/Closes a qtMeshCheckerTab.
+    /// \details There can only be one tab of the same class be opened.
+    /// @param true for opening, false for closing
     virtual void slotTabMeshChecker(bool);
-    
+    /// \note TODO Manu?
     virtual void slotTabCorrespondencesCurrentChanged(int);
     
     ///@}
@@ -332,8 +377,21 @@ private slots:
     ///@}
 private:
     //QT
+    /// \brief Connects changing operations of listCorrespondences to certain slots.
+    /// \details By using listCorrespondences->disconnect(), changes in the QListWidget will not
+    /// have any effect. This is useful i.e. for clearing the whole list which will normally trigger
+    /// gui changes for each delete operation. Use this function to connect the list afterwards again.
+    /// Use with care, this may cause inconsistent information if not used correctly.
     void qtConnectListCorrespondences();
+    /// \brief Connects changing operations of listShapes to certain slots.
+    /// \details By using listShapes->disconnect(), changes in the QListWidget will not
+    /// have any effect. This is useful i.e. for clearing the whole list which will normally trigger
+    /// gui changes for each delete operation. Use this function to connect the list afterwards again.
+    /// Use with care, this may cause inconsistent information if not used correctly.
     void qtConnectListShapes();
+    /// \brief Qt function for catching user interactions.
+    /// \details This function will only catch mouse wheel actions and surpress them.
+    /// Everything else will be handled normally by qt.
     bool eventFilter(QObject *object, QEvent *event);
     
     void qtInitializeSettings();

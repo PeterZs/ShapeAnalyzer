@@ -1,10 +1,3 @@
-///
-/// \brief The Shape contains all geometric information as well as VTK-related objects and basic information about the shape.
-/// \details Every shape has a unique and static id and a not necessarily unique name which can be changed. 
-/// \author Emanuel Laude and Zorah Lähner
-/// \note Documentation not finished.
-///
-
 #ifndef Shape_H
 #define Shape_H
 
@@ -45,7 +38,12 @@
 
 using namespace std;
 
-
+///
+/// \brief The Shape contains all geometric information as well as VTK-related objects and basic information about the shape.
+/// \details Every shape has a unique and static id and a not necessarily unique name which can be changed.
+/// \author Emanuel Laude and Zorah Lähner
+/// \note Documentation not finished.
+///
 class Shape : public Serializable {
 
 public:

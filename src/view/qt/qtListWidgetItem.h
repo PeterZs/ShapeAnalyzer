@@ -1,3 +1,9 @@
+#ifndef ShapeAnalyzer_qtListWidgetItem_h
+#define ShapeAnalyzer_qtListWidgetItem_h
+
+#include <QString>
+#include <QListWidgetItem>
+
 ///
 /// General QListWidgetItem that can contain a pointer to an
 /// object of class T.
@@ -5,13 +11,6 @@
 /// @author Emanuel Laude and Zorah Lähner
 ///
 ///
-
-#ifndef ShapeAnalyzer_qtListWidgetItem_h
-#define ShapeAnalyzer_qtListWidgetItem_h
-
-#include <QString>
-#include <QListWidgetItem>
-
 template<class T>
 class qtListWidgetItem : public QListWidgetItem {
 public:

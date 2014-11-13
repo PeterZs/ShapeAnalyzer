@@ -1,11 +1,3 @@
-///
-///  \brief Tab that shows basic information about the selected shape.
-///  \details The information shown is the shape id, name of the shape, number of vertices,
-///  number of cells and the area of the shape. 
-///
-///  \author Zorah Lähner
-///
-
 #ifndef __ShapeAnalyzer__qtShapeInfoTab__
 #define __ShapeAnalyzer__qtShapeInfoTab__
 
@@ -22,7 +14,13 @@
 
 #include "ui_shapeInfo.h"
 
-
+///
+///  \brief Tab that shows basic information about the selected shape.
+///  \details The information shown is the shape id, name of the shape, number of vertices,
+///  number of cells and the area of the shape.
+///
+///  \author Zorah Lähner
+///
 class qtShapeInfoTab : public QWidget, private Ui::ShapeInfoWidget, public qtShapesTab {
     Q_OBJECT
     

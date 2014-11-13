@@ -1,10 +1,3 @@
-///
-/// \brief The MeshChecker class has various functions to check attributes of a given shape.
-/// \details The class uses the half edge structure for certain properties. It is implemented
-/// as large 2d-array and needs a lot of time and memory.
-/// \note Might change the array for something more optimal.
-/// \author Emanuel Laude and Zorah Lähner
-///
 
 #ifndef __ShapeAnalyzer__MeshChecker__
 #define __ShapeAnalyzer__MeshChecker__
@@ -19,6 +12,13 @@
 
 using namespace std;
 
+///
+/// \brief The MeshChecker class has various functions to check attributes of a given shape.
+/// \details The class uses the half edge structure for certain properties. It is implemented
+/// as large 2d-array and needs a lot of time and memory.
+/// \note Might change the array for something more optimal.
+/// \author Emanuel Laude and Zorah Lähner
+///
 class MeshChecker {
 public:
     /// \brief Empty Constructor

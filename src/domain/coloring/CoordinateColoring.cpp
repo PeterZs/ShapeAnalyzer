@@ -8,13 +8,13 @@
 
 #include "CoordinateColoring.h"
 
-CoordinateColoring::CoordinateColoring(Shape* shape) : Coloring(shape) {
+coloring::CoordinateColoring::CoordinateColoring(Shape* shape) : Coloring(shape) {
     colors_ = vtkSmartPointer<vtkUnsignedCharArray>::New();
     calculateColors();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CoordinateColoring::color() {
+void coloring::CoordinateColoring::color() {
     shape_->getPolyData()->GetPointData()->SetScalars(colors_);
     shape_->getMapper()->SetScalarModeToUsePointData();
     shape_->getMapper()->SetColorModeToDefault();
@@ -23,7 +23,7 @@ void CoordinateColoring::color() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CoordinateColoring::calculateColors() {
+void coloring::CoordinateColoring::calculateColors() {
     vtkSmartPointer<vtkPoints> points = shape_->getPolyData()->GetPoints();
     
     // color values

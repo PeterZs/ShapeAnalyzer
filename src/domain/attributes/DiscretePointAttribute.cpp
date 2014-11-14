@@ -9,7 +9,7 @@
 #include "DiscretePointAttribute.h"
 
 
-DiscretePointAttribute::DiscretePointAttribute(Shape* shape) {
+attribute::DiscretePointAttribute::DiscretePointAttribute(Shape* shape) {
     shape_ = shape;
     values_ = vtkSmartPointer<vtkIntArray>::New();
     values_->SetNumberOfValues(shape->getPolyData()->GetNumberOfPoints());

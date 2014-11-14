@@ -3,6 +3,8 @@
 
 #include "../Shape.h"
 
+namespace coloring {
+
 ///
 /// \brief Abstract class for defining colors on shape surfaces.
 ///
@@ -19,5 +21,7 @@ public:
 protected:
     Shape* shape_;
 };
+    
+}
 
 #endif

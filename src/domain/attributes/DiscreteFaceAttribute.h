@@ -7,6 +7,8 @@
 
 #include "../Shape.h"
 
+namespace attribute {
+
 ///
 /// \brief Assigns an int value to each face of the shape.
 /// \details This class is a wrapper class for vtkIntArray. It is needed to query the number of faces since this information cannot directly be queried from vtkIntArray. (Warning: The function getNumberOfComponents inherited from vtkAbstractArray does not return the number of elements in vtkIntArray)
@@ -38,5 +40,7 @@ private:
     /// structure of the shape.
     vtkSmartPointer<vtkIntArray> values_;
 };
+    
+}
 
 #endif

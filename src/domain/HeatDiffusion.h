@@ -18,6 +18,8 @@
 #include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
 
+using namespace attribute;
+
 class HeatDiffusion {
 public:
     HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, ScalarPointAttribute& initialCondition);

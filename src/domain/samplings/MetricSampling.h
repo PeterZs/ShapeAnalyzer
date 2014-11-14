@@ -4,6 +4,10 @@
 #include "Sampling.h"
 #include "../metric/Metric.h"
 
+using namespace metric;
+
+namespace sampling {
+
 ///
 /// \brief Abstract class for samplings that are based on a metric.
 ///
@@ -15,5 +19,7 @@ public:
 protected:
     Metric* metric_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__MetricSampling__) */

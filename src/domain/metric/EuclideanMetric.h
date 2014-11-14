@@ -10,6 +10,10 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
+using namespace attribute;
+
+namespace metric {
+
 ///
 /// \brief Class for the representation and computation of the euclidean metric on a Shape.
 /// \author Emanuel Laude and Zorah Lähner
@@ -36,5 +40,7 @@ public:
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
 };
     
+}
+
 
 #endif /* defined(__ShapeAnalyzer__EuclideanMetric__) */

@@ -2,6 +2,8 @@
 
 vtkStandardNewMacro(vtkOFFReader);
 
+
+///////////////////////////////////////////////////////////////////////////////
 // Description:
 // Instantiate object with NULL filename.
 vtkOFFReader::vtkOFFReader() {
@@ -10,6 +12,8 @@ vtkOFFReader::vtkOFFReader() {
     this->SetNumberOfOutputPorts(1);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkOFFReader::~vtkOFFReader() {
 }
 
@@ -31,6 +35,8 @@ search the net for "OFF format", eg.:
 http://people.sc.fsu.edu/~burkardt/data/off/off.html
 ---------------------------------------------------------*/
 
+
+///////////////////////////////////////////////////////////////////////////////
 int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
                               vtkInformationVector **vtkNotUsed(inputVector),
                               vtkInformationVector *outputVector) {
@@ -137,6 +143,8 @@ int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
     return 1;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void vtkOFFReader::PrintSelf(ostream& os, vtkIndent indent) {
     this->Superclass::PrintSelf(os,indent);
     os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";

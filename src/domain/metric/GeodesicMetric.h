@@ -22,6 +22,9 @@
 
 using namespace geodesic;
 using namespace std;
+using namespace attribute;
+
+namespace metric {
 
 ///
 /// \brief Class for the representation and computation of the geodesic metric on a Shape.
@@ -112,6 +115,8 @@ private:
     geodesicFaces*                      faces_;
     /// @}
 };
+    
+}
     
 
 #endif /* defined(__ShapeAnalyzer__GeodesicMetric__) */

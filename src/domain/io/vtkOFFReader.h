@@ -41,5 +41,6 @@ private:
     
     char* FileName;
 };
+    
 
 #endif

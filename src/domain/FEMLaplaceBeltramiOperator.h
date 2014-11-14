@@ -20,6 +20,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace attribute;
 
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:

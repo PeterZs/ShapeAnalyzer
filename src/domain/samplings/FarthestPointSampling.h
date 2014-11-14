@@ -11,6 +11,8 @@
 
 #include "MetricSampling.h"
 
+namespace sampling {
+
 class FarthestPointSampling : public MetricSampling {
 public:
     virtual ~FarthestPointSampling() {
@@ -42,5 +44,7 @@ private:
     vtkIdType source_;
     vtkIdType numberOfPoints_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__FarthestPointSampling__) */

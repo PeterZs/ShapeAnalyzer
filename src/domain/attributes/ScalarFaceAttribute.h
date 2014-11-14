@@ -7,6 +7,8 @@
 
 #include "../Shape.h"
 
+namespace attribute {
+
 ///
 /// \brief Assigns a double value to each face of the shape.
 /// \note Not finished. Maybe add a function to fill with values without petsc stuff?
@@ -37,5 +39,7 @@ private:
     /// structure of the shape.
     vtkSmartPointer<vtkDoubleArray> scalars_;
 };
+    
+}
 
 #endif

@@ -8,7 +8,7 @@
 
 #include "DiscreteFaceAttribute.h"
 
-DiscreteFaceAttribute::DiscreteFaceAttribute(Shape* shape) {
+attribute::DiscreteFaceAttribute::DiscreteFaceAttribute(Shape* shape) {
     shape_ = shape;
     values_ = vtkSmartPointer<vtkIntArray>::New();
     values_->SetNumberOfValues(shape->getPolyData()->GetNumberOfCells());

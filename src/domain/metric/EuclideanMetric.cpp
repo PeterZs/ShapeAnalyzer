@@ -16,7 +16,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-double EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
+double metric::EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
     double p1[3], p2[3];
     shape_->getPolyData()->GetPoints()->GetPoint(a, p1);
     shape_->getPolyData()->GetPoints()->GetPoint(b, p2);
@@ -26,14 +26,14 @@ double EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void EuclideanMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
+void metric::EuclideanMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
         distances.getScalars()->SetValue(i, getDistance(source, i));
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkIdType EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) {
+vtkIdType metric::EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) {
     double maxDist = 0;
     vtkIdType id;
     
@@ -58,7 +58,7 @@ vtkIdType EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> sources) 
     return id;
 }
 
-vtkSmartPointer<vtkIdList> EuclideanMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
+vtkSmartPointer<vtkIdList> metric::EuclideanMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
     vtkSmartPointer<vtkIdList> voronoiCells = vtkSmartPointer<vtkIdList>::New();
     voronoiCells->SetNumberOfIds(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
     

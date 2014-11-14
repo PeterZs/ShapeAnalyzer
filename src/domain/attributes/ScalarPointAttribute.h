@@ -9,6 +9,8 @@
 
 #include "../Shape.h"
 
+namespace attribute {
+
 ///
 /// \brief Assigns a double value to each vertex of the shape.
 /// \details Additionally the class has static methods to transform
@@ -61,5 +63,7 @@ private:
     /// structure of the shape.
     vtkSmartPointer<vtkDoubleArray> scalars_;
 };
+    
+}
 
 #endif

@@ -54,4 +54,5 @@ private:
 };
 
 
+
 #endif /* defined(__ShapeAnalyzer__vtkOFFWriter__) */

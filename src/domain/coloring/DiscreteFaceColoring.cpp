@@ -9,7 +9,7 @@
 #include "DiscreteFaceColoring.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void DiscreteFaceColoring::color() {
+void coloring::DiscreteFaceColoring::color() {
     double range[2];
     attribute_.getValues()->GetRange(range);
     

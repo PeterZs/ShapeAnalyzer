@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace sampling {
+
 ///
 /// \brief Abstract class for sub sampling points on shapes.
 ///
@@ -36,5 +38,7 @@ protected:
 
     Shape* shape_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__ShapeSampling__) */

@@ -8,6 +8,10 @@
 #include "../attributes/ScalarPointAttribute.h"
 #include "../Shape.h"
 
+using namespace attribute;
+
+namespace coloring {
+
 ///
 /// \brief Colors a shape given ScalarPointAttribute.
 /// \details The range of the attributes is automatically retrieved and the color range adjusted.
@@ -26,5 +30,6 @@ protected:
     ScalarPointAttribute& attribute_;
 };
 
+}
 
 #endif

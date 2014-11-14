@@ -19,6 +19,8 @@
 
 using namespace std;
 
+namespace coloring {
+
 ///
 /// \brief Colors the given shapes to visualize the given correspondences.
 /// \details The reference shape will be colored by coordinates using the CoordinateColoring class and
@@ -86,5 +88,7 @@ protected:
     unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray> >  faceAttributes_;
     
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__CorrespondenceColoring__) */

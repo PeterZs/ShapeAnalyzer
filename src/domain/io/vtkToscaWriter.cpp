@@ -10,14 +10,20 @@
 
 vtkStandardNewMacro(vtkToscaWriter);
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkToscaWriter::vtkToscaWriter() {
     std::ofstream fout; // only used to extract the default precision
     this->DecimalPrecision = fout.precision();
     this->FileName = NULL;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkToscaWriter::~vtkToscaWriter() {}
 
+
+///////////////////////////////////////////////////////////////////////////////
 void vtkToscaWriter::WriteData() {
     vtkPolyData *input = this->GetInput();
     if (!input)
@@ -79,20 +85,28 @@ void vtkToscaWriter::WriteData() {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void vtkToscaWriter::PrintSelf(ostream& os, vtkIndent indent) {
     Superclass::PrintSelf(os, indent);
     os << indent << "DecimalPrecision: " << DecimalPrecision << "\n";
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int vtkToscaWriter::FillInputPortInformation(int, vtkInformation *info) {
     info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
     return 1;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkPolyData* vtkToscaWriter::GetInput() {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput());
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkPolyData* vtkToscaWriter::GetInput(int port) {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput(port));
 }

@@ -12,6 +12,8 @@
 
 #include "../Shape.h"
 
+namespace attribute {
+
 template<class T>
 class ComplexFaceAttribute {
     
@@ -45,6 +47,9 @@ private:
     /// structure of the shape.
     T* values_;
 };
+    
+    
+}
 
 
 #endif

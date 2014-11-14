@@ -7,6 +7,8 @@
 
 #include "../Shape.h"
 
+namespace attribute {
+
 ///
 /// \brief Assigns an int value to each vertex of the shape.
 ///
@@ -36,5 +38,7 @@ private:
     /// structure of the shape.
     vtkSmartPointer<vtkIntArray> values_;
 };
+    
+}
 
 #endif

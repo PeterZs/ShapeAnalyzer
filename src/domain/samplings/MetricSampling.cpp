@@ -9,6 +9,6 @@
 #include "MetricSampling.h"
 
 
-void MetricSampling::setMetric(Metric* metric) {
+void sampling::MetricSampling::setMetric(Metric* metric) {
     metric_ = metric;
 }

@@ -17,8 +17,10 @@
 #include <vtkIdList.h>
 #include <vtkSmartPointer.h>
 
-
 using namespace std;
+using namespace attribute;
+
+namespace metric {
 
 ///
 /// \brief Abstract class for the representation of a metric on the vertices of a shape.
@@ -59,5 +61,7 @@ protected:
     /// Protected constructor since Metric should only be initialized via Factory
     Metric() {}
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__Metric__) */

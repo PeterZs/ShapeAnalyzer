@@ -102,4 +102,5 @@ private:
 
 };
 
+
 #endif /* defined(__ShapeAnalyzer__SceneWriterReader__) */

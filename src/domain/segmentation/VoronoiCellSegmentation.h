@@ -13,6 +13,9 @@
 #include "../metric/Metric.h"
 #include "../samplings/Sampling.h"
 
+using namespace metric;
+using namespace sampling;
+
 class VoronoiCellSegmentation : public Segmentation {
 public:
     virtual ~VoronoiCellSegmentation() {}

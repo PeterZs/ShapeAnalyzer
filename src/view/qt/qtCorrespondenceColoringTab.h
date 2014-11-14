@@ -35,6 +35,8 @@
 
 #include "ui_correspondenceColoring.h"
 
+using namespace coloring;
+
 class qtCorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceColoringWidget, public qtShapesTab {
     Q_OBJECT
     

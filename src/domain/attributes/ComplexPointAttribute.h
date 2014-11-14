@@ -5,6 +5,8 @@
 
 #include <vtkPolyData.h>
 
+namespace attribute {
+
 ///
 /// \brief Assigns an attribute of class T to each vertex.
 /// \details For the primitive types double and int the classes ScalarPointAtrribute
@@ -46,6 +48,8 @@ private:
     /// structure of the shape.
     T* values_;
 };
+    
+}
 
 
 #endif

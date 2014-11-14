@@ -8,6 +8,10 @@
 #include "../attributes/ScalarFaceAttribute.h"
 #include "../Shape.h"
 
+using namespace attribute;
+
+namespace coloring {
+
 ///
 /// \brief Colors a shape given a ScalarFaceAttribute.
 /// \details The range of the attributes is automatically retrieved and the color range adjusted.
@@ -25,6 +29,8 @@ public:
 protected:
     ScalarFaceAttribute& attribute_;
 };
+    
+}
 
 
 #endif

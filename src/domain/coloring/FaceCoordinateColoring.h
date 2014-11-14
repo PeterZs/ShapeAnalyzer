@@ -13,6 +13,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnsignedCharArray.h>
 
+namespace coloring {
 
 ///
 /// \brief Colors the shape using the coordinates of the faces as indicators for the rgb value.
@@ -115,5 +116,7 @@ private:
     
     vtkSmartPointer<vtkUnsignedCharArray> colors_;
 };
+    
+}
 
 #endif

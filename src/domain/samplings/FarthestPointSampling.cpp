@@ -8,7 +8,7 @@
 
 #include "FarthestPointSampling.h"
 
-vtkSmartPointer<vtkIdList> FarthestPointSampling::getPoints() {
+vtkSmartPointer<vtkIdList> sampling::FarthestPointSampling::getPoints() {
     vtkSmartPointer<vtkIdList> points = vtkSmartPointer<vtkIdList>::New();
     // calculate sampling
     if (source_ != -1)

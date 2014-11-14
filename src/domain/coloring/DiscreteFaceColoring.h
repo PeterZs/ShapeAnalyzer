@@ -15,6 +15,10 @@
 #include "../attributes/DiscreteFaceAttribute.h"
 #include "../Shape.h"
 
+using namespace attribute;
+
+namespace coloring {
+
 class DiscreteFaceColoring : public Coloring {
 public:
     DiscreteFaceColoring(Shape* shape, DiscreteFaceAttribute& attribute) : Coloring(shape), attribute_(attribute) {}
@@ -24,6 +28,8 @@ public:
 protected:
     DiscreteFaceAttribute& attribute_;
 };
+    
+}
 
 
 #endif

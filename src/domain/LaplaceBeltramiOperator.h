@@ -18,6 +18,8 @@
 #include "PetscHelper.h"
 #include "attributes/ScalarPointAttribute.h"
 
+using namespace attribute;
+
 class LaplaceBeltramiOperator {
 public:
     virtual ~LaplaceBeltramiOperator() {

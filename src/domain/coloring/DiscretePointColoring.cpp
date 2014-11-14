@@ -8,7 +8,7 @@
 
 #include "DiscretePointColoring.h"
 
-void DiscretePointColoring::color() {
+void coloring::DiscretePointColoring::color() {
     int range[2];
     attribute_.getValues()->GetValueRange(range);
     

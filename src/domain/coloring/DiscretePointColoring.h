@@ -15,6 +15,10 @@
 #include "../attributes/DiscretePointAttribute.h"
 #include "../Shape.h"
 
+using namespace attribute;
+
+namespace coloring {
+
 class DiscretePointColoring : public Coloring {
 public:
     DiscretePointColoring(Shape* shape, DiscretePointAttribute& attribute) : Coloring(shape), attribute_(attribute) {}
@@ -25,5 +29,6 @@ protected:
     DiscretePointAttribute& attribute_;
 };
 
+}
 
 #endif

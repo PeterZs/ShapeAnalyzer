@@ -2,6 +2,8 @@
 
 vtkStandardNewMacro(vtkToscaReader);
 
+
+///////////////////////////////////////////////////////////////////////////////
 // Description:
 // Instantiate object with NULL filename.
 vtkToscaReader::vtkToscaReader() {
@@ -10,9 +12,13 @@ vtkToscaReader::vtkToscaReader() {
     this->SetNumberOfOutputPorts(1);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkToscaReader::~vtkToscaReader() {
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
     if (port == 0) {
         info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData");
@@ -22,6 +28,8 @@ int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
     return 0;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
                               vtkInformationVector **vtkNotUsed(inputVector),
                               vtkInformationVector *outputVector) {
@@ -95,6 +103,8 @@ int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
     return 1;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void vtkToscaReader::PrintSelf(ostream& os, vtkIndent indent) {
     this->Superclass::PrintSelf(os,indent);
     os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";

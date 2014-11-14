@@ -9,7 +9,7 @@
 #include "CorrespondenceColoring.h"
 #include <utility>
 ///////////////////////////////////////////////////////////////////////////////
-CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
+coloring::CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
                                                HashMap<PointCorrespondenceData*, bool>*  points,
                                                HashMap<FaceCorrespondenceData*, bool> *  faces,
                                                Shape* reference)
@@ -22,7 +22,7 @@ CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*      
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
+void coloring::CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
                                                       vector<pair<vtkIdType, double> >* percentageMultiple) {
     pointAttributes_.clear();
     
@@ -150,7 +150,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
+void coloring::CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
                                                      vector<pair<vtkIdType, double> >* percentageMultiple) {
     faceAttributes_.clear();
     

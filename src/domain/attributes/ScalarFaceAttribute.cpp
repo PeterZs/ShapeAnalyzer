@@ -8,7 +8,7 @@
 
 #include "ScalarFaceAttribute.h"
 
-ScalarFaceAttribute::ScalarFaceAttribute(Shape* shape) {
+attribute::ScalarFaceAttribute::ScalarFaceAttribute(Shape* shape) {
     shape_ = shape;
     scalars_ = vtkSmartPointer<vtkDoubleArray>::New();
     scalars_->SetNumberOfValues(shape->getPolyData()->GetNumberOfCells());

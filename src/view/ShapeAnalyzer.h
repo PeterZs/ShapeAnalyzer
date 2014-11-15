@@ -395,6 +395,8 @@ private:
     /// Everything else will be handled normally by qt.
     bool eventFilter(QObject *object, QEvent *event);
     
+    
+    void qtParseCustomContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions);
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
     void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);

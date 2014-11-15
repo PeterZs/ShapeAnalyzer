@@ -139,8 +139,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
     
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Basic>>Laplace Beltrami>>Stuff>>Show Eigenfunction");
-    Factory<CustomContextMenuItem>::getInstance()->Register<EigenfunctionCustomMenuItem>("Basic>>Beltrami>>Laplace Beltrami>>Stuff>>Show Heat diffusion");
+    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Basic>>Laplace Beltrami>>Stuff>>Show Heat diffusion");
+    Factory<CustomContextMenuItem>::getInstance()->Register<EigenfunctionCustomMenuItem>("Basic>>Beltrami>>Laplace Beltrami>>Stuff>>Show Eigenfunction");
 
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -826,6 +826,57 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::qtParseCustomContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
+    // get list of all menu item paths (Home>>foo>>bar>>action)
+    unordered_map<string, string> paths = Factory<CustomContextMenuItem>::getInstance()->getLabels();
+    
+    // menus in the menu tree indexed by their unique path.
+    HashMap<string, QMenu*> menus;
+    
+    // for each path element A (...>>A>>...) create a unique menu in the menu tree
+    for(auto entry : paths) {
+        QString path(entry.second.c_str());
+        QStringList list = path.split(">>");
+        int i = 0;
+        
+        QString currentPath = "";
+        QString parent = "";
+        
+        // iterate over all path elements except the leaf and create a menu in the hierarchy
+        for(; i < list.size() - 1; i++) {
+            currentPath.append((i != 0 ? ">>" : "")).append(list[i]);
+            
+            QMenu* currentMenu;
+            if(menus.containsKey(currentPath.toStdString())) {
+                currentMenu = menus[currentPath.toStdString()];
+            } else {
+                currentMenu = new QMenu(list[i]);
+                if(i == 0) {
+                    menu->addMenu(currentMenu);
+                }
+                menus.add(currentPath.toStdString(), currentMenu);
+                if(menus.containsKey(parent.toStdString())) {
+                    menus[parent.toStdString()]->addMenu(currentMenu);
+                }
+            }
+            
+            parent = currentPath;
+        }
+        
+        // create a action for the leaf (last element of path) and return it via customActions (here the actions are indexed by the unique identifier of the CustomMenuItem class)
+        if(i > 0) {
+            QAction* action = menus[parent.toStdString()]->addAction(list[i]);
+            customActions.add(action, entry.first);
+        } else {
+            QAction* action = menu->addAction(list[i]);
+            customActions.add(action, entry.first);
+        }
+    }
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId) {
     QMenu myMenu;
@@ -838,46 +889,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* exportAction   = myMenu.addAction("Export Shape");
     myMenu.addSeparator();
 
-    unordered_map<string, string> labels = Factory<CustomContextMenuItem>::getInstance()->getLabels();
-    
+    //create custom menu items out of the list of
     HashMap<QAction*, string> customActions;
-    HashMap<string, QMenu*> menus;
-    
-    for(auto entry : labels) {
-        QString label(entry.second.c_str());
-        QStringList list = label.split(">>");
-        int i = 0;
-        
-        QString currentPath = "";
-        QString parent = "";
-        for(; i < list.size() - 1; i++) {
-            currentPath.append((i != 0 ? ">>" : "")).append(list[i]);
-            
-            QMenu* currentMenu;
-            if(menus.containsKey(currentPath.toStdString())) {
-                currentMenu = menus[currentPath.toStdString()];
-            } else {
-                currentMenu = new QMenu(list[i]);
-                if(i == 0) {
-                    myMenu.addMenu(currentMenu);
-                }
-                menus.add(currentPath.toStdString(), currentMenu);
-                if(menus.containsKey(parent.toStdString())) {
-                    menus[parent.toStdString()]->addMenu(currentMenu);
-                }
-            }
-            
-            parent = currentPath;
-        }
-        
-        if(i > 0) {
-            QAction* action = menus[parent.toStdString()]->addAction(list[i]);
-            customActions.add(action, entry.first);
-        } else {
-            QAction* action = myMenu.addAction(list[i]);
-            customActions.add(action, entry.first);
-        }
-    }
+    qtParseCustomContextMenuItems(&myMenu, customActions);
     
 //    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
 //    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");

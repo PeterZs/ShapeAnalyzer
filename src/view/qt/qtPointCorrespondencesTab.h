@@ -17,7 +17,7 @@
 #include <QString>
 #include <QWidget>
 
-#include "../../domain/HashMap.h"
+#include "../../util/HashMap.h"
 #include "../../domain/correspondences/FaceCorrespondenceData.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 

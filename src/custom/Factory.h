@@ -13,7 +13,7 @@ using namespace std;
 /// \details Concrete classes are derived from an abstract superclass for example EuclideanMetric is derived from abstract class Metric. Moreover concrete classes
 /// have to provide both a create function that returns a new instance of this class and a getIdentifier function that returs a unique string that is used
 /// to register the concrete class in the factory.
-/// \tparam Abstract class for which the factory should be defined (for example Metric or LaplaceBeltramiSignature)
+/// @tparam class T. Abstract class for which the factory should be defined (for example Metric or LaplaceBeltramiSignature)
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
@@ -22,12 +22,12 @@ class Factory {
 public:
     typedef T* (*CreateFn)(void);
     
-    
+    /// Destructor.
     ~Factory() {
         createFns_.clear();
     }
     
-    // returs unique instance of Factory<T>. Only way to obtain the Factory object for type T.
+    /// \brief Returns the unique instance of Factory<T>. This is the only way to obtain the Factory object for type T.
     static Factory<T>* getInstance() {
         static Factory<T> instance;
         return &instance;

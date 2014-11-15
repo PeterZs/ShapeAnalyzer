@@ -25,7 +25,7 @@
 #include "qtListWidgetItem.h"
 #include "qtShapesTab.h"
 
-#include "../../domain/HashMap.h"
+#include "../../util/HashMap.h"
 #include "../../domain/Shape.h"
 
 #include "../../domain/correspondences/FaceCorrespondenceData.h"

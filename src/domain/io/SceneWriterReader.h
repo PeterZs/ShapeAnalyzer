@@ -6,7 +6,7 @@
 #include "../correspondences/FaceCorrespondenceData.h"
 #include "../correspondences/PointCorrespondence.h"
 #include "../correspondences/PointCorrespondenceData.h"
-#include "../HashMap.h"
+#include "../util/HashMap.h"
 
 #include "../../view/qt/qtListWidgetItem.h"
 
@@ -34,7 +34,7 @@ public:
     SceneWriterReader() {};
     ~SceneWriterReader() {};
     
-   /// Reads a scene including both shapes and correspondences from a binary file. It returns a vector of shapes two maps containing point and face correspondences respectively and the last used IDs for shapes and correspondences.
+   /// \brief Reads a scene including both shapes and correspondences from a binary file. It returns a vector of shapes two maps containing point and face correspondences respectively and the last used IDs for shapes and correspondences.
     static void importSceneBinary(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes, int& lastInsertCorrespondenceID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences);
    /// Exports a scene in binary including both shapes and correspondences. It takes an ordered vector of the shapes, two maps containing point face correspondences respectively and the last used IDs for shapes and correspondences as arguments.
     static void exportSceneBinary(string filename, vector<Shape*>& shapes, int lastInsertShapeID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences, int lastInsertCorrespondenceID);

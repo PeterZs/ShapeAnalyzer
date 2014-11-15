@@ -126,9 +126,7 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
     
     //register signatures
-    // Factory<LaplaceBeltramiSignature>::getInstance()->Register<HeatKernelSignature>("Heat Kernel Signature");
     Factory<LaplaceBeltramiSignature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
-    // Factory<LaplaceBeltramiSignature>::getInstance()->Register<GlobalPointSignature>("Global Point Signature");
     
     //register samplings
     Factory<Sampling>::getInstance()->Register<FarthestPointSampling>("Farthest Point Sampling");
@@ -141,6 +139,9 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
     
     
+    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Basic>>Laplace Beltrami>>Stuff>>Show Eigenfunction");
+    Factory<CustomContextMenuItem>::getInstance()->Register<EigenfunctionCustomMenuItem>("Basic>>Beltrami>>Laplace Beltrami>>Stuff>>Show Heat diffusion");
+
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
     // list items
@@ -355,83 +356,6 @@ void ShapeAnalyzer::qtExportShapeDialog(Shape* shape) {
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowEigenfunction(Shape* shape) {
-    bool ok;
-    int i = QInputDialog::getInt(
-                                                   this,
-                                                   tr("Eigenfunction"),
-                                                   tr("Choose an eigenfunction."),
-                                                   0,
-                                                   0,
-                                                   std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
-                                                   1,
-                                                   &ok
-                                                   );
-    // show eigenfunction
-    if (ok) {
-        ScalarPointAttribute eigenfunction(shape);
-        
-        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian->initialize(shape, 100);
-        laplacian->getEigenfunction(i, eigenfunction);
-        delete laplacian;
-        
-        ScalarPointColoring coloring(shape, eigenfunction);
-        coloring.color();
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowHeatDiffusion(Shape* shape) {
-    bool ok;
-    double t = QInputDialog::getDouble(
-                                       this,
-                                       tr("Heat diffusion"),
-                                       tr("Choose diffusion time."),
-                                       0,
-                                       0,
-                                       2147483647,
-                                       2,
-                                       &ok
-                                       );
-    if (!ok) {
-        return;
-    }
-    
-    vtkIdType source = QInputDialog::getInt(
-                                       this,
-                                       tr("Source vertex"),
-                                       tr("Choose ID of source vertex."),
-                                       0,
-                                       0,
-                                       shape->getPolyData()->GetNumberOfPoints()-1,
-                                       1,
-                                       &ok
-                                       );
-
-    if (ok) {
-
-        ScalarPointAttribute u0(shape);
-        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
-            if(i == source) {
-                u0.getScalars()->SetValue(i, 1.0);
-            } else {
-                u0.getScalars()->SetValue(i, 0.0);
-            }
-        }
-        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian->initialize(shape, 100);
-        
-        HeatDiffusion heatDiffusion(shape, laplacian, u0);
-        ScalarPointAttribute ut(shape);
-        heatDiffusion.getHeat(ut, t);
-        delete laplacian;
-        ScalarPointColoring coloring(shape, ut);
-        coloring.color();
-    }
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowSignature(string id, Shape *shape) {
@@ -502,7 +426,7 @@ void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
                                             1,
                                             &ok
                                             );
-    
+
     if (!ok) {
         return;
     }
@@ -907,85 +831,137 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QMenu myMenu;
 
     QAction* opacityAction  = myMenu.addAction("Set Opacity");
-    QAction* clearAction  = myMenu.addAction("Clear Coloring");
+    QAction* clearAction    = myMenu.addAction("Clear Coloring");
+    myMenu.addSeparator();
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
     QAction* exportAction   = myMenu.addAction("Export Shape");
-    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
-    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
-    QAction* transferCoordinateFunction = myMenu.addAction("Transfer coordinate function");
-    QAction* correspondencesIdentity = myMenu.addAction("Create Identity Correspondences");
+    myMenu.addSeparator();
+
+    unordered_map<string, string> labels = Factory<CustomContextMenuItem>::getInstance()->getLabels();
     
-    //map containing unique id of metric + corresponding QAction already set with corresponding label
-    HashMap<QAction*, string> metrics;
-    qtAddMetricMenu(&myMenu, metrics);
-    HashMap<QAction*, string> signatures;
-    qtAddSignatureMenu(&myMenu, signatures);
-    HashMap<QAction*, string> segmentations;
+    HashMap<QAction*, string> customActions;
+    HashMap<string, QMenu*> menus;
     
-    QMenu segmentationMenu;
-    segmentationMenu.setTitle("Segmentation");
-    myMenu.addMenu(&segmentationMenu);
-    qtAddVoronoiCellsMenu(&segmentationMenu, segmentations);
+    for(auto entry : labels) {
+        QString label(entry.second.c_str());
+        QStringList list = label.split(">>");
+        int i = 0;
+        
+        QString currentPath = "";
+        QString parent = "";
+        for(; i < list.size() - 1; i++) {
+            currentPath.append((i != 0 ? ">>" : "")).append(list[i]);
+            
+            QMenu* currentMenu;
+            if(menus.containsKey(currentPath.toStdString())) {
+                currentMenu = menus[currentPath.toStdString()];
+            } else {
+                currentMenu = new QMenu(list[i]);
+                if(i == 0) {
+                    myMenu.addMenu(currentMenu);
+                }
+                menus.add(currentPath.toStdString(), currentMenu);
+                if(menus.containsKey(parent.toStdString())) {
+                    menus[parent.toStdString()]->addMenu(currentMenu);
+                }
+            }
+            
+            parent = currentPath;
+        }
+        
+        if(i > 0) {
+            QAction* action = menus[parent.toStdString()]->addAction(list[i]);
+            customActions.add(action, entry.first);
+        } else {
+            QAction* action = myMenu.addAction(list[i]);
+            customActions.add(action, entry.first);
+        }
+    }
     
-    QAction* createShapeSegment;
+//    QAction* laplaceBeltramiAction = myMenu.addAction("Show Laplace-Beltrami eigenfunction");
+//    QAction* heatDiffusion = myMenu.addAction("Show heat diffusion");
+//    QAction* transferCoordinateFunction = myMenu.addAction("Transfer coordinate function");
+//    QAction* correspondencesIdentity = myMenu.addAction("Create Identity Correspondences");
+//    
+//    //map containing unique id of metric + corresponding QAction already set with corresponding label
+//    HashMap<QAction*, string> metrics;
+//    qtAddMetricMenu(&myMenu, metrics);
+//    HashMap<QAction*, string> signatures;
+//    qtAddSignatureMenu(&myMenu, signatures);
+//    HashMap<QAction*, string> segmentations;
+//    
+//    QMenu segmentationMenu;
+//    segmentationMenu.setTitle("Segmentation");
+//    myMenu.addMenu(&segmentationMenu);
+//    qtAddVoronoiCellsMenu(&segmentationMenu, segmentations);
+//    
+//    QAction* createShapeSegment;
     Shape* currentShape;
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
     currentShape = item->getItem();
-    if(pointId != -1 && segmentations_.containsKey(currentShape)) {
-        createShapeSegment = myMenu.addAction("Create Shape(s) from Segment");
-    }
+//    if(pointId != -1 && segmentations_.containsKey(currentShape)) {
+//        createShapeSegment = myMenu.addAction("Create Shape(s) from Segment");
+//    }
     
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
     } else if (selectedItem == clearAction) {
         ((qtListWidgetItem<Shape>*) this->listShapes->currentItem())->getItem()->clearColoring();
-    }
-    else if (selectedItem == renameAction) {
+    } else if (selectedItem == renameAction) {
         qtInputDialogRenameShape((qtListWidgetItem<Shape>*) this->listShapes->currentItem());
     } else if (selectedItem == exportAction) {
         qtExportShapeDialog(currentShape);
     } else if (selectedItem == opacityAction) {
         qtInputDialogOpacity(currentShape);
-    } else if (selectedItem == laplaceBeltramiAction) {
-        segmentations_.remove(currentShape);
-        qtShowEigenfunction(currentShape);
-    } else if(selectedItem == heatDiffusion) {
-        segmentations_.remove(currentShape);
-        qtShowHeatDiffusion(currentShape);
-    } else if(selectedItem == transferCoordinateFunction) {
-        qtTransferCoordinateFunction(currentShape);
-    } else if(selectedItem == correspondencesIdentity) {
-        qtCreateIdentityCorrespondences(currentShape);
-    } else if(pointId != -1 && selectedItem == createShapeSegment) {
-        qtCreateShapeSegment(currentShape, pointId);
     } else {
-        // Metric
-        if(metrics.containsKey(selectedItem)) {
-            segmentations_.remove(currentShape);
-            qtShowMetricColoring(metrics[selectedItem], currentShape);
-            
-            return;
-        }
-        
-        // Signatures
-        if (signatures.containsKey(selectedItem)) {
-            segmentations_.remove(currentShape);
-            qtShowSignature(signatures[selectedItem], currentShape);
-            
-            return;
-        }
-        
-        // Segmentations
-        if(segmentations.containsKey(selectedItem)) {
-            segmentations_.remove(currentShape);
-            qtShowVoronoiCells(segmentations[selectedItem], currentShape);
-            
-            
-            return;
+        if(customActions.containsKey(selectedItem)) {
+            CustomContextMenuItem* menuItem = Factory<CustomContextMenuItem>::getInstance()->create(customActions[selectedItem]);
+            menuItem->onClick(currentShape, this);
         }
     }
+    
+
+    
+//    } else if (selectedItem == laplaceBeltramiAction) {
+//        segmentations_.remove(currentShape);
+//        qtShowEigenfunction(currentShape);
+//    } else if(selectedItem == heatDiffusion) {
+//        segmentations_.remove(currentShape);
+//        qtShowHeatDiffusion(currentShape);
+//    } else if(selectedItem == transferCoordinateFunction) {
+//        qtTransferCoordinateFunction(currentShape);
+//    } else if(selectedItem == correspondencesIdentity) {
+//        qtCreateIdentityCorrespondences(currentShape);
+//    } else if(pointId != -1 && selectedItem == createShapeSegment) {
+//        qtCreateShapeSegment(currentShape, pointId);
+//    } else {
+//        // Metric
+//        if(metrics.containsKey(selectedItem)) {
+//            segmentations_.remove(currentShape);
+//            qtShowMetricColoring(metrics[selectedItem], currentShape);
+//            
+//            return;
+//        }
+//        
+//        // Signatures
+//        if (signatures.containsKey(selectedItem)) {
+//            segmentations_.remove(currentShape);
+//            qtShowSignature(signatures[selectedItem], currentShape);
+//            
+//            return;
+//        }
+//        
+//        // Segmentations
+//        if(segmentations.containsKey(selectedItem)) {
+//            segmentations_.remove(currentShape);
+//            qtShowVoronoiCells(segmentations[selectedItem], currentShape);
+//            
+//            
+//            return;
+//        }
+//    }
     
 }
 

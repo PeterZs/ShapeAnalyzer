@@ -14,7 +14,7 @@
 #include "Correspondence.h"
 #include "PointCorrespondenceData.h"
 
-#include "../HashMap.h"
+#include "../util/HashMap.h"
 #include "../Shape.h"
 
 ///

@@ -52,7 +52,7 @@
 #include <exception>
 #include <unordered_map>
 #include <algorithm>
-
+#include <memory>
 
 
 #include "CorrespondencePicker.h"
@@ -68,8 +68,14 @@
 #include "qt/qtShapeInterpolationTab.h"
 #include "qt/qtMeshCheckTab.h"
 
-#include "../domain/Factory.h"
-#include "../domain/HashMap.h"
+#include "../custom/contextMenuItems/CustomContextMenuItem.h"
+#include "../custom/contextMenuItems/EigenfunctionCustomMenuItem.h"
+#include "../custom/contextMenuItems/HeatDiffusionCustomMenuItem.h"
+
+#include "../custom/Factory.h"
+
+#include "../util/HashMap.h"
+
 #include "../domain/Shape.h"
 #include "../domain/correspondences/Correspondence.h"
 
@@ -86,9 +92,7 @@
 #include "../domain/metric/GeodesicMetric.h"
 
 #include "../domain/signatures/Signature.h"
-#include "../domain/signatures/HeatKernelSignature.h"
 #include "../domain/signatures/WaveKernelSignature.h"
-#include "../domain/signatures/GlobalPointSignature.h"
 
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
@@ -395,21 +399,22 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
-    void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    void qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    
+
     void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
     void qtExportShapeDialog(Shape* shape);
     void qtInputDialogOpacity(Shape* shape);
-    void qtShowEigenfunction(Shape* shape);
-    void qtShowHeatDiffusion(Shape* shape);
+    
     void qtShowSignature(string id, Shape* shape);
     void qtShowMetricColoring(string id, Shape* shape);
     void qtShowVoronoiCells(string metricId, Shape* shape);
     void qtCreateIdentityCorrespondences(Shape* shape1);
     void qtTransferCoordinateFunction(Shape* shape1);
     void qtCreateShapeSegment(Shape *shape, vtkIdType pointId);
+    void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    void qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries);
+    
+    
     
    qtListWidgetItem<Correspondence>* qtAddListCorrespondencesItem(Correspondence* correspondence);
     
@@ -443,6 +448,7 @@ private:
     HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;    
     HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
 
+    
     //vtk stuff
     vtkSmartPointer<vtkRenderer> renderer_;
     vtkSmartPointer<vtkEventQtSlotConnect> connections_;
@@ -458,7 +464,7 @@ private:
     
     
     HashMap<Shape*, vtkSmartPointer<vtkIdList> > segmentations_;
-    
+
     HashMap<string, qtCorrespondencesTab*> correspondencesTabs_;
     HashMap<string, qtShapesTab*> shapesTabs_;
     

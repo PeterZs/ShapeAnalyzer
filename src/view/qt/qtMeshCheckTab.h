@@ -18,7 +18,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
 
-#include "../../domain/HashMap.h"
+#include "../../util/HashMap.h"
 #include "../../domain/MeshChecker.h"
 #include "../../domain/Shape.h"
 

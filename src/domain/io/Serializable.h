@@ -7,7 +7,7 @@
 
 ///
 /// \brief Interface class providing basic read and write functionalities.
-/// \details So far only implemented by Shape. The serialization of Correspondence objects has to be treated separately by SceneWriterReader since reading and writing of correspondences in the desired format at least requires the knowlegdge of the number of present shapes.
+/// \details So far only implemented by Shape. The serialization of Correspondence objects has to be treated separately by SceneWriterReader since reading and writing of correspondences in the desired format at least requires the knowlegdge of the number of shapes present in the whole scene.
 /// \author Emanuel Laude and Zorah Lähner
 ///
 class Serializable {

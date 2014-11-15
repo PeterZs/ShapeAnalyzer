@@ -16,7 +16,7 @@
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
-#include "../../domain/HashMap.h"
+#include "../../util/HashMap.h"
 
 #include "../ShapeAnalyzer.h"
 

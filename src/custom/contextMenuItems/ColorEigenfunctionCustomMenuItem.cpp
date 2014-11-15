@@ -1,15 +1,15 @@
 //
-//  EigenfunctionCustomMenuItem.cpp
+//  ColorEigenfunctionCustomMenuItem.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#include "EigenfunctionCustomMenuItem.h"
+#include "ColorEigenfunctionCustomMenuItem.h"
 
 
-void EigenfunctionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
+void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
     bool ok;
     int i = QInputDialog::getInt(
                                  parent,

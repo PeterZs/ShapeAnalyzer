@@ -1,13 +1,13 @@
 //
-//  EigenfunctionCustomMenuItem.h
+//  ColorEigenfunctionCustomMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__EigenfunctionCustomMenuItem__
-#define __ShapeAnalyzer__EigenfunctionCustomMenuItem__
+#ifndef __ShapeAnalyzer__ColorEigenfunctionCustomMenuItem__
+#define __ShapeAnalyzer__ColorEigenfunctionCustomMenuItem__
 
 #include <string>
 
@@ -23,20 +23,20 @@
 
 using namespace std;
 
-class EigenfunctionCustomMenuItem : public CustomContextMenuItem {
+class ColorEigenfunctionCustomMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, QWidget* parent);
     
     static string getIdentifier() {
-        return "eigenfunction";
+        return "color_eigenfunction";
     }
     
     static CustomContextMenuItem* create() {
-        return new EigenfunctionCustomMenuItem();
+        return new ColorEigenfunctionCustomMenuItem();
     }
     
 private:
-    EigenfunctionCustomMenuItem() {}
+    ColorEigenfunctionCustomMenuItem() {}
 };
 
-#endif /* defined(__ShapeAnalyzer__EigenfunctionCustomMenuItem__) */
+#endif /* defined(__ShapeAnalyzer__ColorEigenfunctionCustomMenuItem__) */

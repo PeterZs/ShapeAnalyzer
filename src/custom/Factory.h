@@ -40,6 +40,12 @@ public:
         createFns_.insert(pair<string, CreateFn>(C::getIdentifier(), &C::create));
         labels_.insert(pair<string, string>(C::getIdentifier(), label));
     }
+
+    template<class C>
+    void Register(const string& identifier, const string& label){
+        createFns_.insert(pair<string, CreateFn>(identifier, &C::create));
+        labels_.insert(pair<string, string>(identifier, label));
+    }
     
     //create a new instance of the desired object using the identifier
     T* create(const string& identifier) {

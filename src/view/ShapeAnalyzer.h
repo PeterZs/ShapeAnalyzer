@@ -69,8 +69,11 @@
 #include "qt/qtMeshCheckTab.h"
 
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
-#include "../custom/contextMenuItems/EigenfunctionCustomMenuItem.h"
+#include "../custom/contextMenuItems/ColorEigenfunctionCustomMenuItem.h"
+#include "../custom/contextMenuItems/ColorMetricCustomMenuItem.h"
+#include "../custom/contextMenuItems/ColorSignatureCustomMenuItem.h"
 #include "../custom/contextMenuItems/HeatDiffusionCustomMenuItem.h"
+#include "../custom/contextMenuItems/VoronoiCellsCustomMenuItem.h"
 
 #include "../custom/Factory.h"
 
@@ -380,7 +383,7 @@ private:
     //QT
     /// \brief Connects changing operations of listCorrespondences to certain slots.
     /// \details By using listCorrespondences->disconnect(), changes in the QListWidget will not
-    /// have any effect. This is useful i.e. for clearing the whole list which will normally trigger
+    /// have any effect. This is useful e.g. for clearing the whole list which will normally trigger
     /// gui changes for each delete operation. Use this function to connect the list afterwards again.
     /// Use with care, this may cause inconsistent information if not used correctly.
     void qtConnectListCorrespondences();
@@ -406,15 +409,9 @@ private:
     void qtExportShapeDialog(Shape* shape);
     void qtInputDialogOpacity(Shape* shape);
     
-    void qtShowSignature(string id, Shape* shape);
-    void qtShowMetricColoring(string id, Shape* shape);
-    void qtShowVoronoiCells(string metricId, Shape* shape);
     void qtCreateIdentityCorrespondences(Shape* shape1);
     void qtTransferCoordinateFunction(Shape* shape1);
     void qtCreateShapeSegment(Shape *shape, vtkIdType pointId);
-    void qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    void qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries);
-    void qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries);
     
     
     

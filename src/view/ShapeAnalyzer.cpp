@@ -139,9 +139,19 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
     
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Basic>>Laplace Beltrami>>Stuff>>Show Heat diffusion");
-    Factory<CustomContextMenuItem>::getInstance()->Register<EigenfunctionCustomMenuItem>("Basic>>Beltrami>>Laplace Beltrami>>Stuff>>Show Eigenfunction");
+    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Coloring>>Heat diffusion");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorEigenfunctionCustomMenuItem>("Coloring>>i-th Eigenfunction");
 
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
+
+    
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorSignatureCustomMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
+
+    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsCustomMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
+    
+    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsCustomMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
+    
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
     // list items
@@ -205,45 +215,6 @@ bool ShapeAnalyzer::eventFilter(QObject *object, QEvent *event) {
     }
     
     return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtAddMetricMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* metricMenu = new QMenu(menu);
-    metricMenu->setTitle("Visualize Metric");
-    menu->addMenu(metricMenu);
-    
-    unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
-    
-    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        entries.add(metricMenu->addAction(it->second.c_str()), it->first);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtAddSignatureMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* signatureMenu = new QMenu(menu);
-    signatureMenu->setTitle("Visualize Signature");
-    menu->addMenu(signatureMenu);
-    
-    unordered_map<string, string>& labels = Factory<LaplaceBeltramiSignature>::getInstance()->getLabels();
-    
-    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        entries.add(signatureMenu->addAction(it->second.c_str()), it->first);
-    }
-}
-
-void ShapeAnalyzer::qtAddVoronoiCellsMenu(QMenu* menu, HashMap<QAction*, string>& entries) {
-    QMenu* voronoiCellsMenu = new QMenu(menu);
-    voronoiCellsMenu->setTitle("Voronoi Segmentation");
-    menu->addMenu(voronoiCellsMenu);
-    
-    
-    
-    unordered_map<string, string>& labels = Factory<Metric>::getInstance()->getLabels();
-    for(unordered_map<string, string>::iterator it = labels.begin(); it != labels.end(); it++) {
-        entries.add(voronoiCellsMenu->addAction(it->second.c_str()), it->first);
-    }
 }
 
 
@@ -355,124 +326,6 @@ void ShapeAnalyzer::qtExportShapeDialog(Shape* shape) {
         writer->Write();
     }
 }
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowSignature(string id, Shape *shape) {
-    bool ok;
-    int i = QInputDialog::getInt(
-                                            this,
-                                            tr("Component"),
-                                            tr("Choose component."),
-                                            0,
-                                            0,
-                                            99,
-                                            1,
-                                            &ok
-                                            );
-    
-    if (ok) {
-        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian->initialize(shape, 100);
-        
-        LaplaceBeltramiSignature* s = Factory<LaplaceBeltramiSignature>::getInstance()->create(id);
-        s->setLaplacian(laplacian);
-        s->initialize(shape, 100);
-        
-        ScalarPointAttribute component(shape);
-        s->getComponent(i, component);
-        delete s;
-        delete laplacian;
-        ScalarPointColoring coloring(shape, component);
-        coloring.color();
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtShowMetricColoring(string id, Shape *shape) {
-    bool ok;
-    vtkIdType source = QInputDialog::getInt(
-                                            this,
-                                            tr("Source vertex"),
-                                            tr("Choose ID of source vertex."),
-                                            0,
-                                            0,
-                                            shape->getPolyData()->GetNumberOfPoints()-1,
-                                            1,
-                                            &ok
-                                            );
-    
-    if (ok) {
-        Metric* m = Factory<Metric>::getInstance()->create(id);
-        m->initialize(shape);
-        ScalarPointAttribute distances(shape);
-        m->getAllDistances(distances, source);
-        ScalarPointColoring coloring(shape, distances);
-        coloring.color();
-        delete m;
-    }
-}
-
-void ShapeAnalyzer::qtShowVoronoiCells(string metricId, Shape *shape) {
-    bool ok;
-    vtkIdType source = QInputDialog::getInt(
-                                            this,
-                                            tr("Source vertex"),
-                                            tr("Choose ID of source vertex."),
-                                            0,
-                                            0,
-                                            shape->getPolyData()->GetNumberOfPoints()-1,
-                                            1,
-                                            &ok
-                                            );
-
-    if (!ok) {
-        return;
-    }
-    vtkIdType numberOfSegments = QInputDialog::getInt(
-                                            this,
-                                            tr("Number of segments"),
-                                            tr("Choose number of segments"),
-                                            0,
-                                            0,
-                                            shape->getPolyData()->GetNumberOfPoints()-1,
-                                            1,
-                                            &ok
-                                            );
-    if(ok) {
-        
-        VoronoiCellSegmentation* segmentation = (VoronoiCellSegmentation*) Factory<Segmentation>::getInstance()->create("VoronoiCellSegmentation");
-        
-        Metric* m = Factory<Metric>::getInstance()->create(metricId);
-        m->initialize(shape);
-        FarthestPointSampling* fps = (FarthestPointSampling*) Factory<Sampling>::getInstance()->create("fps");
-        fps->setMetric(m);
-        fps->setSource(source);
-        fps->setNumberOfPoints(numberOfSegments);
-        fps->initialize(shape);
-        ((VoronoiCellSegmentation*) segmentation)->setMetric(m);
-        ((VoronoiCellSegmentation*) segmentation)->setSampling(fps);
-        
-        segmentation->initialize(shape);
-        
-        // save current segmentation for being able to create new shapes out of the segments
-        segmentations_.add(shape, segmentation->getSegmentation());
-        
-        DiscretePointAttribute voronoiCells(shape);
-        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
-            voronoiCells.getValues()->SetValue(i, segmentations_[shape]->GetId(i));
-        }
-        
-        DiscretePointColoring coloring(shape, voronoiCells);
-        coloring.color();
-        
-        delete m;
-        delete fps;
-        delete segmentation;
-    }
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
@@ -889,7 +742,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* exportAction   = myMenu.addAction("Export Shape");
     myMenu.addSeparator();
 
-    //create custom menu items out of the list of
+    //create custom menu items out of the list of custom context menu items registered in the Factory<CustomContextMenuItem>
     HashMap<QAction*, string> customActions;
     qtParseCustomContextMenuItems(&myMenu, customActions);
     

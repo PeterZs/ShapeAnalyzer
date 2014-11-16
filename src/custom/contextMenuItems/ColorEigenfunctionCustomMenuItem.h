@@ -15,7 +15,6 @@
 
 #include "../../domain/LaplaceBeltramiOperator.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/coloring/ScalarPointColoring.h"
 
 #include "../Factory.h"
 
@@ -25,7 +24,7 @@ using namespace std;
 
 class ColorEigenfunctionCustomMenuItem : public CustomContextMenuItem {
 public:
-    virtual void onClick(Shape* shape, QWidget* parent);
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
     
     static string getIdentifier() {
         return "color_eigenfunction";

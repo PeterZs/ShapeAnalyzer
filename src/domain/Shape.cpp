@@ -59,11 +59,13 @@ void Shape::removeFromRenderer() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::clearColoring() {
+    //segmentation_->Delete();
+    hasSegmentation_ = false;
+    
     mapper_->CreateDefaultLookupTable();
     mapper_->ScalarVisibilityOff();
     mapper_->SetColorModeToDefault();
     mapper_->InterpolateScalarsBeforeMappingOff();
-    //mapper_->UseLookupTableScalarRangeOn();
     mapper_->SetScalarModeToDefault();
     mapper_->SetScalarMaterialModeToDefault();
     
@@ -107,6 +109,86 @@ double Shape::getArea() {
 ///////////////////////////////////////////////////////////////////////////////
 vtkIdType Shape::getRandomPoint() {
     return std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
+}
+
+void Shape::colorPointsScalars(vtkDataArray* values) {
+    //segmentation_->Delete();
+    hasSegmentation_ = false;
+    
+    double range[2];
+    
+    values->GetRange(range);
+    
+    polyData_->GetPointData()->SetScalars(values);
+    polyData_->Modified();
+    
+    mapper_->SetScalarModeToUsePointData();
+    mapper_->SetColorModeToMapScalars();
+    mapper_->SetScalarRange(range[0], range[1]);
+    mapper_->ScalarVisibilityOn();
+    mapper_->Modified();
+    
+    polyDataNormals_->Update();
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
+void Shape::colorFacesScalars(vtkDataArray* values) {
+    //segmentation_->Delete();
+    hasSegmentation_ = false;
+    
+    double range[2];
+    
+    values->GetRange(range);
+    
+    polyData_->GetCellData()->SetScalars(values);
+    polyData_->Modified();
+    
+    mapper_->SetScalarModeToUseCellData();
+    mapper_->SetColorModeToMapScalars();
+    mapper_->SetScalarRange(range[0], range[1]);
+    mapper_->ScalarVisibilityOn();
+    mapper_->Modified();
+    
+    polyDataNormals_->Update();
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
+void Shape::colorPointsRGB(vtkUnsignedCharArray* colors) {
+    //segmentation_->Delete();
+    hasSegmentation_ = false;
+    
+    polyData_->GetPointData()->SetScalars(colors);
+    
+    mapper_->SetScalarModeToUsePointData();
+    mapper_->SetColorModeToDefault();
+    mapper_->ScalarVisibilityOn();
+    mapper_->Modified();
+    
+    polyDataNormals_->Update();
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
+}
+
+
+void Shape::colorFacesRGB(vtkUnsignedCharArray* colors) {
+    //segmentation_->Delete();
+    hasSegmentation_ = false;
+    
+    polyData_->GetCellData()->SetScalars(colors);
+    
+    mapper_->SetScalarModeToUseCellData();
+    mapper_->ScalarVisibilityOn();
+    mapper_->Modified();
+    
+    polyDataNormals_->Update();
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,7 +269,7 @@ istream& Shape::readBinary(istream& is) {
     name[length] = '\0';
     
     name_ = name;
-    delete name;
+    delete [] name;
     
     //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
     vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();

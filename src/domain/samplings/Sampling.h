@@ -26,7 +26,7 @@ public:
         shape_ = shape;
     }
     
-    /// \brief Returns a list of the ids of the samples points.
+    /// \brief Returns a list of the ids of the sampled points.
     virtual vtkSmartPointer<vtkIdList> getPoints() = 0;
     
     /// \brief Returns a pointer to the shape.

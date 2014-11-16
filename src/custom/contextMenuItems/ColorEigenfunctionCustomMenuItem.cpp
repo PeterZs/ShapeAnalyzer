@@ -9,7 +9,7 @@
 #include "ColorEigenfunctionCustomMenuItem.h"
 
 
-void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
+void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     int i = QInputDialog::getInt(
                                  parent,
@@ -30,7 +30,6 @@ void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
         laplacian->getEigenfunction(i, eigenfunction);
         delete laplacian;
         
-        coloring::ScalarPointColoring coloring(shape, eigenfunction);
-        coloring.color();
+        shape->colorPointsScalars(eigenfunction.getScalars());
     }
 }

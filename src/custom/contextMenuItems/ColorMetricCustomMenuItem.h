@@ -15,7 +15,6 @@
 
 #include "../../domain/metric/Metric.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/coloring/ScalarPointColoring.h"
 
 
 #include "../Factory.h"
@@ -30,7 +29,7 @@ class ColorMetricCustomMenuItem : public CustomContextMenuItem {
 public:
     static const int bla;
     
-    virtual void onClick(Shape* shape, QWidget* parent) {
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         vtkIdType source = QInputDialog::getInt(
                                                 parent,
@@ -48,8 +47,8 @@ public:
             m->initialize(shape);
             ScalarPointAttribute distances(shape);
             m->getAllDistances(distances, source);
-            ScalarPointColoring coloring(shape, distances);
-            coloring.color();
+
+            shape->colorPointsScalars(distances.getScalars());
             delete m;
         }
     }

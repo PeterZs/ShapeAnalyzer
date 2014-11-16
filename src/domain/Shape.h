@@ -24,6 +24,10 @@
 #include <vtkTriangle.h>
 #include <vtkType.h>
 #include <vtkVertexGlyphFilter.h>
+#include <vtkSmartPointer.h>
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+#include <vtkCellData.h>
 
 #include <math.h>
 #include <iostream>
@@ -34,7 +38,6 @@
 
 #include "io/Serializable.h"
 
-#include <vtkDebugLeaks.h>
 
 using namespace std;
 
@@ -132,6 +135,33 @@ public:
         name_ = name;
     }
 
+    /// \brief Colors points with scalar values.
+    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values.
+    /// @param vtkDataArray* values. Scalar values which can be either discrete or continuous.
+    void colorPointsScalars(vtkDataArray* values);
+    
+    /// \brief Colors faces with scalar values.
+    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values.
+    /// @param vtkDataArray* values. Scalar values which can be either discrete or continuous.
+    void colorFacesScalars(vtkDataArray* values);
+    
+    /// \brief Colors points with RGB values.
+    /// @param vtkUnsignedCharArray* colors. RGB values. Set number of components to 3 in vtkUnsignedCharArray.
+    void colorPointsRGB(vtkUnsignedCharArray* colors);
+    
+    /// \brief Colors faces with RGB values.
+    /// @param vtkUnsignedCharArray* colors. RGB values. Set number of components to 3 in vtkUnsignedCharArray.
+    void colorFacesRGB(vtkUnsignedCharArray* colors);
+    
+    
+    void setSegmentation(vtkSmartPointer<vtkIdList> segmentation) {
+        segmentation_ = segmentation;
+        hasSegmentation_ = true;
+    }
+    
+    vtkIdList* getSegmentation() {
+        return segmentation_;
+    }
 private:
     
     vtkIdType id_;
@@ -145,6 +175,9 @@ private:
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     
     vtkSmartPointer<vtkRenderer>        renderer_;
+    
+    vtkSmartPointer<vtkIdList> segmentation_;
+    bool hasSegmentation_ = false;
 };
 
 #endif

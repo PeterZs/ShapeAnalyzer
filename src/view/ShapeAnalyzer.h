@@ -100,9 +100,6 @@
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
 
-#include "../domain/coloring/ScalarPointColoring.h"
-#include "../domain/coloring/DiscretePointColoring.h"
-
 #include "../domain/attributes/ScalarPointAttribute.h"
 #include "../domain/attributes/DiscretePointAttribute.h"
 
@@ -401,7 +398,7 @@ private:
     
     void qtParseCustomContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions);
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
-    void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId);
+    void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId, vtkIdType faceId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
 
@@ -461,8 +458,6 @@ private:
     QActionGroup* actionGroupShapeDisplayMode_;
     QActionGroup* actionGroupProjectionMode_;
     
-    
-    HashMap<Shape*, vtkSmartPointer<vtkIdList> > segmentations_;
 
     HashMap<string, qtCorrespondencesTab*> correspondencesTabs_;
     HashMap<string, qtShapesTab*> shapesTabs_;

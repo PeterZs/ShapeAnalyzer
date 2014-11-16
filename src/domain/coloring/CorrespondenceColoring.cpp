@@ -8,6 +8,7 @@
 
 #include "CorrespondenceColoring.h"
 #include <utility>
+
 ///////////////////////////////////////////////////////////////////////////////
 coloring::CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
                                                HashMap<PointCorrespondenceData*, bool>*  points,

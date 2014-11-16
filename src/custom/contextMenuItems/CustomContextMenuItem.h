@@ -16,7 +16,7 @@
 class CustomContextMenuItem {
     
 public:
-    virtual void onClick(Shape* shape, QWidget* parent) = 0;
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) = 0;
     
 protected:
     CustomContextMenuItem() {}

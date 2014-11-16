@@ -16,7 +16,6 @@
 #include "../../domain/LaplaceBeltramiOperator.h"
 #include "../../domain/HeatDiffusion.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/coloring/ScalarPointColoring.h"
 
 #include "../Factory.h"
 
@@ -26,7 +25,7 @@ using namespace std;
 
 class HeatDiffusionCustomMenuItem : public CustomContextMenuItem {
 public:
-    virtual void onClick(Shape* shape, QWidget* parent);
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
     
     static string getIdentifier() {
         return "heatdiffusion";

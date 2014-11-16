@@ -17,9 +17,7 @@
 #include "../../domain/segmentation/VoronoiCellSegmentation.h"
 #include "../../domain/samplings/FarthestPointSampling.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/coloring/ScalarPointColoring.h"
 #include "../../domain/attributes/DiscretePointAttribute.h"
-#include "../../domain/coloring/DiscretePointColoring.h"
 
 #include "../Factory.h"
 
@@ -30,7 +28,7 @@ using namespace std;
 template<class T>
 class VoronoiCellsCustomMenuItem : public CustomContextMenuItem {
 public:
-    virtual void onClick(Shape* shape, QWidget* parent) {
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         vtkIdType source = QInputDialog::getInt(
                                                 parent,
@@ -82,8 +80,7 @@ public:
                 voronoiCells.getValues()->SetValue(i, segments->GetId(i));
             }
             
-            DiscretePointColoring coloring(shape, voronoiCells);
-            coloring.color();
+            shape->colorPointsScalars(voronoiCells.getValues());
             
             delete m;
             delete fps;

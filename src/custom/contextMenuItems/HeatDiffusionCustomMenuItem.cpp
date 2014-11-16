@@ -9,7 +9,7 @@
 #include "HeatDiffusionCustomMenuItem.h"
 
 
-void HeatDiffusionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
+void HeatDiffusionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     double t = QInputDialog::getDouble(
                                        parent,
@@ -53,7 +53,6 @@ void HeatDiffusionCustomMenuItem::onClick(Shape* shape, QWidget* parent) {
         ScalarPointAttribute ut(shape);
         heatDiffusion.getHeat(ut, t);
         delete laplacian;
-        coloring::ScalarPointColoring coloring(shape, ut);
-        coloring.color();
+        shape->colorPointsScalars(ut.getScalars());
     }
 }

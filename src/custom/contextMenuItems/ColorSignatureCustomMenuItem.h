@@ -16,7 +16,6 @@
 #include "../../domain/LaplaceBeltramiOperator.h"
 #include "../../domain/signatures/LaplaceBeltramiSignature.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/coloring/ScalarPointColoring.h"
 
 #include "../Factory.h"
 
@@ -27,7 +26,7 @@ using namespace std;
 template<class T>
 class ColorSignatureCustomMenuItem : public CustomContextMenuItem {
 public:
-    virtual void onClick(Shape* shape, QWidget* parent) {
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         int i = QInputDialog::getInt(
                                      parent,
@@ -52,8 +51,8 @@ public:
             s->getComponent(i, component);
             delete s;
             delete laplacian;
-            ScalarPointColoring coloring(shape, component);
-            coloring.color();
+
+            shape->colorPointsScalars(component.getScalars());
         }
     }
     

@@ -103,17 +103,19 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->buttonClearAllCorrespondences,    SIGNAL(released()),
             this,                                   SLOT(slotClearAllCorrespondences()));
 
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
+    Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->Register<ShapeInterpolationCustomTab>("shape_interpolation", "Shapes>>Shape Interpolation");
+    
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
 
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
 
-    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
+    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -125,6 +127,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     //Initialize Slepc for eigenfunction computation
     SlepcInitializeNoArguments();
+    
+    qtCreateMenuCustomTabs();
 }
 
 
@@ -570,7 +574,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
     // get list of all menu item paths (Home>>foo>>bar>>action)
-    unordered_map<string, string> paths = Factory<CustomContextMenuItem>::getInstance()->getLabels();
+    const unordered_map<string, string>& paths = Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->getLabels();
     
     // menus in the menu tree indexed by their unique path.
     HashMap<string, QMenu*> menus;
@@ -629,7 +633,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* exportAction   = myMenu.addAction("Export Shape");
     myMenu.addSeparator();
 
-    //create custom menu items out of the list of custom context menu items registered in the Factory<CustomContextMenuItem>
+    //create custom menu items out of the list of custom context menu items registered in the Factory<shared_ptr<CustomContextMenuItem>>
     HashMap<QAction*, string> customActions;
     qtParseContextMenuItems(&myMenu, customActions);
 
@@ -650,12 +654,32 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape);
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = Factory<CustomContextMenuItem>::getInstance()->create(customActions[selectedItem]);
+            shared_ptr<CustomContextMenuItem> menuItem = Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->create(customActions[selectedItem]);
             menuItem->onClick(currentShape, pointId, faceId, this);
         }
     }
 }
 
+void ShapeAnalyzer::qtCreateMenuCustomTabs() {
+    const unordered_map<string, string>& paths = Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->getLabels();
+    
+
+    for(auto entry : paths) {
+        QString path(entry.second.c_str());
+        QStringList list = path.split(">>");
+        QAction* action;
+        if(list.count() < 2) {
+            action = this->menuView->addAction(path);
+        } else {
+            action = this->menuView->addAction(list[1]);
+        }
+        action->setCheckable(true);
+        action->setChecked(false);
+        viewCustomTabActions_.insert(action, entry.first);
+        
+        connect(action, SIGNAL(toggled(bool)), this, SLOT(slotViewCustomTab(bool)));
+    }
+}
 
 void ShapeAnalyzer::qtUpdateLabelVisibleCorrespondences() {
     int numberOfVisibleCorrespondences = 0;
@@ -694,6 +718,33 @@ CustomListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesIte
 ///////////////////////////////////////////////////////////////////////////////
 // QT slots
 ///////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::slotViewCustomTab(bool visible) {
+    string key = viewCustomTabActions_[(QAction*) sender()];
+    if(visible) {
+        CustomTab* tab = Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);
+        
+        QString path(Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->getLabels().at(key).c_str());
+        QStringList list = path.split(">>");
+
+        if((list.count() > 1 && list[0] == "Shapes") || list.count() < 2) {
+            int i = this->tabWidgetShapes->addTab(dynamic_cast<QWidget*>(tab), (list.count() > 1 ? list[1] : path));
+            this->tabWidgetShapes->setCurrentIndex(i);
+        } else {
+            int i = this->tabWidgetCorrespondences->addTab(dynamic_cast<QWidget*>(tab), list[1]);
+            this->tabWidgetCorrespondences->setCurrentIndex(i);
+        }
+
+        customTabs_.insert(key, tab);
+    } else {
+        delete customTabs_[key];
+        customTabs_.remove(key);
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotExit() {

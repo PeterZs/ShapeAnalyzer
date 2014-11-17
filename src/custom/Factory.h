@@ -18,10 +18,10 @@ using namespace std;
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
-template<class T, typename... Args>
+template<class T, class... Args>
 class Factory {
 public:
-    typedef shared_ptr<T> (*CreateFunction)(Args...);
+    typedef T (*CreateFunction)(Args...);
     
     /// \brief Destructor. Clears the internal data structures.
     ~Factory() {
@@ -30,8 +30,8 @@ public:
     
     /// \brief Returns the unique instance of Factory<T>.
     /// \details This is the only way to obtain the Factory object for type T.
-    static Factory<T>* getInstance() {
-        static Factory<T> instance;
+    static Factory<T, Args...>* getInstance() {
+        static Factory<T, Args...> instance;
         return &instance;
     }
 
@@ -48,13 +48,12 @@ public:
     /// \brief Obtain a new instance of a class derived from T using the unique identifier of the class and a std::tuple of arguments required to instantiate the class.
     /// @param const string& identifier. identifier of the class.
     /// @param std::tuple of arguments for the create function.
-    shared_ptr<T> create(const string& identifier, Args... args) {
+    T create(const string& identifier, Args... args) {
         if(createFunctions_.find(identifier) != createFunctions_.end()) {
             return createFunctions_.find(identifier)->second(args...);
         }
         return nullptr;
     }
-    
     
     /// \brief Returns a map contianing all identifier plus label pairs that have been registered in this particular factory.
     const unordered_map<string, string>& getLabels() const {

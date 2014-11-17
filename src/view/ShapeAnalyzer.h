@@ -48,6 +48,8 @@
 #include <QString>
 #include <QFileDialog>
 #include <QColorDialog>
+#include <QSharedPointer>
+#include <QObject>
 
 #include <exception>
 #include <unordered_map>
@@ -62,6 +64,7 @@
 #include "CustomListWidgetItem.h"
 
 #include "../custom/tabs/CustomTab.h"
+#include "../custom/tabs/ShapeInterpolationCustomTab.h"
 
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
 #include "../custom/contextMenuItems/ColorEigenfunctionContextMenuItem.h"
@@ -114,6 +117,8 @@
 using namespace std;
 
 class ExtractSegmentContextMenuItem;
+
+class ShapeInterpolationCustomTab;
 
 
 ///
@@ -286,6 +291,8 @@ private slots:
     virtual void slotExportCorrespondences();
     /// Opens a dialog for making a screenshot of the current scene in the vtkWidget.
     virtual void slotSaveScreenshot();
+    
+    virtual void slotViewCustomTab(bool visible);
     ///@}
     
     //vtk widget slots
@@ -320,6 +327,7 @@ private:
     void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId, vtkIdType faceId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
+    void qtCreateMenuCustomTabs();
 
     void qtInputDialogRenameShape(CustomListWidgetItem<Shape>* item);
     void qtExportShapeDialog(Shape* shape);
@@ -383,6 +391,7 @@ private:
     
 
     HashMap<string, CustomTab*> customTabs_;
+    HashMap<QAction*, string> viewCustomTabActions_;
     
     //counter for ids
     int lastInsertShapeID_;

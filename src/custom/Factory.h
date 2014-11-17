@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-
+#include <memory>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ using namespace std;
 template<class T>
 class Factory {
 public:
-    typedef T* (*CreateFn)(void);
+    typedef shared_ptr<T> (*CreateFn)(void);
     
     /// Destructor.
     ~Factory() {
@@ -32,14 +32,6 @@ public:
         static Factory<T> instance;
         return &instance;
     }
-    
-    //register a new class. Template argument class name 'C'. Argument label (for GUI purposes). Create-function pointer and identifier have to be provided via the static functions C::getIdentifier and C::create of the class 'C' itself.
-    template<class C>
-    void Register(const string& label){
-        
-        createFns_.insert(pair<string, CreateFn>(C::getIdentifier(), &C::create));
-        labels_.insert(pair<string, string>(C::getIdentifier(), label));
-    }
 
     template<class C>
     void Register(const string& identifier, const string& label){
@@ -48,20 +40,10 @@ public:
     }
     
     //create a new instance of the desired object using the identifier
-    T* create(const string& identifier) {
+    shared_ptr<T> create(const string& identifier) {
         typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(identifier);
         if(it != createFns_.end()) {
             return createFns_.find(identifier)->second();
-        }
-        return nullptr;
-    }
-    
-    //create a new instance of the desired object using just the Class name provided as template argument 'C'.
-    template<class C>
-    T* create() {
-        typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(C::getIdentifier());
-        if(it != createFns_.end()) {
-            return it->second();
         }
         return nullptr;
     }

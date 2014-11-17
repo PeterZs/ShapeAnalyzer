@@ -18,29 +18,14 @@ using namespace sampling;
 
 class VoronoiCellSegmentation : public Segmentation {
 public:
+    VoronoiCellSegmentation(Shape* shape, Metric* metric, Sampling* sampling) : Segmentation(shape), metric_(metric), sampling_(sampling) {
+        
+    }
+    
     virtual ~VoronoiCellSegmentation() {}
     
-    static string getIdentifier() {
-        return "VoronoiCellSegmentation";
-    }
-    
-    static Segmentation* create() {
-        return new VoronoiCellSegmentation();
-    }
-    
     virtual vtkSmartPointer<vtkIdList> getSegmentation();
-    
-    void setMetric(Metric* metric) {
-        metric_ = metric;
-    }
-    
-    void setSampling(Sampling* sampling) {
-        sampling_ = sampling;
-    }
-    
 private:
-    VoronoiCellSegmentation() {}
-    
     Metric* metric_;
     Sampling* sampling_;
 };

@@ -8,8 +8,7 @@
 
 #include "FEMLaplaceBeltramiOperator.h"
 
-void FEMLaplaceBeltramiOperator::initialize(Shape *shape, int numberOfEigenfunctions) {
-    LaplaceBeltramiOperator::initialize(shape, numberOfEigenfunctions);
+FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape *shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
     PetscErrorCode ierr;
     
     setupMatrices();

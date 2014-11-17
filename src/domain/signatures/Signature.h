@@ -15,9 +15,9 @@
 
 class Signature {
 public:
-    virtual ~Signature() {}
+    Signature(Shape* shape, int dimension) : shape_(shape), dimension_(dimension) {}
     
-    virtual void initialize(Shape* shape, int dimension);
+    virtual ~Signature() {}
     
     int getDimension() {
         return dimension_;
@@ -29,9 +29,6 @@ public:
 protected:
     Shape* shape_;
     int dimension_;
-    
-
-    Signature() {}
 };
 
 #endif /* defined(__ShapeAnalyzer__Signature__) */

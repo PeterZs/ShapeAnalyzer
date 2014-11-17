@@ -18,14 +18,13 @@
 
 class Segmentation {
 public:
+    Segmentation(Shape* shape) : shape_(shape) {}
+    
     virtual ~Segmentation() {}
     
-    virtual void initialize(Shape* shape);
-    
     virtual vtkSmartPointer<vtkIdList> getSegmentation() = 0;
+    
 protected:
-    Segmentation() {}
-private:
     Shape* shape_;
 };
 

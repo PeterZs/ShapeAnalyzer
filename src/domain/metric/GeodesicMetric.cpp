@@ -11,14 +11,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Constructors and Destructor
 ///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
-// initialization of the internal data structure and an precomputation-free
-// algorithm
-void metric::GeodesicMetric::initialize(Shape *shape) {
-    Metric::initialize(shape);
-    
+metric::GeodesicMetric::GeodesicMetric(Shape* shape) : Metric(shape) {
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
     

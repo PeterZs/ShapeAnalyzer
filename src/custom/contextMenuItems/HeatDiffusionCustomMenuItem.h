@@ -13,7 +13,7 @@
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/LaplaceBeltramiOperator.h"
+#include "../../domain/FEMLaplaceBeltramiOperator.h"
 #include "../../domain/HeatDiffusion.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
 
@@ -27,12 +27,9 @@ class HeatDiffusionCustomMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
     
-    static string getIdentifier() {
-        return "heatdiffusion";
-    }
-    
-    static CustomContextMenuItem* create() {
-        return new HeatDiffusionCustomMenuItem();
+
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<HeatDiffusionCustomMenuItem>(new HeatDiffusionCustomMenuItem());
     }
     
 private:

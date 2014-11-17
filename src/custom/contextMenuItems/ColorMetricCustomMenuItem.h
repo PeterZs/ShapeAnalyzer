@@ -43,18 +43,16 @@ public:
                                                 );
         
         if (ok) {
-            Metric* m = Factory<Metric>::getInstance()->create(T::getIdentifier());
-            m->initialize(shape);
+            T m(shape);
             ScalarPointAttribute distances(shape);
-            m->getAllDistances(distances, source);
+            m.getAllDistances(distances, source);
 
             shape->colorPointsScalars(distances.getScalars());
-            delete m;
         }
     }
     
-    static CustomContextMenuItem* create() {
-        return new ColorMetricCustomMenuItem<T>();
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<ColorMetricCustomMenuItem<T>>(new ColorMetricCustomMenuItem<T>());
     }
     
 private:

@@ -10,14 +10,10 @@
 
 #include <limits>
 
-//Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
 
-void WaveKernelSignature::initialize(Shape* shape, int dimension) {
-    LaplaceBeltramiSignature::initialize(shape, dimension);
+WaveKernelSignature::WaveKernelSignature(Shape* shape, int dimension, LaplaceBeltramiOperator* laplacian, double wksVariance) : LaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
 
     PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];
-    
-
     
     double maximum = -std::numeric_limits<double>::infinity();
     for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
@@ -37,8 +33,6 @@ void WaveKernelSignature::initialize(Shape* shape, int dimension) {
     }
     
     PetscScalar sigma = (e[1] - e[0]) * wksVariance_;
-    
-    
 
     for(PetscInt i = 0; i < dimension_; i++) {
         Vec wksi; //i-th component of wks

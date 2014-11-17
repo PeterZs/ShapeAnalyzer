@@ -13,9 +13,9 @@ namespace sampling {
 ///
 class MetricSampling : public Sampling {
 public:
-    /// \brief Sets the metric 
-    void setMetric(Metric* metric);
-
+    /// \brief Basic constructor.
+    MetricSampling(Shape* shape, Metric* metric) : Sampling(shape), metric_(metric) {}
+    
 protected:
     Metric* metric_;
 };

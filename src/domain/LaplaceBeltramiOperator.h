@@ -22,10 +22,11 @@ using namespace attribute;
 
 class LaplaceBeltramiOperator {
 public:
-    virtual ~LaplaceBeltramiOperator() {
+    LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
     }
     
-    virtual void initialize(Shape* shape, int numberOfEigenfunctions);
+    virtual ~LaplaceBeltramiOperator() {
+    }
     
     virtual void getEigenfunction(int i, ScalarPointAttribute &phi) = 0;
     
@@ -45,9 +46,6 @@ public:
         return numberOfEigenfunctions_;
     }
 protected:
-    LaplaceBeltramiOperator() {};
-    
-    
     Shape* shape_; //the shape
     int numberOfEigenfunctions_;
 };

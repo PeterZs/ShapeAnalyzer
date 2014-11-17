@@ -55,34 +55,17 @@ public:
                                                           &ok
                                                           );
         if(ok) {
+            T m(shape);
+            FarthestPointSampling fps(shape, &m, source, numberOfSegments);
+            VoronoiCellSegmentation segmentation(shape, &m, &fps);
             
-            VoronoiCellSegmentation* segmentation = (VoronoiCellSegmentation*) Factory<Segmentation>::getInstance()->create("VoronoiCellSegmentation");
-            
-            Metric* m = Factory<Metric>::getInstance()->create(T::getIdentifier());
-            m->initialize(shape);
-            FarthestPointSampling* fps = (FarthestPointSampling*) Factory<Sampling>::getInstance()->create("fps");
-            fps->setMetric(m);
-            fps->setSource(source);
-            fps->setNumberOfPoints(numberOfSegments);
-            fps->initialize(shape);
-            segmentation->setMetric(m);
-            segmentation->setSampling(fps);
-            
-            segmentation->initialize(shape);
-             
             // save current segmentation for being able to create new shapes out of the segments
-            vtkSmartPointer<vtkIdList> voronoiCells = segmentation->getSegmentation();
-            shape->setSegmentation(voronoiCells);
-            
-            
-            delete m;
-            delete fps;
-            delete segmentation;
+            shape->setSegmentation(segmentation.getSegmentation());
         }
     }
     
-    static CustomContextMenuItem* create() {
-        return new VoronoiCellsCustomMenuItem<T>();
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<VoronoiCellsCustomMenuItem>(new VoronoiCellsCustomMenuItem());
     }
     
 private:

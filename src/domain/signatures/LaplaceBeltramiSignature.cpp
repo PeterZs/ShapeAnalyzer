@@ -8,13 +8,12 @@
 
 #include "LaplaceBeltramiSignature.h"
 
-LaplaceBeltramiSignature::~LaplaceBeltramiSignature() {
-    MatDestroy(&signature_);
+LaplaceBeltramiSignature::LaplaceBeltramiSignature(Shape *shape, int dimension, LaplaceBeltramiOperator* laplacian) : Signature(shape, dimension), laplacian_(laplacian) {
+    MatCreateSeqDense(MPI_COMM_SELF, dimension_, shape_->getPolyData()->GetNumberOfPoints(), NULL, &signature_);
 }
 
-void LaplaceBeltramiSignature::initialize(Shape *shape, int dimension) {
-    Signature::initialize(shape, dimension);
-    MatCreateSeqDense(MPI_COMM_SELF, dimension_, shape_->getPolyData()->GetNumberOfPoints(), NULL, &signature_);
+LaplaceBeltramiSignature::~LaplaceBeltramiSignature() {
+    MatDestroy(&signature_);
 }
 
 void LaplaceBeltramiSignature::getComponent(int i, ScalarPointAttribute &component) {

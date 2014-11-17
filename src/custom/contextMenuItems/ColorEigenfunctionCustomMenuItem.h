@@ -13,7 +13,7 @@
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/LaplaceBeltramiOperator.h"
+#include "../../domain/FEMLaplaceBeltramiOperator.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
 
 #include "../Factory.h"
@@ -26,12 +26,8 @@ class ColorEigenfunctionCustomMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
     
-    static string getIdentifier() {
-        return "color_eigenfunction";
-    }
-    
-    static CustomContextMenuItem* create() {
-        return new ColorEigenfunctionCustomMenuItem();
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<CustomContextMenuItem>(new ColorEigenfunctionCustomMenuItem());
     }
     
 private:

@@ -18,25 +18,13 @@
 
 #include <cmath>
 
+//Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
+
 class WaveKernelSignature : public LaplaceBeltramiSignature {
 public:    
-    virtual void initialize(Shape* shape, int dimension);
-    
-    void setWKSVariance(double wksVariance) {
-        wksVariance_ = wksVariance;
-    }
-    
-    static LaplaceBeltramiSignature* create() {
-        return new WaveKernelSignature();
-    }
-    
-    static string getIdentifier() {
-        return "wks";
-    }
-    
+    WaveKernelSignature(Shape* shape, int dimension, LaplaceBeltramiOperator* laplacian, double wksVariance = 6.0);
+
 private:
-    WaveKernelSignature() : wksVariance_(6.0) {}
-    
     double wksVariance_;
 };
 

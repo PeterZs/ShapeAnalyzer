@@ -18,13 +18,11 @@ namespace sampling {
 class Sampling {
     
 public:
+    /// \brief Basic constructor.
+    Sampling(Shape* shape) : shape_(shape) {}
+    
     /// Virtual empty destructor.
     virtual ~Sampling() {}
-    
-    /// \brief Initializes the sampling with the corresponding Shape.
-    virtual void initialize(Shape* shape) {
-        shape_ = shape;
-    }
     
     /// \brief Returns a list of the ids of the sampled points.
     virtual vtkSmartPointer<vtkIdList> getPoints() = 0;
@@ -33,9 +31,6 @@ public:
     Shape*  getShape()      { return shape_; }
     
 protected:
-    /// \brief Basic constructor.
-    Sampling() {}
-
     Shape* shape_;
 };
     

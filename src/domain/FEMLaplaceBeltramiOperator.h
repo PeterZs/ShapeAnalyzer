@@ -24,15 +24,7 @@ using namespace attribute;
 
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
-    static LaplaceBeltramiOperator* create() {
-        return new FEMLaplaceBeltramiOperator();
-    }
-    
-    static string getIdentifier() {
-        return "fem";
-    }
-    
-    virtual void initialize(Shape* shape, int numberOfEigenfunctions);
+    FEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
     
     virtual double getEigenvalue(int i);
     
@@ -50,8 +42,6 @@ public:
     virtual ~FEMLaplaceBeltramiOperator();
     
 private:
-    FEMLaplaceBeltramiOperator() {}
-    
     void setupMatrices();
     
     inline void getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces);

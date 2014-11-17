@@ -32,7 +32,7 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
         
         shape->readBinary(is);
         shapes.push_back(shape);
-        shapesByActor.add(shape->getActor(), shape);
+        shapesByActor.insert(shape->getActor(), shape);
     }
     
     //read last insert correspondence ID
@@ -70,7 +70,7 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
             correspondence->initialize();
         }
         
-        pointCorrespondences.add(data, correspondence);
+        pointCorrespondences.insert(data, correspondence);
     }
     
     //read face correspondences
@@ -102,7 +102,7 @@ void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRe
             correspondence->initialize();
         }
         
-        faceCorrespondences.add(data, correspondence);
+        faceCorrespondences.insert(data, correspondence);
     }
     is.close();
 }

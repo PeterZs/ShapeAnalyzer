@@ -13,21 +13,13 @@
 
 class LaplaceBeltramiSignature : public Signature {
 public:
+    LaplaceBeltramiSignature(Shape *shape, int dimension, LaplaceBeltramiOperator* laplacian);
+    
     virtual ~LaplaceBeltramiSignature();
-    
-    virtual void initialize(Shape* shape, int dimension);
-    
-    void setLaplacian(LaplaceBeltramiOperator* laplacian) {
-        laplacian_ = laplacian;
-    }
-    
     
     void getComponent(int i, Vec* component);
     virtual void getComponent(int i, ScalarPointAttribute& component);
 protected:
-    LaplaceBeltramiSignature() {
-    }
-
     Mat signature_;
     LaplaceBeltramiOperator* laplacian_;
 };

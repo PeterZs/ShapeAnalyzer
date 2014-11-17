@@ -32,12 +32,8 @@ class ExtractSegmentCustomMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
     
-    static string getIdentifier() {
-        return "extract_segment";
-    }
-    
-    static CustomContextMenuItem* create() {
-        return new ExtractSegmentCustomMenuItem();
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<ExtractSegmentCustomMenuItem>(new ExtractSegmentCustomMenuItem());
     }
     
 private:

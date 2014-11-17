@@ -85,29 +85,16 @@ private:
     };
     
 public:
+    GeodesicMetric(Shape* shape);
+    
     /// Empty destructor.
     virtual ~GeodesicMetric();
     
-    /// Returns a new instance of the GeodesicMetric class. This function should not be called directly in your code since it is used internally by the corresponding Factory. Instead use the corresponding Factory class to create new instances of GeodesicMetric.
-    static Metric* create() {
-        return new GeodesicMetric();
-    }
-    
-    /// Returns the unique identifier of this class. Used internally be the corresponding Factory.
-    static string getIdentifier() {
-        return "geodesic";
-    }
-    
-    virtual void initialize(Shape* shape);
     virtual double getDistance(vtkIdType a, vtkIdType b);
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
     virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
 private:
-    GeodesicMetric() : algorithm_(nullptr), points_(nullptr), faces_(nullptr) {
-        
-    }
-
     /// @{
     Mesh                                mesh_;
     GeodesicAlgorithmExact*             algorithm_;

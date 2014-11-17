@@ -40,24 +40,20 @@ public:
                                      );
         
         if (ok) {
-            LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-            laplacian->initialize(shape, 100);
+            FEMLaplaceBeltramiOperator laplacian(shape, 100);
             
-            LaplaceBeltramiSignature* s = Factory<LaplaceBeltramiSignature>::getInstance()->create(T::getIdentifier());
-            s->setLaplacian(laplacian);
-            s->initialize(shape, 100);
-            
+            T s(shape, 100, &laplacian);
+
             ScalarPointAttribute component(shape);
-            s->getComponent(i, component);
-            delete s;
-            delete laplacian;
+            s.getComponent(i, component);
+
 
             shape->colorPointsScalars(component.getScalars());
         }
     }
     
-    static CustomContextMenuItem* create() {
-        return new ColorSignatureCustomMenuItem<T>();
+    static shared_ptr<CustomContextMenuItem> create() {
+        return shared_ptr<ColorSignatureCustomMenuItem<T>>(new ColorSignatureCustomMenuItem<T>());
     }
     
 private:

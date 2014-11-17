@@ -46,13 +46,11 @@ void HeatDiffusionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkId
                 u0.getScalars()->SetValue(i, 0.0);
             }
         }
-        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian->initialize(shape, 100);
+        FEMLaplaceBeltramiOperator laplacian(shape, 100);
         
-        HeatDiffusion heatDiffusion(shape, laplacian, u0);
+        HeatDiffusion heatDiffusion(shape, &laplacian, u0);
         ScalarPointAttribute ut(shape);
         heatDiffusion.getHeat(ut, t);
-        delete laplacian;
         shape->colorPointsScalars(ut.getScalars());
     }
 }

@@ -25,10 +25,8 @@ void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, 
     if (ok) {
         ScalarPointAttribute eigenfunction(shape);
         
-        LaplaceBeltramiOperator* laplacian = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-        laplacian->initialize(shape, 100);
-        laplacian->getEigenfunction(i, eigenfunction);
-        delete laplacian;
+        FEMLaplaceBeltramiOperator laplacian(shape, 100);
+        laplacian.getEigenfunction(i, eigenfunction);
         
         shape->colorPointsScalars(eigenfunction.getScalars());
     }

@@ -8,11 +8,6 @@
 
 #include "LaplaceBeltramiOperator.h"
 
-void LaplaceBeltramiOperator::initialize(Shape* shape, int numberOfEigenfunctions) {
-    shape_ = shape;
-    numberOfEigenfunctions_ = numberOfEigenfunctions;
-}
-
 void LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         Vec phi;
@@ -22,7 +17,6 @@ void LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
         
         VecDestroy(&phi);
     }
-    
     
     MatAssemblyBegin(*Phi, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(*Phi, MAT_FINAL_ASSEMBLY);

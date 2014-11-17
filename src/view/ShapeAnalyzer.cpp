@@ -120,27 +120,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     connect(this->actionMeshChecker,                SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabMeshChecker(bool)));
-    
-    //register metrics
-    Factory<Metric>::getInstance()->Register<EuclideanMetric>("Euclidean Metric");
-    Factory<Metric>::getInstance()->Register<GeodesicMetric>("Geodesic Metric");
-    
-    //register signatures
-    Factory<LaplaceBeltramiSignature>::getInstance()->Register<WaveKernelSignature>("Wave Kernel Signature");
-    
-    //register samplings
-    Factory<Sampling>::getInstance()->Register<FarthestPointSampling>("Farthest Point Sampling");
-    
-    
-    //register segmentations
-    Factory<Segmentation>::getInstance()->Register<VoronoiCellSegmentation>("Voronoi Cells");
-    
-    //register Laplace-Beltrami Operators
-    Factory<LaplaceBeltramiOperator>::getInstance()->Register<FEMLaplaceBeltramiOperator>("FEM Laplace-Beltrami Operator");
-    
-    
-    Factory<CustomContextMenuItem>::getInstance()->Register<HeatDiffusionCustomMenuItem>("Coloring>>Heat diffusion");
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorEigenfunctionCustomMenuItem>("Coloring>>i-th Eigenfunction");
 
     Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
     Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
@@ -152,7 +131,7 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsCustomMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<ExtractSegmentCustomMenuItem>("Extract Segment as new Shape");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ExtractSegmentCustomMenuItem>("extract_segment", "Extract Segment as new Shape");
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -608,7 +587,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtParseCustomContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
+void ShapeAnalyzer::qtParseCustomMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
     // get list of all menu item paths (Home>>foo>>bar>>action)
     unordered_map<string, string> paths = Factory<CustomContextMenuItem>::getInstance()->getLabels();
     
@@ -671,14 +650,11 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
 
     //create custom menu items out of the list of custom context menu items registered in the Factory<CustomContextMenuItem>
     HashMap<QAction*, string> customActions;
-    qtParseCustomContextMenuItems(&myMenu, customActions);
+    qtParseCustomMenuItems(&myMenu, customActions);
 
     Shape* currentShape;
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();
     currentShape = item->getItem();
-//    if(pointId != -1 && segmentations_.containsKey(currentShape)) {
-//        createShapeSegment = myMenu.addAction("Create Shape(s) from Segment");
-//    }
     
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
@@ -693,7 +669,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape);
     } else {
         if(customActions.containsKey(selectedItem)) {
-            CustomContextMenuItem* menuItem = Factory<CustomContextMenuItem>::getInstance()->create(customActions[selectedItem]);
+            shared_ptr<CustomContextMenuItem> menuItem = Factory<CustomContextMenuItem>::getInstance()->create(customActions[selectedItem]);
             menuItem->onClick(currentShape, pointId, faceId, this);
         }
     }

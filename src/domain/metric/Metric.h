@@ -32,14 +32,12 @@ class Metric {
  
     
 public:
+    /// Protected constructor since Metric should only be initialized via Factory
+    Metric(Shape* shape) : shape_(shape) {}
+    
     /// Empty destructor
     virtual ~Metric() {};
-    
-    /// Initializes the Metric object with a Shape object to which it corresponds
-    virtual void initialize(Shape* shape) {
-        shape_ = shape;
-    }
-    
+
     /// Returns the distance between the points with the ids a and b
     virtual double getDistance(vtkIdType a, vtkIdType b) = 0;
     
@@ -51,15 +49,8 @@ public:
     
     /// Returns voronoi cells that correspond to the vertices in argument seeds. The result is of type vtkIdList and it contains the corresponding cell id for each vertex.
     virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
-    
-    /// Returns the underlying shape.
-    Shape*  getShape()          { return shape_; }
-    
 protected:
     Shape* shape_;
-  
-    /// Protected constructor since Metric should only be initialized via Factory
-    Metric() {}
 };
     
 }

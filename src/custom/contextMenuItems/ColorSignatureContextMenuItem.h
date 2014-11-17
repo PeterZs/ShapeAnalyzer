@@ -1,13 +1,13 @@
 //
-//  ColorSignatureCustomMenuItem.h
+//  ColorSignatureContextMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__ColorSignatureCustomMenuItem__
-#define __ShapeAnalyzer__ColorSignatureCustomMenuItem__
+#ifndef __ShapeAnalyzer__ColorSignatureContextMenuItem__
+#define __ShapeAnalyzer__ColorSignatureContextMenuItem__
 
 #include <string>
 
@@ -24,7 +24,7 @@
 using namespace std;
 
 template<class T>
-class ColorSignatureCustomMenuItem : public CustomContextMenuItem {
+class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
@@ -53,11 +53,11 @@ public:
     }
     
     static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<ColorSignatureCustomMenuItem<T>>(new ColorSignatureCustomMenuItem<T>());
+        return shared_ptr<ColorSignatureContextMenuItem<T>>(new ColorSignatureContextMenuItem<T>());
     }
     
 private:
-    ColorSignatureCustomMenuItem<T>() {}
+    ColorSignatureContextMenuItem<T>() {}
 };
 
-#endif /* defined(__ShapeAnalyzer__ColorSignatureCustomMenuItem__) */
+#endif /* defined(__ShapeAnalyzer__ColorSignatureContextMenuItem__) */

@@ -1,15 +1,15 @@
 //
-//  HeatDiffusionCustomMenuItem.cpp
+//  HeatDiffusionContextMenuItem.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#include "HeatDiffusionCustomMenuItem.h"
+#include "HeatDiffusionContextMenuItem.h"
 
 
-void HeatDiffusionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     double t = QInputDialog::getDouble(
                                        parent,

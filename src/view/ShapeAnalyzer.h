@@ -69,12 +69,12 @@
 
 //TODO rename all implementing classes to ...ContextMenuItem
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
-#include "../custom/contextMenuItems/ColorEigenfunctionCustomMenuItem.h"
-#include "../custom/contextMenuItems/ColorMetricCustomMenuItem.h"
-#include "../custom/contextMenuItems/ColorSignatureCustomMenuItem.h"
-#include "../custom/contextMenuItems/HeatDiffusionCustomMenuItem.h"
-#include "../custom/contextMenuItems/VoronoiCellsCustomMenuItem.h"
-#include "../custom/contextMenuItems/ExtractSegmentCustomMenuItem.h"
+#include "../custom/contextMenuItems/ColorEigenfunctionContextMenuItem.h"
+#include "../custom/contextMenuItems/ColorMetricContextMenuItem.h"
+#include "../custom/contextMenuItems/ColorSignatureContextMenuItem.h"
+#include "../custom/contextMenuItems/HeatDiffusionContextMenuItem.h"
+#include "../custom/contextMenuItems/VoronoiCellsContextMenuItem.h"
+#include "../custom/contextMenuItems/ExtractSegmentContextMenuItem.h"
 
 #include "../custom/Factory.h"
 
@@ -120,7 +120,7 @@ using namespace std;
 
 class qtShapeInterpolationTab;
 
-class ExtractSegmentCustomMenuItem;
+class ExtractSegmentContextMenuItem;
 
 
 ///
@@ -339,7 +339,7 @@ private:
     bool eventFilter(QObject *object, QEvent *event);
     
     
-    void qtParseCustomMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions);
+    void qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions);
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
     void qtShowContextMenuShapes(const QPoint& pos, vtkIdType pointId, vtkIdType faceId);
     void qtShowContextMenuCorrepondences(const QPoint& pos);

@@ -1,13 +1,13 @@
 //
-//  ColorMetricCustomMenuItem.h
+//  ColorMetricContextMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__ColorMetricCustomMenuItem__
-#define __ShapeAnalyzer__ColorMetricCustomMenuItem__
+#ifndef __ShapeAnalyzer__ColorMetricContextMenuItem__
+#define __ShapeAnalyzer__ColorMetricContextMenuItem__
 
 #include <string>
 
@@ -25,7 +25,7 @@ using namespace std;
 using namespace metric;
 
 template<class T>
-class ColorMetricCustomMenuItem : public CustomContextMenuItem {
+class ColorMetricContextMenuItem : public CustomContextMenuItem {
 public:
     static const int bla;
     
@@ -52,11 +52,11 @@ public:
     }
     
     static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<ColorMetricCustomMenuItem<T>>(new ColorMetricCustomMenuItem<T>());
+        return shared_ptr<ColorMetricContextMenuItem<T>>(new ColorMetricContextMenuItem<T>());
     }
     
 private:
-    ColorMetricCustomMenuItem<T>() {}
+    ColorMetricContextMenuItem<T>() {}
 };
 
-#endif /* defined(__ShapeAnalyzer__ColorMetricCustomMenuItem__) */
+#endif /* defined(__ShapeAnalyzer__ColorMetricContextMenuItem__) */

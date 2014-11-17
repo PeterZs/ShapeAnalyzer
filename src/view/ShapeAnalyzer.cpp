@@ -116,17 +116,17 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->actionMeshChecker,                SIGNAL(toggled(bool)),
             this,                                   SLOT(slotTabMeshChecker(bool)));
 
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricCustomMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
 
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<ColorSignatureCustomMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
 
-    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsCustomMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
+    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsCustomMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
+    Factory<CustomContextMenuItem>::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
     
-    Factory<CustomContextMenuItem>::getInstance()->Register<ExtractSegmentCustomMenuItem>("extract_segment", "Extract Segment as new Shape");
+    Factory<CustomContextMenuItem>::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -581,7 +581,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::qtParseCustomMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
+void ShapeAnalyzer::qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
     // get list of all menu item paths (Home>>foo>>bar>>action)
     unordered_map<string, string> paths = Factory<CustomContextMenuItem>::getInstance()->getLabels();
     
@@ -618,7 +618,7 @@ void ShapeAnalyzer::qtParseCustomMenuItems(QMenu* menu, HashMap<QAction*, string
             parent = currentPath;
         }
         
-        // create a action for the leaf (last element of path) and return it via customActions (here the actions are indexed by the unique identifier of the CustomMenuItem class)
+        // create a action for the leaf (last element of path) and return it via customActions (here the actions are indexed by the unique identifier of the ContextMenuItem class)
         if(i > 0) {
             QAction* action = menus[parent.toStdString()]->addAction(list[i]);
             customActions.insert(action, entry.first);
@@ -644,7 +644,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
 
     //create custom menu items out of the list of custom context menu items registered in the Factory<CustomContextMenuItem>
     HashMap<QAction*, string> customActions;
-    qtParseCustomMenuItems(&myMenu, customActions);
+    qtParseContextMenuItems(&myMenu, customActions);
 
     Shape* currentShape;
     qtListWidgetItem<Shape> *item = (qtListWidgetItem<Shape> *) this->listShapes->currentItem();

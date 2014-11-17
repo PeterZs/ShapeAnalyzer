@@ -6,10 +6,10 @@
 //
 //
 
-#include "ExtractSegmentCustomMenuItem.h"
+#include "ExtractSegmentContextMenuItem.h"
 
 
-void ExtractSegmentCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void ExtractSegmentContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     
     if(pointId == -1 || !shape->hasSegmentation()) {
         QMessageBox::warning(parent, "Error", "No valid segment selected.\nDoes shape \"" + QString(shape->getName().c_str()) + "\" have an active segmentation? Eventually a segmentation has to be set first.");

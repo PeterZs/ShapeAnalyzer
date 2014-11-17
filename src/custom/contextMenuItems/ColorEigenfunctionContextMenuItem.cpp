@@ -1,15 +1,15 @@
 //
-//  ColorEigenfunctionCustomMenuItem.cpp
+//  ColorEigenfunctionContextMenuItem.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#include "ColorEigenfunctionCustomMenuItem.h"
+#include "ColorEigenfunctionContextMenuItem.h"
 
 
-void ColorEigenfunctionCustomMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void ColorEigenfunctionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     int i = QInputDialog::getInt(
                                  parent,

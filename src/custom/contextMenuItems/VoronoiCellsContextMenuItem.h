@@ -1,13 +1,13 @@
 //
-//  VoronoiCellsCustomMenuItem.h
+//  VoronoiCellsContextMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__VoronoiCellsCustomMenuItem__
-#define __ShapeAnalyzer__VoronoiCellsCustomMenuItem__
+#ifndef __ShapeAnalyzer__VoronoiCellsContextMenuItem__
+#define __ShapeAnalyzer__VoronoiCellsContextMenuItem__
 
 #include <string>
 
@@ -26,7 +26,7 @@
 using namespace std;
 
 template<class T>
-class VoronoiCellsCustomMenuItem : public CustomContextMenuItem {
+class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
@@ -65,11 +65,11 @@ public:
     }
     
     static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<VoronoiCellsCustomMenuItem>(new VoronoiCellsCustomMenuItem());
+        return shared_ptr<VoronoiCellsContextMenuItem>(new VoronoiCellsContextMenuItem());
     }
     
 private:
-    VoronoiCellsCustomMenuItem<T>() {}
+    VoronoiCellsContextMenuItem<T>() {}
 };
 
-#endif /* defined(__ShapeAnalyzer__VoronoiCellsCustomMenuItem__) */
+#endif /* defined(__ShapeAnalyzer__VoronoiCellsContextMenuItem__) */

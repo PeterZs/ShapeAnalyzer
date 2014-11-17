@@ -68,12 +68,14 @@
 #include "qt/qtShapeInterpolationTab.h"
 #include "qt/qtMeshCheckTab.h"
 
+//TODO rename all implementing classes to ...ContextMenuItem
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
 #include "../custom/contextMenuItems/ColorEigenfunctionCustomMenuItem.h"
 #include "../custom/contextMenuItems/ColorMetricCustomMenuItem.h"
 #include "../custom/contextMenuItems/ColorSignatureCustomMenuItem.h"
 #include "../custom/contextMenuItems/HeatDiffusionCustomMenuItem.h"
 #include "../custom/contextMenuItems/VoronoiCellsCustomMenuItem.h"
+#include "../custom/contextMenuItems/ExtractSegmentCustomMenuItem.h"
 
 #include "../custom/Factory.h"
 
@@ -120,6 +122,8 @@ using namespace std;
 class qtPointCorrespondencesTab;
 class qtFaceCorrespondencesTab;
 class qtShapeInterpolationTab;
+
+class ExtractSegmentCustomMenuItem;
 
 
 ///
@@ -242,6 +246,9 @@ public:
     /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
     void clearFaceCorrespondences();
     ///@}
+    
+    /// \note TODO: move all those public functions to a separate interface class which is implemented by ShapeAnalyzer
+    Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
     
     /// \brief Adds the shape to the gui.
     /// \details Creates an vtkActor for this shape and adds it to the vtkWidget. Adds the Shape to all

@@ -65,22 +65,15 @@ public:
             fps->setSource(source);
             fps->setNumberOfPoints(numberOfSegments);
             fps->initialize(shape);
-            ((VoronoiCellSegmentation*) segmentation)->setMetric(m);
-            ((VoronoiCellSegmentation*) segmentation)->setSampling(fps);
+            segmentation->setMetric(m);
+            segmentation->setSampling(fps);
             
             segmentation->initialize(shape);
              
             // save current segmentation for being able to create new shapes out of the segments
-            //segmentations_.add(shape, segmentation->getSegmentation());
+            vtkSmartPointer<vtkIdList> voronoiCells = segmentation->getSegmentation();
+            shape->setSegmentation(voronoiCells);
             
-            
-            vtkSmartPointer<vtkIdList> segments = segmentation->getSegmentation();
-            DiscretePointAttribute voronoiCells(shape);
-            for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
-                voronoiCells.getValues()->SetValue(i, segments->GetId(i));
-            }
-            
-            shape->colorPointsScalars(voronoiCells.getValues());
             
             delete m;
             delete fps;

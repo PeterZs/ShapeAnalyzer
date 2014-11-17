@@ -154,13 +154,14 @@ public:
     void colorFacesRGB(vtkUnsignedCharArray* colors);
     
     
-    void setSegmentation(vtkSmartPointer<vtkIdList> segmentation) {
-        segmentation_ = segmentation;
-        hasSegmentation_ = true;
-    }
+    void setSegmentation(vtkSmartPointer<vtkIdList> segmentation);
     
     vtkIdList* getSegmentation() {
         return segmentation_;
+    }
+    
+    bool hasSegmentation() {
+        return hasSegmentation_;
     }
 private:
     
@@ -177,7 +178,7 @@ private:
     vtkSmartPointer<vtkRenderer>        renderer_;
     
     vtkSmartPointer<vtkIdList> segmentation_;
-    bool hasSegmentation_ = false;
+    bool hasSegmentation_;
 };
 
 #endif

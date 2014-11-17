@@ -41,9 +41,9 @@ class qtCorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceCol
     Q_OBJECT
     
 public:
-    qtCorrespondenceColoringTab(HashMap<vtkActor*, Shape*>*                 map,
-                                HashMap<FaceCorrespondenceData*, bool>*     faceCorr,
-                                HashMap<PointCorrespondenceData*, bool>*    pointCorr,
+    qtCorrespondenceColoringTab(HashMap<vtkActor*, Shape*> const*                 map,
+                                HashMap<FaceCorrespondenceData*, bool> const*     faceCorr,
+                                HashMap<PointCorrespondenceData*, bool> const*    pointCorr,
                                 QWidget * parent,
                                 Qt::WindowFlags f = 0);
     
@@ -59,9 +59,9 @@ private slots:
 private:
     void    clearGrid();
     
-    HashMap<vtkActor*, Shape*>*                 map_;
-    HashMap<FaceCorrespondenceData*, bool>*     faceCorr_;
-    HashMap<PointCorrespondenceData*, bool>*    pointCorr_;
+    HashMap<vtkActor*, Shape*> const*                 map_;
+    HashMap<FaceCorrespondenceData*, bool> const*     faceCorr_;
+    HashMap<PointCorrespondenceData*, bool> const*    pointCorr_;
 };
 
 

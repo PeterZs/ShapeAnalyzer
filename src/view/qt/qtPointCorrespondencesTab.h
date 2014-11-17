@@ -37,7 +37,7 @@ class qtPointCorrespondencesTab : public QWidget, private Ui::PointCorrespondenc
     
 public:
     qtPointCorrespondencesTab(
-                           HashMap<PointCorrespondenceData*, bool>* pointCorrespondences,
+                           HashMap<PointCorrespondenceData*, bool> const * pointCorrespondences,
                            ShapeAnalyzer* parent,
                            Qt::WindowFlags f = 0
                            );
@@ -63,8 +63,8 @@ private slots:
     
 private:
     
-    HashMap<PointCorrespondenceData*, bool>*    pointCorrespondences_;
-    ShapeAnalyzer*                              parent_;
+    HashMap<PointCorrespondenceData*, bool> const * pointCorrespondences_;
+    ShapeAnalyzer* parent_;
 };
 
 

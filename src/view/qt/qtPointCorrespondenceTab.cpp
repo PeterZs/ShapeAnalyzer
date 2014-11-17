@@ -15,7 +15,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 qtPointCorrespondencesTab::qtPointCorrespondencesTab(
-                                                     HashMap<PointCorrespondenceData*, bool>* pointCorrespondences,
+                                                     HashMap<PointCorrespondenceData*, bool> const * pointCorrespondences,
                                                      ShapeAnalyzer* parent,
                                                      Qt::WindowFlags f
                                                      )

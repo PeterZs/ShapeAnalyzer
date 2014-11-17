@@ -14,9 +14,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-qtCorrespondenceColoringTab::qtCorrespondenceColoringTab(HashMap<vtkActor*, Shape*>*             map,
-                                                         HashMap<FaceCorrespondenceData*, bool>* faceCorr,
-                                                         HashMap<PointCorrespondenceData*, bool>* pointCorr,
+qtCorrespondenceColoringTab::qtCorrespondenceColoringTab(HashMap<vtkActor*, Shape*> const*             map,
+                                                         HashMap<FaceCorrespondenceData*, bool> const* faceCorr,
+                                                         HashMap<PointCorrespondenceData*, bool> const* pointCorr,
                                                          QWidget * parent,
                                                          Qt::WindowFlags f
                                                          )
@@ -30,7 +30,7 @@ pointCorr_(pointCorr)
     this->comboBox->insertItem(0, QString(tr(" ")));
     
     QStringList labels;
-    for(HashMap<vtkActor*, Shape*>::iterator it = map_->begin(); it != map_->end(); it++) {
+    for(HashMap<vtkActor*, Shape*>::const_iterator it = map_->begin(); it != map_->end(); it++) {
         
         QString label = QString::number(it->second->getId());
         label.append(QString::fromStdString(":"+it->second->getName()));

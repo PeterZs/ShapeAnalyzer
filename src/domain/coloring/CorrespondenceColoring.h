@@ -41,9 +41,9 @@ namespace coloring {
         /// @param faces HashMap of all FaceCorrespondences that will be considered
         /// @param reference Optional. Pointer to shape that will be the reference. The first shape
         /// will be chosen if no reference is given.
-        CorrespondenceColoring(HashMap<vtkActor*, Shape*>*              set,
-                               HashMap<PointCorrespondenceData*, bool>* points,
-                               HashMap<FaceCorrespondenceData*, bool>*  faces,
+        CorrespondenceColoring(HashMap<vtkActor*, Shape*> const*              set,
+                               HashMap<PointCorrespondenceData*, bool> const* points,
+                               HashMap<FaceCorrespondenceData*, bool> const*  faces,
                                Shape* reference = 0);
         
         /// \brief Visualizes the point correspondences going out from the reference shape.
@@ -78,9 +78,9 @@ namespace coloring {
                                      vector<pair<vtkIdType, double> >* percentageMultiple = 0);
         
     protected:
-        HashMap<vtkActor*, Shape*>*                 shapes_;
-        HashMap<PointCorrespondenceData*, bool>*    points_;
-        HashMap<FaceCorrespondenceData*, bool>*     faces_;
+        HashMap<vtkActor*, Shape*> const*                 shapes_;
+        HashMap<PointCorrespondenceData*, bool> const*    points_;
+        HashMap<FaceCorrespondenceData*, bool> const*     faces_;
         
         Shape* reference_;
         

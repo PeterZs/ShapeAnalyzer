@@ -15,7 +15,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 qtFaceCorrespondencesTab::qtFaceCorrespondencesTab(
-                                                HashMap<FaceCorrespondenceData*, bool>* faceCorrespondences,
+                                                HashMap<FaceCorrespondenceData*, bool> const* faceCorrespondences,
                                                 ShapeAnalyzer* parent,
                                                 Qt::WindowFlags f
                                                 )

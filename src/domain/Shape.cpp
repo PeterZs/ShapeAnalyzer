@@ -13,14 +13,14 @@ Shape::Shape(
              vtkSmartPointer<vtkPolyData> polyData,
              vtkSmartPointer<vtkRenderer> renderer
              )
-: id_(id), name_(name), polyData_(polyData), renderer_(renderer)
+: id_(id), name_(name), polyData_(polyData), renderer_(renderer), hasSegmentation_(false)
 {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
-: renderer_(renderer)
+: renderer_(renderer), hasSegmentation_(false)
 {/* do not call initialize here! Poly data is not yet initialized! */}
 
 void Shape::initialize() {
@@ -59,7 +59,6 @@ void Shape::removeFromRenderer() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::clearColoring() {
-    //segmentation_->Delete();
     hasSegmentation_ = false;
     
     mapper_->CreateDefaultLookupTable();
@@ -112,7 +111,6 @@ vtkIdType Shape::getRandomPoint() {
 }
 
 void Shape::colorPointsScalars(vtkDataArray* values) {
-    //segmentation_->Delete();
     hasSegmentation_ = false;
     
     double range[2];
@@ -135,7 +133,6 @@ void Shape::colorPointsScalars(vtkDataArray* values) {
 }
 
 void Shape::colorFacesScalars(vtkDataArray* values) {
-    //segmentation_->Delete();
     hasSegmentation_ = false;
     
     double range[2];
@@ -158,7 +155,6 @@ void Shape::colorFacesScalars(vtkDataArray* values) {
 }
 
 void Shape::colorPointsRGB(vtkUnsignedCharArray* colors) {
-    //segmentation_->Delete();
     hasSegmentation_ = false;
     
     polyData_->GetPointData()->SetScalars(colors);
@@ -176,7 +172,6 @@ void Shape::colorPointsRGB(vtkUnsignedCharArray* colors) {
 
 
 void Shape::colorFacesRGB(vtkUnsignedCharArray* colors) {
-    //segmentation_->Delete();
     hasSegmentation_ = false;
     
     polyData_->GetCellData()->SetScalars(colors);
@@ -189,6 +184,17 @@ void Shape::colorFacesRGB(vtkUnsignedCharArray* colors) {
     polyDataNormals_->Modified();
     
     renderer_->GetRenderWindow()->Render();
+}
+
+void Shape::setSegmentation(vtkSmartPointer<vtkIdList> segmentation) {
+    vtkSmartPointer<vtkIntArray> values = vtkSmartPointer<vtkIntArray>::New();
+    values->SetNumberOfValues(polyData_->GetNumberOfPoints());
+    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
+        values->SetValue(i, segmentation->GetId(i));
+    }
+    colorPointsScalars(values);
+    segmentation_ = segmentation;
+    hasSegmentation_ = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

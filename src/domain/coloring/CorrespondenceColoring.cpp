@@ -10,9 +10,9 @@
 #include <utility>
 
 ///////////////////////////////////////////////////////////////////////////////
-coloring::CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*>*               set,
-                                               HashMap<PointCorrespondenceData*, bool>*  points,
-                                               HashMap<FaceCorrespondenceData*, bool> *  faces,
+coloring::CorrespondenceColoring::CorrespondenceColoring(HashMap<vtkActor*, Shape*> const*               set,
+                                               HashMap<PointCorrespondenceData*, bool> const*  points,
+                                               HashMap<FaceCorrespondenceData*, bool> const*  faces,
                                                Shape* reference)
 : shapes_(set), points_(points), faces_(faces), reference_(reference)
 {

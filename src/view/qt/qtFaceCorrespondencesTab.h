@@ -37,7 +37,7 @@ class qtFaceCorrespondencesTab : public QWidget, public Ui::FaceCorrespondencesW
     
 public:
     qtFaceCorrespondencesTab(
-                             HashMap<FaceCorrespondenceData*, bool>* faceCorrespondences,
+                             HashMap<FaceCorrespondenceData*, bool> const* faceCorrespondences,
                              ShapeAnalyzer* parent,
                              Qt::WindowFlags f = 0
                              );
@@ -63,7 +63,7 @@ private slots:
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
     
 private:
-    HashMap<FaceCorrespondenceData*, bool>*     faceCorrespondences_;
+    HashMap<FaceCorrespondenceData*, bool> const*     faceCorrespondences_;
     ShapeAnalyzer*                              parent_;
 };
 

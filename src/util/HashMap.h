@@ -23,6 +23,7 @@ template <class KEY, class VALUE>
 ///
 class HashMap {
 public:
+    typedef typename unordered_map<KEY, VALUE>::const_iterator const_iterator;
     typedef typename unordered_map<KEY, VALUE>::iterator iterator;
     
     /// @{
@@ -31,35 +32,40 @@ public:
     /// \brief Reserves memory for n elements.
     HashMap(int n);
     /// \brief Copy Constructor.
-    HashMap(HashMap<KEY, VALUE>&);
+    HashMap(const HashMap<KEY, VALUE>&);
     /// \brief Maps all keys to the given value.
-    HashMap(vector<KEY>&, VALUE);
+    HashMap(const vector<KEY>&, const VALUE&);
     /// \brief Empty Destructor.
     ~HashMap() {}
     ///@}
     
     /// @{
-    /// \brief Adds the value with the given key.
+    /// \brief Inserts the value with the given key.
     /// \details If the key already exists the corresponding value is replaced.
-    void add(KEY, VALUE);
+    void insert(const KEY&, const VALUE&);
     /// \brief Maps all given keys to the given value.
     /// \details If any of the keys already exist the corresponding value is replaced.
-    void add(vector<KEY>&, VALUE);
-    /// \brief Adds all key, value pairs.
+    void insert(const vector<KEY>&, const VALUE&);
+    /// \brief Inserts all key plus value pairs.
     /// \details If any of the keys already exist the corresponding value is replaced.
-    void add(vector<pair<KEY, VALUE> >&);
+    void insert(const vector<pair<KEY, VALUE> >&);
     /// @}
     
     /// @{
     /// \brief If the key exists, its corresponding value is removed from the hash map.
-    bool remove(KEY);
+    bool remove(const KEY&);
     /// \brief Calls remove(KEY) on every element in the vector.
-    bool remove(vector<KEY>&);
+    bool remove(const vector<KEY>&);
     /// \brief Clears the whole hash map.
     void clear();
     /// @}
     
     /// @{
+    /// \brief Returns iterator pointing to the first element of the hashmap.
+    const_iterator begin() const;
+    /// \brief Returns iterator pointing to the end of the hash map.
+    const_iterator end() const;
+
     /// \brief Returns iterator pointing to the first element of the hashmap.
     iterator begin();
     /// \brief Returns iterator pointing to the end of the hash map.
@@ -69,15 +75,23 @@ public:
     /// \brief Returns if the given key exists in the hash map.
     /// \details This will not cause the key to be added to the hash map.
     /// @return true if key exists, false otherwise
-    bool        containsKey(KEY);
+    bool containsKey(const KEY&) const;
     /// \brief Returns the value corresponding to the key.
     /// \details If the key does not exist, the result will be a null pointer.
     /// This will not cause the key to be added to the hash map.
-    /// @return pointer to the value corresponding to the key, null pointer if the key does not exist
-    VALUE&      operator[](KEY); // this expression is assignable since it is a reference to the value
+    /// This expression is not assignable since it is constant.
+    /// If it is not guaranteed that the KEY exists in the map check for existence of the key using containsKey() first otherwise an exception of type std::out_of_range is thrown.
+    /// @return pointer to the value corresponding to the key.
+    const VALUE& operator[](const KEY&) const;
+
+    /// This will not cause the key to be added to the hash map.
+    /// This expression is assignable since it is a reference to the value.
+    /// If it is not guaranteed that the KEY exists in the map check for existence of the key using containsKey() first otherwise an exception of type std::out_of_range is thrown.
+    /// @return pointer to the value corresponding to the key.
+    VALUE& operator[](const KEY&);
     
     /// \brief Returns the number of elements in the hash map.
-    unsigned    size();
+    unsigned size() const;
     
     /// \brief Stores a random subset of size 'size' in the given hash map.
     /// \details Keys that were in the given hashmap before are not deleted, but might get a new value.
@@ -85,30 +99,33 @@ public:
     /// Reserving enough memory for the subset beforehand will speed up the process.
     /// @param size size of the random subset, if it is larger than the size of the hash map, all values are returned
     /// @param hashmap pointer to valid hashmap object to which the subset will be added
-    void getRandomSample(unsigned size, HashMap<KEY, VALUE>& hashmap);
+    void getRandomSample(unsigned size, HashMap<KEY, VALUE>& hashmap) const;
     /// \brief Stores a random subset of size 'size' of the keys in the given vector.
     /// \details Elements that were in the vector before are not deleted.
     /// If size is larger than the number of elements all keys are returned.
     /// Reserving enough memory for the subset beforehand will speed up the process.
     /// @param size size of the random subset, if it is larger than the size of the hash map, all keys are returned
     /// @param vector pointer to valid vector object to which the subset will be added
-    void getRandomSampleKeys(unsigned size, vector<KEY>& vector);
+    void getRandomSampleKeys(unsigned size, vector<KEY>& vector) const;
     /// \brief Stores a random subset of size 'size' of the values in the given vector.
     /// \details Elements that were in the vector before are not deleted.
     /// If size is larger than the number of elements all values are returned.
     /// Reserving enough memory for the subset beforehand will speed up the process.
     /// @param size size of the random subset, if it is larger than the size of the hash map, all values are returned
     /// @param vector pointer to valid vector object to which the subset will be added
-    void getRandomSampleValues(unsigned size, vector<VALUE>& vector);
+    void getRandomSampleValues(unsigned size, vector<VALUE>& vector) const;
     
-    /// \brief Returns a pointer to the unordered_map.
+    /// \brief Returns a readonly const reference to the underlying unordered_map.
+    const unordered_map<KEY, VALUE>& getEntries() const;
+
+    /// \brief Returns a writeable reference to the underlying unordered_map.
     unordered_map<KEY, VALUE>& getEntries();
     
     /// \brief Stores all values in the given vector.
     /// \details The result is not checked for double entries.
-    void getValues(vector<VALUE>&);
+    void getValues(vector<VALUE>&) const;
     /// \brief Stores all keys in the given vector.
-    void getKeys(vector<KEY>&);
+    void getKeys(vector<KEY>&) const;
     
 private:
     unordered_map<KEY, VALUE> entries_;
@@ -135,7 +152,7 @@ HashMap<KEY, VALUE>::HashMap(int n) {
 ///////////////////////////////////////////////////////////////////////////////
 // copy contructor
 template<class KEY, class VALUE>
-HashMap<KEY, VALUE>::HashMap(HashMap<KEY, VALUE>& map) {
+HashMap<KEY, VALUE>::HashMap(const HashMap<KEY, VALUE>& map) {
     entries_ = unordered_map<KEY, VALUE>(map.getEntries());
 }
 
@@ -143,10 +160,10 @@ HashMap<KEY, VALUE>::HashMap(HashMap<KEY, VALUE>& map) {
 ///////////////////////////////////////////////////////////////////////////////
 // all keys are added with the same value
 template<class KEY, class VALUE>
-HashMap<KEY, VALUE>::HashMap(vector<KEY>& keys, VALUE value) {
+HashMap<KEY, VALUE>::HashMap(const vector<KEY>& keys, const VALUE& value) {
     entries_ = unordered_map<KEY, VALUE>(keys.size());
-    for(int i = 0; i < keys.size(); i++) {
-        entries_.insert(make_pair(keys[i], value));
+    for(auto key : keys) {
+        entries_.insert(make_pair(key, value));
     }
 }
 
@@ -158,14 +175,14 @@ HashMap<KEY, VALUE>::HashMap(vector<KEY>& keys, VALUE value) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::add(KEY key, VALUE value) {
+void HashMap<KEY, VALUE>::insert(const KEY& key, const VALUE& value) {
     entries_.insert(make_pair(key, value));
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::add(vector<KEY>& keys, VALUE value) {
+void HashMap<KEY, VALUE>::insert(const vector<KEY>& keys, const VALUE& value) {
     // reserve enough memory for new keys
     entries_.rehash(entries_.size() + keys.size());
     
@@ -177,7 +194,7 @@ void HashMap<KEY, VALUE>::add(vector<KEY>& keys, VALUE value) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::add(vector<pair<KEY, VALUE> >& entries) {
+void HashMap<KEY, VALUE>::insert(const vector<pair<KEY, VALUE> >& entries) {
     // reserve enough memory for new keys
     entries_.rehash(entries_.size() + entries.size());
     
@@ -189,13 +206,13 @@ void HashMap<KEY, VALUE>::add(vector<pair<KEY, VALUE> >& entries) {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-bool HashMap<KEY, VALUE>::remove(KEY key) {
+bool HashMap<KEY, VALUE>::remove(const KEY& key) {
     return entries_.erase(key) != 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-bool HashMap<KEY, VALUE>::remove(vector<KEY>& keys) {
+bool HashMap<KEY, VALUE>::remove(const vector<KEY>& keys) {
     bool success = true;
     for (auto it = keys.begin(); it != keys.end(); it++) {
         if (!remove(*it)) {
@@ -219,7 +236,7 @@ void HashMap<KEY, VALUE>::clear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-unsigned HashMap<KEY, VALUE>::size() {
+unsigned HashMap<KEY, VALUE>::size() const {
     return entries_.size();
 }
 
@@ -237,25 +254,31 @@ typename HashMap<KEY, VALUE>::iterator HashMap<KEY, VALUE>::end() {
     return entries_.end();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+typename HashMap<KEY, VALUE>::const_iterator HashMap<KEY, VALUE>::begin() const {
+    return entries_.begin();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+typename HashMap<KEY, VALUE>::const_iterator HashMap<KEY, VALUE>::end() const {
+    return entries_.end();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // returns true if the input was found in the map, false otherwise
 template<class KEY, class VALUE>
-bool HashMap<KEY, VALUE>::containsKey(KEY key) {
+bool HashMap<KEY, VALUE>::containsKey(const KEY& key) const {
     return entries_.find(key) != entries_.end();
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
-// returns the value to the key. Circumvent the condition that key is not contained in map by a check via the function contains
 template<class KEY, class VALUE>
-VALUE& HashMap<KEY, VALUE>::operator[](KEY key) {
-    auto value = entries_.find(key);
-    
-    return value->second;
+const unordered_map<KEY, VALUE>& HashMap<KEY, VALUE>::getEntries() const {
+    return entries_;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
@@ -263,24 +286,35 @@ unordered_map<KEY, VALUE>& HashMap<KEY, VALUE>::getEntries() {
     return entries_;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+const VALUE& HashMap<KEY, VALUE>::operator[](const KEY& key) const {
+    return entries_.at(key);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+template<class KEY, class VALUE>
+VALUE& HashMap<KEY, VALUE>::operator[](const KEY& key) {
+    return entries_.at(key);
+}
 
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::getValues(vector<VALUE>& values) {
-    for(HashMap<KEY, VALUE>::iterator it = entries_.begin(); it != entries_.end(); it++) {
-        values.push_back(it->second);
+void HashMap<KEY, VALUE>::getValues(vector<VALUE>& values) const {
+    for(auto entry : entries_) {
+        values.push_back(entry.second);
     }
 }
 
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::getKeys(vector<KEY>& keys) {
-    for(HashMap<KEY, VALUE>::iterator it = entries_.begin(); it != entries_.end(); it++) {
-        keys.push_back(it->first);
+void HashMap<KEY, VALUE>::getKeys(vector<KEY>& keys) const {
+    for(auto entry : entries_) {
+        keys.push_back(entry.first);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::getRandomSample(unsigned size, HashMap<KEY, VALUE>& sampleMap) {
+void HashMap<KEY, VALUE>::getRandomSample(unsigned size, HashMap<KEY, VALUE>& sampleMap) const {
     
     // if size is larger than the number elements in the map, all keys are
     // returned
@@ -312,7 +346,7 @@ void HashMap<KEY, VALUE>::getRandomSample(unsigned size, HashMap<KEY, VALUE>& sa
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::getRandomSampleKeys(unsigned size, vector<KEY>& sampleKeys) {
+void HashMap<KEY, VALUE>::getRandomSampleKeys(unsigned size, vector<KEY>& sampleKeys) const {
     
     // if size is larger than the number elements in the map, all keys are
     // returned
@@ -345,7 +379,7 @@ void HashMap<KEY, VALUE>::getRandomSampleKeys(unsigned size, vector<KEY>& sample
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class KEY, class VALUE>
-void HashMap<KEY, VALUE>::getRandomSampleValues(unsigned size, vector<VALUE>& sampleValues) {
+void HashMap<KEY, VALUE>::getRandomSampleValues(unsigned size, vector<VALUE>& sampleValues) const {
     
     // if size is larger than the number elements in the map, all keys are
     // returned

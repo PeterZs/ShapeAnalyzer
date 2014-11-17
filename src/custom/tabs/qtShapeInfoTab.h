@@ -9,7 +9,7 @@
 
 #include "../../domain/Shape.h"
 
-#include "qtListWidgetItem.h"
+#include "../../view/CustomListWidgetItem.h"
 #include "qtShapesTab.h"
 
 #include "ui_shapeInfo.h"

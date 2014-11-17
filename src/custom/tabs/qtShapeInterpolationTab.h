@@ -18,9 +18,9 @@
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 #include "../../util/HashMap.h"
 
-#include "../ShapeAnalyzer.h"
+#include "../../view/ShapeAnalyzer.h"
 
-#include "qtListWidgetItem.h"
+#include "../../view/CustomListWidgetItem.h"
 #include "qtShapesTab.h"
 #include "qtCorrespondencesTab.h"
 

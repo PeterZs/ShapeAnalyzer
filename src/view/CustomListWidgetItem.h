@@ -12,7 +12,7 @@
 ///
 ///
 template<class T>
-class qtListWidgetItem : public QListWidgetItem {
+class CustomListWidgetItem : public QListWidgetItem {
 public:
     /// \brief Constructor.
     /// \details Creates a new QListWidgetItem with a pointer to item.
@@ -20,7 +20,7 @@ public:
     /// @param item pointer to the item this list item is referring to.
     /// @param view optional pointer to the ListWidget
     /// @param type see reference of QListWidgetItem for details
-    qtListWidgetItem(
+    CustomListWidgetItem(
                   const QString &text,
                   T*            item,
                   QListWidget   *view   = 0,

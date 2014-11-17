@@ -14,9 +14,9 @@
 
 #include <slepceps.h>
 
-#include "Shape.h"
-#include "PetscHelper.h"
-#include "attributes/ScalarPointAttribute.h"
+#include "../Shape.h"
+#include "../PetscHelper.h"
+#include "../attributes/ScalarPointAttribute.h"
 
 using namespace attribute;
 

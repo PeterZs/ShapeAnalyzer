@@ -14,7 +14,7 @@
 #include <vtkPolyData.h>
 
 #include "Shape.h"
-#include "FEMLaplaceBeltramiOperator.h"
+#include "laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
 

@@ -59,15 +59,10 @@
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
 #include "ShapeAnalyzerInteractorStyle.h"
+#include "CustomListWidgetItem.h"
 
-#include "qt/qtCorrespondencesTab.h"
-#include "qt/qtShapeInfoTab.h"
-#include "qt/qtListWidgetItem.h"
-#include "qt/qtCorrespondenceColoringTab.h"
-#include "qt/qtShapeInterpolationTab.h"
-#include "qt/qtMeshCheckTab.h"
+#include "../custom/tabs/CustomTab.h"
 
-//TODO rename all implementing classes to ...ContextMenuItem
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
 #include "../custom/contextMenuItems/ColorEigenfunctionContextMenuItem.h"
 #include "../custom/contextMenuItems/ColorMetricContextMenuItem.h"
@@ -83,12 +78,12 @@
 #include "../domain/Shape.h"
 #include "../domain/correspondences/Correspondence.h"
 
-#include "../domain/io/SceneWriterReader.h"
-#include "../domain/io/vtkOFFReader.h"
-#include "../domain/io/vtkToscaReader.h"
-#include "../domain/io/vtkOFFWriter.h"
-#include "../domain/io/vtkToscaWriter.h"
-#include "../domain/io/vtkOBJWriter.h"
+#include "../io/SceneWriterReader.h"
+#include "../io/vtkOFFReader.h"
+#include "../io/vtkToscaReader.h"
+#include "../io/vtkOFFWriter.h"
+#include "../io/vtkToscaWriter.h"
+#include "../io/vtkOBJWriter.h"
 
 
 #include "../domain/metric/Metric.h"
@@ -104,7 +99,7 @@
 #include "../domain/attributes/ScalarPointAttribute.h"
 #include "../domain/attributes/DiscretePointAttribute.h"
 
-#include "../domain/FEMLaplaceBeltramiOperator.h"
+#include "../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
 #include "../domain/FunctionalMaps.h"
 
@@ -117,8 +112,6 @@
 #include "ui_ShapeAnalyzer.h"
 
 using namespace std;
-
-class qtShapeInterpolationTab;
 
 class ExtractSegmentContextMenuItem;
 
@@ -293,23 +286,6 @@ private slots:
     virtual void slotExportCorrespondences();
     /// Opens a dialog for making a screenshot of the current scene in the vtkWidget.
     virtual void slotSaveScreenshot();
-    
-    /// \brief Opens/Closes a qtShapeInfoTab.
-    /// \details There can only be one tab of the same class be opened.
-    /// @param true for opening, false for closing
-    virtual void slotTabShapeInfo(bool);
-    /// \brief Opens/Closes a qtShapeInterpolationTab.
-    /// \details There can only be one tab of the same class be opened.
-    /// @param true for opening, false for closing
-    virtual void slotTabShapeInterpolation(bool);
-    /// \brief Opens/Closes a qtCorrespondenceColoringTab.
-    /// \details There can only be one tab of the same class be opened.
-    /// @param true for opening, false for closing
-    virtual void slotTabCorrespondenceColoring(bool);
-    /// \brief Opens/Closes a qtMeshCheckerTab.
-    /// \details There can only be one tab of the same class be opened.
-    /// @param true for opening, false for closing
-    virtual void slotTabMeshChecker(bool);
     ///@}
     
     //vtk widget slots
@@ -345,7 +321,7 @@ private:
     void qtShowContextMenuCorrepondences(const QPoint& pos);
     
 
-    void qtInputDialogRenameShape(qtListWidgetItem<Shape>* item);
+    void qtInputDialogRenameShape(CustomListWidgetItem<Shape>* item);
     void qtExportShapeDialog(Shape* shape);
     void qtInputDialogOpacity(Shape* shape);
     
@@ -356,7 +332,7 @@ private:
     
     void qtUpdateLabelVisibleCorrespondences();
     
-    qtListWidgetItem<Correspondence>* qtAddListCorrespondencesItem(Correspondence* correspondence);
+    CustomListWidgetItem<Correspondence>* qtAddListCorrespondencesItem(Correspondence* correspondence);
     
     //vtk
     void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
@@ -406,8 +382,7 @@ private:
     QActionGroup* actionGroupProjectionMode_;
     
 
-    HashMap<string, qtCorrespondencesTab*> correspondencesTabs_;
-    HashMap<string, qtShapesTab*> shapesTabs_;
+    HashMap<string, CustomTab*> customTabs_;
     
     //counter for ids
     int lastInsertShapeID_;

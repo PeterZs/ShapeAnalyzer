@@ -36,7 +36,7 @@
 
 #include "PetscHelper.h"
 
-#include "io/Serializable.h"
+#include "../io/Serializable.h"
 
 
 using namespace std;

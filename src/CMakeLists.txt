@@ -34,25 +34,26 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${VT
 file(GLOB_RECURSE UI_FILES *.ui)
 file(GLOB_RECURSE QT_AUTO_GEN (ui_*.h) | (moc*) | (*automoc) )
 
-file(GLOB DOMAIN_METRIC_3RDPARTY_GEODESIC domain/metric/3rdparty/geodesic/* )
-file(GLOB DOMAIN_METRIC domain/metric/* )
-file(GLOB DOMAIN_IO domain/io/* )
-file(GLOB DOMAIN_SAMPLINGS domain/samplings/* )
-file(GLOB DOMAIN_CORRESPONDENCES domain/correspondences/* )
-file(GLOB DOMAIN_ATTRIBUTES domain/attributes/* )
-file(GLOB DOMAIN_COLORING domain/coloring/* )
-file(GLOB DOMAIN_SEGMENTATION domain/segmentation/* )
+file(GLOB DOMAIN_METRIC_3RDPARTY_GEODESIC domain/metric/3rdparty/geodesic/*.* )
+file(GLOB DOMAIN_METRIC domain/metric/*.* )
+file(GLOB DOMAIN_SAMPLINGS domain/samplings/*.* )
+file(GLOB DOMAIN_CORRESPONDENCES domain/correspondences/*.* )
+file(GLOB DOMAIN_ATTRIBUTES domain/attributes/*.* )
+file(GLOB DOMAIN_COLORING domain/coloring/*.* )
+file(GLOB DOMAIN_SEGMENTATION domain/segmentation/*.* )
+file(GLOB DOMAIN_LAPLACEBELTRAMI domain/laplaceBeltrami/*.* )
 file(GLOB DOMAIN_SIGNATURES domain/signatures/* )
 file(GLOB DOMAIN domain/* )
 
-file(GLOB UTIL util/*)
+file(GLOB IO io/*.* )
 
-file(GLOB VIEW_QT view/qt/* )
-file(GLOB VIEW view/* )
+file(GLOB UTIL util/*.*)
 
-file(GLOB CUSTOM custom/* )
-file(GLOB CUSTOM_TABS custom/tabs/* )
-file(GLOB CUSTOM_CONTEXTMENUITEMS custom/contextMenuItems/* )
+file(GLOB VIEW view/*.* )
+
+file(GLOB CUSTOM custom/*.* )
+file(GLOB CUSTOM_TABS custom/tabs/*.* )
+file(GLOB CUSTOM_CONTEXTMENUITEMS custom/contextMenuItems/*.* )
 
 
 
@@ -70,14 +71,14 @@ if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )
 # qt5_wrap_cpp(ShapeAnalyzerMocs ${HEADERS_HAVING_Q_OBJECT})
 # CMAKE_AUTOMOC in ON so the MocHdrs will be automatically wrapped.
-add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_IO} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN} ${VIEW_QT} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
+add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_LAPLACEBELTRAMI} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN} ${IO} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
   qt5_use_modules(ShapeAnalyzer Core Gui)
   target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES} ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES})
 else()
   # might not work
   QT4_WRAP_UI(UISrcs ${UI_FILES})
   QT4_WRAP_CPP(MOCSrcs ${QT_WRAP})
-  add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_IO} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN} ${VIEW_QT} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
+  add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_LAPLACEBELTRAMI} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN} ${IO} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
 
   if(VTK_LIBRARIES)
     if(${VTK_VERSION} VERSION_LESS "6")
@@ -96,17 +97,21 @@ source_group("qt_auto_generated" FILES ${QT_AUTO_GEN})
 
 source_group("domain\\metric\\3rdparty\\geodesic" FILES ${DOMAIN_METRIC_3RDPARTY_GEODESIC})
 source_group("domain\\metric" FILES ${DOMAIN_METRIC})
-source_group("domain\\io" FILES ${DOMAIN_IO})
 source_group("domain\\samplings" FILES ${DOMAIN_SAMPLINGS})
 source_group("domain\\correspondences" FILES ${DOMAIN_CORRESPONDENCES})
 source_group("domain\\attributes" FILES ${DOMAIN_ATTRIBUTES})
 source_group("domain\\coloring" FILES ${DOMAIN_COLORING})
 source_group("domain\\segmentation" FILES ${DOMAIN_SEGMENTATION})
 source_group("domain\\signatures" FILES ${DOMAIN_SIGNATURES})
+source_group("domain\\laplaceBeltrami" FILES ${DOMAIN_LAPLACEBELTRAMI})
 source_group("domain" FILES ${DOMAIN})
-source_group("view\\qt" FILES ${VIEW_QT})
+
+source_group("io" FILES ${IO})
+
 source_group("view" FILES ${VIEW})
+
 source_group("util" FILES ${UTIL})
+
 
 source_group("custom" FILES ${CUSTOM})
 source_group("custom\\tabs" FILES ${CUSTOM_TABS})

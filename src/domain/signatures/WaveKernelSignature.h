@@ -11,7 +11,7 @@
 
 #include "LaplaceBeltramiSignature.h"
 #include "../Shape.h"
-#include "../LaplaceBeltramiOperator.h"
+#include "../laplaceBeltrami/LaplaceBeltramiOperator.h"
 #include "../custom/Factory.h"
 
 #include <vtkPolyData.h>

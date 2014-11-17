@@ -11,7 +11,7 @@
 
 #include "../Shape.h"
 #include "../attributes/ScalarPointAttribute.h"
-#include "../LaplaceBeltramiOperator.h"
+#include "../laplaceBeltrami/LaplaceBeltramiOperator.h"
 
 class Signature {
 public:

@@ -22,7 +22,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
 
-#include "qtListWidgetItem.h"
+#include "../../view/CustomListWidgetItem.h"
 #include "qtShapesTab.h"
 
 #include "../../util/HashMap.h"

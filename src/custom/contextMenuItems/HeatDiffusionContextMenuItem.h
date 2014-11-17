@@ -13,7 +13,7 @@
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/FEMLaplaceBeltramiOperator.h"
+#include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "../../domain/HeatDiffusion.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
 

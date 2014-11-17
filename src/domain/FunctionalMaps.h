@@ -12,7 +12,7 @@
 #include "Shape.h"
 #include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
-#include "LaplaceBeltramiOperator.h"
+#include "laplaceBeltrami/LaplaceBeltramiOperator.h"
 
 #include <vector>
 

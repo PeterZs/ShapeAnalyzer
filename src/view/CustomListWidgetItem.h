@@ -1,5 +1,5 @@
-#ifndef ShapeAnalyzer_qtListWidgetItem_h
-#define ShapeAnalyzer_qtListWidgetItem_h
+#ifndef ShapeAnalyzer_CustomListWidgetItem_h
+#define ShapeAnalyzer_CustomListWidgetItem_h
 
 #include <QString>
 #include <QListWidgetItem>

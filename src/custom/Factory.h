@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <tuple>
 
 using namespace std;
 
@@ -17,10 +18,10 @@ using namespace std;
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
-template<class T>
+template<class T, typename... Args>
 class Factory {
 public:
-    typedef shared_ptr<T> (*CreateFn)(void);
+    typedef shared_ptr<T> (*CreateFn)(Args...);
     
     /// Destructor.
     ~Factory() {
@@ -40,10 +41,10 @@ public:
     }
     
     //create a new instance of the desired object using the identifier
-    shared_ptr<T> create(const string& identifier) {
+    shared_ptr<T> create(const string& identifier, Args... args) {
         typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(identifier);
         if(it != createFns_.end()) {
-            return createFns_.find(identifier)->second();
+            return createFns_.find(identifier)->second(args...);
         }
         return nullptr;
     }

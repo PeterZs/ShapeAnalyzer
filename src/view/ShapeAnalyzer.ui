@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QVTKWidget" name="qvtkWidget" native="true">
+      <widget class="QVTKWidget" name="qvtkWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -81,35 +81,26 @@
            </property>
            <widget class="QWidget" name="tabPoints">
             <attribute name="title">
-             <string>Displayed Correspondences</string>
+             <string>Correspondences</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <widget class="QLabel" name="labelCurrentlyDisplayed">
+                <widget class="QLabel" name="labelTypeCorrespondences">
                  <property name="text">
-                  <string>Currently displayed:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEditCurrentlyDisplayed">
-                 <property name="minimumSize">
-                  <size>
-                   <width>150</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Point Correspondences</string>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
+                  <string>Type: Point Correspondences</string>
                  </property>
                 </widget>
                </item>
               </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelNumberOfVisibleCorrespondences">
+               <property name="text">
+                <string>Visible: 0 out of 0 (100 %)</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QListWidget" name="listCorrespondences">
@@ -128,6 +119,43 @@
               </widget>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBoxNumberOfSamples">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>2000</number>
+                 </property>
+                 <property name="value">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonSampleCorrespondences">
+                 <property name="text">
+                  <string>Sample</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <spacer name="horizontalSpacer">
@@ -143,9 +171,16 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="hideAllButton">
+                <widget class="QPushButton" name="buttonHideCorrespondences">
                  <property name="text">
-                  <string>Hide All</string>
+                  <string>Hide Visible</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonClearAllCorrespondences">
+                 <property name="text">
+                  <string>Clear All</string>
                  </property>
                 </widget>
                </item>
@@ -213,9 +248,9 @@
    <widget class="QMenu" name="menuHelp">
     <property name="geometry">
      <rect>
-      <x>542</x>
-      <y>101</y>
-      <width>159</width>
+      <x>325</x>
+      <y>75</y>
+      <width>167</width>
       <height>65</height>
      </rect>
     </property>
@@ -228,7 +263,6 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionShapes"/>
     <addaction name="actionShapeInfo"/>
     <addaction name="actionShapeInterpolation"/>
     <addaction name="actionMeshChecker"/>
@@ -237,9 +271,6 @@
     <addaction name="actionDisplayFaceCorrespondences"/>
     <addaction name="separator"/>
     <addaction name="actionCorrespondenceColoring"/>
-    <addaction name="separator"/>
-    <addaction name="actionAllPointCorrespondences"/>
-    <addaction name="actionAllFaceCorrespondences"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -338,22 +369,6 @@
    </property>
    <property name="text">
     <string>Display Point Correspondences</string>
-   </property>
-  </action>
-  <action name="actionAllPointCorrespondences">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>All Point Correspondences</string>
-   </property>
-  </action>
-  <action name="actionAllFaceCorrespondences">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>All Face Correspondences</string>
    </property>
   </action>
   <action name="actionShowSurfaceNormals">
@@ -478,14 +493,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+P</string>
-   </property>
-  </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>Open Settings</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+E</string>
    </property>
   </action>
   <action name="actionImportCorrespondences">

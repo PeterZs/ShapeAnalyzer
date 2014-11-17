@@ -203,7 +203,6 @@ void Shape::setSegmentation(vtkSmartPointer<vtkIdList> segmentation) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//write shape binary
 ostream& Shape::writeBinary(ostream& os) {
     //write shape ID.
     int64_t id = (int64_t) id_;
@@ -261,7 +260,6 @@ ostream& Shape::writeBinary(ostream& os) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//read shape binary
 istream& Shape::readBinary(istream& is) {
     //read shape ID
     int64_t id;
@@ -329,7 +327,6 @@ istream& Shape::readBinary(istream& is) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-//write as ascii txt
 ostream& Shape::writeASCII(ostream& os) {
     os << id_<< endl;
     os << name_ << endl;
@@ -363,7 +360,6 @@ ostream& Shape::writeASCII(ostream& os) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-//read shape as ascii txt
 istream& Shape::readASCII(istream& is) {
     string line;
     

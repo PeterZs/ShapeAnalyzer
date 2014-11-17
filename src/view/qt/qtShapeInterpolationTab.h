@@ -32,7 +32,7 @@ class qtShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationWi
     Q_OBJECT
     
 public:
-    qtShapeInterpolationTab(HashMap<vtkActor*, Shape*>* shapes, HashMap<PointCorrespondenceData*, bool>* correspondences, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, ShapeAnalyzer* parent, Qt::WindowFlags f = 0);
+    qtShapeInterpolationTab(HashMap<vtkActor*, Shape*> const* shapes, HashMap<PointCorrespondenceData*, bool> const* correspondences, ShapeAnalyzer* parent, Qt::WindowFlags f = 0);
     
     virtual ~qtShapeInterpolationTab();
     
@@ -51,11 +51,9 @@ private:
     Shape* source_;
     Shape* target_;
     Shape* shape_; // interpolated shape.
-    HashMap<vtkActor*, Shape*>* shapes_;
-    HashMap<PointCorrespondenceData*, bool>* correspondences_;
-    
-    vtkSmartPointer<vtkRenderer> renderer_;
-    int& lastInsertShapeID_;
+    HashMap<vtkActor*, Shape*> const* shapes_;
+    HashMap<PointCorrespondenceData*, bool> const* correspondences_;
+
     ShapeAnalyzer* parent_;
 };
 

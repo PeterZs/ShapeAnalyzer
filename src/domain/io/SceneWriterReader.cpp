@@ -292,8 +292,8 @@ void SceneWriterReader::exportFaceCorrespondencesASCII(HashMap<FaceCorrespondenc
 ///////////////////////////////////////////////////////////////////////////////
 void SceneWriterReader::importCorrespondencesASCII(string                            filename,
                                       int&                                      lastInsertCorrespondenceID_,
-                                      vector<PointCorrespondenceData*>&         pointCorrespondences,
-                                      vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                      vector<CorrespondenceData*>&         pointCorrespondences,
+                                      vector<CorrespondenceData*>&          faceCorrespondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget)
 {
@@ -469,8 +469,8 @@ void SceneWriterReader::exportFaceCorrespondencesBinary(HashMap<FaceCorresponden
 ///////////////////////////////////////////////////////////////////////////////
 void SceneWriterReader::importCorrespondencesBinary(string                            filename,
                                                    int&                                      lastInsertCorrespondenceID_,
-                                                   vector<PointCorrespondenceData*>&         pointCorrespondences,
-                                                   vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                                   vector<CorrespondenceData*>&         pointCorrespondences,
+                                                   vector<CorrespondenceData*>&          faceCorrespondences,
                                                    vector<Shape*>&                           shapesOrderedById,
                                                    QWidget*                                  parentWidget)
 {

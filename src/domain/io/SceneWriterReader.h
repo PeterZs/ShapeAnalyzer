@@ -63,8 +63,8 @@ public:
     /// Reads two vectors of point and face correspondences respectively from an ASCII file.
     static void importCorrespondencesASCII(string                               filename,
                                       int&                                      lastInsertCorrespondenceID_,
-                                      vector<PointCorrespondenceData*>&         pointCorrespondences,
-                                      vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                      vector<CorrespondenceData*>&         pointCorrespondences,
+                                      vector<CorrespondenceData*>&          faceCorrespondences,
                                       vector<Shape*>&                           shapesOrderedById,
                                       QWidget*                                  parentWidget);
 
@@ -85,8 +85,8 @@ public:
     /// Reads two vectors of point and face correspondences respectively from a binary file.
     static void importCorrespondencesBinary(string                                   filename,
                                            int&                                      lastInsertCorrespondenceID_,
-                                           vector<PointCorrespondenceData*>&         pointCorrespondences,
-                                           vector<FaceCorrespondenceData*>&          faceCorrespondences,
+                                           vector<CorrespondenceData*>&         pointCorrespondences,
+                                           vector<CorrespondenceData*>&          faceCorrespondences,
                                            vector<Shape*>&                           shapesOrderedById,
                                            QWidget*                                  parentWidget);
 private:

@@ -9,17 +9,13 @@
 #include "qtShapeInterpolationTab.h"
 
 qtShapeInterpolationTab::~qtShapeInterpolationTab() {
-    if(shape_ != nullptr)
-        shape_->removeFromRenderer();
-    parent_->render();
-    delete shape_;
 }
 
-qtShapeInterpolationTab::qtShapeInterpolationTab(HashMap<vtkActor*, Shape*>* shapes, HashMap<PointCorrespondenceData*, bool>* correspondences, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, ShapeAnalyzer* parent, Qt::WindowFlags f) : QWidget(parent, f), source_(nullptr), target_(nullptr), shape_(nullptr), shapes_(shapes), correspondences_(correspondences), renderer_(renderer), lastInsertShapeID_(lastInsertShapeID), parent_(parent) {
+qtShapeInterpolationTab::qtShapeInterpolationTab(HashMap<vtkActor*, Shape*> const* shapes, HashMap<PointCorrespondenceData*, bool> const* correspondences, ShapeAnalyzer* parent, Qt::WindowFlags f) : QWidget(parent, f), source_(nullptr), target_(nullptr), shape_(nullptr), shapes_(shapes), correspondences_(correspondences), parent_(parent) {
     this->setupUi(this);
     
     QStringList labels;
-    for(HashMap<vtkActor*, Shape*>::iterator it = shapes_->begin(); it != shapes_->end(); it++) {
+    for(HashMap<vtkActor*, Shape*>::const_iterator it = shapes_->begin(); it != shapes_->end(); it++) {
 
         QString label = QString::number(it->second->getId());
         label.append(QString::fromStdString(":"+it->second->getName()));
@@ -52,7 +48,7 @@ void qtShapeInterpolationTab::slotChooseShapes() {
     vtkIdType sid2 = comboBoxTargetShape->currentText().split(':')[0].toInt();
 
     
-    for(HashMap<vtkActor*, Shape*>::iterator it = shapes_->begin(); it != shapes_->end(); it++) {
+    for(HashMap<vtkActor*, Shape*>::const_iterator it = shapes_->begin(); it != shapes_->end(); it++) {
         if(sid1 == it->second->getId()) {
             source_ = it->second;
         }
@@ -75,10 +71,8 @@ void qtShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
     
-    shape_ = new Shape(lastInsertShapeID_, name, polyData, renderer_);
-    shape_->initialize();
-    parent_->vtkAddShape(shape_);
-    parent_->render();
+    shape_ = parent_->addShape(name, polyData);
+    
     this->labelInterpolation->setEnabled(true);
     this->sliderInterpolation->setEnabled(true);
     this->sliderInterpolation->setValue(0);
@@ -95,7 +89,6 @@ void qtShapeInterpolationTab::slotAddShape() {
     this->comboBoxTargetShape->setEnabled(true);
     this->buttonChoose->setEnabled(true);
     shape_->getBoxWidget()->PlaceWidget();
-    parent_->showShape(shape_);
     shape_ = nullptr;
     source_ = nullptr;
     target_ = nullptr;
@@ -106,7 +99,7 @@ void qtShapeInterpolationTab::slotInterpolate(int value) { // value lies between
 
 
     // for each pointCorrespondence of the two shapes compute convex combination c of the corresponding points a and b.
-    for(HashMap<PointCorrespondenceData*, bool>::iterator it = correspondences_->begin(); it != correspondences_->end(); it++) {
+    for(HashMap<PointCorrespondenceData*, bool>::const_iterator it = correspondences_->begin(); it != correspondences_->end(); it++) {
         
         double a[3];
         double b[3];

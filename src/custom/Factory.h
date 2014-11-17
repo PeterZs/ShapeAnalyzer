@@ -9,65 +9,79 @@
 using namespace std;
 
 ///
-/// \brief Templated factory class for creating instances of concrete colorings, segmentations, signatures and so on.
+/// \brief Variadic template factory class for creating instances of concrete CustomTab, CustomContext and other classes.
 ///
-/// \details Concrete classes are derived from an abstract superclass for example EuclideanMetric is derived from abstract class Metric. Moreover concrete classes
-/// have to provide both a create function that returns a new instance of this class and a getIdentifier function that returs a unique string that is used
-/// to register the concrete class in the factory.
+/// \details Concrete classes are derived from an abstract superclass for example ColorEigenfunctionContextMenuItem is derived from the abstract class ContextMenuItem. Moreover concrete classes
+/// have to provide a create function with an arbitrary std::tuple of arguments that returns a new instance of this class. The tuple can also be empty.
 /// @tparam class T. Abstract class for which the factory should be defined (for example Metric or LaplaceBeltramiSignature)
+/// @tparam typename... Args. Argument signature of the create functions of type T.
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
 template<class T, typename... Args>
 class Factory {
 public:
-    typedef shared_ptr<T> (*CreateFn)(Args...);
+    typedef shared_ptr<T> (*CreateFunction)(Args...);
     
-    /// Destructor.
+    /// \brief Destructor. Clears the internal data structures.
     ~Factory() {
-        createFns_.clear();
+        createFunctions_.clear();
     }
     
-    /// \brief Returns the unique instance of Factory<T>. This is the only way to obtain the Factory object for type T.
+    /// \brief Returns the unique instance of Factory<T>.
+    /// \details This is the only way to obtain the Factory object for type T.
     static Factory<T>* getInstance() {
         static Factory<T> instance;
         return &instance;
     }
 
+    /// \brief Registers concrete class derived from type T in the internal data structures of Factory.
+    /// @tparam class C. The concrete class to be registered.
+    /// @param const string& identifier. A unique string that is used as a key to obtain an instance via create() afterwards.
+    /// @param const string& label. A label that can for example serve as menu path in case of CustomContextMenuItem
     template<class C>
     void Register(const string& identifier, const string& label){
-        createFns_.insert(pair<string, CreateFn>(identifier, &C::create));
+        createFunctions_.insert(pair<string, CreateFunction>(identifier, &C::create));
         labels_.insert(pair<string, string>(identifier, label));
     }
     
-    //create a new instance of the desired object using the identifier
+    /// \brief Obtain a new instance of a class derived from T using the unique identifier of the class and a std::tuple of arguments required to instantiate the class.
+    /// @param const string& identifier. identifier of the class.
+    /// @param std::tuple of arguments for the create function.
     shared_ptr<T> create(const string& identifier, Args... args) {
-        typename std::unordered_map<string, CreateFn>::iterator it = createFns_.find(identifier);
-        if(it != createFns_.end()) {
-            return createFns_.find(identifier)->second(args...);
+        if(createFunctions_.find(identifier) != createFunctions_.end()) {
+            return createFunctions_.find(identifier)->second(args...);
         }
         return nullptr;
     }
     
     
-    // returns map of all labels that have been registered with this particular factory. Labels indexed by the identifier provided by each concrete class via static function C::getIdentifier
-    unordered_map<string, string>& getLabels() {
+    /// \brief Returns a map contianing all identifier plus label pairs that have been registered in this particular factory.
+    const unordered_map<string, string>& getLabels() const {
         return labels_;
     }
 private:
+    /// \brief Private constructor.
+    /// \details Use getInstance() to obtain the unique instance of this singleton.
     Factory() {
-        
     }
     
+    /// \brief Private copy constructor.
+    /// \details Use getInstance() to obtain the unique instance of this singleton.
     Factory(const Factory&) {
     }
     
+    /// \brief Private assignment operator.
+    /// \details Use getInstance() to obtain the unique instance of this singleton.
     Factory& operator=(const Factory&) {
         return *this;
     }
     
-    unordered_map<string, CreateFn> createFns_; // map of all create function pointers. Keys: identifiers
-    unordered_map<string, string> labels_; // map of all labels. Keys: identifiers
+    /// \brief Map containing all identifier plus create function pointer pairs.
+    unordered_map<string, CreateFunction> createFunctions_;
+    
+    /// \brief Map contianing all identifier plus label pairs
+    unordered_map<string, string> labels_;
 };
 
 #endif /* defined(__ShapeAnalyzer__Factory__) */

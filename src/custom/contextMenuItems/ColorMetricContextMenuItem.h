@@ -24,7 +24,7 @@
 using namespace std;
 using namespace metric;
 
-template<class T>
+template<class T = Metric>
 class ColorMetricContextMenuItem : public CustomContextMenuItem {
 public:
     static const int bla;

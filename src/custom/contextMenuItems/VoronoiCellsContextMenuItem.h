@@ -25,7 +25,7 @@
 
 using namespace std;
 
-template<class T>
+template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {

@@ -64,7 +64,7 @@
 #include "CustomListWidgetItem.h"
 
 #include "../custom/tabs/CustomTab.h"
-#include "../custom/tabs/ShapeInterpolationCustomTab.h"
+#include "../custom/tabs/ShapeInterpolationTab.h"
 
 #include "../custom/contextMenuItems/CustomContextMenuItem.h"
 #include "../custom/contextMenuItems/ColorEigenfunctionContextMenuItem.h"
@@ -119,7 +119,7 @@ using namespace std;
 
 //forward declarations
 class ExtractSegmentContextMenuItem;
-class ShapeInterpolationCustomTab;
+class ShapeInterpolationTab;
 
 ///
 /// \brief Manages the interaction with the GUI.

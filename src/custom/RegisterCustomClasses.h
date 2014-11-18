@@ -18,7 +18,8 @@
 #include "Factory.h"
 
 #include "tabs/CustomTab.h"
-#include "tabs/ShapeInterpolationCustomTab.h"
+#include "tabs/ShapeInterpolationTab.h"
+#include "tabs/MeshCheckTab.h"
 
 #include "contextMenuItems/CustomContextMenuItem.h"
 #include "contextMenuItems/ColorEigenfunctionContextMenuItem.h"
@@ -51,14 +52,16 @@ typedef Factory<shared_ptr<CustomContextMenuItem>> CustomContextMenuItemFactory;
 
 //forward declarations
 class ExtractSegmentContextMenuItem;
-class ShapeInterpolationCustomTab;
+class ShapeInterpolationTab;
 
 struct RegisterCustomClasses {
-    static void Register() {
+    static void registerTabs() {
         //tabs
-        CustomTabFactory::getInstance()->Register<ShapeInterpolationCustomTab>("shape_interpolation", "Shapes>>Shape Interpolation");
-        
-        
+        CustomTabFactory::getInstance()->Register<ShapeInterpolationTab>("shape_interpolation", "Shapes>>Shape Interpolation");
+        CustomTabFactory::getInstance()->Register<MeshCheckTab>("mesh_check", "Shapes>>Mesh Checker");
+    }
+    
+    static void registerContextMenuItems() {
         //menu items
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
         
@@ -66,9 +69,9 @@ struct RegisterCustomClasses {
         
         CustomContextMenuItemFactory::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
         
-        CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
+        CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
         
-        CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
+        CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
         
         CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
     }    

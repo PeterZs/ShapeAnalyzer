@@ -107,7 +107,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
 
     this->vtkSetup();
     
-    RegisterCustomClasses::Register();
+    RegisterCustomClasses::registerTabs();
+    RegisterCustomClasses::registerContextMenuItems();
     
     //Initialize Slepc for eigenfunction computation
     SlepcInitializeNoArguments();
@@ -558,7 +559,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
     // get list of all menu item paths (Home>>foo>>bar>>action)
-    const unordered_map<string, string>& paths = CustomContextMenuItemFactory::getInstance()->getLabels();
+    const vector<pair<string, string>>& paths = CustomContextMenuItemFactory::getInstance()->getLabels();
     
     // menus in the menu tree indexed by their unique path.
     HashMap<string, QMenu*> menus;
@@ -647,7 +648,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtCreateMenuCustomTabs() {
-    const unordered_map<string, string>& paths = CustomTabFactory::getInstance()->getLabels();
+    const vector<pair<string, string>>& paths = CustomTabFactory::getInstance()->getLabels();
     
     // for each key + path pair create entry in view menu and connect it to slotViewCustomTab.
     for(auto entry : paths) {
@@ -719,7 +720,7 @@ void ShapeAnalyzer::slotViewCustomTab(bool visible) {
     if(visible) {
         CustomTab* tab = CustomTabFactory::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);
         
-        QString path(CustomTabFactory::getInstance()->getLabels().at(key).c_str());
+        QString path(CustomTabFactory::getInstance()->getLabel(key).c_str());
         QStringList list = path.split(">>");
 
         if((list.count() > 1 && list[0] == "Shapes") || list.count() < 2) {

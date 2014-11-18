@@ -3,8 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <memory>
-#include <tuple>
+#include <vector>
 
 using namespace std;
 
@@ -42,22 +41,27 @@ public:
     template<class C>
     void Register(const string& identifier, const string& label){
         createFunctions_.insert(pair<string, CreateFunction>(identifier, &C::create));
-        labels_.insert(pair<string, string>(identifier, label));
+        labels_.push_back(pair<string, string>(identifier, label));
+        labelIndex_.insert(pair<string, int>(identifier, labels_.size() - 1));
     }
     
-    /// \brief Obtain a new instance of a class derived from T using the unique identifier of the class and a std::tuple of arguments required to instantiate the class.
+    /// \brief Obtain a new instance of a class derived from T using the unique identifier of the class and a std::tuple of arguments required to instantiate the class. Throws an exception of type std::out_of_range if identifier is not present.
     /// @param const string& identifier. identifier of the class.
     /// @param std::tuple of arguments for the create function.
     T create(const string& identifier, Args... args) {
-        if(createFunctions_.find(identifier) != createFunctions_.end()) {
-            return createFunctions_.find(identifier)->second(args...);
-        }
-        return nullptr;
+        // execute create function pointer given the arguments in tuple args.
+        return createFunctions_.at(identifier)(args...);
     }
     
     /// \brief Returns a map contianing all identifier plus label pairs that have been registered in this particular factory.
-    const unordered_map<string, string>& getLabels() const {
+    const vector<pair<string, string>>& getLabels() const {
         return labels_;
+    }
+    
+    /// \brief Returns the label for a given identifier. Throws an exception of type std::out_of_range if identifier is not present.
+    /// @param const string& identifier.
+    const string& getLabel(const string& identifier) const {
+        return labels_.at(labelIndex_.at(identifier)).second;
     }
 private:
     /// \brief Private constructor.
@@ -79,8 +83,13 @@ private:
     /// \brief Map containing all identifier plus create function pointer pairs.
     unordered_map<string, CreateFunction> createFunctions_;
     
-    /// \brief Map contianing all identifier plus label pairs
-    unordered_map<string, string> labels_;
+    /// \brief Vector containing all identifier plus label pairs.
+    /// \details Vector preserves insertion ordering.
+    vector<pair<string, string>> labels_;
+    
+    /// \brief Map for fast retrieval of label given a specific identifier.
+    /// \details Vector preserves insertion ordering.
+    unordered_map<string, int> labelIndex_;
 };
 
 #endif /* defined(__ShapeAnalyzer__Factory__) */

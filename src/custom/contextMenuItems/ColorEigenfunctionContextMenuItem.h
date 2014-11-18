@@ -10,7 +10,6 @@
 #define __ShapeAnalyzer__ColorEigenfunctionContextMenuItem__
 
 #include <string>
-#include <tuple>
 
 #include "CustomContextMenuItem.h"
 

@@ -1,13 +1,13 @@
 //
-//  ShapeInterpolationCustomTab.h
+//  ShapeInterpolationTab.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 24.08.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__ShapeInterpolationCustomTab__
-#define __ShapeAnalyzer__ShapeInterpolationCustomTab__
+#ifndef __ShapeAnalyzer__ShapeInterpolationTab__
+#define __ShapeAnalyzer__ShapeInterpolationTab__
 
 #include <vtkActor.h>
 #include <vtkPolyData.h>
@@ -27,22 +27,21 @@
 
 class ShapeAnalyzer;
 
-class ShapeInterpolationCustomTab : public QWidget, public Ui::ShapeInterpolationWidget, public CustomTab {
+class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationWidget, public CustomTab {
     Q_OBJECT
     
 public:
-    ShapeInterpolationCustomTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent);
+    ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent);
     
-    virtual ~ShapeInterpolationCustomTab();
+    virtual ~ShapeInterpolationTab();
     
     virtual void onShapeDelete(Shape* shape);
     virtual void onShapeAdd(Shape* shape);
     virtual void onShapeEdit(Shape* shape);
-    virtual void onShapeSelect(Shape* shape);
     virtual void onClear();
 
     static CustomTab* create(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) {
-        return new ShapeInterpolationCustomTab(shapes, pointCorrespondences, faceCorrespondences, parent);
+        return new ShapeInterpolationTab(shapes, pointCorrespondences, faceCorrespondences, parent);
     }
     
 private slots:
@@ -58,4 +57,4 @@ private:
     Shape* shape_;
 };
 
-#endif /* defined(__ShapeAnalyzer__ShapeInterpolationCustomTab__) */
+#endif /* defined(__ShapeAnalyzer__ShapeInterpolationTab__) */

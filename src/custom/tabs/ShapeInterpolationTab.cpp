@@ -1,17 +1,17 @@
 //
-//  ShapeInterpolationCustomTab.cpp
+//  ShapeInterpolationTab.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 24.08.14.
 //
 //
 
-#include "ShapeInterpolationCustomTab.h"
+#include "ShapeInterpolationTab.h"
 
-ShapeInterpolationCustomTab::~ShapeInterpolationCustomTab() {
+ShapeInterpolationTab::~ShapeInterpolationTab() {
 }
 
-ShapeInterpolationCustomTab::ShapeInterpolationCustomTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent), source_(nullptr), target_(nullptr), shape_(nullptr) {
+ShapeInterpolationTab::ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent), source_(nullptr), target_(nullptr), shape_(nullptr) {
     this->setupUi(this);
     
     QStringList labels;
@@ -38,7 +38,7 @@ ShapeInterpolationCustomTab::ShapeInterpolationCustomTab(const HashMap<vtkActor*
             this,                                   SLOT(slotAddShape()));
 }
 
-void ShapeInterpolationCustomTab::slotChooseShapes() {
+void ShapeInterpolationTab::slotChooseShapes() {
     this->labelChoose->setEnabled(false);
     this->comboBoxSourceShape->setEnabled(false);
     this->comboBoxTargetShape->setEnabled(false);
@@ -79,7 +79,7 @@ void ShapeInterpolationCustomTab::slotChooseShapes() {
     this->buttonInterpolation->setEnabled(true);
 }
 
-void ShapeInterpolationCustomTab::slotAddShape() {
+void ShapeInterpolationTab::slotAddShape() {
     this->labelInterpolation->setEnabled(false);
     this->sliderInterpolation->setEnabled(false);
     this->buttonInterpolation->setEnabled(false);
@@ -94,7 +94,7 @@ void ShapeInterpolationCustomTab::slotAddShape() {
     target_ = nullptr;
 }
 
-void ShapeInterpolationCustomTab::slotInterpolate(int value) { // value lies between 0 and 100.
+void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0 and 100.
     double lambda = (double) value / 100.0;
 
 
@@ -138,7 +138,7 @@ void ShapeInterpolationCustomTab::slotInterpolate(int value) { // value lies bet
     ((ShapeAnalyzer*) parent_)->render();
 }
 
-void ShapeInterpolationCustomTab::onShapeAdd(Shape* shape) {
+void ShapeInterpolationTab::onShapeAdd(Shape* shape) {
     this->buttonChoose->setEnabled(true);
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
@@ -146,7 +146,7 @@ void ShapeInterpolationCustomTab::onShapeAdd(Shape* shape) {
     comboBoxTargetShape->insertItem(0, label);
 }
 
-void ShapeInterpolationCustomTab::onShapeDelete(Shape* shape) {
+void ShapeInterpolationTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
         if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
             comboBoxSourceShape->removeItem(i);
@@ -182,7 +182,7 @@ void ShapeInterpolationCustomTab::onShapeDelete(Shape* shape) {
     }
 }
 
-void ShapeInterpolationCustomTab::onShapeEdit(Shape* shape) {
+void ShapeInterpolationTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -201,11 +201,7 @@ void ShapeInterpolationCustomTab::onShapeEdit(Shape* shape) {
     }
 }
 
-void ShapeInterpolationCustomTab::onShapeSelect(Shape* shape) {
-    ;
-}
-
-void ShapeInterpolationCustomTab::onClear() {
+void ShapeInterpolationTab::onClear() {
     this->comboBoxSourceShape->clear();
     this->comboBoxTargetShape->clear();
     this->labelInterpolation->setEnabled(false);

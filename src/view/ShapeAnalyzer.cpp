@@ -949,12 +949,12 @@ void ShapeAnalyzer::slotSetShapeDisplayMode() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowHelp() {
     
-    QDialog* help = new QDialog(0,0);
+    QDialog* dialog = new QDialog(0,0);
     
-    Ui_Dialog helpUi;
-    helpUi.setupUi(help);
+    Ui_HelpDialog ui;
+    ui.setupUi(dialog);
     
-    help->show();
+    dialog->show();
     
 }
 
@@ -1546,7 +1546,7 @@ void ShapeAnalyzer::importShape(vtkPolyDataAlgorithm* reader, string name) {
     
     // dialog for options
     QDialog* dialog = new QDialog(this, 0);
-    Ui_OpenShape ui;
+    Ui_ImportShapeDialog ui;
     ui.setupUi(dialog);
     
     if(dialog->exec() == QDialog::Rejected) {
@@ -2242,7 +2242,6 @@ Shape* ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyData> polyDat
     addShape(shape);
     return shape;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::addShape(Shape* shape) {

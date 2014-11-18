@@ -8,7 +8,7 @@
 using namespace std;
 
 ///
-/// \brief Variadic template factory class for creating instances of concrete CustomTab, CustomContext and other classes.
+/// \brief Variadic template factory class for creating instances of concrete CustomTab, CustomContextMenuItem and other classes.
 ///
 /// \details Concrete classes are derived from an abstract superclass for example ColorEigenfunctionContextMenuItem is derived from the abstract class ContextMenuItem. Moreover concrete classes
 /// have to provide a create function with an arbitrary std::tuple of arguments that returns a new instance of this class. The tuple can also be empty.

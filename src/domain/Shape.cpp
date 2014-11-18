@@ -170,7 +170,6 @@ void Shape::colorPointsRGB(vtkUnsignedCharArray* colors) {
     renderer_->GetRenderWindow()->Render();
 }
 
-
 void Shape::colorFacesRGB(vtkUnsignedCharArray* colors) {
     hasSegmentation_ = false;
     

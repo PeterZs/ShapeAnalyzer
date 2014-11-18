@@ -24,9 +24,9 @@
 
 #include "CustomTab.h"
 
-#include "ui_meshcheck.h"
+#include "ui_MeshCheckTabWidget.h"
 
-class MeshCheckTab : public QWidget, public Ui::MeshCheckWidget, public CustomTab {
+class MeshCheckTab : public QWidget, public Ui::MeshCheckTabWidget, public CustomTab {
     Q_OBJECT
     
 public:

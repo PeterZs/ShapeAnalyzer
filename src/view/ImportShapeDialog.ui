@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OpenShape</class>
- <widget class="QDialog" name="UIOpenShape">
+ <class>ImportShapeDialog</class>
+ <widget class="QDialog" name="ImportShapeDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Open Shape</string>
+   <string>Import Shape</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -88,7 +88,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>UIOpenShape</receiver>
+   <receiver>ImportShapeDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -104,7 +104,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>UIOpenShape</receiver>
+   <receiver>ImportShapeDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

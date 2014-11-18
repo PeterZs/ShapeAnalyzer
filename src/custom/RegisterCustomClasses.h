@@ -20,6 +20,7 @@
 #include "tabs/CustomTab.h"
 #include "tabs/ShapeInterpolationTab.h"
 #include "tabs/MeshCheckTab.h"
+#include "tabs/CorrespondenceColoringTab.h"
 
 #include "contextMenuItems/CustomContextMenuItem.h"
 #include "contextMenuItems/ColorEigenfunctionContextMenuItem.h"
@@ -59,6 +60,7 @@ struct RegisterCustomClasses {
         //tabs
         CustomTabFactory::getInstance()->Register<ShapeInterpolationTab>("shape_interpolation", "Shapes>>Shape Interpolation");
         CustomTabFactory::getInstance()->Register<MeshCheckTab>("mesh_check", "Shapes>>Mesh Checker");
+        CustomTabFactory::getInstance()->Register<CorrespondenceColoringTab>("correspondence_coloring", "Correspondences>>Correspondence Coloring");
     }
     
     static void registerContextMenuItems() {

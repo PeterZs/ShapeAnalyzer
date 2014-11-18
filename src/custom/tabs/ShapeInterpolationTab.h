@@ -23,11 +23,11 @@
 
 #include "CustomTab.h"
 
-#include "ui_shapeInterpolation.h"
+#include "ui_ShapeInterpolationTabWidget.h"
 
 class ShapeAnalyzer;
 
-class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationWidget, public CustomTab {
+class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationTabWidget, public CustomTab {
     Q_OBJECT
     
 public:

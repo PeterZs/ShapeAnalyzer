@@ -110,9 +110,9 @@
 #include "../domain/samplings/Sampling.h"
 #include "../domain/samplings/FarthestPointSampling.h"
 
-#include "ui_help.h"
-#include "ui_openshape.h"
-#include "ui_saveScreenshot.h"
+#include "ui_HelpDialog.h"
+#include "ui_ImportShapeDialog.h"
+#include "ui_SaveScreenshotDialog.h"
 #include "ui_ShapeAnalyzer.h"
 
 using namespace std;
@@ -202,13 +202,15 @@ public:
     void addCorrespondences(const vector<CorrespondenceData*>& correspondences);
     /// \note TODO: move all those public functions to a separate interface class which is implemented by ShapeAnalyzer
     Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
-    /// @}
+    
+    Shape* getCurrentlySelectedShape();
     
     /// \brief Rerenders the vtkWidget scene.
     /// \details Any changes made for example by qtTabs to Correspondences or Shapes are not instantly visible.
     /// Use this function after all changes are made to update the visualisation when you are not using
     /// any functions of ShapeAnalyzer to make the changes. (i.e. deleteCorrespondence will rerender by itself)
     void render();
+    /// @}
     
     
 private slots:

@@ -28,6 +28,9 @@ void ColorEigenfunctionContextMenuItem::onClick(Shape* shape, vtkIdType pointId,
         FEMLaplaceBeltramiOperator laplacian(shape, 100);
         laplacian.getEigenfunction(i, eigenfunction);
         
-        shape->colorPointsScalars(eigenfunction.getScalars());
+        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+        coloring->type = Shape::Coloring::Type::PointScalar;
+        coloring->values = eigenfunction.getScalars();
+        shape->setColoring(coloring);
     }
 }

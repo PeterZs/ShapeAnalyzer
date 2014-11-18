@@ -13,14 +13,12 @@ Shape::Shape(
              vtkSmartPointer<vtkPolyData> polyData,
              vtkSmartPointer<vtkRenderer> renderer
              )
-: id_(id), name_(name), polyData_(polyData), renderer_(renderer), hasSegmentation_(false)
-{
-}
+: id_(id), name_(name), polyData_(polyData), renderer_(renderer){}
 
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
-: renderer_(renderer), hasSegmentation_(false)
+: renderer_(renderer)
 {/* do not call initialize here! Poly data is not yet initialized! */}
 
 void Shape::initialize() {
@@ -59,7 +57,7 @@ void Shape::removeFromRenderer() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::clearColoring() {
-    hasSegmentation_ = false;
+    coloring_.reset();
     
     mapper_->CreateDefaultLookupTable();
     mapper_->ScalarVisibilityOff();
@@ -110,90 +108,51 @@ vtkIdType Shape::getRandomPoint() {
     return std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
 }
 
-void Shape::colorPointsScalars(vtkDataArray* values) {
-    hasSegmentation_ = false;
+void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
+    // release old shared_ptr. Decrements ref count.
+    coloring_.reset();
+    coloring_ = coloring;
     
-    double range[2];
-    
-    values->GetRange(range);
-    
-    polyData_->GetPointData()->SetScalars(values);
-    polyData_->Modified();
-    
-    mapper_->SetScalarModeToUsePointData();
-    mapper_->SetColorModeToMapScalars();
-    mapper_->SetScalarRange(range[0], range[1]);
-    mapper_->ScalarVisibilityOn();
-    mapper_->Modified();
-    
-    polyDataNormals_->Update();
-    polyDataNormals_->Modified();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
-void Shape::colorFacesScalars(vtkDataArray* values) {
-    hasSegmentation_ = false;
-    
-    double range[2];
-    
-    values->GetRange(range);
-    
-    polyData_->GetCellData()->SetScalars(values);
-    polyData_->Modified();
-    
-    mapper_->SetScalarModeToUseCellData();
-    mapper_->SetColorModeToMapScalars();
-    mapper_->SetScalarRange(range[0], range[1]);
-    mapper_->ScalarVisibilityOn();
-    mapper_->Modified();
-    
-    polyDataNormals_->Update();
-    polyDataNormals_->Modified();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
-void Shape::colorPointsRGB(vtkUnsignedCharArray* colors) {
-    hasSegmentation_ = false;
-    
-    polyData_->GetPointData()->SetScalars(colors);
-    
-    mapper_->SetScalarModeToUsePointData();
-    mapper_->SetColorModeToDefault();
-    mapper_->ScalarVisibilityOn();
-    mapper_->Modified();
-    
-    polyDataNormals_->Update();
-    polyDataNormals_->Modified();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
-void Shape::colorFacesRGB(vtkUnsignedCharArray* colors) {
-    hasSegmentation_ = false;
-    
-    polyData_->GetCellData()->SetScalars(colors);
-    
-    mapper_->SetScalarModeToUseCellData();
-    mapper_->ScalarVisibilityOn();
-    mapper_->Modified();
-    
-    polyDataNormals_->Update();
-    polyDataNormals_->Modified();
-    
-    renderer_->GetRenderWindow()->Render();
-}
-
-void Shape::setSegmentation(vtkSmartPointer<vtkIdList> segmentation) {
-    vtkSmartPointer<vtkIntArray> values = vtkSmartPointer<vtkIntArray>::New();
-    values->SetNumberOfValues(polyData_->GetNumberOfPoints());
-    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
-        values->SetValue(i, segmentation->GetId(i));
+    if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::PointSegmentation) {
+        double range[2];
+        coloring_->values->GetRange(range);
+        
+        polyData_->GetPointData()->SetScalars(coloring_->values);
+        polyData_->Modified();
+        
+        mapper_->SetScalarModeToUsePointData();
+        mapper_->SetColorModeToMapScalars();
+        mapper_->SetScalarRange(range[0], range[1]);
+    } else if(coloring_->type == Coloring::Type::FaceScalar || coloring_->type == Coloring::Type::FaceSegmentation) {
+        double range[2];
+        coloring_->values->GetRange(range);
+        
+        polyData_->GetCellData()->SetScalars(coloring_->values);
+        polyData_->Modified();
+        
+        mapper_->SetScalarModeToUseCellData();
+        mapper_->SetColorModeToMapScalars();
+        mapper_->SetScalarRange(range[0], range[1]);
+    } else if(coloring_->type == Coloring::Type::PointRgb) {
+        polyData_->GetPointData()->SetScalars(coloring_->values);
+        
+        mapper_->SetScalarModeToUsePointData();
+        mapper_->SetColorModeToDefault();
+        mapper_->ScalarVisibilityOn();
+    } else if(coloring_->type == Coloring::Type::FaceRgb) {
+        polyData_->GetCellData()->SetScalars(coloring_->values);
+        
+        mapper_->SetScalarModeToUseCellData();
+        mapper_->ScalarVisibilityOn();
     }
-    colorPointsScalars(values);
-    segmentation_ = segmentation;
-    hasSegmentation_ = true;
+    
+    mapper_->ScalarVisibilityOn();
+    mapper_->Modified();
+    
+    polyDataNormals_->Update();
+    polyDataNormals_->Modified();
+    
+    renderer_->GetRenderWindow()->Render();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -63,18 +63,6 @@
 #include "ShapeAnalyzerInteractorStyle.h"
 #include "CustomListWidgetItem.h"
 
-#include "../custom/tabs/CustomTab.h"
-#include "../custom/tabs/ShapeInterpolationTab.h"
-
-#include "../custom/contextMenuItems/CustomContextMenuItem.h"
-#include "../custom/contextMenuItems/ColorEigenfunctionContextMenuItem.h"
-#include "../custom/contextMenuItems/ColorMetricContextMenuItem.h"
-#include "../custom/contextMenuItems/ColorSignatureContextMenuItem.h"
-#include "../custom/contextMenuItems/HeatDiffusionContextMenuItem.h"
-#include "../custom/contextMenuItems/VoronoiCellsContextMenuItem.h"
-#include "../custom/contextMenuItems/ExtractSegmentContextMenuItem.h"
-
-#include "../custom/Factory.h"
 #include "../custom/RegisterCustomClasses.h"
 
 #include "../util/HashMap.h"

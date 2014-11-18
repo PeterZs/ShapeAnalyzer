@@ -9,7 +9,7 @@
 #ifndef __ShapeAnalyzer__Segmentation__
 #define __ShapeAnalyzer__Segmentation__
 
-#include "vtkIdList.h"
+#include "vtkIntArray.h"
 #include "vtkSmartPointer.h"
 
 #include "../Shape.h"
@@ -22,7 +22,7 @@ public:
     
     virtual ~Segmentation() {}
     
-    virtual vtkSmartPointer<vtkIdList> getSegmentation() = 0;
+    virtual vtkSmartPointer<vtkIntArray> getSegments() = 0;
     
 protected:
     Shape* shape_;

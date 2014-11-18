@@ -47,8 +47,10 @@ public:
             ScalarPointAttribute component(shape);
             s.getComponent(i, component);
 
-
-            shape->colorPointsScalars(component.getScalars());
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointScalar;
+            coloring->values = component.getScalars();
+            shape->setColoring(coloring);
         }
     }
     

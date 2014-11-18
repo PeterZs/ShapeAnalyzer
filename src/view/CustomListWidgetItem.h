@@ -23,7 +23,7 @@ public:
     CustomListWidgetItem(
                   const QString &text,
                   T*            item,
-                  QListWidget   *view   = 0,
+                  QListWidget   *view   = nullptr,
                   int           type    = Type
                   ) : QListWidgetItem(text, view, type), item_(item) {};
     

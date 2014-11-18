@@ -24,7 +24,7 @@ public:
     
     virtual ~VoronoiCellSegmentation() {}
     
-    virtual vtkSmartPointer<vtkIdList> getSegmentation();
+    virtual vtkSmartPointer<vtkIntArray> getSegments();
 private:
     Metric* metric_;
     Sampling* sampling_;

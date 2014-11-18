@@ -47,8 +47,8 @@ public:
     /// Returns the id of the point with the greatest distance to all points in the source list
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;
     
-    /// Returns voronoi cells that correspond to the vertices in argument seeds. The result is of type vtkIdList and it contains the corresponding cell id for each vertex.
-    virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
+    /// Returns voronoi cells that correspond to the vertices in argument seeds. The result is of type vtkIntArray and it contains the corresponding cell id for each vertex.
+    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
 protected:
     Shape* shape_;
 };

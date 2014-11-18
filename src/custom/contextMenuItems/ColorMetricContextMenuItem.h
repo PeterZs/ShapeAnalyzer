@@ -47,7 +47,10 @@ public:
             ScalarPointAttribute distances(shape);
             m.getAllDistances(distances, source);
 
-            shape->colorPointsScalars(distances.getScalars());
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointScalar;
+            coloring->values = distances.getScalars();
+            shape->setColoring(coloring);
         }
     }
     

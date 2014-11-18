@@ -24,7 +24,7 @@ public:
     
     virtual double getDistance(vtkIdType a, vtkIdType b);
     virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
-    virtual vtkSmartPointer<vtkIdList> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
+    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
 };
     

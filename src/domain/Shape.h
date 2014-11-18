@@ -48,8 +48,16 @@ using namespace std;
 /// \note Documentation not finished.
 ///
 class Shape : public Serializable {
-
+    
 public:
+    struct Coloring {
+        
+        enum class Type {PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar, FaceScalar};
+        
+        vtkSmartPointer<vtkDataArray> values;
+        Type type;
+    };
+    
     // Constructors and Destructor
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     Shape(vtkSmartPointer<vtkRenderer> renderer);
@@ -135,33 +143,13 @@ public:
         name_ = name;
     }
 
-    /// \brief Colors points with scalar values.
-    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values.
-    /// @param vtkDataArray* values. Scalar values which can be either discrete or continuous.
-    void colorPointsScalars(vtkDataArray* values);
-    
-    /// \brief Colors faces with scalar values.
-    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values.
-    /// @param vtkDataArray* values. Scalar values which can be either discrete or continuous.
-    void colorFacesScalars(vtkDataArray* values);
-    
-    /// \brief Colors points with RGB values.
-    /// @param vtkUnsignedCharArray* colors. RGB values. Set number of components to 3 in vtkUnsignedCharArray.
-    void colorPointsRGB(vtkUnsignedCharArray* colors);
-    
-    /// \brief Colors faces with RGB values.
-    /// @param vtkUnsignedCharArray* colors. RGB values. Set number of components to 3 in vtkUnsignedCharArray.
-    void colorFacesRGB(vtkUnsignedCharArray* colors);
-    
-    
-    void setSegmentation(vtkSmartPointer<vtkIdList> segmentation);
-    
-    vtkIdList* getSegmentation() {
-        return segmentation_;
-    }
-    
-    bool hasSegmentation() {
-        return hasSegmentation_;
+    /// \brief Colors points with a scalar valued point map.
+    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values. Map is saved in this class and can be obtained via getScalarMap() hasScalarMap().
+    /// @param vtkSmartPointer<vtkDataArray> map. Scalar values which can be either discrete or continuous.
+    void setColoring(shared_ptr<Coloring> coloring);
+
+    shared_ptr<Coloring> getColoring() {
+        return coloring_;
     }
 private:
     
@@ -175,10 +163,9 @@ private:
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     
-    vtkSmartPointer<vtkRenderer>        renderer_;
+    vtkSmartPointer<vtkRenderer> renderer_;
     
-    vtkSmartPointer<vtkIdList> segmentation_;
-    bool hasSegmentation_;
+    shared_ptr<Coloring> coloring_;
 };
 
 #endif

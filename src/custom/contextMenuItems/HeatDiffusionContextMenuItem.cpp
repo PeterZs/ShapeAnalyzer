@@ -51,6 +51,10 @@ void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkI
         HeatDiffusion heatDiffusion(shape, &laplacian, u0);
         ScalarPointAttribute ut(shape);
         heatDiffusion.getHeat(ut, t);
-        shape->colorPointsScalars(ut.getScalars());
+
+        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+        coloring->type = Shape::Coloring::Type::PointScalar;
+        coloring->values = ut.getScalars();
+        shape->setColoring(coloring);
     }
 }

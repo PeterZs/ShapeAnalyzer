@@ -134,9 +134,9 @@ vtkIdType metric::GeodesicMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> so
     return id;
 }
 
-vtkSmartPointer<vtkIdList> metric::GeodesicMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
-    vtkSmartPointer<vtkIdList> voronoiCells = vtkSmartPointer<vtkIdList>::New();
-    voronoiCells->SetNumberOfIds(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
+vtkSmartPointer<vtkIntArray> metric::GeodesicMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
+    vtkSmartPointer<vtkIntArray> voronoiCells = vtkSmartPointer<vtkIntArray>::New();
+    voronoiCells->SetNumberOfValues(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
     
     
     vector<SurfacePoint> all_sources;
@@ -159,7 +159,7 @@ vtkSmartPointer<vtkIdList> metric::GeodesicMetric::getVoronoiCells(vtkSmartPoint
     
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
         SurfacePoint p(&mesh_.vertices()[i]);
-        voronoiCells->SetId(i, algorithm_->best_source(p, dist));
+        voronoiCells->SetValue(i, algorithm_->best_source(p, dist));
     }
     
     return voronoiCells;

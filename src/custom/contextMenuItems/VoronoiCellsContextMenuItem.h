@@ -60,7 +60,10 @@ public:
             VoronoiCellSegmentation segmentation(shape, &m, &fps);
             
             // save current segmentation for being able to create new shapes out of the segments
-            shape->setSegmentation(segmentation.getSegmentation());
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointSegmentation;
+            coloring->values = segmentation.getSegments();
+            shape->setColoring(coloring);
         }
     }
     

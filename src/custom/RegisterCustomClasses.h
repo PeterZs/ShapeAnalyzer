@@ -28,7 +28,7 @@
 #include "contextMenuItems/ColorSignatureContextMenuItem.h"
 #include "contextMenuItems/HeatDiffusionContextMenuItem.h"
 #include "contextMenuItems/VoronoiCellsContextMenuItem.h"
-#include "contextMenuItems/ExtractSegmentContextMenuItem.h"
+#include "contextMenuItems/ExtractPointSegmentContextMenuItem.h"
 
 #include "../util/HashMap.h"
 
@@ -52,7 +52,7 @@ typedef Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<Poi
 typedef Factory<shared_ptr<CustomContextMenuItem>> CustomContextMenuItemFactory;
 
 //forward declarations
-class ExtractSegmentContextMenuItem;
+class ExtractPointSegmentContextMenuItem;
 class ShapeInterpolationTab;
 
 struct RegisterCustomClasses {
@@ -75,7 +75,7 @@ struct RegisterCustomClasses {
         
         CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
         
-        CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
+        CustomContextMenuItemFactory::getInstance()->Register<ExtractPointSegmentContextMenuItem>("extract_point_segment", "Extract point segment as new Shape");
     }    
 };
 

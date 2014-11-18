@@ -75,6 +75,7 @@
 #include "../custom/contextMenuItems/ExtractSegmentContextMenuItem.h"
 
 #include "../custom/Factory.h"
+#include "../custom/RegisterCustomClasses.h"
 
 #include "../util/HashMap.h"
 
@@ -116,10 +117,9 @@
 
 using namespace std;
 
+//forward declarations
 class ExtractSegmentContextMenuItem;
-
 class ShapeInterpolationCustomTab;
-
 
 ///
 /// \brief Manages the interaction with the GUI.
@@ -249,7 +249,7 @@ private slots:
     /// switched to the mesh visualisation.
     virtual void slotModeAddCorrespondences();
     
-    /// Changes the visibility of the Color Scalar Bar.
+    /// \brief Changes the visibility of the Color Scalar Bar.
     /// @param visible true correspondes to visible, false to not visible
     virtual void slotShowScalarBar(bool visible);
     
@@ -291,7 +291,8 @@ private slots:
     virtual void slotExportCorrespondences();
     /// Opens a dialog for making a screenshot of the current scene in the vtkWidget.
     virtual void slotSaveScreenshot();
-    
+    /// \brief Adds or removes custom tab to or from tab widget.
+    /// @param bool visible. If true tab is added to widget otherwise removed.
     virtual void slotViewCustomTab(bool visible);
     ///@}
     

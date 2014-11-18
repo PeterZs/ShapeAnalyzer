@@ -5,9 +5,7 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     this->setupUi(this);
     
     //Group actions related to different Views. Automatically unselected other members of group.
-    //
     this->actionGroupCorrespondenceType_ = new QActionGroup(this);
-    
     actionGroupCorrespondenceType_->addAction(this->actionDisplayFaceCorrespondences);
     actionGroupCorrespondenceType_->addAction(this->actionDisplayPointCorrespondences);
     
@@ -64,7 +62,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->actionSaveScreenshot,             SIGNAL(triggered()),
             this,                                   SLOT(slotSaveScreenshot()));
     
-    // delete correspondence picker visual response if mode was changed.
     connect(this->actionGroupMode_,                 SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotClearCurrentSelection()));
     
@@ -73,8 +70,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     
     connect(this->actionGroupMode_,                 SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotModeAddCorrespondences()));
-
-    
 
     connect(this->actionGroupCorrespondenceType_,   SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotSetCorrespondenceType()));
@@ -103,19 +98,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->buttonClearAllCorrespondences,    SIGNAL(released()),
             this,                                   SLOT(slotClearAllCorrespondences()));
 
-    Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->Register<ShapeInterpolationCustomTab>("shape_interpolation", "Shapes>>Shape Interpolation");
-    
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
-
-    
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
-
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_metric_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
-    
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_metric_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
-    
-    Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract Segment as new Shape");
     
     // connection of list widgets is done in extra functions since signals of
     // list widgets are disconnected before and reconnected after deletion of
@@ -124,6 +106,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     qtConnectListShapes();
 
     this->vtkSetup();
+    
+    RegisterCustomClasses::Register();
     
     //Initialize Slepc for eigenfunction computation
     SlepcInitializeNoArguments();
@@ -574,7 +558,7 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions) {
     // get list of all menu item paths (Home>>foo>>bar>>action)
-    const unordered_map<string, string>& paths = Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->getLabels();
+    const unordered_map<string, string>& paths = CustomContextMenuItemFactory::getInstance()->getLabels();
     
     // menus in the menu tree indexed by their unique path.
     HashMap<string, QMenu*> menus;
@@ -633,7 +617,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* exportAction   = myMenu.addAction("Export Shape");
     myMenu.addSeparator();
 
-    //create custom menu items out of the list of custom context menu items registered in the Factory<shared_ptr<CustomContextMenuItem>>
+    //create custom menu items out of the list of custom context menu items registered in the CustomContextMenuItemFactory
     HashMap<QAction*, string> customActions;
     qtParseContextMenuItems(&myMenu, customActions);
 
@@ -654,14 +638,14 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape);
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = Factory<shared_ptr<CustomContextMenuItem>>::getInstance()->create(customActions[selectedItem]);
+            shared_ptr<CustomContextMenuItem> menuItem = CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem]);
             menuItem->onClick(currentShape, pointId, faceId, this);
         }
     }
 }
 
 void ShapeAnalyzer::qtCreateMenuCustomTabs() {
-    const unordered_map<string, string>& paths = Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->getLabels();
+    const unordered_map<string, string>& paths = CustomTabFactory::getInstance()->getLabels();
     
 
     for(auto entry : paths) {
@@ -725,9 +709,9 @@ CustomListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesIte
 void ShapeAnalyzer::slotViewCustomTab(bool visible) {
     string key = viewCustomTabActions_[(QAction*) sender()];
     if(visible) {
-        CustomTab* tab = Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);
+        CustomTab* tab = CustomTabFactory::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);
         
-        QString path(Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*>::getInstance()->getLabels().at(key).c_str());
+        QString path(CustomTabFactory::getInstance()->getLabels().at(key).c_str());
         QStringList list = path.split(">>");
 
         if((list.count() > 1 && list[0] == "Shapes") || list.count() < 2) {

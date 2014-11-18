@@ -644,10 +644,12 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtCreateMenuCustomTabs() {
     const unordered_map<string, string>& paths = CustomTabFactory::getInstance()->getLabels();
     
-
+    // for each key + path pair create entry in view menu and connect it to slotViewCustomTab.
     for(auto entry : paths) {
         QString path(entry.second.c_str());
         QStringList list = path.split(">>");
@@ -659,12 +661,16 @@ void ShapeAnalyzer::qtCreateMenuCustomTabs() {
         }
         action->setCheckable(true);
         action->setChecked(false);
+        
+        // remember which action is responsible for which CustomTab class
         viewCustomTabActions_.insert(action, entry.first);
         
         connect(action, SIGNAL(toggled(bool)), this, SLOT(slotViewCustomTab(bool)));
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtUpdateLabelVisibleCorrespondences() {
     int numberOfVisibleCorrespondences = 0;
     int numberOfAllCorrespondences = 0;
@@ -688,6 +694,7 @@ void ShapeAnalyzer::qtUpdateLabelVisibleCorrespondences() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 CustomListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesItem(Correspondence* correspondence) {
     string label = "Correspondence ";
     label.append(to_string(correspondence->getData()->getId()));
@@ -707,6 +714,7 @@ CustomListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesIte
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotViewCustomTab(bool visible) {
+    // obtain sender action and query key of selected CustomTab
     string key = viewCustomTabActions_[(QAction*) sender()];
     if(visible) {
         CustomTab* tab = CustomTabFactory::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);

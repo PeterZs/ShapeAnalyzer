@@ -9,7 +9,7 @@
 #include <vtkUnsignedCharArray.h>
 
 #include "../../domain/Shape.h"
-#include "../util/HashMap.h"
+#include "../../util/HashMap.h"
 
 #include "../../domain/correspondences/FaceCorrespondence.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"

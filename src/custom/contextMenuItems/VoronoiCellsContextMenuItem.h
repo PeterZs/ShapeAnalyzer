@@ -24,6 +24,7 @@
 #include <qinputdialog.h>
 
 using namespace std;
+using namespace segmentation;
 
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {

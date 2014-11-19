@@ -16,6 +16,8 @@
 using namespace metric;
 using namespace sampling;
 
+namespace segmentation {
+
 class VoronoiCellSegmentation : public Segmentation {
 public:
     VoronoiCellSegmentation(Shape* shape, Metric* metric, Sampling* sampling) : Segmentation(shape), metric_(metric), sampling_(sampling) {
@@ -29,5 +31,7 @@ private:
     Metric* metric_;
     Sampling* sampling_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__VoronoiCellSegmentation__) */

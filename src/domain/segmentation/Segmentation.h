@@ -14,7 +14,7 @@
 
 #include "../Shape.h"
 
-
+namespace segmentation {
 
 class Segmentation {
 public:
@@ -27,5 +27,7 @@ public:
 protected:
     Shape* shape_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__Segmentation__) */

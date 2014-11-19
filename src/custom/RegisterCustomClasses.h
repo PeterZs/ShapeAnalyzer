@@ -51,6 +51,8 @@ typedef Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<Poi
 
 typedef Factory<shared_ptr<CustomContextMenuItem>> CustomContextMenuItemFactory;
 
+using namespace signature;
+
 //forward declarations
 class ExtractPointSegmentContextMenuItem;
 class ShapeInterpolationTab;

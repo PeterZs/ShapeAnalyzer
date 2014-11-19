@@ -7,8 +7,7 @@
 //
 
 #include "VoronoiCellSegmentation.h"
-
-vtkSmartPointer<vtkIntArray> VoronoiCellSegmentation::getSegments() {
+vtkSmartPointer<vtkIntArray> segmentation::VoronoiCellSegmentation::getSegments() {
     vtkSmartPointer<vtkIdList> seeds = sampling_->getPoints();
     return metric_->getVoronoiCells(seeds);
 }

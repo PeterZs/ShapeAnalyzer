@@ -39,16 +39,18 @@
 
 #include <QActionGroup>
 #include <QCheckBox>
+#include <QColorDialog>
+#include <QErrorMessage>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QKeySequence>
 #include <QList>
 #include <QListWidget>
 #include <QMainWindow>
+#include <QObject>
+#include <QSharedPointer>
 #include <QShortcut>
 #include <QString>
-#include <QFileDialog>
-#include <QColorDialog>
-#include <QSharedPointer>
 #include <QObject>
 
 #include <exception>
@@ -119,7 +121,7 @@ class ShapeInterpolationTab;
 class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
     Q_OBJECT
     
-    /// \brief needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
+    /// \brief Needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
     /// the elements can be made.
     struct ShapeComparator {
         bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }

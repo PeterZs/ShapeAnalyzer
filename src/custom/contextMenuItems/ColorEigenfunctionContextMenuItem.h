@@ -21,6 +21,7 @@
 #include <qinputdialog.h>
 
 using namespace std;
+using namespace laplaceBeltrami;
 
 class ColorEigenfunctionContextMenuItem : public CustomContextMenuItem {
 public:

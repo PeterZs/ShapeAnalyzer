@@ -19,6 +19,7 @@
 #include "PetscHelper.h"
 
 using namespace attribute;
+using namespace laplaceBeltrami;
 
 class HeatDiffusion {
 public:

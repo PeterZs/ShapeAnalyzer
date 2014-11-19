@@ -22,6 +22,8 @@
 using namespace std;
 using namespace attribute;
 
+namespace laplaceBeltrami {
+
 class FEMLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
 public:
     FEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
@@ -52,5 +54,7 @@ private:
     Mat M_;
     EPS eps_; // eigenproblem solver context
 };
+    
+}
 
 #endif

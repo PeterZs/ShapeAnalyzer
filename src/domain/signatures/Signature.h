@@ -13,6 +13,8 @@
 #include "../attributes/ScalarPointAttribute.h"
 #include "../laplaceBeltrami/LaplaceBeltramiOperator.h"
 
+namespace signature {
+
 class Signature {
 public:
     Signature(Shape* shape, int dimension) : shape_(shape), dimension_(dimension) {}
@@ -30,5 +32,7 @@ protected:
     Shape* shape_;
     int dimension_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__Signature__) */

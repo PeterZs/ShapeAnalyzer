@@ -11,7 +11,7 @@
 #include <limits>
 
 
-WaveKernelSignature::WaveKernelSignature(Shape* shape, int dimension, LaplaceBeltramiOperator* laplacian, double wksVariance) : LaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
+signature::WaveKernelSignature::WaveKernelSignature(Shape* shape, int dimension, LaplaceBeltramiOperator* laplacian, double wksVariance) : LaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
 
     PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];
     

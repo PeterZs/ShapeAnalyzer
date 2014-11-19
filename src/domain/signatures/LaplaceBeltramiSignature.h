@@ -11,6 +11,10 @@
 
 #include "Signature.h"
 
+using namespace laplaceBeltrami;
+
+namespace signature {
+
 class LaplaceBeltramiSignature : public Signature {
 public:
     LaplaceBeltramiSignature(Shape *shape, int dimension, LaplaceBeltramiOperator* laplacian);
@@ -23,5 +27,7 @@ protected:
     Mat signature_;
     LaplaceBeltramiOperator* laplacian_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__LaplaceBeltramiSignature__) */

@@ -37,7 +37,7 @@ public:
     }
     
     //add face (or vertex) ID + shape pair to correspondence. Returns true if id+shape pair has successfully been added (i.e. if shape has not been added twice).
-    int addShape(Shape* shape, vtkIdType selectionId);
+    int addShape(Shape* shape, vtkIdType selectionId) throw(std::invalid_argument);
     
     //returns true in case at least two shapes have been added to correspondence and returns new correspondence via argument. Otherwise returns false.
     bool pick(Correspondence** correspondence);
@@ -56,9 +56,9 @@ protected:
     }
     
     //returns point coordinates of current selection (center of selected triangle in case of FaceCorrespondence) to draw line between this point and mouse coordinates
-    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) = 0;
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) throw (std::invalid_argument) = 0;
 
-    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType) = 0;
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType) throw (std::invalid_argument) = 0;
 
     virtual Correspondence* createCorrespondence() = 0;
     

@@ -8,7 +8,7 @@
 
 #include "FEMLaplaceBeltramiOperator.h"
 
-FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape *shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
+laplaceBeltrami::FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape *shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
     PetscErrorCode ierr;
     
     setupMatrices();
@@ -46,7 +46,7 @@ FEMLaplaceBeltramiOperator::FEMLaplaceBeltramiOperator(Shape *shape, int numberO
 }
 
 //detroy all data structures
-FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
+laplaceBeltrami::FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
     ierr = EPSDestroy(&eps_);
@@ -54,16 +54,16 @@ FEMLaplaceBeltramiOperator::~FEMLaplaceBeltramiOperator() {
     ierr = MatDestroy(&M_);
 }
 
-Mat* FEMLaplaceBeltramiOperator::getMassMatrix() {
+Mat* laplaceBeltrami::FEMLaplaceBeltramiOperator::getMassMatrix() {
     return &M_;
 }
 
-Mat* FEMLaplaceBeltramiOperator::getStiffnessMatrix() {
+Mat* laplaceBeltrami::FEMLaplaceBeltramiOperator::getStiffnessMatrix() {
     return &L_;
 }
 
 //get number of non-zero elements per row (needed for efficient allocation of sparse matrices)
-void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces) {
+void laplaceBeltrami::FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces) {
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];
     for(vtkIdType i = 0; i < numberOfFaces; i++) {
@@ -87,11 +87,11 @@ void FEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints,
 }
 
 //get value of mass matrix at ij
-PetscScalar FEMLaplaceBeltramiOperator::getMass(double *a, double *b, double *c) {
+PetscScalar laplaceBeltrami::FEMLaplaceBeltramiOperator::getMass(double *a, double *b, double *c) {
     return vtkTriangle::TriangleArea(a, b, c) / 12.0;
 }
 
-PetscScalar FEMLaplaceBeltramiOperator::getStiffness(double *a, double *b, double *c) {
+PetscScalar laplaceBeltrami::FEMLaplaceBeltramiOperator::getStiffness(double *a, double *b, double *c) {
     double ca[3];
     ca[0] = a[0] - c[0];
     ca[1] = a[1] - c[1];
@@ -116,7 +116,7 @@ PetscScalar FEMLaplaceBeltramiOperator::getStiffness(double *a, double *b, doubl
 }
 
 //setup cotan and mass matrix for further computation (e.g. eigenfunctions)
-void FEMLaplaceBeltramiOperator::setupMatrices() {    
+void laplaceBeltrami::FEMLaplaceBeltramiOperator::setupMatrices() {
     PetscErrorCode ierr;
 
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
@@ -177,7 +177,7 @@ void FEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
-void FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &phi) {
+void laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &phi) {
     Vec vec;
     getEigenfunction(i, &vec);
     
@@ -186,14 +186,14 @@ void FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &p
 }
 
 
-void FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
+void laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
     PetscErrorCode ierr;
     MatGetVecs(L_, NULL, phi);
     ierr = EPSGetEigenvector(eps_, i, *phi, NULL);
 }
 
 //returns i-th eigenvalue
-double FEMLaplaceBeltramiOperator::getEigenvalue(int i) {
+double laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenvalue(int i) {
     PetscErrorCode ierr;
     PetscScalar lambda;
     ierr = EPSGetEigenvalue(eps_, i, &lambda, NULL);
@@ -201,7 +201,7 @@ double FEMLaplaceBeltramiOperator::getEigenvalue(int i) {
     return lambda;
 }
 
-void FEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) {
+void laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) {
     PetscErrorCode ierr;
     MatGetVecs(L_, NULL, phi);
     ierr = EPSGetEigenpair(eps_, i, lambda, NULL, *phi, NULL);

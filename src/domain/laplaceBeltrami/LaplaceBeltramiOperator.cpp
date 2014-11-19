@@ -8,7 +8,7 @@
 
 #include "LaplaceBeltramiOperator.h"
 
-void LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
+void laplaceBeltrami::LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         Vec phi;
         getEigenfunction(i, &phi);

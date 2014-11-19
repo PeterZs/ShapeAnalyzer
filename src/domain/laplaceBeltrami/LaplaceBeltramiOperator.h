@@ -20,6 +20,8 @@
 
 using namespace attribute;
 
+namespace laplaceBeltrami {
+
 class LaplaceBeltramiOperator {
 public:
     LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
@@ -49,5 +51,7 @@ protected:
     Shape* shape_; //the shape
     int numberOfEigenfunctions_;
 };
+    
+}
 
 #endif

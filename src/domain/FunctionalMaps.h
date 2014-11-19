@@ -18,6 +18,8 @@
 
 #include <slepceps.h>
 
+using namespace laplaceBeltrami;
+
 class FunctionalMaps {
 public:
     FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions);

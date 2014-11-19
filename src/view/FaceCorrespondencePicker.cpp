@@ -9,7 +9,14 @@
 #include "FaceCorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) {
+void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) throw(std::invalid_argument) {
+    // invalid input check
+    if(shape == nullptr) {
+        throw new invalid_argument("Shape null pointer input in FaceCorrespondencePicker in getCurrentSelectionPoint.");
+    } else if (shape->getPolyData()->GetNumberOfCells() <= faceId) {
+        throw new invalid_argument("faceId input larger than number of faces in FaceCorrespondencePicker in getCurrentSelectionPoint.");
+    }
+    
     double p1[3];
     double p2[3];
     double p3[3];
@@ -22,7 +29,14 @@ void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) {
+void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) throw(std::invalid_argument) {
+    // invalid input check
+    if(shape == nullptr) {
+        throw new invalid_argument("Shape null pointer input in FaceCorrespondencePicker in visualizeCurrentSelection.");
+    } else if (shape->getPolyData()->GetNumberOfCells() <= faceId) {
+        throw new invalid_argument("faceId input larger than number of faces in FaceCorrespondencePicker in visualizeCurrentSelection.");
+    }
+    
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
     vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();

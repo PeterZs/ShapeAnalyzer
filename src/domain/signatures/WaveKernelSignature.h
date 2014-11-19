@@ -12,13 +12,18 @@
 #include "LaplaceBeltramiSignature.h"
 #include "../Shape.h"
 #include "../laplaceBeltrami/LaplaceBeltramiOperator.h"
-#include "../custom/Factory.h"
+#include "../../custom/Factory.h"
 
 #include <vtkPolyData.h>
 
 #include <cmath>
 
 //Implementation adapted from MATLAB code taken from http://www.di.ens.fr/~aubry/wks.html
+
+using namespace laplaceBeltrami;
+using namespace signature;
+
+namespace signature {
 
 class WaveKernelSignature : public LaplaceBeltramiSignature {
 public:    
@@ -27,5 +32,7 @@ public:
 private:
     double wksVariance_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__WaveKernelSignature__) */

@@ -9,7 +9,7 @@
 #ifndef ShapeAnalyzer_CustomContextMenuItem_h
 #define ShapeAnalyzer_CustomContextMenuItem_h
 
-#include "../domain/Shape.h"
+#include "../../domain/Shape.h"
 
 #include <QWidget>
 

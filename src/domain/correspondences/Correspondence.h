@@ -12,7 +12,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
 
-#include "../util/HashMap.h"
+#include "../../util/HashMap.h"
 #include "../Shape.h"
 
 #include "CorrespondenceData.h"

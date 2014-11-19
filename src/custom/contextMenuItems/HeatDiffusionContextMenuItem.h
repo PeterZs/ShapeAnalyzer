@@ -22,6 +22,7 @@
 #include <qinputdialog.h>
 
 using namespace std;
+using namespace laplaceBeltrami;
 
 class HeatDiffusionContextMenuItem : public CustomContextMenuItem {
 public:

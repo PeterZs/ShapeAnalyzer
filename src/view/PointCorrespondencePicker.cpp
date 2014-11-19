@@ -9,13 +9,27 @@
 #include "PointCorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) {
+void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) throw(std::invalid_argument) {
+    // invalid input check
+    if(shape == nullptr) {
+        throw new invalid_argument("Shape null pointer input in PointCorrespondencePicker in getCurrentSelectionPoint.");
+    } else if (shape->getPolyData()->GetNumberOfCells() <= pointId) {
+        throw new invalid_argument("pointId input larger than number of vertices in PointCorrespondencePicker in getCurrentSelectionPoint.");
+    }
+    
     shape->getPolyData()->GetPoint(pointId, point);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType pointId) {
+void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType pointId) throw(std::invalid_argument) {
+    // invalid input check
+    if(shape == nullptr) {
+        throw new invalid_argument("Shape null pointer input in PointCorrespondencePicker in visualizeCurrentSelection.");
+    } else if (shape->getPolyData()->GetNumberOfCells() <= pointId) {
+        throw new invalid_argument("pointId input larger than number of vertices in PointCorrespondencePicker in visualizeCurrentSelection.");
+    }
+    
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     

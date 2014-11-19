@@ -9,7 +9,11 @@
 #include "CorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-int CorrespondencePicker::addShape(Shape* shape, vtkIdType selectionId) {
+int CorrespondencePicker::addShape(Shape* shape, vtkIdType selectionId) throw(std::invalid_argument) {
+    // invalid input check
+    if(shape == nullptr) {
+        throw new invalid_argument("Shape null pointer input in CorrespondencePicker in addShape.");
+    }
     if(counter_ == 0) {
         correspondence_ = createCorrespondence();
     }
@@ -18,13 +22,21 @@ int CorrespondencePicker::addShape(Shape* shape, vtkIdType selectionId) {
     double source[3];
     
     //get point that is the source of the moving line
-    getCurrentSelectionPoint(shape, selectionId, source);
+    try {
+        getCurrentSelectionPoint(shape, selectionId, source);
+    } catch (std::invalid_argument e) {
+        throw e;
+    }
     
     //visualize mouse line drawn from source to mouse coordinates
     visualizeMouseLine(shape, source);
     
     //visualize selected vertex or face
-    visualizeCurrentSelection(shape, selectionId);
+    try {
+        visualizeCurrentSelection(shape, selectionId);
+    } catch(std::invalid_argument e) {
+        throw e;
+    }
 
     int result = correspondence_->addShape(shape, selectionId);
     

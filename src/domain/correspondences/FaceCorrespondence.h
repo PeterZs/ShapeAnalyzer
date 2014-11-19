@@ -8,7 +8,7 @@
 #include "Correspondence.h"
 #include "FaceCorrespondenceData.h"
 
-#include "../util/HashMap.h"
+#include "../../util/HashMap.h"
 #include "../Shape.h"
 
 ///

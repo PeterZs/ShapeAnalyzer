@@ -29,6 +29,8 @@ using namespace segmentation;
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
+    VoronoiCellsContextMenuItem<T>() {}
+    
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         vtkIdType source = QInputDialog::getInt(
@@ -67,13 +69,6 @@ public:
             shape->setColoring(coloring);
         }
     }
-    
-    static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<VoronoiCellsContextMenuItem>(new VoronoiCellsContextMenuItem());
-    }
-    
-private:
-    VoronoiCellsContextMenuItem<T>() {}
 };
 
 #endif /* defined(__ShapeAnalyzer__VoronoiCellsContextMenuItem__) */

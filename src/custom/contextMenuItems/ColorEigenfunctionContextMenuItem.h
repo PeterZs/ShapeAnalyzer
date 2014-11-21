@@ -25,14 +25,9 @@ using namespace laplaceBeltrami;
 
 class ColorEigenfunctionContextMenuItem : public CustomContextMenuItem {
 public:
+    ColorEigenfunctionContextMenuItem() {}    
+    
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
-    
-    static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<CustomContextMenuItem>(new ColorEigenfunctionContextMenuItem());
-    }
-    
-private:
-    ColorEigenfunctionContextMenuItem() {}
 };
 
 #endif /* defined(__ShapeAnalyzer__ColorEigenfunctionContextMenuItem__) */

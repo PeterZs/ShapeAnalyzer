@@ -1,219 +1,190 @@
-////
-////  IdentityMatchingTab.cpp
-////  ShapeAnalyzer
-////
-////  Created by Emanuel Laude on 24.08.14.
-////
-////
+
 //
-//#include "IdentityMatchingTab.h"
+//  FunctionTransferTab.cpp
+//  ShapeAnalyzer
 //
-//IdentityMatchingTab::~IdentityMatchingTab() {
-//}
-//
-//IdentityMatchingTab::IdentityMatchingTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent), shape1_(nullptr), shape2_(nullptr) {
-//    this->setupUi(this);
-//    
-//    QStringList labels;
-//    for(auto entry : shapes_) {
-//
-//        QString label = QString::number(entry.second->getId());
-//        label.append(QString::fromStdString(":"+entry.second->getName()));
-//        labels << label;
-//
-//    }
-//    
-//    if(shapes_.size() < 2) {
-//        buttonMatch->setEnabled(false);
-//    }
-//    
-//    comboBoxSourceShape->insertItems(0, labels);
-//    comboBoxTargetShape->insertItems(0, labels);
-//    
-//    connect(this->sliderInterpolation,              SIGNAL(valueChanged(int)),
-//            this,                                   SLOT(slotInterpolate(int)));
-//    connect(this->buttonChoose,                     SIGNAL(released()),
-//            this,                                   SLOT(slotChooseShapes()));
-//    connect(this->buttonInterpolation,              SIGNAL(released()),
-//            this,                                   SLOT(slotAddShape()));
-//}
-//
-//void IdentityMatchingTab::slotChooseShapes() {
-//    this->labelChoose->setEnabled(false);
-//    this->comboBoxSourceShape->setEnabled(false);
-//    this->comboBoxTargetShape->setEnabled(false);
-//    this->buttonChoose->setEnabled(false);
-//    
-//    vtkIdType sid1 = comboBoxSourceShape->currentText().split(':')[0].toInt();
-//    vtkIdType sid2 = comboBoxTargetShape->currentText().split(':')[0].toInt();
-//
-//    
-//    for(auto entry : shapes_) {
-//        if(sid1 == entry.second->getId()) {
-//            source_ = entry.second;
-//        }
-//        
-//        if(sid2 == entry.second->getId()) {
-//            target_ = entry.second;
-//        }
-//    }
-//    string name = source_->getName();
-//    name.append(":");
-//    name.append(target_->getName());
-//    
-//    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-//    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-//    vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
-//    
-//    points->DeepCopy(source_->getPolyData()->GetPoints());
-//    polys->DeepCopy(source_->getPolyData()->GetPolys());
-//    
-//    polyData->SetPoints(points);
-//    polyData->SetPolys(polys);
-//    
-//    shape_ = ((ShapeAnalyzer*) parent_)->addShape(name, polyData);
-//    
-//    this->labelInterpolation->setEnabled(true);
-//    this->sliderInterpolation->setEnabled(true);
-//    this->sliderInterpolation->setValue(0);
-//    this->buttonInterpolation->setEnabled(true);
-//}
-//
-//void IdentityMatchingTab::slotAddShape() {
-//    this->labelInterpolation->setEnabled(false);
-//    this->sliderInterpolation->setEnabled(false);
-//    this->buttonInterpolation->setEnabled(false);
-//    
-//    this->labelChoose->setEnabled(true);
-//    this->comboBoxSourceShape->setEnabled(true);
-//    this->comboBoxTargetShape->setEnabled(true);
-//    this->buttonChoose->setEnabled(true);
-//    shape_->getBoxWidget()->PlaceWidget();
-//    shape_ = nullptr;
-//    source_ = nullptr;
-//    target_ = nullptr;
-//}
-//
-//void IdentityMatchingTab::slotInterpolate(int value) { // value lies between 0 and 100.
-//    double lambda = (double) value / 100.0;
+//  Created by Emanuel Laude on 24.08.14.
 //
 //
-//    // for each pointCorrespondence of the two shapes compute convex combination c of the corresponding points a and b.
-//    for(auto entry : pointCorrespondences_) {
-//        
-//        double a[3];
-//        double b[3];
-//        
-//        vtkIdType pointId; // id of point "a" of source shape that is going to be replaced by c
-//        
-//        bool foundSource = false;
-//        bool foundTarget = false;
-//        for(int i = 0; i < entry.first->getShapeIds().size(); i++) {
-//            if(source_->getId() == entry.first->getShapeIds()[i]) {
-//                foundSource = true;
-//                pointId = entry.first->getCorrespondingIds()[i];
-//                source_->getPolyData()->GetPoint(pointId, a);
-//            }
-//            if(target_->getId() == entry.first->getShapeIds()[i]) {
-//                foundTarget = true;
-//                target_->getPolyData()->GetPoint(entry.first->getCorrespondingIds()[i], b);
-//            }
-//        }
-//        
-//        // if current correspondence does not contain both, source and target jump to next correspondence
-//        if(!foundSource || !foundTarget) {
-//            continue;
-//        }
-//        
-//        double c[3];
-//        c[0] = (1-lambda) * a[0] + lambda * b[0];
-//        c[1] = (1-lambda) * a[1] + lambda * b[1];
-//        c[2] = (1-lambda) * a[2] + lambda * b[2];
-//        
-//        shape_->getPolyData()->GetPoints()->SetPoint(pointId, c);
-//    }
-//    
-//    shape_->getPolyData()->Modified();
-//    shape_->getActor()->Modified();
-//    ((ShapeAnalyzer*) parent_)->render();
-//}
-//
-//void IdentityMatchingTab::onShapeAdd(Shape* shape) {
-//    this->buttonChoose->setEnabled(true);
-//    QString label = QString::number(shape->getId());
-//    label.append(QString::fromStdString(":"+shape->getName()));
-//    comboBoxSourceShape->insertItem(0, label);
-//    comboBoxTargetShape->insertItem(0, label);
-//}
-//
-//void IdentityMatchingTab::onShapeDelete(Shape* shape) {
-//    for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
-//        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
-//            comboBoxSourceShape->removeItem(i);
-//            break;
-//        }
-//    }
-//    
-//    for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
-//        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
-//            comboBoxTargetShape->removeItem(i);
-//            break;
-//        }
-//    }
-//    
-//    if((shape_ != nullptr && shape_->getId() == shape->getId()) || (source_ != nullptr && source_->getId() == shape->getId()) || (target_ != nullptr && target_->getId() == shape->getId())) {
-//        this->labelInterpolation->setEnabled(false);
-//        this->sliderInterpolation->setEnabled(false);
-//        this->buttonInterpolation->setEnabled(false);
-//        
-//        this->labelChoose->setEnabled(true);
-//        this->comboBoxSourceShape->setEnabled(true);
-//        this->comboBoxTargetShape->setEnabled(true);
-//        this->buttonChoose->setEnabled(shapes_.size() > 1);
-//        
-//        
-//        shape_ = nullptr;
-//        source_ = nullptr;
-//        target_ = nullptr;
-//    }
-//    
-//    if(this->buttonChoose->isEnabled() && shapes_.size() == 1) {
-//        this->buttonChoose->setEnabled(false);
-//    }
-//}
-//
-//void IdentityMatchingTab::onShapeEdit(Shape* shape) {
-//    QString label = QString::number(shape->getId());
-//    label.append(QString::fromStdString(":"+shape->getName()));
-//    
-//    for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
-//        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
-//            comboBoxSourceShape->setItemText(i, label);
-//            break;
-//        }
-//    }
-//    
-//    for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
-//        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
-//            comboBoxTargetShape->setItemText(i, label);
-//            break;
-//        }
-//    }
-//}
-//
-//void IdentityMatchingTab::onClear() {
-//    this->comboBoxSourceShape->clear();
-//    this->comboBoxTargetShape->clear();
-//    this->labelInterpolation->setEnabled(false);
-//    this->sliderInterpolation->setEnabled(false);
-//    this->buttonInterpolation->setEnabled(false);
-//    
-//    this->labelChoose->setEnabled(true);
-//    this->comboBoxSourceShape->setEnabled(true);
-//    this->comboBoxTargetShape->setEnabled(true);
-//    this->buttonChoose->setEnabled(false);
-//    
-//    shape_ = nullptr;
-//    source_ = nullptr;
-//    target_ = nullptr;
-//}
+
+#include "FunctionTransferTab.h"
+
+FunctionTransferTab::~FunctionTransferTab() {
+}
+
+FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent) {
+    this->setupUi(this);
+    
+    QStringList labels;
+    for(auto entry : shapes_) {
+
+        QString label = QString::number(entry.second->getId());
+        label.append(QString::fromStdString(":"+entry.second->getName()));
+        labels << label;
+
+    }
+    
+    if(shapes_.size() < 2) {
+        buttonTransfer->setEnabled(false);
+    }
+    
+    comboBoxSourceShape->insertItems(0, labels);
+    comboBoxTargetShape->insertItems(0, labels);
+    
+    connect(this->buttonTransfer,                   SIGNAL(released()),
+            this,                                   SLOT(slotTransfer()));
+}
+
+void FunctionTransferTab::slotTransfer() {
+    vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
+    vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
+
+    
+    Shape* source = nullptr;
+    Shape* target = nullptr;
+    for(auto entry : shapes_) {
+        if(sid == entry.second->getId()) {
+            source = entry.second;
+        }
+        
+        if(tid == entry.second->getId()) {
+            target = entry.second;
+        }
+    }
+    if(source == target) {
+        QMessageBox::warning(parent_, "Error", "The shapes source \"" + QString(source->getName().c_str()) + "\" and target \"" + QString(source->getName().c_str()) + "\" have to be diffrent.");
+        return;
+    }
+    
+
+    
+    if(source->getColoring() == nullptr || (source->getColoring()->type != Shape::Coloring::Type::PointScalar && source->getColoring()->type != Shape::Coloring::Type::PointSegmentation)) {
+        QMessageBox::warning(parent_, "Error", "Shape \"" + QString(source->getName().c_str()) + "\" does neither have a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
+        return;
+    }
+    attribute::ScalarPointAttribute f(source);
+    for(vtkIdType i = 0; i < source->getColoring()->values->GetNumberOfTuples(); i++) {
+        f.getScalars()->SetValue(i, source->getColoring()->values->GetTuple(i)[0]);
+    }
+    
+    // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
+    vector<attribute::ScalarPointAttribute> cs; // corresponds to contraints on shape1
+    vector<attribute::ScalarPointAttribute> ct;
+    
+    
+    // compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
+    metric::GeodesicMetric ms(source);
+    metric::GeodesicMetric mt(target);
+
+    
+    for(auto entry : pointCorrespondences_) {
+        PointCorrespondenceData* corr = entry.first;
+        
+        for(int i = 0; i < corr->getShapeIds().size(); i++) {
+            if(corr->getShapeIds()[i] == source->getId()) {
+                
+                
+                ScalarPointAttribute distances(source);
+                ms.getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                cs.push_back(distances);
+                
+            }
+            
+            if(corr->getShapeIds()[i] == target->getId()) {
+                
+                ScalarPointAttribute distances(target);
+                mt.getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                ct.push_back(distances);
+                
+            }
+        }
+    }
+    
+    laplaceBeltrami::FEMLaplaceBeltramiOperator laplacianSource(source, 100);
+    laplaceBeltrami::FEMLaplaceBeltramiOperator laplacianTarget(target, 100);
+    
+    
+    // compute 200-dimensional wave kernel discriptor on both shapes
+    WaveKernelSignature wksSource(source, 200, &laplacianSource);
+    
+    
+    WaveKernelSignature wksTarget(target, 200, &laplacianTarget);
+    
+    // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
+    for(int i = 0; i < 200; i++) {
+        ScalarPointAttribute wksiSource(source);
+        wksSource.getComponent(i, wksiSource);
+        cs.push_back(wksiSource);
+        
+        ScalarPointAttribute wksiTarget(target);
+        wksTarget.getComponent(i, wksiTarget);
+        ct.push_back(wksiTarget);
+    }
+    
+    // compute correspondence matrix C
+    FunctionalMaps functionalMaps(*source, *target, &laplacianSource, &laplacianTarget, cs, ct, 100);
+
+    
+    // transfer the coordinate function
+    ScalarPointAttribute Tf(target);
+    functionalMaps.transferFunction(f, Tf);
+    
+    // color 2nd shape
+    shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+    coloring->type = Shape::Coloring::Type::PointScalar;
+    coloring->values = Tf.getScalars();
+    target->setColoring(coloring);
+}
+
+
+void FunctionTransferTab::onShapeAdd(Shape* shape) {
+    QString label = QString::number(shape->getId());
+    label.append(QString::fromStdString(":"+shape->getName()));
+    comboBoxSourceShape->insertItem(0, label);
+    comboBoxTargetShape->insertItem(0, label);
+    this->buttonTransfer->setEnabled(true);
+}
+
+void FunctionTransferTab::onShapeDelete(Shape* shape) {
+    for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
+        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            comboBoxSourceShape->removeItem(i);
+            break;
+        }
+    }
+    
+    for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
+        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            comboBoxTargetShape->removeItem(i);
+            break;
+        }
+    }
+    if(comboBoxSourceShape->count() == 0) {
+        this->buttonTransfer->setEnabled(false);
+    }
+}
+
+void FunctionTransferTab::onShapeEdit(Shape* shape) {
+    QString label = QString::number(shape->getId());
+    label.append(QString::fromStdString(":"+shape->getName()));
+    
+    for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
+        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            comboBoxSourceShape->setItemText(i, label);
+            break;
+        }
+    }
+    
+    for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
+        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+            comboBoxTargetShape->setItemText(i, label);
+            break;
+        }
+    }
+}
+
+void FunctionTransferTab::onClear() {
+    this->comboBoxSourceShape->clear();
+    this->comboBoxTargetShape->clear();
+    this->buttonTransfer->setEnabled(false);
+}

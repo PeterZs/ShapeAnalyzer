@@ -52,11 +52,7 @@ public:
     virtual void onShapeAdd(Shape* shape);
     virtual void onShapeEdit(Shape* shape);
     virtual void onClear();
-    
-    static CustomTab* create(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) {
-        return new CorrespondenceColoringTab(shapes, pointCorrespondences, faceCorrespondences, parent);
-    }
-    
+
 private slots:
     virtual void slotColorCorrespondences(QString);
     

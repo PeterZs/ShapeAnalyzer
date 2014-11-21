@@ -44,16 +44,16 @@ void ShapeInterpolationTab::slotChooseShapes() {
     this->comboBoxTargetShape->setEnabled(false);
     this->buttonChoose->setEnabled(false);
     
-    vtkIdType sid1 = comboBoxSourceShape->currentText().split(':')[0].toInt();
-    vtkIdType sid2 = comboBoxTargetShape->currentText().split(':')[0].toInt();
+    vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
+    vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
 
     
     for(auto entry : shapes_) {
-        if(sid1 == entry.second->getId()) {
+        if(sid == entry.second->getId()) {
             source_ = entry.second;
         }
         
-        if(sid2 == entry.second->getId()) {
+        if(tid == entry.second->getId()) {
             target_ = entry.second;
         }
     }
@@ -71,7 +71,7 @@ void ShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
     
-    shape_ = ((ShapeAnalyzer*) parent_)->addShape(name, polyData);
+    shape_ = ((ShapeAnalyzerInterface*) parent_)->addShape(name, polyData);
     
     this->labelInterpolation->setEnabled(true);
     this->sliderInterpolation->setEnabled(true);
@@ -135,7 +135,7 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
     
     shape_->getPolyData()->Modified();
     shape_->getActor()->Modified();
-    ((ShapeAnalyzer*) parent_)->render();
+    ((ShapeAnalyzerInterface*) parent_)->render();
 }
 
 void ShapeInterpolationTab::onShapeAdd(Shape* shape) {

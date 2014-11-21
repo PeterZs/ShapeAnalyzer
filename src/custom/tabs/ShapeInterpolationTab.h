@@ -18,14 +18,13 @@
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 #include "../../util/HashMap.h"
 
-#include "../../view/ShapeAnalyzer.h"
+#include "../../view/ShapeAnalyzerInterface.h"
 #include "../../view/CustomListWidgetItem.h"
 
 #include "CustomTab.h"
 
 #include "ui_ShapeInterpolationTabWidget.h"
 
-class ShapeAnalyzer;
 
 class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationTabWidget, public CustomTab {
     Q_OBJECT
@@ -39,11 +38,6 @@ public:
     virtual void onShapeAdd(Shape* shape);
     virtual void onShapeEdit(Shape* shape);
     virtual void onClear();
-
-    static CustomTab* create(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) {
-        return new ShapeInterpolationTab(shapes, pointCorrespondences, faceCorrespondences, parent);
-    }
-    
 private slots:
     virtual void slotInterpolate(int value);
     virtual void slotChooseShapes();

@@ -57,8 +57,9 @@
 #include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <typeinfo>
 
-
+#include "ShapeAnalyzerInterface.h"
 #include "CorrespondencePicker.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
@@ -107,10 +108,6 @@
 
 using namespace std;
 
-//forward declarations
-class ExtractSegmentContextMenuItem;
-class ShapeInterpolationTab;
-
 ///
 /// \brief Manages the interaction with the GUI.
 /// \details TODO blabla
@@ -118,7 +115,7 @@ class ShapeInterpolationTab;
 /// \author Emanuel Laude and Zorah Lähner
 ///
 
-class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer {
+class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public ShapeAnalyzerInterface {
     Q_OBJECT
     
     /// \brief Needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
@@ -163,7 +160,6 @@ public:
     /// All QT-Objects are connected are connected to their respective slots.
     /// Implemented abstract classes are registered in the respective factories (Factory). New implementation have to be added
     /// here to appear in the GUI.
-    /// \note TODO Move this to an extra class?
     /// The vtkWidget is initialized.
     /// Slepc is initialized.
     ShapeAnalyzer();
@@ -176,33 +172,11 @@ public:
         
         SlepcFinalize();
     };
-    
-    /// @{
-    /// Public functions accessable by CustomTab objects. All of them rerender the vtkWidget.
-
-    /// \brief Adds and visualizes correspondence.
-    /// \details Creates a Correspondence object visualizes it and inserts an entry into the correspondence data structures.
-    /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
-    /// @param data CorrespondenceData that should be added and visualized
-    void addCorrespondence(CorrespondenceData* correspondence);
-    /// \brief Adds and visualizes a whole set of correspondences.
-    /// \details Creates Correspondence objects visualizes them and inserts entries into the correspondence data structures.
-    /// This will trigger all qtTabs inherting from qtCorrespondenceTab.
-    /// @param data CorrespondenceData that should be added and visualized
-    void addCorrespondences(const vector<CorrespondenceData*>& correspondences);
-    /// \note TODO: move all those public functions to a separate interface class which is implemented by ShapeAnalyzer
-    Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
-    
-    Shape* getCurrentlySelectedShape();
-    
-    /// \brief Rerenders the vtkWidget scene.
-    /// \details Any changes made for example by qtTabs to Correspondences or Shapes are not instantly visible.
-    /// Use this function after all changes are made to update the visualisation when you are not using
-    /// any functions of ShapeAnalyzer to make the changes. (i.e. deleteCorrespondence will rerender by itself)
-    void render();
-    /// @}
-    
-    
+    ///@{
+    virtual CorrespondenceData* addCorrespondence(const vector<pair<Shape*, vtkIdType>>& correspondence, const type_info& type);
+    virtual Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
+    virtual void render();
+    ///@}
 private slots:
     ///@{
     /// Terminates the program.
@@ -296,7 +270,11 @@ private slots:
     virtual void vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command);
     ///@}
 private:
-    //QT
+    /// \brief Qt function for catching user interactions.
+    /// \details This function will only catch mouse wheel actions and surpress them.
+    /// Everything else will be handled normally by qt.
+    bool eventFilter(QObject *object, QEvent *event);
+    
     /// \brief Connects changing operations of listCorrespondences to certain slots.
     /// \details By using listCorrespondences->disconnect(), changes in the QListWidget will not
     /// have any effect. This is useful e.g. for clearing the whole list which will normally trigger
@@ -309,11 +287,7 @@ private:
     /// gui changes for each delete operation. Use this function to connect the list afterwards again.
     /// Use with care, this may cause inconsistent information if not used correctly.
     void qtConnectListShapes();
-    /// \brief Qt function for catching user interactions.
-    /// \details This function will only catch mouse wheel actions and surpress them.
-    /// Everything else will be handled normally by qt.
-    bool eventFilter(QObject *object, QEvent *event);
-    
+
     
     void qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, string>& customActions);
     //Show context menus at global position. Either called from qt slots or from VTK widget (right click on shape/correspondence)
@@ -388,7 +362,7 @@ private:
     
     //counter for ids
     int lastInsertShapeID_;
-    int lastInsertCorresondenceID_; //correspondence data id
+    int lastInsertCorresondenceID_;
     
     int pickerCounter_;
     

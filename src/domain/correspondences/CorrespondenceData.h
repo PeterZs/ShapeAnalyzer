@@ -66,7 +66,7 @@ public:
         string str;
         
         str.append("Type: ");
-        str.append(getType());
+        str.append(typeid(this).name());
         str.append("\n");
         
         str.append("ID: ");
@@ -87,8 +87,6 @@ public:
         return str;
     }
     
-    /// Virtual method, returns a string that describes the type of correspondence, i.e. point correspondence.
-    virtual string getType() = 0;
     /// Empty Destructor.
     virtual ~CorrespondenceData() {
     }

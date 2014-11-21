@@ -18,7 +18,7 @@
 #include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
 #include "../../domain/attributes/ScalarPointAttribute.h"
 
-#include "../../view/ShapeAnalyzer.h"
+#include "../../view/ShapeAnalyzerInterface.h"
 
 #include "../Factory.h"
 
@@ -26,18 +26,11 @@
 
 using namespace std;
 
-class ShapeAnalyzer;
-
 class ExtractPointSegmentContextMenuItem : public CustomContextMenuItem {
 public:
-    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
-    
-    static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<ExtractPointSegmentContextMenuItem>(new ExtractPointSegmentContextMenuItem());
-    }
-    
-private:
     ExtractPointSegmentContextMenuItem() {}
+    
+    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };
 
 #endif /* defined(__ShapeAnalyzer__ExtractPointSegmentContextMenuItem__) */

@@ -59,5 +59,5 @@ void ExtractPointSegmentContextMenuItem::onClick(Shape* shape, vtkIdType pointId
     
     string name = shape->getName();
     name.append(":0");
-    ((ShapeAnalyzer*) parent)->addShape(name, polyData);
+    ((ShapeAnalyzerInterface*) parent)->addShape(name, polyData);
 }

@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>224</width>
-    <height>204</height>
+    <height>410</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -20,9 +26,9 @@ of Correspondences</string>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="labelSourceShape">
+    <widget class="QLabel" name="labelShape1">
      <property name="text">
-      <string>Source Shape:</string>
+      <string>Shape 1:</string>
      </property>
     </widget>
    </item>
@@ -30,14 +36,75 @@ of Correspondences</string>
     <widget class="QComboBox" name="comboBoxShape1"/>
    </item>
    <item>
-    <widget class="QLabel" name="labelTargetShape">
+    <widget class="QLabel" name="labelShape2">
      <property name="text">
-      <string>Target Shape:</string>
+      <string>Shape 2:</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QComboBox" name="comboBoxShape2"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelCorrespondences">
+     <property name="text">
+      <string>Correspondence Type:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxCorrespondenceType">
+     <item>
+      <property name="text">
+       <string>Point Correspondences</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Face Correspondences</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelPercentage">
+       <property name="text">
+        <string>Percentage:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="spinBoxPercentage">
+       <property name="minimum">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>100.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>100.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

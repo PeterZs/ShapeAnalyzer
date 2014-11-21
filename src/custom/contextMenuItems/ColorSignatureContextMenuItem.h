@@ -26,6 +26,8 @@ using namespace std;
 template<class T = Metric>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
+    ColorSignatureContextMenuItem<T>() {}
+    
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         int i = QInputDialog::getInt(
@@ -53,13 +55,6 @@ public:
             shape->setColoring(coloring);
         }
     }
-    
-    static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<ColorSignatureContextMenuItem<T>>(new ColorSignatureContextMenuItem<T>());
-    }
-    
-private:
-    ColorSignatureContextMenuItem<T>() {}
 };
 
 #endif /* defined(__ShapeAnalyzer__ColorSignatureContextMenuItem__) */

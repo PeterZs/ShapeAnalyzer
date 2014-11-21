@@ -278,267 +278,6 @@ void ShapeAnalyzer::qtExportShapeDialog(Shape* shape) {
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//void ShapeAnalyzer::qtCreateIdentityCorrespondences(Shape* shape1) {
-//    QStringList labels;
-//    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-//        if(it->second->getId() == shape1->getId())
-//            continue;
-//        
-//        QString label = QString::number(it->second->getId());
-//        label.append(QString::fromStdString(":"+it->second->getName()));
-//        labels << label;
-//        
-//    }
-//    bool ok;
-//    QString chosen = QInputDialog::getItem(this,
-//                                           "Choose a shape",
-//                                           "Choose a shape:",
-//                                           labels,
-//                                           0,
-//                                           true,
-//                                           &ok);
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    
-//    Shape* shape2 = nullptr;
-//    vtkIdType shapeId = chosen.split(':')[0].toInt();
-//    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-//        if(it->second->getId() == shapeId) {
-//            shape2 = it->second;
-//            break;
-//        }
-//    }
-//    
-//    if(shape2 == nullptr) {
-//        return;
-//    }
-//    
-//    
-//    
-//    QStringList types;
-//    types << "Point Correspondences" << "Face Correspondences";
-//    
-//    QString type = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
-//    
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    double percentage = QInputDialog::getDouble(
-//                                          this,
-//                                          tr("Percentage"),
-//                                          tr("Percentage of correspondences"),
-//                                          0,
-//                                          0.001,
-//                                          100.0,
-//                                          1,
-//                                          &ok
-//                                          );
-//    
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    int step = ceil(100.0 / percentage);
-//    
-//    if(type == types.value(0)) {
-//        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i+=step) {
-//            PointCorrespondenceData* data = new PointCorrespondenceData(lastInsertCorresondenceID_);
-//            data->getShapeIds().push_back(shape1->getId());
-//            data->getShapeIds().push_back(shape2->getId());
-//            
-//            data->getCorrespondingIds().push_back(i);
-//            data->getCorrespondingIds().push_back(i);
-//            
-//            lastInsertCorresondenceID_++;
-//            
-//            pointCorrespondenceData_.add(data, false);
-//            
-//            // fire event for correspondenceTabs
-//            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
-//                it->second->onCorrespondenceAdd(data);
-//            }
-//        }
-//    } else {
-//        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
-//            FaceCorrespondenceData* data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
-//            data->getShapeIds().push_back(shape1->getId());
-//            data->getShapeIds().push_back(shape2->getId());
-//            
-//            data->getCorrespondingIds().push_back(i);
-//            data->getCorrespondingIds().push_back(i);
-//            
-//            lastInsertCorresondenceID_++;
-//            
-//            faceCorrespondenceData_.add(data, false);
-//            
-//            // fire event for correspondenceTabs
-//            for(HashMap<string, qtCorrespondencesTab*>::iterator it = correspondencesTabs_.begin(); it != correspondencesTabs_.end(); it++) {
-//                it->second->onCorrespondenceAdd(data);
-//            }
-//        }
-//    }
-//}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//void ShapeAnalyzer::qtTransferCoordinateFunction(Shape* shape1) {
-//    QStringList labels;
-//    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-//        if(it->second->getId() == shape1->getId())
-//            continue;
-//        
-//        QString label = QString::number(it->second->getId());
-//        label.append(QString::fromStdString(":"+it->second->getName()));
-//        labels << label;
-//        
-//    }
-//    bool ok;
-//    QString chosen = QInputDialog::getItem(this,
-//                                           "Choose a shape",
-//                                           "Choose a shape:",
-//                                           labels,
-//                                           0,
-//                                           true,
-//                                           &ok);
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    
-//    Shape* shape2 = nullptr;
-//    vtkIdType shapeId = chosen.split(':')[0].toInt();
-//    for(HashMap<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); it++) {
-//        if(it->second->getId() == shapeId) {
-//            shape2 = it->second;
-//            break;
-//        }
-//    }
-//    
-//    if(shape2 == nullptr) {
-//        return;
-//    }
-//    
-//    segmentations_.remove(shape1);
-//    segmentations_.remove(shape2);
-//    
-//    
-//    QStringList colorings;
-//    colorings << "X-coordinate";
-//    colorings << "Y-coordinate";
-//    colorings << "Z-coordinate";
-//
-//    chosen = QInputDialog::getItem(this,
-//                                           "Choose a coloring",
-//                                           "Color shape according to",
-//                                           colorings,
-//                                           0,
-//                                           true,
-//                                           &ok);
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    int coordinate = colorings.indexOf(chosen);
-//    
-//    
-//    // compute x-, y-, or z-coordinate coloring and color shape accordingly
-//    ScalarPointAttribute f(shape1);
-//    
-//    for(int i = 0; i < shape1->getPolyData()->GetNumberOfPoints(); i++) {
-//        double p[3];
-//        shape1->getPolyData()->vtkDataSet::GetPoint(i, p);
-//        f.getScalars()->SetValue(i, p[coordinate]);
-//    }
-//    shape1->colorPointsScalars(f.getScalars());
-//    
-//    // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
-//    vector<ScalarPointAttribute> c1; // corresponds to contraints on shape1
-//    vector<ScalarPointAttribute> c2;
-//    
-//    
-//    // compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
-//    Metric* m1;
-//    m1 = Factory<Metric>::getInstance()->create("geodesic");
-//    m1->initialize(shape1);
-//    
-//    Metric* m2;
-//    m2 = Factory<Metric>::getInstance()->create("geodesic");
-//    m2->initialize(shape2);
-//    
-//    for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
-//        PointCorrespondenceData* corr = it->first;
-//        
-//        for(int i = 0; i < corr->getShapeIds().size(); i++) {
-//            if(corr->getShapeIds()[i] == shape1->getId()) {
-//                
-//                
-//                ScalarPointAttribute distances(shape1);
-//                m1->getAllDistances(distances, corr->getCorrespondingIds()[i]);
-//                c1.push_back(distances);
-//                
-//            }
-//            
-//            if(corr->getShapeIds()[i] == shape2->getId()) {
-//                
-//                ScalarPointAttribute distances(shape2);
-//                m2->getAllDistances(distances, corr->getCorrespondingIds()[i]);
-//                c2.push_back(distances);
-//                
-//            }
-//        }
-//    }
-//    
-//    delete m1;
-//    delete m2;
-//    
-//    LaplaceBeltramiOperator* laplacian1 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-//    laplacian1->initialize(shape1, 100);
-//    LaplaceBeltramiOperator* laplacian2 = Factory<LaplaceBeltramiOperator>::getInstance()->create("fem");
-//    laplacian2->initialize(shape2, 100);
-//    
-//    
-//    // compute 200-dimensional wave kernel discriptor on both shapes
-//    LaplaceBeltramiSignature* wks1 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
-//    wks1->setLaplacian(laplacian1);
-//    wks1->initialize(shape1, 200);
-//    
-//    
-//    LaplaceBeltramiSignature* wks2 = Factory<LaplaceBeltramiSignature>::getInstance()->create("wks");
-//    wks2->setLaplacian(laplacian2);
-//    wks2->initialize(shape2, 200);
-//    
-//    // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-//    for(int i = 0; i < 200; i++) {
-//        ScalarPointAttribute wksi1(shape1);
-//        wks1->getComponent(i, wksi1);
-//        c1.push_back(wksi1);
-//        
-//        ScalarPointAttribute wksi2(shape2);
-//        wks2->getComponent(i, wksi2);
-//        c2.push_back(wksi2);
-//    }
-//    
-//    delete wks1;
-//    delete wks2;
-//    
-//    // compute correspondence matrix C
-//    FunctionalMaps functionalMaps(*shape1, *shape2, laplacian1, laplacian2, c1, c2, 100);
-//    
-//    // transfer the coordinate function
-//    ScalarPointAttribute Tf(shape2);
-//    functionalMaps.transferFunction(f, Tf);
-//    
-//    delete laplacian1;
-//    delete laplacian2;
-//    
-//    // color 2nd shape
-//    shape2->colorPointsScalars(Tf.getScalars());
-//}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
@@ -564,7 +303,7 @@ void ShapeAnalyzer::qtParseContextMenuItems(QMenu* menu, HashMap<QAction*, strin
     // menus in the menu tree indexed by their unique path.
     HashMap<string, QMenu*> menus;
     
-    // for each path element A (...>>A>>...) create a unique menu in the menu tree
+    // for each path A (...>>A>>...) create a unique menu in the menu tree
     for(auto entry : paths) {
         QString path(entry.second.c_str());
         QStringList list = path.split(">>");
@@ -639,7 +378,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape);
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem]);
+            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem]));
             menuItem->onClick(currentShape, pointId, faceId, this);
         }
     }
@@ -949,7 +688,7 @@ void ShapeAnalyzer::slotSetShapeDisplayMode() {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotShowHelp() {
     
-    QDialog* dialog = new QDialog(0,0);
+    QDialog* dialog = new QDialog(this);
     
     Ui_HelpDialog ui;
     ui.setupUi(dialog);
@@ -1106,10 +845,10 @@ void ShapeAnalyzer::slotImportCorrespondences() {
     
     
     // insert point correspondences
-    addCorrespondences(pointCorrespondences);
+    //addCorrespondences(pointCorrespondences);
     
     // insert face correspondences and fire corresponding events if vector not empty
-    addCorrespondences(faceCorrespondences);
+    //addCorrespondences(faceCorrespondences);
     
     qtUpdateLabelVisibleCorrespondences();
 }
@@ -1838,28 +1577,6 @@ void ShapeAnalyzer::clear() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::addCorrespondences(const vector<CorrespondenceData*>& correspondences) {
-    for(auto correspondence : correspondences) {
-        addCorrespondence(correspondence);
-    }
-    
-    qtUpdateLabelVisibleCorrespondences();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::addCorrespondence(CorrespondenceData *correspondence) {
-    if(correspondence->getType() == "PointCorrespondenceData") {
-        pointCorrespondenceData_.insert((PointCorrespondenceData*) correspondence, false);
-    } else {
-        faceCorrespondenceData_.insert((FaceCorrespondenceData*) correspondence, false);
-    }
-    
-    qtUpdateLabelVisibleCorrespondences();
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clearCorrespondences() {
     listCorrespondences->disconnect();
     
@@ -1925,7 +1642,7 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
     
     
     // correspondence deleting
-    if(item->getItem()->getData()->getType() == "PointCorrespondenceData") {
+    if(typeid(item->getItem()->getData()) == typeid("PointCorrespondenceData")) {
         pointCorrespondenceData_.remove((PointCorrespondenceData*) item->getItem()->getData());
         pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     } else {
@@ -1994,7 +1711,7 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
     
     
     // correspondence deleting
-    if(item->getItem()->getData()->getType() == "PointCorrespondenceData") {
+    if(typeid(item->getItem()->getData()) == typeid(PointCorrespondenceData)) {
         pointCorrespondenceData_[(PointCorrespondenceData*) item->getItem()->getData()] = false;
         pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     } else {
@@ -2062,6 +1779,33 @@ void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+CorrespondenceData* ShapeAnalyzer::addCorrespondence(const vector<pair<Shape*, vtkIdType>>& correspondence, const type_info& type) {
+    CorrespondenceData* data;
+    if(type == typeid(PointCorrespondenceData)) {
+        data = new PointCorrespondenceData(lastInsertCorresondenceID_);
+        for(auto p : correspondence) {
+            data->getShapeIds().push_back(p.first->getId());
+            data->getCorrespondingIds().push_back(p.second);
+        }
+        lastInsertCorresondenceID_++;
+        pointCorrespondenceData_.insert((PointCorrespondenceData*) data, false);
+    } else {
+        data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
+        for(auto p : correspondence) {
+            data->getShapeIds().push_back(p.first->getId());
+            data->getCorrespondingIds().push_back(p.second);
+        }
+        lastInsertCorresondenceID_++;
+        faceCorrespondenceData_.insert((FaceCorrespondenceData*) data, false);
+    }
+    
+    qtUpdateLabelVisibleCorrespondences();
+    
+    return data;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::pickCorrespondence() {
     Correspondence* correspondence;
     
@@ -2071,7 +1815,7 @@ void ShapeAnalyzer::pickCorrespondence() {
         lastInsertCorresondenceID_++;
         
         // adding to face/point data
-        if (correspondence->getData()->getType() == "PointCorrespondenceData") { // point correspondence
+        if (typeid(correspondence->getData()) == typeid(PointCorrespondenceData)) { // point correspondence
             PointCorrespondence* pointCorrespondence = (PointCorrespondence*) correspondence;
             pointCorrespondenceData_.insert(pointCorrespondence->getData(), true);
             

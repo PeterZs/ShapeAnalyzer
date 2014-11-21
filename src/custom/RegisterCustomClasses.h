@@ -21,6 +21,8 @@
 #include "tabs/ShapeInterpolationTab.h"
 #include "tabs/MeshCheckTab.h"
 #include "tabs/CorrespondenceColoringTab.h"
+#include "tabs/FunctionTransferTab.h"
+#include "tabs/IdentityMatchingTab.h"
 
 #include "contextMenuItems/CustomContextMenuItem.h"
 #include "contextMenuItems/ColorEigenfunctionContextMenuItem.h"
@@ -29,6 +31,7 @@
 #include "contextMenuItems/HeatDiffusionContextMenuItem.h"
 #include "contextMenuItems/VoronoiCellsContextMenuItem.h"
 #include "contextMenuItems/ExtractPointSegmentContextMenuItem.h"
+#include "contextMenuItems/ShapeInfoContextMenuItem.h"
 
 #include "../util/HashMap.h"
 
@@ -47,26 +50,25 @@
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
 
-typedef Factory<CustomTab*, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*> CustomTabFactory;
+typedef Factory<CustomTab, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*> CustomTabFactory;
 
-typedef Factory<shared_ptr<CustomContextMenuItem>> CustomContextMenuItemFactory;
+typedef Factory<CustomContextMenuItem> CustomContextMenuItemFactory;
 
-using namespace signature;
-
-//forward declarations
-class ExtractPointSegmentContextMenuItem;
-class ShapeInterpolationTab;
 
 struct RegisterCustomClasses {
     static void registerTabs() {
         //tabs
+        CustomTabFactory::getInstance()->Register<IdentityMatchingTab>("identity_matching", "Correspondences>>Identity Matching");
         CustomTabFactory::getInstance()->Register<ShapeInterpolationTab>("shape_interpolation", "Shapes>>Shape Interpolation");
         CustomTabFactory::getInstance()->Register<MeshCheckTab>("mesh_check", "Shapes>>Mesh Checker");
         CustomTabFactory::getInstance()->Register<CorrespondenceColoringTab>("correspondence_coloring", "Correspondences>>Correspondence Coloring");
+        CustomTabFactory::getInstance()->Register<FunctionTransferTab>("function_transfer", "Correspondences>>Function Transfer");
     }
     
     static void registerContextMenuItems() {
         //menu items
+        CustomContextMenuItemFactory::getInstance()->Register<ShapeInfoContextMenuItem>("shape_info", "Shape Info");
+        
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
         
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
@@ -77,8 +79,8 @@ struct RegisterCustomClasses {
         
         CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
         
-        CustomContextMenuItemFactory::getInstance()->Register<ExtractPointSegmentContextMenuItem>("extract_point_segment", "Extract point segment as new Shape");
-    }    
+        CustomContextMenuItemFactory::getInstance()->Register<ExtractPointSegmentContextMenuItem>("extract_point_segment", "Extract Point Segment as new Shape");
+    }
 };
 
 #endif

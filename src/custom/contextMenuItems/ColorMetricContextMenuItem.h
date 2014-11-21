@@ -27,7 +27,7 @@ using namespace metric;
 template<class T = Metric>
 class ColorMetricContextMenuItem : public CustomContextMenuItem {
 public:
-    static const int bla;
+    ColorMetricContextMenuItem<T>() {}
     
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
@@ -53,13 +53,6 @@ public:
             shape->setColoring(coloring);
         }
     }
-    
-    static shared_ptr<CustomContextMenuItem> create() {
-        return shared_ptr<ColorMetricContextMenuItem<T>>(new ColorMetricContextMenuItem<T>());
-    }
-    
-private:
-    ColorMetricContextMenuItem<T>() {}
 };
 
 #endif /* defined(__ShapeAnalyzer__ColorMetricContextMenuItem__) */

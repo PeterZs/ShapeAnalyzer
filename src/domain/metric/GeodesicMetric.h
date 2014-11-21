@@ -85,15 +85,15 @@ private:
     };
     
 public:
-    GeodesicMetric(Shape* shape);
+    GeodesicMetric(Shape* shape) throw(geodesic_error);
     
     /// Empty destructor.
     virtual ~GeodesicMetric();
     
-    virtual double getDistance(vtkIdType a, vtkIdType b);
-    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source);
-    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
-    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
+    virtual double getDistance(vtkIdType a, vtkIdType b) throw(geodesic_error);
+    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) throw(geodesic_error);
+    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) throw(geodesic_error);
+    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) throw(geodesic_error);
 private:
     /// @{
     Mesh                                mesh_;

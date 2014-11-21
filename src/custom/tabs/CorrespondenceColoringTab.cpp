@@ -174,15 +174,7 @@ void CorrespondenceColoringTab::onShapeAdd(Shape *shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void CorrespondenceColoringTab::onShapeEdit(Shape *shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
-    
-    for(int i = comboBox->count()-1; i >= 0; i--) {
-        if(comboBox->itemText(i).split(':')[0].toInt() == shape->getId()) {
-            comboBox->setItemText(i, label);
-            break;
-        }
-    }
+    // nothing happens
 }
 
 

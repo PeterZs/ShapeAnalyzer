@@ -1,11 +1,3 @@
-//
-//  CorrespondenceColoringTab.h
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 04.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__CorrespondenceColoringTab__
 #define __ShapeAnalyzer__CorrespondenceColoringTab__
 
@@ -37,26 +29,42 @@
 
 using namespace coloring;
 
+///
+/// \brief Visualizes correspondences with colors on the shapes.
+/// \details One of the shapes in the GUI can be chosen as the reference shape. The reference
+/// shape will be colored according to the coordinates of its vertices. Every correspondence
+/// including the reference shape will be visualized by transferring the color from the
+/// reference shape to each other shape to the corresponding vertex/face. Point and face
+/// correspondences can be switched. For more details see CorrespondenceColoring.
+///
+/// @author Emanuel Laude and Zorah Lähner
+///
 class CorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceColoringTabWidget, public CustomTab {
     Q_OBJECT
     
 public:
+    /// \brief Standard constructor. Sets up the tab.
     CorrespondenceColoringTab(const HashMap<vtkActor*, Shape*>& shapes,
                               const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
                               const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
                               QWidget* parent);
-    
+    /// Empty destructor.
     virtual ~CorrespondenceColoringTab() {}
     
+    /// Deletes the shape out of the shape drop menu.
     virtual void onShapeDelete(Shape* shape);
+    /// Adds the shape to the shape drop menu.
     virtual void onShapeAdd(Shape* shape);
+    /// Nothing happens.
     virtual void onShapeEdit(Shape* shape);
+    /// Clears the shape drop menu. Clears old information about the density of correspondences.
     virtual void onClear();
 
 private slots:
     virtual void slotColorCorrespondences(QString);
     
 private:
+    /// Clears the correspondence density grid.
     void clearGrid();
 };
 

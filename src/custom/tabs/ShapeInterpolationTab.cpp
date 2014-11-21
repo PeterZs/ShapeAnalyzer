@@ -71,7 +71,7 @@ void ShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
     
-    shape_ = ((ShapeAnalyzerInterface*) parent_)->addShape(name, polyData);
+    shape_ = dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addShape(name, polyData);
     
     this->labelInterpolation->setEnabled(true);
     this->sliderInterpolation->setEnabled(true);
@@ -135,7 +135,7 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
     
     shape_->getPolyData()->Modified();
     shape_->getActor()->Modified();
-    ((ShapeAnalyzerInterface*) parent_)->render();
+    dynamic_cast<ShapeAnalyzerInterface*>(parent_)->render();
 }
 
 void ShapeInterpolationTab::onShapeAdd(Shape* shape) {

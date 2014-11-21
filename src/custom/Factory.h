@@ -36,8 +36,10 @@ public:
     /// @param const string& identifier. A unique string that is used as a key to obtain an instance via create() afterwards.
     /// @param const string& label. A label that can for example serve as menu path in case of CustomContextMenuItem
     template<class C>
-    void Register(const string& identifier, const string& label){
-        contructors_.insert(pair<string, function<T*(Args...)>>(identifier, [](Args... args)->T* { return new C(args...); }));
+    void Register(const string& identifier, const string& label) {
+        // inserts a pair consisting of the identifier and a c++11 lambda expression calling the constructor of class C into the map constructors
+        function<T*(Args...)> constructor([](Args... args)->T* { return new C(args...); });
+        contructors_.insert(pair<string, function<T*(Args...)>>(identifier, constructor));
         labels_.push_back(pair<string, string>(identifier, label));
         labelIndex_.insert(pair<string, int>(identifier, labels_.size() - 1));
     }

@@ -66,7 +66,7 @@ void IdentityMatchingTab::slotMatch() {
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
             
-            ((ShapeAnalyzerInterface*) parent_)->addCorrespondence(correspondence, typeid(PointCorrespondenceData));
+            dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addCorrespondence(correspondence, typeid(PointCorrespondenceData));
         }
     } else {
         for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
@@ -74,7 +74,7 @@ void IdentityMatchingTab::slotMatch() {
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
             
-            ((ShapeAnalyzerInterface*) parent_)->addCorrespondence(correspondence, typeid(FaceCorrespondenceData));
+            dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addCorrespondence(correspondence, typeid(FaceCorrespondenceData));
         }
     }
 }

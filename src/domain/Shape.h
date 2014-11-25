@@ -50,17 +50,26 @@ using namespace std;
 class Shape : public Serializable {
     
 public:
+    /// \brief Coloring struct. Contains a type and the coloring data as vtkSmartPointer<vtkDataArray>.
     struct Coloring {
-        
+        /// \brief Type enum.
         enum class Type {PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar, FaceScalar};
         
+        /// \brief Color data. It can be either point or face data.
+        /// \details Moreover it is either an 1D (scalar) or an 3D (RGB) array.
         vtkSmartPointer<vtkDataArray> values;
+        
+        /// \brief Type of the coloring. It is either PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar or FaceScalar
         Type type;
     };
     
-    // Constructors and Destructor
+    /// Constructor.
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// Constructor.
     Shape(vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// Virtual destructor.
     virtual ~Shape() {
     }
     
@@ -143,16 +152,26 @@ public:
         name_ = name;
     }
 
-    /// \brief Colors points with a scalar valued point map.
-    /// \details Scalars are automaticalliy mapped to RGB values. Red correspondes to high values blue to low values. Map is saved in this class and can be obtained via getScalarMap() hasScalarMap().
-    /// @param vtkSmartPointer<vtkDataArray> map. Scalar values which can be either discrete or continuous.
+    /// \brief Colors points or faces with any kind of Coloring.
+    /// \details Depending on the type of the coloring different coloring schemas are applied.
+    /// @param shared_ptr<Coloring>. Contains the color data for the points or faces and the type of the coloring.
     void setColoring(shared_ptr<Coloring> coloring);
 
     shared_ptr<Coloring> getColoring() {
         return coloring_;
     }
-private:
-    
+
+    /// \brief Colors the shape using the coordinates of the vertices as indicators for the rgb value.
+    /// \details The values are the coordinates of each vertex but normalized to values between 0 and 255.
+    void colorPointsCoordinates();
+
+    /// \brief Colors the shape using the coordinates of the faces as indicators for the rgb value.
+    /// \details The values are the interpolated values of the vertices of each face
+    /// but normalized to values between 0 and 255. The class inherits from CoordinateColoring
+    /// the only overwritten function is the calculation of the color for each face.
+    void colorFacesCoordinates();
+
+private:    
     vtkIdType id_;
     string name_;
     

@@ -134,6 +134,7 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
     }
     
     shape_->getPolyData()->Modified();
+    
     shape_->getActor()->Modified();
     dynamic_cast<ShapeAnalyzerInterface*>(parent_)->render();
 }

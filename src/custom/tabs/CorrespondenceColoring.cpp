@@ -24,21 +24,19 @@ CorrespondenceColoring::CorrespondenceColoring(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
-                                                      vector<pair<vtkIdType, double> >* percentageMultiple) {
+void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
+                                                      shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple) {
     pointAttributes_.clear();
     
     // completely color reference shape
-    coloring::CoordinateColoring cc = coloring::CoordinateColoring(reference_);
-    cc.color();
+    reference_->colorPointsCoordinates();
     
     vtkIdType referenceId = reference_->getId();
-    vtkSmartPointer<vtkUnsignedCharArray> referenceColors = cc.getColors();
-    pointAttributes_.insert(
-                        make_pair(referenceId, referenceColors));
+    vtkSmartPointer<vtkDataArray> referenceColors = reference_->getColoring()->values;
+    pointAttributes_.insert(make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
-    unordered_map<vtkIdType, vector<int>* > matched;
+    unordered_map<vtkIdType, shared_ptr<vector<int>>> matched;
     
     // initialize color arrays for all shapes
     for (auto entry : shapes_) {
@@ -57,7 +55,7 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
             
             // if requested, evaluate matched points
             if (percentageMatched != nullptr || percentageMultiple != nullptr) {
-                vector<int>* mArray = new vector<int>(entry.second->getPolyData()->GetPoints()->GetNumberOfPoints(), 0);
+                shared_ptr<vector<int>> mArray = make_shared<vector<int>>(entry.second->getPolyData()->GetPoints()->GetNumberOfPoints(), 0);
                 matched.insert(make_pair(entry.second->getId(), mArray));
             }
         }
@@ -85,19 +83,19 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
             for (int i = 0; i < shapes.size(); i++) {
                 // dont color reference shape
                 if (shapes[i] != referenceId) {
-                if(pointAttributes_.count(shapes[i]) != 0) {
-                    vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(shapes[i])->second;
-                    // color of point is the same as the corresponding point on the reference shape has
-                    double color[3];
-                    referenceColors->GetTuple(referenceCorrespondence, color);
-                    colors->SetTuple(points[i], color);
-                    
-                    // if requested, evaluate matched points
-                    if (percentageMatched != nullptr || percentageMultiple != nullptr) {
-                        vector<int>* match = matched.find(shapes[i])->second;
-                        (*match)[points[i]] = (*match)[points[i]] + 1;
+                    if(pointAttributes_.count(shapes[i]) != 0) {
+                        vtkSmartPointer<vtkDataArray> colors = pointAttributes_.find(shapes[i])->second;
+                        // color of point is the same as the corresponding point on the reference shape has
+                        double color[3];
+                        referenceColors->GetTuple(referenceCorrespondence, color);
+                        colors->SetTuple(points[i], color);
+                        
+                        // if requested, evaluate matched points
+                        if (percentageMatched != nullptr || percentageMultiple != nullptr) {
+                            shared_ptr<vector<int>> match = matched.find(shapes[i])->second;
+                            match->at(points[i]) = match->at(points[i]) + 1;
+                        }
                     }
-                }
                 }
             }
         }
@@ -106,24 +104,23 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
     // color all shapes
     for (auto entry : shapes_) {
         if (entry.second != reference_) {
-            vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(entry.second->getId())->second;
-            entry.second->getPolyData()->GetPointData()->SetScalars(colors);
-            entry.second->getMapper()->SetScalarModeToUsePointData();
-            entry.second->getMapper()->SetColorModeToDefault();
-            entry.second->getMapper()->SetScalarRange(0, 1);
-            entry.second->getMapper()->ScalarVisibilityOn();
+            vtkSmartPointer<vtkDataArray> colors = pointAttributes_.find(entry.second->getId())->second;
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointRgb;
+            coloring->values = colors;
+            entry.second->setColoring(coloring);
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
-                vector<int>* match = matched.find(entry.second->getId())->second;
+                shared_ptr<vector<int>> match = matched.find(entry.second->getId())->second;
                 int numMatched = 0;
                 int numMultiple = 0;
                 
                 // count matched / multiple matched points
                 for (int i = 0; i < match->size(); i++) {
-                    if ((*match)[i] > 0)
+                    if (match->at(i) > 0)
                         numMatched++;
-                    if ((*match)[i] > 1)
+                    if (match->at(i) > 1)
                         numMultiple++;
                 }
                 
@@ -143,30 +140,24 @@ void CorrespondenceColoring::showPointCorrespondences(vector<pair<vtkIdType, dou
         }
     }
     
-    for (auto entry : matched) {
-        delete entry.second;
-    }
-    
     // rerender
     reference_->getRenderer()->GetRenderWindow()->Render();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched,
-                                                     vector<pair<vtkIdType, double> >* percentageMultiple) {
+void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
+                                                     shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple) {
     faceAttributes_.clear();
     
     // completely color reference shape
-    coloring::FaceCoordinateColoring cc = coloring::FaceCoordinateColoring(reference_);
-    cc.color();
+    reference_->colorFacesCoordinates();
     
     vtkIdType referenceId = reference_->getId();
-    vtkSmartPointer<vtkUnsignedCharArray> referenceColors = cc.getColors();
-    faceAttributes_.insert(
-                            make_pair(referenceId, referenceColors));
+    vtkSmartPointer<vtkDataArray> referenceColors = reference_->getColoring()->values;
+    faceAttributes_.insert(make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
-    unordered_map<vtkIdType, vector<int>* > matched;
+    unordered_map<vtkIdType, shared_ptr<vector<int>>> matched;
     
     // initialize color arrays for all shapes
     for (auto entry : shapes_) {
@@ -177,7 +168,6 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             array->SetName("Colors");
             faceAttributes_.insert(make_pair(entry.second->getId(), array));
             
-            // TODO sooo unschön, aber ich weiß nicht wie ich ihm vermittele, dass standardmäßig auf weiß gemappt werden soll
             double white[3] = {255, 255, 255};
             for(vtkIdType i = 0; i < entry.second->getPolyData()->GetNumberOfCells(); i++) {
                 array->SetTuple(i, white);
@@ -185,7 +175,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
             
             // if requested, evaluate matched points
             if (percentageMatched != nullptr || percentageMultiple != nullptr) {
-                vector<int>* mArray = new vector<int>(entry.second->getPolyData()->GetNumberOfCells(), 0);
+                shared_ptr<vector<int>> mArray = make_shared<vector<int>>(entry.second->getPolyData()->GetNumberOfCells(), 0);
                 matched.insert(make_pair(entry.second->getId(), mArray));
             }
         }
@@ -213,7 +203,7 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
                 // dont color reference shape
                 if (shapes[i] != referenceId) {
                     if(faceAttributes_.count(shapes[i]) != 0) {
-                        vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(shapes[i])->second;
+                        vtkSmartPointer<vtkDataArray> colors = faceAttributes_.find(shapes[i])->second;
                         // color of point is the same as the corresponding point on the reference shape has
                         double color[3];
                         referenceColors->GetTuple(referenceCorrespondence, color);
@@ -221,8 +211,8 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
                         
                         // if requested, evaluate matched points
                         if (percentageMatched != nullptr || percentageMultiple != nullptr) {
-                            vector<int>* match = matched.find(shapes[i])->second;
-                            (*match)[points[i]] = (*match)[points[i]] + 1;
+                            shared_ptr<vector<int>> match = matched.find(shapes[i])->second;
+                            match->at(points[i]) = match->at(points[i]) + 1;
                         }
                     }
                 }
@@ -233,24 +223,23 @@ void CorrespondenceColoring::showFaceCorrespondences(vector<pair<vtkIdType, doub
     // color all shapes
     for (auto entry : shapes_) {
         if(entry.second != reference_) {
-            vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(entry.second->getId())->second;
-            entry.second->getPolyData()->GetCellData()->SetScalars(colors);
-            entry.second->getMapper()->SetScalarModeToUseCellData();
-            entry.second->getMapper()->SetColorModeToDefault();
-            entry.second->getMapper()->SetScalarRange(0, 1);
-            entry.second->getMapper()->ScalarVisibilityOn();
+            vtkSmartPointer<vtkDataArray> colors = faceAttributes_.find(entry.second->getId())->second;
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::FaceRgb;
+            coloring->values = colors;
+            entry.second->setColoring(coloring);
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
-                vector<int>* match = matched.find(entry.second->getId())->second;
+                shared_ptr<vector<int>> match = matched.find(entry.second->getId())->second;
                 int numMatched = 0;
                 int numMultiple = 0;
                 
                 // count matched / multiple matched points
                 for (int i = 0; i < match->size(); i++) {
-                    if ((*match)[i] > 0)
+                    if (match->at(i) > 0)
                         numMatched++;
-                    if ((*match)[i] > 1)
+                    if (match->at(i) > 1)
                         numMultiple++;
                 }
                 

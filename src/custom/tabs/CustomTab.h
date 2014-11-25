@@ -40,11 +40,11 @@ public:
     virtual void onClear() = 0;
     
 protected:
-    /// \brief Read-only reference to a HashMap containing all Shape objects
+    /// \brief Read-only reference to HashMap containing all Shape objects
     const HashMap<vtkActor*, Shape*>& shapes_;
-    /// \brief Read-only reference to a HashMap containing all PointCorrespondenceData objects
+    /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
     const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences_;
-    /// \brief Read-only reference to a HashMap containing all PointCorrespondenceData objects
+    /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
     const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences_;
 
     /// \brief Pointer to the ShapeAnalyzer widget parent.

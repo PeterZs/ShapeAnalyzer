@@ -18,8 +18,9 @@ Shape::Shape(
 
 ///////////////////////////////////////////////////////////////////////////////
 Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
-: renderer_(renderer)
-{/* do not call initialize here! Poly data is not yet initialized! */}
+: renderer_(renderer) {
+    // do not call initialize here! Poly data is not yet initialized!
+}
 
 void Shape::initialize() {
     //Visualize with normals. Looks smoother ;)
@@ -48,6 +49,11 @@ void Shape::initialize() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// Public Functions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::removeFromRenderer() {
     renderer_->RemoveActor(actor_);
     boxWidget_->SetInteractor(nullptr);
@@ -73,8 +79,140 @@ void Shape::clearColoring() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Public Functions
+void Shape::colorPointsCoordinates() {
+    vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+    vtkSmartPointer<vtkPoints> points = polyData_->GetPoints();
+    
+    // color values
+    colors->SetNumberOfComponents(3);
+    colors->SetNumberOfTuples(points->GetNumberOfPoints());
+    colors->SetName("Colors");
+    
+    // calculate range
+    double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
+    
+    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++) {
+        double point[3];
+        points->GetPoint(i, point);
+        
+        // determine range of points
+        xmin = std::min(xmin, point[0]);
+        ymin = std::min(ymin, point[1]);
+        zmin = std::min(zmin, point[2]);
+        xmax = std::max(xmax, point[0]);
+        ymax = std::max(ymax, point[1]);
+        zmax = std::max(zmax, point[2]);
+    }
+    
+    double xOffset = 0, yOffset = 0, zOffset = 0;
+    
+    if (xmin < 0) {
+        xOffset = xmin * (-1);
+        xmin = xmin + xOffset;
+        xmax = xmax + xOffset;
+    }
+    if (ymin < 0) {
+        yOffset = ymin * (-1);
+        ymin = ymin + yOffset;
+        ymax = ymax + yOffset;
+    }
+    if (zmin < 0) {
+        zOffset = zmin * (-1);
+        zmin = zmin + zOffset;
+        zmax = zmax + zOffset;
+    }
+    
+    // calculate colors
+    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++) {
+        double point[3];
+        points->GetPoint(i, point);
+        
+        point[0] = (point[0] + xOffset) / xmax * 255;
+        point[1] = (point[1] + yOffset) / ymax * 255;
+        point[2] = (point[2] + zOffset) / zmax * 255;
+        
+        colors->SetTuple(i, point);
+    }
+    
+    shared_ptr<Coloring> coloring = make_shared<Coloring>();
+    coloring->type = Coloring::Type::PointRgb;
+    coloring->values = colors;
+    setColoring(coloring);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
+void Shape::colorFacesCoordinates() {
+    vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+    vtkSmartPointer<vtkPoints> points = polyData_->GetPoints();
+    
+    // color values
+    colors->SetNumberOfComponents(3);
+    colors->SetNumberOfTuples(polyData_->GetNumberOfCells());
+    colors->SetName("Colors");
+    
+    // calculate range
+    double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
+    
+    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++) {
+        double point[3];
+        points->GetPoint(i, point);
+        
+        // determine range of points
+        xmin = std::min(xmin, point[0]);
+        ymin = std::min(ymin, point[1]);
+        zmin = std::min(zmin, point[2]);
+        xmax = std::max(xmax, point[0]);
+        ymax = std::max(ymax, point[1]);
+        zmax = std::max(zmax, point[2]);
+    }
+    
+    double xOffset = 0, yOffset = 0, zOffset = 0;
+    
+    if (xmin < 0) {
+        xOffset = xmin * (-1);
+        xmin = xmin + xOffset;
+        xmax = xmax + xOffset;
+    }
+    if (ymin < 0) {
+        yOffset = ymin * (-1);
+        ymin = ymin + yOffset;
+        ymax = ymax + yOffset;
+    }
+    if (zmin < 0) {
+        zOffset = zmin * (-1);
+        zmin = zmin + zOffset;
+        zmax = zmax + zOffset;
+    }
+    
+    // calculate colors
+    for (vtkIdType i = 0; i < polyData_->GetNumberOfCells(); i++) {
+        vtkSmartPointer<vtkIdList> pointIds = polyData_->GetCell(i)->GetPointIds();
+        
+        double point1[3], point2[3], point3[3], color[3];
+        
+        points->GetPoint(pointIds->GetId(0), point1);
+        points->GetPoint(pointIds->GetId(1), point2);
+        points->GetPoint(pointIds->GetId(2), point3);
+        
+        // interpolate points to get color
+        color[0] = (point1[0] + point2[0] + point3[0]) / 3;
+        color[1] = (point1[1] + point2[1] + point3[1]) / 3;
+        color[2] = (point1[2] + point2[2] + point3[2]) / 3;
+        
+        // range colors from 0 to 255
+        color[0] = (color[0] + xOffset) / xmax * 255;
+        color[1] = (color[1] + yOffset) / ymax * 255;
+        color[2] = (color[2] + zOffset) / zmax * 255;
+        
+        colors->SetTuple(i, color);
+    }
+    
+    shared_ptr<Coloring> coloring = make_shared<Coloring>();
+    coloring->type = Coloring::Type::FaceRgb;
+    coloring->values = colors;
+    setColoring(coloring);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -109,7 +247,7 @@ vtkIdType Shape::getRandomPoint() {
 }
 
 void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
-    // release old shared_ptr. Decrements ref count.
+    // release old shared_ptr. Decrements ref count and if there is no other object referencing the coloring it will be destroyed.
     coloring_.reset();
     coloring_ = coloring;
     
@@ -216,7 +354,6 @@ ostream& Shape::writeBinary(ostream& os) {
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 istream& Shape::readBinary(istream& is) {
     //read shape ID
@@ -283,6 +420,7 @@ istream& Shape::readBinary(istream& is) {
     boxWidget_->SetTransform(transform);
     return is;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ostream& Shape::writeASCII(ostream& os) {

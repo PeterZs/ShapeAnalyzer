@@ -27,8 +27,6 @@
 
 #include "ui_CorrespondenceColoringTabWidget.h"
 
-using namespace coloring;
-
 ///
 /// \brief Visualizes correspondences with colors on the shapes.
 /// \details One of the shapes in the GUI can be chosen as the reference shape. The reference
@@ -61,7 +59,8 @@ public:
     virtual void onClear();
 
 private slots:
-    virtual void slotColorCorrespondences(QString);
+    virtual void slotColorCorrespondences();
+    virtual void slotClearColoring();
     
 private:
     /// Clears the correspondence density grid.

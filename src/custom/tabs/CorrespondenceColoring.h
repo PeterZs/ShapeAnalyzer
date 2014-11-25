@@ -1,9 +1,6 @@
 #ifndef __ShapeAnalyzer__CorrespondenceColoring__
 #define __ShapeAnalyzer__CorrespondenceColoring__
 
-#include "../../domain/coloring/CoordinateColoring.h"
-#include "../../domain/coloring/FaceCoordinateColoring.h"
-
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
 #include <vtkUnsignedCharArray.h>
@@ -58,8 +55,8 @@ public:
     /// @param percentageMultiple Optional. For every shape that is not the reference shape - identified
     /// by the shape id - the vector will contain the percentage of its vertices that are mapped to a vertex
     /// on the reference shape multiple times.
-    void showPointCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched = nullptr,
-                                  vector<pair<vtkIdType, double> >* percentageMultiple = nullptr);
+    void showPointCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched = nullptr,
+                                  shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple = nullptr);
     /// \brief Visualizes the face correspondences going out from the reference shape.
     /// \details The reference shape will be colored by coordinates using the CoordinateColoring class and
     /// all points with a corresponding face on another shape will be colored
@@ -73,8 +70,8 @@ public:
     /// @param percentageMultiple Optional. For every shape that is not the reference shape - identified
     /// by the shape id - the vector will contain the percentage of its faces that are mapped to a face
     /// on the reference shape multiple times.
-    void showFaceCorrespondences(vector<pair<vtkIdType, double> >* percentageMatched = nullptr,
-                                 vector<pair<vtkIdType, double> >* percentageMultiple = nullptr);
+    void showFaceCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched = nullptr,
+                                 shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple = nullptr);
     
 protected:
     const HashMap<vtkActor*, Shape*>&                 shapes_;
@@ -83,8 +80,8 @@ protected:
     
     Shape* reference_;
     
-    unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> pointAttributes_;
-    unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> faceAttributes_;
+    unordered_map<vtkIdType, vtkSmartPointer<vtkDataArray>> pointAttributes_;
+    unordered_map<vtkIdType, vtkSmartPointer<vtkDataArray>> faceAttributes_;
     
 };
 

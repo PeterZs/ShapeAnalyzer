@@ -10,7 +10,10 @@
 #include <vtkPolyData.h>
 
 /// \brief Interface declaring all public functions accessable by CustomTab or CustomContextMenuItem objects. All of them rerender the vtkWidget.
-/// \details Implemented by ShapeAnalyzer.
+/// \details Implemented by ShapeAnalyzer. Read access to all shapes and all correspondences is
+/// provided via the protected read-only (const) class members shapes_, pointCorrespondences_ and
+/// faceCorrespondences_ in class CustomTab. Therefore only concrete CustomTab classes can have
+/// access to all correspondences and all shapes at the same time.
 /// \author Emanuel Laude and Zorah Lähner
 ///
 class ShapeAnalyzerInterface {
@@ -28,7 +31,7 @@ public:
     virtual Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData) = 0;
     
     /// \brief Rerenders the vtkWidget scene.
-    /// \details Any changes made for example by qtTabs to Correspondences or Shapes are not instantly visible.
+    /// \details Any changes made for example by CustomTab classes to Correspondences or Shapes are not instantly visible.
     /// Use this function after all changes are made to update the visualisation when you are not using
     /// any functions of ShapeAnalyzer to make the changes. (i.e. deleteCorrespondence will rerender by itself)
     virtual void render() = 0;

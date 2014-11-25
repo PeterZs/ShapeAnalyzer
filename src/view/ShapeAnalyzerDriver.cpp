@@ -21,5 +21,4 @@ int main( int argc, char** argv ) {
         cout << "Exception: " << e.what() <<endl;
         exit(-1);
     }
-    
 }

@@ -13,8 +13,7 @@
 
 ///
 ///  \brief Abstract class for Tabs.
-///  \details Defines the trigger functions for clearing the app and deleting a shape.
-///  The abstract classes qtShapesTab and qtCorrespondencesTab inherit from this class.
+///  \details Concrete CustomTab classes have to inherit from this class. Moreover they have to define the event functions onShapeAdd(), onShapeEdit(), onShapeDelete() and onClear() that are called from ShapeAnalyzer if one of these events occurs. Usually these event functions serve the purpose to keep the widgets in the CustomTab classes up-to-data. E.g. a comboBox containing a list of shapes should contain all available shapes. So it has to be updated if a shape is added, deleted or renamed.
 ///
 ///  \author Emanuel Laude and Zorah Lähner
 ///
@@ -26,28 +25,30 @@ public:
     
     /// \brief Virtual Destructor
     virtual ~CustomTab() {}
-    /// \brief Virtual trigger function for new shapes.
+    /// \brief Abstract event function called if a new shape is added.
     /// \details The function is triggered before the shape is added to the GUI
     /// or included in any data structures in the main application.
     /// \param shape Pointer to added shape.
     virtual void onShapeAdd(Shape* shape) = 0;
-    /// \brief Virtual trigger function for edited shapes.
+    /// \brief Abstract event function called if an existent shape is edited.
     /// \param shape Pointer to edited shape.
     virtual void onShapeEdit(Shape* shape) = 0;
-    /// \brief Virtual function that triggers when a shape is deleted.
-    /// \details The function is triggered when it is actually deleted from the GUI
-    /// or other data structures in the main application.
+    /// \brief Abstract event function called if an existent shape is deleted.
     /// \param shape Pointer to the shape that is deleted.
     virtual void onShapeDelete(Shape* shape) = 0;
-    /// \brief Virtual function that triggers when the app is cleared.
-    /// \details The function is triggered when any objects are deleted from the GUI
-    /// or other data structures in the main application.
+    /// \brief Abstract event function called if all correspondences and shapes are cleared.
     virtual void onClear() = 0;
     
 protected:
+    /// \brief Read-only reference to a HashMap containing all Shape objects
     const HashMap<vtkActor*, Shape*>& shapes_;
+    /// \brief Read-only reference to a HashMap containing all PointCorrespondenceData objects
     const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences_;
+    /// \brief Read-only reference to a HashMap containing all PointCorrespondenceData objects
     const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences_;
+
+    /// \brief Pointer to the ShapeAnalyzer widget parent.
+    /// \details If a tab needs to access the public functions for adding new Shape objects or CorrespondenceData objects it has to casted to ShapeAnalyzerInterface dynamically.
     QWidget* parent_;
 };
 

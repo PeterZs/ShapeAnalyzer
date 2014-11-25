@@ -40,6 +40,7 @@ public:
         // inserts a pair consisting of the identifier and a c++11 lambda expression calling the constructor of class C into the map constructors
         function<T*(Args...)> constructor([](Args... args)->T* { return new C(args...); });
         contructors_.insert(pair<string, function<T*(Args...)>>(identifier, constructor));
+        
         labels_.push_back(pair<string, string>(identifier, label));
         labelIndex_.insert(pair<string, int>(identifier, labels_.size() - 1));
     }

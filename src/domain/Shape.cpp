@@ -144,7 +144,7 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         
         mapper_->SetScalarModeToUseCellData();
         mapper_->ScalarVisibilityOn();
-    }
+    } else {}
     
     mapper_->ScalarVisibilityOn();
     mapper_->Modified();

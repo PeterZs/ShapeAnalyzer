@@ -3,7 +3,8 @@
 
 #include <vtkActor.h>
 #include <vtkAlgorithmOutput.h>
-#include <vtkBoxWidget.h>
+#include <vtkBoxWidget2.h>
+#include <vtkBoxRepresentation.h>
 #include <vtkCamera.h>
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
@@ -128,6 +129,8 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
     class vtkBoxWidgetCallback : public vtkCommand {
     public:
         ShapeAnalyzer *sa;
+        Shape* shape;
+        
         
         static vtkBoxWidgetCallback *New() {
             return new vtkBoxWidgetCallback;
@@ -135,12 +138,11 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
         
         virtual void Execute(vtkObject *caller, unsigned long, void*) {
             vtkSmartPointer<vtkTransform> t = vtkSmartPointer<vtkTransform>::New();
-            vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
-            widget->GetTransform(t);
-            widget->GetProp3D()->SetUserTransform(t);
-
-            Shape* shape = sa->shapesByActor_[reinterpret_cast<vtkActor*>(widget->GetProp3D())];
-
+            vtkBoxWidget2 *widget = reinterpret_cast<vtkBoxWidget2*>(caller);
+            static_cast<vtkBoxRepresentation*>(widget->GetRepresentation())->GetTransform(t);
+            
+            shape->getActor()->SetUserTransform(t);
+            
             // transform correspondences
             for(auto it = sa->pointCorrespondencesByActor_.begin(); it != sa->pointCorrespondencesByActor_.end(); it++) {
                 it->second->transform(shape);

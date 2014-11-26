@@ -2,7 +2,8 @@
 #define Shape_H
 
 #include <vtkActor.h>
-#include <vtkBoxWidget.h>
+#include <vtkBoxWidget2.h>
+#include <vtkBoxRepresentation.h>
 #include <vtkCell.h>
 #include <vtkCellArray.h>
 #include <vtkGlyph3D.h>
@@ -112,7 +113,7 @@ public:
     }
     
     /// \brief Returns the box widget, that can be used to transform the shape independently from the scene.
-    vtkSmartPointer<vtkBoxWidget> getBoxWidget() {
+    vtkSmartPointer<vtkBoxWidget2> getBoxWidget() {
         return boxWidget_;
     }
     
@@ -178,7 +179,7 @@ private:
     // vtk objects
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
-    vtkSmartPointer<vtkBoxWidget> boxWidget_;
+    vtkSmartPointer<vtkBoxWidget2> boxWidget_;
     vtkSmartPointer<vtkPolyData> polyData_;
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     

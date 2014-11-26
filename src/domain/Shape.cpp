@@ -39,12 +39,13 @@ void Shape::initialize() {
     
     
     // set up box widget
-    boxWidget_ = vtkSmartPointer<vtkBoxWidget>::New();
-    boxWidget_->SetProp3D(actor_);
+    boxWidget_ = vtkSmartPointer<vtkBoxWidget2>::New();
+    vtkSmartPointer<vtkBoxRepresentation> boxRepresentation = vtkSmartPointer<vtkBoxRepresentation>::New();
+    boxRepresentation->HandlesOff();
+    boxRepresentation->SetPlaceFactor(1.25);
+    boxRepresentation->PlaceWidget(actor_->GetBounds());
+    boxWidget_->SetRepresentation(boxRepresentation);
     boxWidget_->SetInteractor(renderer_->GetRenderWindow()->GetInteractor());
-    boxWidget_->SetPlaceFactor(1.25);
-    
-    boxWidget_->PlaceWidget();
 }
 
 
@@ -57,7 +58,6 @@ void Shape::initialize() {
 void Shape::removeFromRenderer() {
     renderer_->RemoveActor(actor_);
     boxWidget_->SetInteractor(nullptr);
-    boxWidget_->SetProp3D(nullptr);
 }
 
 
@@ -417,7 +417,7 @@ istream& Shape::readBinary(istream& is) {
     actor_->SetUserMatrix(matrix);
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->SetMatrix(matrix);
-    boxWidget_->SetTransform(transform);
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
     return is;
 }
 
@@ -535,7 +535,7 @@ istream& Shape::readASCII(istream& is) {
     actor_->SetUserMatrix(matrix);
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
     transform->SetMatrix(matrix);
-    boxWidget_->SetTransform(transform);
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
     
     return is;
 }

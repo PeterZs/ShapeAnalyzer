@@ -13,6 +13,7 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
+#include <vtkBoxRepresentation.h>
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"

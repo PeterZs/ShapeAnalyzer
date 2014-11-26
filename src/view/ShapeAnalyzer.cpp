@@ -1117,6 +1117,7 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
             selectedShape->getBoxWidget()->Off();
         }
     }
+    render();
 }
 
 
@@ -2015,6 +2016,7 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
+    callback->shape = shape;
     
     shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
 

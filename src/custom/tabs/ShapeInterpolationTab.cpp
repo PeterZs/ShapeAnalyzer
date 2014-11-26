@@ -72,6 +72,7 @@ void ShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPolys(polys);
     
     shape_ = dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addShape(name, polyData);
+
     
     this->labelInterpolation->setEnabled(true);
     this->sliderInterpolation->setEnabled(true);
@@ -88,7 +89,12 @@ void ShapeInterpolationTab::slotAddShape() {
     this->comboBoxSourceShape->setEnabled(true);
     this->comboBoxTargetShape->setEnabled(true);
     this->buttonChoose->setEnabled(true);
-    shape_->getBoxWidget()->PlaceWidget();
+    
+
+    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->PlaceWidget(shape_->getPolyData()->GetBounds());
+    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->SetTransform((vtkTransform*) shape_->getActor()->GetUserTransform());
+    
+
     shape_ = nullptr;
     source_ = nullptr;
     target_ = nullptr;
@@ -133,9 +139,14 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
         shape_->getPolyData()->GetPoints()->SetPoint(pointId, c);
     }
     
-    shape_->getPolyData()->Modified();
     
+
+    shape_->getPolyData()->Modified();
     shape_->getActor()->Modified();
+    
+    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->PlaceWidget(shape_->getPolyData()->GetBounds());
+    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->SetTransform((vtkTransform*) shape_->getActor()->GetUserTransform());
+    
     dynamic_cast<ShapeAnalyzerInterface*>(parent_)->render();
 }
 

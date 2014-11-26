@@ -22,7 +22,7 @@ public:
     virtual ~LaplaceBeltramiSignature();
     
     void getComponent(int i, Vec* component);
-    virtual void getComponent(int i, ScalarPointAttribute& component);
+    virtual vtkSmartPointer<vtkDoubleArray> getComponent(int i);
 protected:
     Mat signature_;
     LaplaceBeltramiOperator* laplacian_;

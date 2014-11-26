@@ -10,7 +10,6 @@
 #define __ShapeAnalyzer__Signature__
 
 #include "../Shape.h"
-#include "../attributes/ScalarPointAttribute.h"
 #include "../laplaceBeltrami/LaplaceBeltramiOperator.h"
 
 namespace signature {
@@ -25,7 +24,7 @@ public:
         return dimension_;
     }
     
-    virtual void getComponent(int i, ScalarPointAttribute& component) = 0;
+    virtual vtkSmartPointer<vtkDoubleArray> getComponent(int i) = 0;
     
     
 protected:

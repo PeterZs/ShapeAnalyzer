@@ -10,9 +10,10 @@
 #define __ShapeAnalyzer__FunctionalMaps__
 
 #include "Shape.h"
-#include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
 #include "laplaceBeltrami/LaplaceBeltramiOperator.h"
+
+#include <vtkDoubleArray.h>
 
 #include <vector>
 
@@ -22,13 +23,13 @@ using namespace laplaceBeltrami;
 
 class FunctionalMaps {
 public:
-    FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions);
+    FunctionalMaps(Shape* shape1, Shape* shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions);
     
-    void transferFunction(ScalarPointAttribute& f1, ScalarPointAttribute& f2);
+    vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDoubleArray> f);
     
     ~FunctionalMaps();
 private:
-    void setupPhiTM(Shape& shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM);
+    void setupPhiTM(Shape* shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM);
     
     Mat C_;
     Mat AT_;
@@ -40,12 +41,12 @@ private:
     Mat PhiTM2_;
     
     
-    Shape& shape1_;
-    Shape& shape2_;
+    Shape* shape1_;
+    Shape* shape2_;
     LaplaceBeltramiOperator* laplacian1_;
     LaplaceBeltramiOperator* laplacian2_;
-    vector<ScalarPointAttribute> c1_;
-    vector<ScalarPointAttribute> c2_;
+    vector<vtkSmartPointer<vtkDoubleArray>> c1_;
+    vector<vtkSmartPointer<vtkDoubleArray>> c2_;
     int numberOfEigenfunctions_;
     PetscInt numberOfConstraints_;
     KSP ksp_; //least squares solver

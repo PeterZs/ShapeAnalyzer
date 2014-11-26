@@ -15,17 +15,15 @@
 
 #include "Shape.h"
 #include "laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
-#include "attributes/ScalarPointAttribute.h"
 #include "PetscHelper.h"
 
-using namespace attribute;
 using namespace laplaceBeltrami;
 
 class HeatDiffusion {
 public:
-    HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, ScalarPointAttribute& initialCondition);
+    HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
     ~HeatDiffusion();
-    void getHeat(ScalarPointAttribute& heat, double t);
+    vtkSmartPointer<vtkDoubleArray> getHeat(double t);
 private:
     
     Shape* shape_;

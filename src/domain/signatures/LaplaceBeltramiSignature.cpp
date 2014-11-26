@@ -16,10 +16,16 @@ signature::LaplaceBeltramiSignature::~LaplaceBeltramiSignature() {
     MatDestroy(&signature_);
 }
 
-void signature::LaplaceBeltramiSignature::getComponent(int i, ScalarPointAttribute &component) {
+vtkSmartPointer<vtkDoubleArray> signature::LaplaceBeltramiSignature::getComponent(int i) {
     const PetscScalar* row;
     MatGetRow(signature_, i, NULL, NULL, &row);
-    ScalarPointAttribute::arrayToScalarPointAttribute(row, component);
+    vtkSmartPointer<vtkDoubleArray> component = vtkSmartPointer<vtkDoubleArray>::New();
+    component->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
+    for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
+        component->SetValue(i, row[i]);
+    }
+    
+    return component;
 }
 
 void signature::LaplaceBeltramiSignature::getComponent(int i, Vec *component) {

@@ -62,14 +62,11 @@ void FunctionTransferTab::slotTransfer() {
         QMessageBox::warning(parent_, "Error", "Shape \"" + QString(source->getName().c_str()) + "\" does neither have a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
         return;
     }
-    attribute::ScalarPointAttribute f(source);
-    for(vtkIdType i = 0; i < source->getColoring()->values->GetNumberOfTuples(); i++) {
-        f.getScalars()->SetValue(i, source->getColoring()->values->GetTuple(i)[0]);
-    }
+    
     
     // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
-    vector<attribute::ScalarPointAttribute> cs; // corresponds to contraints on shape1
-    vector<attribute::ScalarPointAttribute> ct;
+    vector<vtkSmartPointer<vtkDoubleArray>> cs; // corresponds to contraints on shape1
+    vector<vtkSmartPointer<vtkDoubleArray>> ct;
     
     
     // compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
@@ -82,20 +79,14 @@ void FunctionTransferTab::slotTransfer() {
         
         for(int i = 0; i < corr->getShapeIds().size(); i++) {
             if(corr->getShapeIds()[i] == source->getId()) {
-                
-                
-                ScalarPointAttribute distances(source);
-                ms.getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                vtkSmartPointer<vtkDoubleArray> distances = ms.getAllDistances(corr->getCorrespondingIds()[i]);
                 cs.push_back(distances);
                 
             }
             
             if(corr->getShapeIds()[i] == target->getId()) {
-                
-                ScalarPointAttribute distances(target);
-                mt.getAllDistances(distances, corr->getCorrespondingIds()[i]);
+                vtkSmartPointer<vtkDoubleArray> distances = mt.getAllDistances(corr->getCorrespondingIds()[i]);
                 ct.push_back(distances);
-                
             }
         }
     }
@@ -112,27 +103,24 @@ void FunctionTransferTab::slotTransfer() {
     
     // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
     for(int i = 0; i < 200; i++) {
-        ScalarPointAttribute wksiSource(source);
-        wksSource.getComponent(i, wksiSource);
+        vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
         cs.push_back(wksiSource);
         
-        ScalarPointAttribute wksiTarget(target);
-        wksTarget.getComponent(i, wksiTarget);
+        vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
         ct.push_back(wksiTarget);
     }
     
     // compute correspondence matrix C
-    FunctionalMaps functionalMaps(*source, *target, &laplacianSource, &laplacianTarget, cs, ct, 100);
+    FunctionalMaps functionalMaps(source, target, &laplacianSource, &laplacianTarget, cs, ct, 100);
 
     
     // transfer the coordinate function
-    ScalarPointAttribute Tf(target);
-    functionalMaps.transferFunction(f, Tf);
+    vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(vtkDoubleArray::SafeDownCast(source->getColoring()->values));
     
     // color 2nd shape
     shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
     coloring->type = Shape::Coloring::Type::PointScalar;
-    coloring->values = Tf.getScalars();
+    coloring->values = Tf;
     target->setColoring(coloring);
 }
 

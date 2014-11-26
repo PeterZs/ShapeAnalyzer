@@ -14,7 +14,6 @@
 #include "CustomContextMenuItem.h"
 
 #include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
 
 #include "../Factory.h"
 

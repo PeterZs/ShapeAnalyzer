@@ -14,8 +14,6 @@
 #include "CustomContextMenuItem.h"
 
 #include "../../domain/metric/Metric.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
-
 
 #include "../Factory.h"
 
@@ -44,12 +42,11 @@ public:
         
         if (ok) {
             T m(shape);
-            ScalarPointAttribute distances(shape);
-            m.getAllDistances(distances, source);
+            vtkSmartPointer<vtkDoubleArray> distances = m.getAllDistances(source);
 
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointScalar;
-            coloring->values = distances.getScalars();
+            coloring->values = distances;
             shape->setColoring(coloring);
         }
     }

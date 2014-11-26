@@ -11,8 +11,6 @@
 #include "../../domain/correspondences/FaceCorrespondence.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 
-#include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/attributes/ScalarFaceAttribute.h"
 
 using namespace std;
 

@@ -38,23 +38,23 @@ void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkI
     
     if (ok) {
         
-        ScalarPointAttribute u0(shape);
+        vtkSmartPointer<vtkDoubleArray> u0 = vtkSmartPointer<vtkDoubleArray>::New();
+        u0->SetNumberOfValues(shape->getPolyData()->GetNumberOfPoints());
         for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
             if(i == source) {
-                u0.getScalars()->SetValue(i, 1.0);
+                u0->SetValue(i, 1.0);
             } else {
-                u0.getScalars()->SetValue(i, 0.0);
+                u0->SetValue(i, 0.0);
             }
         }
         FEMLaplaceBeltramiOperator laplacian(shape, 100);
         
         HeatDiffusion heatDiffusion(shape, &laplacian, u0);
-        ScalarPointAttribute ut(shape);
-        heatDiffusion.getHeat(ut, t);
+        vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
 
         shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
         coloring->type = Shape::Coloring::Type::PointScalar;
-        coloring->values = ut.getScalars();
+        coloring->values = ut;
         shape->setColoring(coloring);
     }
 }

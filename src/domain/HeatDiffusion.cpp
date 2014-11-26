@@ -8,7 +8,7 @@
 
 #include "HeatDiffusion.h"
 
-HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, ScalarPointAttribute& initialCondition) : shape_(shape), laplacian_(laplacian) {
+HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), laplacian_(laplacian) {
 
     
     Mat Phi;
@@ -30,7 +30,7 @@ HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, S
     Vec u0;
     MatGetVecs(PhiTM, &u0, &PhiTMu0_);
     
-    ScalarPointAttribute::scalarPointAttributeToPetscVec(initialCondition, u0);
+    PetscHelper::vtkDoubleArrayToPetscVec(initialCondition, u0);
     
     MatMult(PhiTM, u0, PhiTMu0_);
 
@@ -42,12 +42,12 @@ HeatDiffusion::~HeatDiffusion() {
     VecDestroy(&PhiTMu0_);
 }
 
-void HeatDiffusion::getHeat(ScalarPointAttribute& heat, double t) {
+vtkSmartPointer<vtkDoubleArray> HeatDiffusion::getHeat(double t) {
     PetscInt m = shape_->getPolyData()->GetNumberOfPoints();
     
-    Vec ut;
-    VecCreateSeq(PETSC_COMM_SELF, m, &ut);
-    VecSet(ut, 0.0);
+    Vec utv;
+    VecCreateSeq(PETSC_COMM_SELF, m, &utv);
+    VecSet(utv, 0.0);
     
     for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
         Vec phi;
@@ -57,12 +57,14 @@ void HeatDiffusion::getHeat(ScalarPointAttribute& heat, double t) {
         VecGetValues(PhiTMu0_, 1, &i, &y);
         
         //Y = aX + Y (ut = exp(lambda * t) * y * phi + ut)
-        VecAXPY(ut, exp(lambda * t) * y, phi);
+        VecAXPY(utv, exp(lambda * t) * y, phi);
         
         VecDestroy(&phi);
     }
     
-    ScalarPointAttribute::petscVecToScalarPointAttribute(ut, heat);
+    vtkSmartPointer<vtkDoubleArray> ut = PetscHelper::petscVecToVtkDoubleArray(utv);
 
-    VecDestroy(&ut);
+    VecDestroy(&utv);
+    
+    return ut;
 }

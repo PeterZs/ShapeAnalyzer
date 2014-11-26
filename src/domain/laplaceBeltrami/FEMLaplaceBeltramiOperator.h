@@ -20,7 +20,6 @@
 #include <iostream>
 
 using namespace std;
-using namespace attribute;
 
 namespace laplaceBeltrami {
 
@@ -30,7 +29,7 @@ public:
     
     virtual double getEigenvalue(int i);
     
-    virtual void getEigenfunction(int i, ScalarPointAttribute &phi);
+    virtual vtkSmartPointer<vtkDoubleArray> getEigenfunction(int i);
     
     virtual void getEigenfunction(PetscInt i, Vec* phi);
     

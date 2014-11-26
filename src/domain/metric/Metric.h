@@ -12,13 +12,12 @@
 #include <iostream>
 
 #include "../Shape.h"
-#include "../attributes/ScalarPointAttribute.h"
 
 #include <vtkIdList.h>
+#include <vtkDoubleArray.h>
 #include <vtkSmartPointer.h>
 
 using namespace std;
-using namespace attribute;
 
 namespace metric {
 
@@ -42,7 +41,7 @@ public:
     virtual double getDistance(vtkIdType a, vtkIdType b) = 0;
     
     /// Returns the distances from vertex with id source to all other vertices. The result is stored in distances which is of type ScalarPointAttribute.
-    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) = 0;
+    virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source) = 0;
     
     /// Returns the id of the point with the greatest distance to all points in the source list
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;

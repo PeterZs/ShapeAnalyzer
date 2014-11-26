@@ -16,8 +16,6 @@
 #include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
 #include "../../domain/segmentation/VoronoiCellSegmentation.h"
 #include "../../domain/samplings/FarthestPointSampling.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
-#include "../../domain/attributes/DiscretePointAttribute.h"
 
 #include "../Factory.h"
 

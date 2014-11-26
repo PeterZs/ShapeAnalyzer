@@ -111,5 +111,38 @@ void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
     delete [] rowIdx;
 }
 
+void PetscHelper::vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec) {
+    PetscInt size = arr->GetNumberOfTuples();
+    
+    for(PetscInt i = 0; i < size; i++) {
+        VecSetValue(vec, i, arr->GetValue(i), INSERT_VALUES);
+    }
+    
+    VecAssemblyBegin(vec);
+    VecAssemblyEnd(vec);
+}
+
+
+vtkSmartPointer<vtkDoubleArray> PetscHelper::petscVecToVtkDoubleArray(Vec& vec) {
+    PetscScalar* arr;
+    VecGetArray(vec, &arr);
+    PetscInt size;
+    VecGetSize(vec, &size);
+    
+    return petscScalarArrayToVtkDoubleArray(arr, size);
+}
+
+
+
+vtkSmartPointer<vtkDoubleArray> PetscHelper::petscScalarArrayToVtkDoubleArray(const PetscScalar *array, PetscInt size) {
+    vtkSmartPointer<vtkDoubleArray> vtkArr = vtkSmartPointer<vtkDoubleArray>::New();
+    vtkArr->SetNumberOfValues(size);
+    for(PetscInt j = 0; j < size; j++) {
+        vtkArr->SetValue(j, array[j]);
+    }
+    
+    return vtkArr;
+}
+
 
 

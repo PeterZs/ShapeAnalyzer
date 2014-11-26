@@ -26,10 +26,15 @@ double metric::EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void metric::EuclideanMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType source) {
+vtkSmartPointer<vtkDoubleArray> metric::EuclideanMetric::getAllDistances(vtkIdType source) {
+    vtkSmartPointer<vtkDoubleArray> distances = vtkSmartPointer<vtkDoubleArray>::New();
+    distances->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
+    
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetPoints()->GetNumberOfPoints(); i++) {
-        distances.getScalars()->SetValue(i, getDistance(source, i));
+        distances->SetValue(i, getDistance(source, i));
     }
+    
+    return distances;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

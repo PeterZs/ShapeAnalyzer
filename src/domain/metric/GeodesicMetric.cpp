@@ -40,7 +40,7 @@ metric::GeodesicMetric::~GeodesicMetric() {
 // Returns a vector with all distances on the shape to the source s ordered
 // by their id
 // Notice that this will remove the current sources and precomputed information
-void metric::GeodesicMetric::getAllDistances(ScalarPointAttribute& distances, vtkIdType s) throw(geodesic_error) {
+vtkSmartPointer<vtkDoubleArray> metric::GeodesicMetric::getAllDistances(vtkIdType s) throw(geodesic_error) {
     // argument check
     if(s >= points_->size()) {
         throw invalid_argument("GeodesicMetric::getAllDistances: Source point (" + to_string(s) + ") larger than number of points (" + to_string(points_->size()) + ").");
@@ -53,9 +53,10 @@ void metric::GeodesicMetric::getAllDistances(ScalarPointAttribute& distances, vt
         algorithm_->propagate(all_sources);
     } catch (geodesic_error& e) {
         throw e;
-        return;
     }
     
+    vtkSmartPointer<vtkDoubleArray> distances = vtkSmartPointer<vtkDoubleArray>::New();
+    distances->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
     for(vtkIdType i = 0; i< mesh_.vertices().size(); ++i) {
         geodesic::SurfacePoint p(&mesh_.vertices()[i]);
         
@@ -64,11 +65,12 @@ void metric::GeodesicMetric::getAllDistances(ScalarPointAttribute& distances, vt
             algorithm_->best_source(p, distance); //for a given surface point, find closets source and distance to this source
         } catch (geodesic_error& e) {
             throw e;
-            return;
         }
         
-        distances.getScalars()->SetValue(i, distance);
+        distances->SetValue(i, distance);
     }
+    
+    return distances;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,7 +87,6 @@ double metric::GeodesicMetric::getDistance(vtkIdType a, vtkIdType b)  throw(geod
         algorithm_->geodesic(source, target, path);
     } catch (geodesic_error& e) {
         throw e;
-        return 0.0;
     }
     
     return length(path);

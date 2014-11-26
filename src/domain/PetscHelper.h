@@ -11,6 +11,9 @@
 
 #include <slepceps.h>
 
+#include <vtkSmartPointer.h>
+#include <vtkDoubleArray.h>
+
 class PetscHelper {
 public:
     //set block B in matrix A. Element A(i, j) will be set to B(0,0) and so on...
@@ -27,6 +30,16 @@ public:
     
     //reshape n*m-dimensional vector b as matrix B with m rows and n columns. Elements are filled in row wise into matrix B.
     static void reshape(Mat& B, Vec& b, PetscInt m, PetscInt n);
+    
+    
+    static void vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec);
+    
+    
+    static vtkSmartPointer<vtkDoubleArray> petscVecToVtkDoubleArray(Vec& vec);
+    
+    
+    
+    static vtkSmartPointer<vtkDoubleArray> petscScalarArrayToVtkDoubleArray(const PetscScalar *array, PetscInt size);
 };
 
 #endif /* defined(__ShapeAnalyzer__PetscHelper__) */

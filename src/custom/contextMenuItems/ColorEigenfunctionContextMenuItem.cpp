@@ -23,14 +23,12 @@ void ColorEigenfunctionContextMenuItem::onClick(Shape* shape, vtkIdType pointId,
                                  );
     // show eigenfunction
     if (ok) {
-        ScalarPointAttribute eigenfunction(shape);
-        
         FEMLaplaceBeltramiOperator laplacian(shape, 100);
-        laplacian.getEigenfunction(i, eigenfunction);
+        vtkSmartPointer<vtkDoubleArray> eigenfunction = laplacian.getEigenfunction(i);
         
         shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
         coloring->type = Shape::Coloring::Type::PointScalar;
-        coloring->values = eigenfunction.getScalars();
+        coloring->values = eigenfunction;
         shape->setColoring(coloring);
     }
 }

@@ -15,15 +15,16 @@
 
 #include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
 #include "../../domain/signatures/LaplaceBeltramiSignature.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
 
 #include "../Factory.h"
 
 #include <qinputdialog.h>
 
+#include <vtkDoubleArray.h>
+
 using namespace std;
 
-template<class T = Metric>
+template<class T = LaplaceBeltramiSignature>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
     ColorSignatureContextMenuItem<T>() {}
@@ -46,12 +47,11 @@ public:
             
             T s(shape, 100, &laplacian);
 
-            ScalarPointAttribute component(shape);
-            s.getComponent(i, component);
+            vtkSmartPointer<vtkDoubleArray> component = s.getComponent(i);
 
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointScalar;
-            coloring->values = component.getScalars();
+            coloring->values = component;
             shape->setColoring(coloring);
         }
     }

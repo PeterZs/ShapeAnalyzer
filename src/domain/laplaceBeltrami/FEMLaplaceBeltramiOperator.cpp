@@ -177,12 +177,14 @@ void laplaceBeltrami::FEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
-void laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenfunction(int i, ScalarPointAttribute &phi) {
+vtkSmartPointer<vtkDoubleArray> laplaceBeltrami::FEMLaplaceBeltramiOperator::getEigenfunction(int i) {
     Vec vec;
     getEigenfunction(i, &vec);
     
-    ScalarPointAttribute::petscVecToScalarPointAttribute(vec, phi);
+    vtkSmartPointer<vtkDoubleArray> eigenfunction = PetscHelper::petscVecToVtkDoubleArray(vec);
     VecDestroy(&vec);
+    
+    return eigenfunction;
 }
 
 

@@ -8,7 +8,7 @@
 
 #include "FunctionalMaps.h"
 
-FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<ScalarPointAttribute>& c1, vector<ScalarPointAttribute>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), laplacian1_(laplacian1), laplacian2_(laplacian2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
+FunctionalMaps::FunctionalMaps(Shape* shape1, Shape* shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), laplacian1_(laplacian1), laplacian2_(laplacian2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
     
     numberOfConstraints_ = c1_.size();
     
@@ -32,7 +32,7 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
         MatGetVecs(PhiTM1_, &ci1, &ai);
         
         //copy contraint c1_ which is of type scalar point attribute into Petsc vector
-        ScalarPointAttribute::scalarPointAttributeToPetscVec(c1_[i], ci1);
+        PetscHelper::vtkDoubleArrayToPetscVec(c1_[i], ci1);
         
         
         //compute i-th row (ai) of A^T
@@ -45,7 +45,7 @@ FunctionalMaps::FunctionalMaps(Shape& shape1, Shape& shape2, LaplaceBeltramiOper
         Vec ci2;
         Vec bi;
         MatGetVecs(PhiTM2_, &ci2, &bi);
-        ScalarPointAttribute::scalarPointAttributeToPetscVec(c2_[i], ci2);
+        PetscHelper::vtkDoubleArrayToPetscVec(c2_[i], ci2);
         
         MatMult(PhiTM2_, ci2, bi);
         
@@ -151,35 +151,37 @@ FunctionalMaps::~FunctionalMaps() {
     KSPDestroy(&ksp_);
 }
 
-void FunctionalMaps::transferFunction(ScalarPointAttribute &f1, ScalarPointAttribute &f2) {
-    Vec f1v;
-    VecCreateSeq(PETSC_COMM_SELF, f1.getShape()->getPolyData()->GetNumberOfPoints(), &f1v);
-    ScalarPointAttribute::scalarPointAttributeToPetscVec(f1, f1v);
+vtkSmartPointer<vtkDoubleArray> FunctionalMaps::transferFunction(vtkSmartPointer<vtkDoubleArray> f) {
+    Vec fv;
+    VecCreateSeq(PETSC_COMM_SELF, f->GetNumberOfTuples(), &fv);
+    PetscHelper::vtkDoubleArrayToPetscVec(f, fv);
+    
     
     Vec a;
     MatGetVecs(PhiTM1_, NULL, &a);
-    MatMult(PhiTM1_, f1v, a);
+    MatMult(PhiTM1_, fv, a);
     
     
     Vec b;
     MatGetVecs(C_, NULL, &b);
     MatMult(C_, a, b);
     
-    Vec f2v;
-    MatGetVecs(Phi2_, NULL, &f2v);
+    Vec Tfv;
+    MatGetVecs(Phi2_, NULL, &Tfv);
     
-    MatMult(Phi2_, b, f2v);
-    ScalarPointAttribute::petscVecToScalarPointAttribute(f2v, f2);
+    MatMult(Phi2_, b, Tfv);
+    vtkSmartPointer<vtkDoubleArray> Tf = PetscHelper::petscVecToVtkDoubleArray(Tfv);
     
-    
-    VecDestroy(&f1v);
-    VecDestroy(&f2v);
+    VecDestroy(&fv);
+    VecDestroy(&Tfv);
     VecDestroy(&a);
     VecDestroy(&b);
+    
+    return Tf;
 }
 
-void FunctionalMaps::setupPhiTM(Shape& shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
-    PetscInt numberOfPoints = shape.getPolyData()->GetNumberOfPoints();
+void FunctionalMaps::setupPhiTM(Shape* shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
+    PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
     
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, numberOfEigenfunctions_, NULL, Phi);
     laplacian->getEigenfunctionMatrix(Phi);

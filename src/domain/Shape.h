@@ -49,7 +49,6 @@ using namespace std;
 /// \note Documentation not finished.
 ///
 class Shape : public Serializable {
-    
 public:
     /// \brief Coloring struct. Contains a type and the coloring data as vtkSmartPointer<vtkDataArray>.
     struct Coloring {

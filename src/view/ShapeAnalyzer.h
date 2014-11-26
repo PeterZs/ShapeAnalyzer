@@ -92,9 +92,6 @@
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
 
-#include "../domain/attributes/ScalarPointAttribute.h"
-#include "../domain/attributes/DiscretePointAttribute.h"
-
 #include "../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "../domain/HeatDiffusion.h"
 #include "../domain/FunctionalMaps.h"

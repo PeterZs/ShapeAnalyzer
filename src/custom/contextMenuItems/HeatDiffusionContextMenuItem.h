@@ -15,7 +15,6 @@
 
 #include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "../../domain/HeatDiffusion.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
 
 #include "../Factory.h"
 

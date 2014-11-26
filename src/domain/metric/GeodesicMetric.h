@@ -22,7 +22,6 @@
 
 using namespace geodesic;
 using namespace std;
-using namespace attribute;
 
 namespace metric {
 
@@ -91,7 +90,7 @@ public:
     virtual ~GeodesicMetric();
     
     virtual double getDistance(vtkIdType a, vtkIdType b) throw(geodesic_error);
-    virtual void getAllDistances(ScalarPointAttribute& distances, vtkIdType source) throw(geodesic_error);
+    virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source) throw(geodesic_error);
     virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) throw(geodesic_error);
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) throw(geodesic_error);
 private:

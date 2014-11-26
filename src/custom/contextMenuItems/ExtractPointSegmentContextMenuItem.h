@@ -16,7 +16,6 @@
 #include "CustomContextMenuItem.h"
 
 #include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
 
 #include "../../view/ShapeAnalyzerInterface.h"
 

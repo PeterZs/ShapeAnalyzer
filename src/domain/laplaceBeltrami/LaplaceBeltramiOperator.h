@@ -11,14 +11,12 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
+#include <vtkDoubleArray.h>
 
 #include <slepceps.h>
 
 #include "../Shape.h"
 #include "../PetscHelper.h"
-#include "../attributes/ScalarPointAttribute.h"
-
-using namespace attribute;
 
 namespace laplaceBeltrami {
 
@@ -30,7 +28,7 @@ public:
     virtual ~LaplaceBeltramiOperator() {
     }
     
-    virtual void getEigenfunction(int i, ScalarPointAttribute &phi) = 0;
+    virtual vtkSmartPointer<vtkDoubleArray> getEigenfunction(int i) = 0;
     
     virtual double getEigenvalue(int i) = 0;
     

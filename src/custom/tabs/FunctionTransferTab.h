@@ -18,7 +18,6 @@
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
-#include "../../domain/attributes/ScalarPointAttribute.h"
 #include "../../domain/metric/GeodesicMetric.h"
 #include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
 #include "../../domain/signatures/WaveKernelSignature.h"

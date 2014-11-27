@@ -1,22 +1,22 @@
 //
-//  LaplaceBeltramiSignature.cpp
+//  PetscLaplaceBeltramiSignature.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 26.08.14.
 //
 //
 
-#include "LaplaceBeltramiSignature.h"
+#include "PetscLaplaceBeltramiSignature.h"
 
-signature::LaplaceBeltramiSignature::LaplaceBeltramiSignature(Shape *shape, int dimension, LaplaceBeltramiOperator* laplacian) : Signature(shape, dimension), laplacian_(laplacian) {
+signature::PetscLaplaceBeltramiSignature::PetscLaplaceBeltramiSignature(Shape *shape, int dimension, PetscLaplaceBeltramiOperator* laplacian) : Signature(shape, dimension), laplacian_(laplacian) {
     MatCreateSeqDense(MPI_COMM_SELF, dimension_, shape_->getPolyData()->GetNumberOfPoints(), NULL, &signature_);
 }
 
-signature::LaplaceBeltramiSignature::~LaplaceBeltramiSignature() {
+signature::PetscLaplaceBeltramiSignature::~PetscLaplaceBeltramiSignature() {
     MatDestroy(&signature_);
 }
 
-vtkSmartPointer<vtkDoubleArray> signature::LaplaceBeltramiSignature::getComponent(int i) {
+vtkSmartPointer<vtkDoubleArray> signature::PetscLaplaceBeltramiSignature::getComponent(int i) {
     const PetscScalar* row;
     MatGetRow(signature_, i, NULL, NULL, &row);
     vtkSmartPointer<vtkDoubleArray> component = vtkSmartPointer<vtkDoubleArray>::New();
@@ -28,6 +28,6 @@ vtkSmartPointer<vtkDoubleArray> signature::LaplaceBeltramiSignature::getComponen
     return component;
 }
 
-void signature::LaplaceBeltramiSignature::getComponent(int i, Vec *component) {
+void signature::PetscLaplaceBeltramiSignature::getComponent(int i, Vec *component) {
     PetscHelper::getRow(*component, signature_, i);
 }

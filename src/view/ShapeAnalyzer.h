@@ -81,24 +81,6 @@
 #include "../io/vtkToscaWriter.h"
 #include "../io/vtkOBJWriter.h"
 
-
-#include "../domain/metric/Metric.h"
-#include "../domain/metric/EuclideanMetric.h"
-#include "../domain/metric/GeodesicMetric.h"
-
-#include "../domain/signatures/Signature.h"
-#include "../domain/signatures/WaveKernelSignature.h"
-
-#include "../domain/segmentation/Segmentation.h"
-#include "../domain/segmentation/VoronoiCellSegmentation.h"
-
-#include "../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
-#include "../domain/HeatDiffusion.h"
-#include "../domain/FunctionalMaps.h"
-
-#include "../domain/samplings/Sampling.h"
-#include "../domain/samplings/FarthestPointSampling.h"
-
 #include "ui_HelpDialog.h"
 #include "ui_ImportShapeDialog.h"
 #include "ui_SaveScreenshotDialog.h"

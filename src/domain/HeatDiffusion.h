@@ -9,27 +9,21 @@
 #ifndef __ShapeAnalyzer__HeatDiffusion__
 #define __ShapeAnalyzer__HeatDiffusion__
 
-#include <slepceps.h>
 
 #include <vtkPolyData.h>
 
 #include "Shape.h"
-#include "laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
-#include "PetscHelper.h"
 
 using namespace laplaceBeltrami;
 
 class HeatDiffusion {
 public:
-    HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
+    HeatDiffusion(Shape* shape, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), initialCondition_(initialCondition) {}
     ~HeatDiffusion();
-    vtkSmartPointer<vtkDoubleArray> getHeat(double t);
+    virtual vtkSmartPointer<vtkDoubleArray> getHeat(double t) = 0;
 private:
-    
     Shape* shape_;
-    LaplaceBeltramiOperator* laplacian_;
-
-    Vec PhiTMu0_;
+    vtkSmartPointer<vtkDoubleArray> initialCondition_;
 };
 
 #endif /* defined(__ShapeAnalyzer__HeatDiffusion__) */

@@ -1,16 +1,14 @@
 //
-//  FunctionalMaps.cpp
+//  PetscFunctionalMaps.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 02.08.14.
 //
 //
 
-#include "FunctionalMaps.h"
+#include "PetscFunctionalMaps.h"
 
-FunctionalMaps::FunctionalMaps(Shape* shape1, Shape* shape2, LaplaceBeltramiOperator* laplacian1, LaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), laplacian1_(laplacian1), laplacian2_(laplacian2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
-    
-    numberOfConstraints_ = c1_.size();
+PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLaplaceBeltramiOperator* laplacian1, PetscLaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), laplacian1_(laplacian1), laplacian2_(laplacian2) {
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
     setupPhiTM(shape1_, laplacian1_, &Phi1_, &PhiTM1_);
@@ -137,7 +135,7 @@ FunctionalMaps::FunctionalMaps(Shape* shape1, Shape* shape2, LaplaceBeltramiOper
     VecDestroy(&c);
 }
 
-FunctionalMaps::~FunctionalMaps() {
+PetscFunctionalMaps::~PetscFunctionalMaps() {
     MatDestroy(&C_);
     MatDestroy(&AT_);
     MatDestroy(&PhiTM1_);
@@ -151,7 +149,7 @@ FunctionalMaps::~FunctionalMaps() {
     KSPDestroy(&ksp_);
 }
 
-vtkSmartPointer<vtkDoubleArray> FunctionalMaps::transferFunction(vtkSmartPointer<vtkDoubleArray> f) {
+vtkSmartPointer<vtkDoubleArray> PetscFunctionalMaps::transferFunction(vtkSmartPointer<vtkDoubleArray> f) {
     Vec fv;
     VecCreateSeq(PETSC_COMM_SELF, f->GetNumberOfTuples(), &fv);
     PetscHelper::vtkDoubleArrayToPetscVec(f, fv);
@@ -180,7 +178,7 @@ vtkSmartPointer<vtkDoubleArray> FunctionalMaps::transferFunction(vtkSmartPointer
     return Tf;
 }
 
-void FunctionalMaps::setupPhiTM(Shape* shape, LaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
+void PetscFunctionalMaps::setupPhiTM(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
     
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, numberOfEigenfunctions_, NULL, Phi);

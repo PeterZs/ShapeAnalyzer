@@ -1,27 +1,22 @@
 //
-//  ExtractSegmentContextMenuItem.h
+//  ShapeInfoContextMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__ExtractSegmentContextMenuItem__
-#define __ShapeAnalyzer__ExtractSegmentContextMenuItem__
+#ifndef __ShapeAnalyzer__ShapeInfoContextMenuItem__
+#define __ShapeAnalyzer__ShapeInfoContextMenuItem__
 
 #include <string>
 
-#include "../../util/HashMap.h"
+#include <QMessageBox>
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
-
-#include "../Factory.h"
-
 #include "ui_ShapeInfoDialog.h"
 
-#include <QMessageBox>
 
 using namespace std;
 

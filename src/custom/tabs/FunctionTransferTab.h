@@ -19,9 +19,9 @@
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"
 #include "../../domain/metric/GeodesicMetric.h"
-#include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
-#include "../../domain/signatures/WaveKernelSignature.h"
-#include "../../domain/FunctionalMaps.h"
+#include "../../domain/laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
+#include "../../domain/signatures/PetscWaveKernelSignature.h"
+#include "../../domain/PetscFunctionalMaps.h"
 #include "../../util/HashMap.h"
 
 #include "../../view/CustomListWidgetItem.h"

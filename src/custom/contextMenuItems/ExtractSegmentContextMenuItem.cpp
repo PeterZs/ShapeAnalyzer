@@ -1,15 +1,15 @@
 //
-//  ExtractPointSegmentContextMenuItem.cpp
+//  ExtractSegmentContextMenuItem.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#include "ExtractPointSegmentContextMenuItem.h"
+#include "ExtractSegmentContextMenuItem.h"
 
 
-void ExtractPointSegmentContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void ExtractSegmentContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     
     if(pointId == -1 || shape->getColoring() == nullptr || shape->getColoring()->type != Shape::Coloring::Type::PointSegmentation) {
         QMessageBox::warning(parent, "Error", "No valid point segment selected.\nDoes shape \"" + QString(shape->getName().c_str()) + "\" have an active point segmentation? Eventually a point segmentation has to be set first.");

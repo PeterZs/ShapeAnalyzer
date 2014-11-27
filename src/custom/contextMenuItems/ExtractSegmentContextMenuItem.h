@@ -1,13 +1,13 @@
 //
-//  ExtractPointSegmentContextMenuItem.h
+//  ExtractSegmentContextMenuItem.h
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 12.11.14.
 //
 //
 
-#ifndef __ShapeAnalyzer__ExtractPointSegmentContextMenuItem__
-#define __ShapeAnalyzer__ExtractPointSegmentContextMenuItem__
+#ifndef __ShapeAnalyzer__ExtractSegmentContextMenuItem__
+#define __ShapeAnalyzer__ExtractSegmentContextMenuItem__
 
 #include <string>
 
@@ -25,11 +25,11 @@
 
 using namespace std;
 
-class ExtractPointSegmentContextMenuItem : public CustomContextMenuItem {
+class ExtractSegmentContextMenuItem : public CustomContextMenuItem {
 public:
-    ExtractPointSegmentContextMenuItem() {}
+    ExtractSegmentContextMenuItem() {}
     
     virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };
 
-#endif /* defined(__ShapeAnalyzer__ExtractPointSegmentContextMenuItem__) */
+#endif /* defined(__ShapeAnalyzer__ExtractSegmentContextMenuItem__) */

@@ -1,14 +1,14 @@
 //
-//  LaplaceBeltramiOperator.cpp
+//  PetscLaplaceBeltramiOperator.cpp
 //  ShapeAnalyzer
 //
-//  Created by Emanuel Laude on 28.07.14.
+//  Created by Emanuel Laude on 26.11.14.
 //
 //
 
-#include "LaplaceBeltramiOperator.h"
+#include "PetscLaplaceBeltramiOperator.h"
 
-void laplaceBeltrami::LaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
+void laplaceBeltrami::PetscLaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         Vec phi;
         getEigenfunction(i, &phi);

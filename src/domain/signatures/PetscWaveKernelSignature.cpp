@@ -1,17 +1,17 @@
 //
-//  WaveKernelSignature.cpp
+//  PetscWaveKernelSignature.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 13.08.14.
 //
 //
 
-#include "WaveKernelSignature.h"
+#include "PetscWaveKernelSignature.h"
 
 #include <limits>
 
 
-signature::WaveKernelSignature::WaveKernelSignature(Shape* shape, int dimension, LaplaceBeltramiOperator* laplacian, double wksVariance) : LaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
+signature::PetscWaveKernelSignature::PetscWaveKernelSignature(Shape* shape, int dimension, PetscLaplaceBeltramiOperator* laplacian, double wksVariance) : PetscLaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
 
     PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];
     

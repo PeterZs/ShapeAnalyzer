@@ -13,8 +13,8 @@
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
-#include "../../domain/signatures/LaplaceBeltramiSignature.h"
+#include "../../domain/laplaceBeltrami/PetscLaplaceBeltramiOperator.h"
+#include "../../domain/signatures/PetscLaplaceBeltramiSignature.h"
 
 #include "../Factory.h"
 
@@ -24,7 +24,7 @@
 
 using namespace std;
 
-template<class T = LaplaceBeltramiSignature>
+template<class T = PetscLaplaceBeltramiSignature>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
     ColorSignatureContextMenuItem<T>() {}
@@ -43,7 +43,7 @@ public:
                                      );
         
         if (ok) {
-            FEMLaplaceBeltramiOperator laplacian(shape, 100);
+            PetscFEMLaplaceBeltramiOperator laplacian(shape, 100);
             
             T s(shape, 100, &laplacian);
 

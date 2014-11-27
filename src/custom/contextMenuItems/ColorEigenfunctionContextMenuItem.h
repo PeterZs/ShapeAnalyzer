@@ -13,7 +13,7 @@
 
 #include "CustomContextMenuItem.h"
 
-#include "../../domain/laplaceBeltrami/FEMLaplaceBeltramiOperator.h"
+#include "../../domain/laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
 
 #include "../Factory.h"
 

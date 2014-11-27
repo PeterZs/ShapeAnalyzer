@@ -30,7 +30,7 @@
 #include "contextMenuItems/ColorSignatureContextMenuItem.h"
 #include "contextMenuItems/HeatDiffusionContextMenuItem.h"
 #include "contextMenuItems/VoronoiCellsContextMenuItem.h"
-#include "contextMenuItems/ExtractPointSegmentContextMenuItem.h"
+#include "contextMenuItems/ExtractSegmentContextMenuItem.h"
 #include "contextMenuItems/ShapeInfoContextMenuItem.h"
 
 #include "../util/HashMap.h"
@@ -45,7 +45,7 @@
 #include "../domain/metric/GeodesicMetric.h"
 
 #include "../domain/signatures/Signature.h"
-#include "../domain/signatures/WaveKernelSignature.h"
+#include "../domain/signatures/PetscWaveKernelSignature.h"
 
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
@@ -79,13 +79,13 @@ struct RegisterCustomClasses {
         
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");
         
-        CustomContextMenuItemFactory::getInstance()->Register<ColorSignatureContextMenuItem<WaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
+        CustomContextMenuItemFactory::getInstance()->Register<ColorSignatureContextMenuItem<PetscWaveKernelSignature>>("color_signature_wavekernel", "Coloring>>Signature>>Wave Kernel");
         
         CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<GeodesicMetric>>("voronoicells_geodesic", "Segmentation>>Voronoi Cells>>Geodesic");
         
         CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
         
-        CustomContextMenuItemFactory::getInstance()->Register<ExtractPointSegmentContextMenuItem>("extract_point_segment", "Extract Point Segment as new Shape");
+        CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract chosen segment as new Shape");
     }
 };
 

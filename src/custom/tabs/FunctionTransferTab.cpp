@@ -91,15 +91,15 @@ void FunctionTransferTab::slotTransfer() {
         }
     }
     
-    laplaceBeltrami::FEMLaplaceBeltramiOperator laplacianSource(source, 100);
-    laplaceBeltrami::FEMLaplaceBeltramiOperator laplacianTarget(target, 100);
+    laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianSource(source, 100);
+    laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianTarget(target, 100);
     
     
     // compute 200-dimensional wave kernel discriptor on both shapes
-    WaveKernelSignature wksSource(source, 200, &laplacianSource);
+    PetscWaveKernelSignature wksSource(source, 200, &laplacianSource);
     
     
-    WaveKernelSignature wksTarget(target, 200, &laplacianTarget);
+    PetscWaveKernelSignature wksTarget(target, 200, &laplacianTarget);
     
     // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
     for(int i = 0; i < 200; i++) {
@@ -111,7 +111,7 @@ void FunctionTransferTab::slotTransfer() {
     }
     
     // compute correspondence matrix C
-    FunctionalMaps functionalMaps(source, target, &laplacianSource, &laplacianTarget, cs, ct, 100);
+    PetscFunctionalMaps functionalMaps(source, target, &laplacianSource, &laplacianTarget, cs, ct, 100);
 
     
     // transfer the coordinate function

@@ -1,14 +1,14 @@
 //
-//  HeatDiffusion.cpp
+//  PetscHeatDiffusion.cpp
 //  ShapeAnalyzer
 //
 //  Created by Emanuel Laude on 30.07.14.
 //
 //
 
-#include "HeatDiffusion.h"
+#include "PetscHeatDiffusion.h"
 
-HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), laplacian_(laplacian) {
+PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), laplacian_(laplacian) {
 
     
     Mat Phi;
@@ -38,11 +38,11 @@ HeatDiffusion::HeatDiffusion(Shape* shape, LaplaceBeltramiOperator* laplacian, v
     VecDestroy(&u0);
 }
 
-HeatDiffusion::~HeatDiffusion() {
+PetscHeatDiffusion::~PetscHeatDiffusion() {
     VecDestroy(&PhiTMu0_);
 }
 
-vtkSmartPointer<vtkDoubleArray> HeatDiffusion::getHeat(double t) {
+vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
     PetscInt m = shape_->getPolyData()->GetNumberOfPoints();
     
     Vec utv;

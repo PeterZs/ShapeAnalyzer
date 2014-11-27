@@ -75,6 +75,8 @@ struct RegisterCustomClasses {
         CustomContextMenuItemFactory::getInstance()->Register<ShapeInfoContextMenuItem>("shape_info", "Shape Info");
 
         CustomContextMenuItemFactory::getInstance()->Register<ColorEigenfunctionContextMenuItem>("color_eigenfunction", "Coloring>>i-th Eigenfunction");
+        CustomContextMenuItemFactory::getInstance()->Register<HeatDiffusionContextMenuItem>("color_heatdiffusion", "Coloring>>Heat diffusion");
+        
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
         
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<EuclideanMetric>>("color_metric_euclidean", "Coloring>>Metric>>Euclidean");

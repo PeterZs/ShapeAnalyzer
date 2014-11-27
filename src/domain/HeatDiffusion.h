@@ -19,9 +19,9 @@ using namespace laplaceBeltrami;
 class HeatDiffusion {
 public:
     HeatDiffusion(Shape* shape, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), initialCondition_(initialCondition) {}
-    ~HeatDiffusion();
+    ~HeatDiffusion() {}
     virtual vtkSmartPointer<vtkDoubleArray> getHeat(double t) = 0;
-private:
+protected:
     Shape* shape_;
     vtkSmartPointer<vtkDoubleArray> initialCondition_;
 };

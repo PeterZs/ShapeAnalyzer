@@ -8,7 +8,7 @@
 
 #include "PetscHeatDiffusion.h"
 
-PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), laplacian_(laplacian) {
+PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : HeatDiffusion(shape, initialCondition), laplacian_(laplacian) {
 
     
     Mat Phi;

@@ -16,17 +16,16 @@
 #include "Shape.h"
 #include "laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
 #include "PetscHelper.h"
+#include "HeatDiffusion.h"
 
 using namespace laplaceBeltrami;
 
-class PetscHeatDiffusion {
+class PetscHeatDiffusion : public HeatDiffusion {
 public:
     PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
     ~PetscHeatDiffusion();
     vtkSmartPointer<vtkDoubleArray> getHeat(double t);
 private:
-    
-    Shape* shape_;
     PetscLaplaceBeltramiOperator* laplacian_;
 
     Vec PhiTMu0_;

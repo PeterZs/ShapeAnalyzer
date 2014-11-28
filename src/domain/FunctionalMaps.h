@@ -30,7 +30,7 @@ public:
     
     virtual vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDoubleArray> f) = 0;
     
-    ~FunctionalMaps() {}
+    virtual ~FunctionalMaps();
 
 protected:
     Shape* shape1_;

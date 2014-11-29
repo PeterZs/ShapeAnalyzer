@@ -64,13 +64,11 @@ void Shape::removeFromRenderer() {
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::clearColoring() {
     coloring_.reset();
-    
-    mapper_->CreateDefaultLookupTable();
+    mapper_->SetScalarModeToUsePointData();
+    mapper_->SetColorModeToMapScalars();
+    mapper_->SetScalarRange(1.0, 1.0);
+    mapper_->Modified();
     mapper_->ScalarVisibilityOff();
-    mapper_->SetColorModeToDefault();
-    mapper_->InterpolateScalarsBeforeMappingOff();
-    mapper_->SetScalarModeToDefault();
-    mapper_->SetScalarMaterialModeToDefault();
     
     mapper_->Modified();
     
@@ -251,6 +249,7 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     coloring_.reset();
     coloring_ = coloring;
     
+    mapper_->ScalarVisibilityOn();
     if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::PointSegmentation) {
         double range[2];
         coloring_->values->GetRange(range);

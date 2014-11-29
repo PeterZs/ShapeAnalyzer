@@ -1643,7 +1643,7 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
     
     
     // correspondence deleting
-    if(typeid(item->getItem()->getData()) == typeid("PointCorrespondenceData")) {
+    if(dynamic_cast<PointCorrespondenceData*>(item->getItem()->getData()) != nullptr) {
         pointCorrespondenceData_.remove((PointCorrespondenceData*) item->getItem()->getData());
         pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     } else {
@@ -1712,7 +1712,7 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
     
     
     // correspondence deleting
-    if(typeid(item->getItem()->getData()) == typeid(PointCorrespondenceData)) {
+    if(dynamic_cast<PointCorrespondenceData*>(item->getItem()->getData()) != nullptr) {
         pointCorrespondenceData_[(PointCorrespondenceData*) item->getItem()->getData()] = false;
         pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
     } else {
@@ -1816,10 +1816,9 @@ void ShapeAnalyzer::pickCorrespondence() {
         lastInsertCorresondenceID_++;
         
         // adding to face/point data
-        if (typeid(correspondence->getData()) == typeid(PointCorrespondenceData)) { // point correspondence
+        if (dynamic_cast<PointCorrespondenceData*>(correspondence->getData()) != nullptr) { // point correspondence
             PointCorrespondence* pointCorrespondence = (PointCorrespondence*) correspondence;
             pointCorrespondenceData_.insert(pointCorrespondence->getData(), true);
-            
             pointCorrespondencesByActor_.insert(pointCorrespondence->getLinesActor(), pointCorrespondence);
             
             // add shape to qt list widget
@@ -1878,11 +1877,13 @@ void ShapeAnalyzer::deleteShape(int i) {
         
 
         //check whether one of the shapes of correspondence equals our shape that we want to delete
-        for(int i = 0; i < correspondence->getShapes().size(); i++) {
-            if(shape == correspondence->getShapes()[i]) {
-                //destroy widgetItem object
-                delete listCorrespondences->item(j);
-                break;
+        if(correspondence->getShapes().size() > 2) {
+            for(int i = 0; i < correspondence->getShapes().size(); i++) {
+                if(shape == correspondence->getShapes()[i]) {
+                    //destroy widgetItem object
+                    delete listCorrespondences->item(j);
+                    break;
+                }
             }
         }
     }
@@ -1895,9 +1896,13 @@ void ShapeAnalyzer::deleteShape(int i) {
         bool found = false;
         for(int i = 0; i < it->second->getShapes().size(); i++) {
             if(shape == it->second->getShapes()[i]) {
-                found = true;
-                it->second->removeFromRenderer();
-                delete it->second;
+                if(it->second->getShapes().size() > 2) {
+                    found = true;
+                    it->second->removeFromRenderer();
+                    delete it->second;
+                } else {
+                    it->second->getShapes().rbegin()
+                }
                 break;
             }
         }

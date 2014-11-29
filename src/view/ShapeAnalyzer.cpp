@@ -1877,13 +1877,11 @@ void ShapeAnalyzer::deleteShape(int i) {
         
 
         //check whether one of the shapes of correspondence equals our shape that we want to delete
-        if(correspondence->getShapes().size() > 2) {
-            for(int i = 0; i < correspondence->getShapes().size(); i++) {
-                if(shape == correspondence->getShapes()[i]) {
-                    //destroy widgetItem object
-                    delete listCorrespondences->item(j);
-                    break;
-                }
+        for(int i = 0; i < correspondence->getShapes().size(); i++) {
+            if(shape == correspondence->getShapes()[i]) {
+                //destroy widgetItem object
+                delete listCorrespondences->item(j);
+                break;
             }
         }
     }
@@ -1896,13 +1894,9 @@ void ShapeAnalyzer::deleteShape(int i) {
         bool found = false;
         for(int i = 0; i < it->second->getShapes().size(); i++) {
             if(shape == it->second->getShapes()[i]) {
-                if(it->second->getShapes().size() > 2) {
-                    found = true;
-                    it->second->removeFromRenderer();
-                    delete it->second;
-                } else {
-                    it->second->getShapes().rbegin()
-                }
+                found = true;
+                it->second->removeFromRenderer();
+                delete it->second;
                 break;
             }
         }

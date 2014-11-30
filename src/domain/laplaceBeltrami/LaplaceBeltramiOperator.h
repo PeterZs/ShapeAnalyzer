@@ -1,11 +1,3 @@
-//
-//  LaplaceBeltramiOperator.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 28.07.14.
-//
-//
-
 #ifndef ShapeAnalyzer_LaplaceBeltramiOperator_h
 #define ShapeAnalyzer_LaplaceBeltramiOperator_h
 
@@ -16,25 +8,42 @@
 
 #include "../Shape.h"
 
+/// \brief Namespace grouping all Laplace-Beltrami operator classes.
 namespace laplaceBeltrami {
-    
+
+    /// \brief Abstract class for the implementation of different discretizations of the Laplace-Beltrami operator.
+    /// \details Implementing classes provide functionality for the computation of eigenvectors and eigenvalues for a given shape. This abstract class is independent of the underlying framework. Laplace-Beltrami discretizations that utilize the PETSC and SLEPC framework should be derived from the subclass PetscLaplaceBeltramiOperator
     class LaplaceBeltramiOperator {
     public:
+        /// \brief Constructor
+        /// @param Shape* The shape which serves as the domain to which the Laplace-Beltrami operator is applied
+        /// @param int The number of eigenpairs that should be computed
         LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
         }
         
+        /// \brief Virtual destructor.
         virtual ~LaplaceBeltramiOperator() {
         }
         
+        /// \brief Returns i-th eigenfunction.
+        /// @param int The index of the eigenfunction that should be returned.
         virtual vtkSmartPointer<vtkDoubleArray> getEigenfunction(int i) = 0;
         
+        
+        /// \brief Returns i-th eigenvalue.
+        /// @param int The index of the eigenvalue that should be returned.
         virtual double getEigenvalue(int i) = 0;
         
+        
+        /// \brief Returns number of eigenpairs that are computed.
         int getNumberOfEigenfunctions() {
             return numberOfEigenfunctions_;
         }
     protected:
-        Shape* shape_; //the shape
+        /// Pointer to the shape which serves as the domain to which the Laplace-Beltrami operator is applied
+        Shape* shape_;
+        
+        /// Number of eigenpairs that are computed.
         int numberOfEigenfunctions_;
     };
     

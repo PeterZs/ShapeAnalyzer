@@ -1,11 +1,3 @@
-//
-//  RegisterCustomClasses.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 18.11.14.
-//
-//
-
 #ifndef ShapeAnalyzer_RegisterCustomClasses_h
 #define ShapeAnalyzer_RegisterCustomClasses_h
 

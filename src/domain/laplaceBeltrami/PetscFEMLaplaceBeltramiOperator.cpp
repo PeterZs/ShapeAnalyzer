@@ -62,7 +62,6 @@ Mat* laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getStiffnessMatrix() {
     return &L_;
 }
 
-//get number of non-zero elements per row (needed for efficient allocation of sparse matrices)
 void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces) {
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];

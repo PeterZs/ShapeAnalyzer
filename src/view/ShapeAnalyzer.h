@@ -104,17 +104,21 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
         bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
     };
     
-    // manages update of correspondences after scene transformation
+    /// \brief Box widget callback that manages update of correspondences after a shape has been transformed independently from the rest of the scene.
     class vtkBoxWidgetCallback : public vtkCommand {
     public:
+        /// \brief Reference to the parent object
         ShapeAnalyzer *sa;
+        
+        /// \brief The shape that has been transformed.
         Shape* shape;
         
-        
+        /// \brief Method for construction of class
         static vtkBoxWidgetCallback *New() {
             return new vtkBoxWidgetCallback;
         }
         
+        /// \brief Method is called if the vtkboxWidget instance to which this callback has been connected was transformed by the user.
         virtual void Execute(vtkObject *caller, unsigned long, void*) {
             vtkSmartPointer<vtkTransform> t = vtkSmartPointer<vtkTransform>::New();
             vtkBoxWidget2 *widget = reinterpret_cast<vtkBoxWidget2*>(caller);
@@ -319,8 +323,12 @@ private:
     /// Maps the vtkActor to a PointCorrespondence pointer.
     HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
     
-    // all face and point correspondences data, the bool indicates if for the data there exists a corresponding Correspondence object in "...CorrespondencesByActor_". In case we are in "view PointCorrespondences mode" this correspondence object is also visible in the qvtkWidget
+    /// \brief All PointCorrespondenceData instances.
+    /// \details Maps a PointCorrespondenceData to a bool that indicates if for the data there exists a corresponding PointCorrespondence object.
     HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;    
+
+    /// \brief All FaceCorrespondenceData instances.
+    /// \details Maps a FaceCorrespondenceData to a bool that indicates if for the data there exists a corresponding FaceCorrespondence object.
     HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
 
     

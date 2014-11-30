@@ -19,6 +19,7 @@
 
 using namespace std;
 
+/// \brief Namespace grouping all metric classes.
 namespace metric {
 
 ///

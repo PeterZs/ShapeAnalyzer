@@ -1,5 +1,5 @@
 ///
-/// \brief Starts the ShapeAnalyzer-App.
+/// \brief Main class containt the main function. Starts the ShapeAnalyzer-App.
 ///
 
 #include <exception>
@@ -18,7 +18,7 @@ int main( int argc, char** argv ) {
   
         return app.exec();
     } catch(exception e) {
-        cout << "Exception: " << e.what() <<endl;
+        cout << "Exception occured: " << e.what() <<endl;
         exit(-1);
     }
 }

@@ -14,6 +14,8 @@ namespace sampling {
 class MetricSampling : public Sampling {
 public:
     /// \brief Basic constructor.
+    /// @param Shape* The shape that is sampled.
+    /// @param Metric* A refernce to the metric that is used for the computation of the sampled points.
     MetricSampling(Shape* shape, Metric* metric) : Sampling(shape), metric_(metric) {}
     
 protected:

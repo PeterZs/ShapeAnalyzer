@@ -1,11 +1,3 @@
-//
-//  PetscHelper.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 04.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__PetscHelper__
 #define __ShapeAnalyzer__PetscHelper__
 
@@ -14,31 +6,31 @@
 #include <vtkSmartPointer.h>
 #include <vtkDoubleArray.h>
 
+/// \brief A Helper class containing a set of static functions for the creation and manipulation of PETSC vectors and matrices.
 class PetscHelper {
 public:
-    //set block B in matrix A. Element A(i, j) will be set to B(0,0) and so on...
+    /// \brief Sets block B in matrix A. Element A(i, j) will be set to B(0,0) and so on...
     static void setBlock(Mat& A, Mat& B, PetscInt i, PetscInt j);
     
-    //set i-th row in matrix A
+    /// \brief set i-th row a_i in matrix A
     static void setRow(Mat& A, Vec& ai, PetscInt i);
 
-    //get i-th row in matrix A
+    /// \brief Returns i-th row a_i in matrix A
     static void getRow(Vec& ai, Mat& A, PetscInt i);
     
-    //set i-th column in matrix A
+    /// \brief Sets i-th column a_i in matrix A
     static void setColumn(Mat& A, Vec& ai, PetscInt i);
     
-    //reshape n*m-dimensional vector b as matrix B with m rows and n columns. Elements are filled in row wise into matrix B.
+    /// \brief Reshapes n*m-dimensional vector b as matrix B with m rows and n columns. Elements are filled row wise into matrix B.
     static void reshape(Mat& B, Vec& b, PetscInt m, PetscInt n);
     
-    
+    /// \brief Converts a vtkDoubleArray to a Petsc vector
     static void vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec);
     
-    
+    /// \brief Converts a PETSC vector to a vtkDoubleArray
     static vtkSmartPointer<vtkDoubleArray> petscVecToVtkDoubleArray(Vec& vec);
     
-    
-    
+    /// \brief Converts a C++ array of type PetscScalar* to a vtkDoubleArray
     static vtkSmartPointer<vtkDoubleArray> petscScalarArrayToVtkDoubleArray(const PetscScalar *array, PetscInt size);
 };
 

@@ -1,11 +1,3 @@
-//
-//  PetscHeatDiffusion.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__PetscHeatDiffusion__
 #define __ShapeAnalyzer__PetscHeatDiffusion__
 
@@ -20,14 +12,21 @@
 
 using namespace laplaceBeltrami;
 
+/// \brief Concrete implementation of the HeatDiffusion interface.
 class PetscHeatDiffusion : public HeatDiffusion {
 public:
+    /// \brief Constructor
+    /// @param Shape* The shape to which the heat diffusion process is applied.
+    /// @param PetscLaplaceBeltramiOperator* The laplacian of the shape.
+    /// @param vtkSmartPointer<vtkDoubleArray> The initial condition as an array of values each corresponding to the vertex with the same index
     PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
+    /// \brief Virtual destructor.
     ~PetscHeatDiffusion();
     vtkSmartPointer<vtkDoubleArray> getHeat(double t);
 private:
     PetscLaplaceBeltramiOperator* laplacian_;
 
+    /// \brief The Vector Phi^T * M * u0
     Vec PhiTMu0_;
 };
 

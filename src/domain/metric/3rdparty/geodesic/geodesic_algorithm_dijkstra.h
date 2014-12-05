@@ -123,7 +123,7 @@ inline void GeodesicAlgorithmDijkstra::list_nodes_visible_from_node(node_pointer
 {
 	vertex_pointer v = node->vertex();
 	if(storage.size() != distances.size()) {
-        throw geodesic_error("Geodesic error: The number of nodes does not match the number of distances.");
+        throw geodesic_error("The number of nodes does not match the number of distances.");
     }
 
 	for(unsigned i=0; i<v->adjacent_edges().size(); ++i)

@@ -1,11 +1,3 @@
-//
-//  MeshCheckTab.h
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 04.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__MeshCheckTab__
 #define __ShapeAnalyzer__MeshCheckTab__
 
@@ -26,6 +18,9 @@
 
 #include "ui_MeshCheckTabWidget.h"
 
+/// \brief Tab for the MeshChecker class.
+/// \details All functionalities of the MeshChecker can be chosen individually and
+/// the output will be displayed in a text field.
 class MeshCheckTab : public QWidget, public Ui::MeshCheckTabWidget, public CustomTab {
     Q_OBJECT
     

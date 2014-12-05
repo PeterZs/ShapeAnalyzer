@@ -732,7 +732,7 @@ void ShapeAnalyzer::slotOpenScene() {
         addShape(shapes[i]);
     }
     
-    for(HashMap<PointCorrespondenceData*, PointCorrespondence*>::iterator i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
+    for(auto i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
 
         
         if(i->second != nullptr) {
@@ -750,7 +750,7 @@ void ShapeAnalyzer::slotOpenScene() {
         }
     }
 
-    for(HashMap<FaceCorrespondenceData*, FaceCorrespondence*>::iterator i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
+    for(auto i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
         
         
         if(i->second != nullptr) {
@@ -794,23 +794,119 @@ void ShapeAnalyzer::slotImportShape() {
     if(filename.endsWith(tr(".off"))) {
         // read .off file
         vtkSmartPointer<vtkOFFReader> reader = vtkSmartPointer<vtkOFFReader>::New();
+        
+        // vtk error handling
+        vtkSmartPointer<ErrorObserver> errorObserver = vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent, errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent, errorObserver);
+        
         reader->SetFileName(filename.toStdString().c_str());
-        importShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        vtkAlgorithmOutput* output;
+        output = reader->GetOutputPort();
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(tr(".vert"))) {
         // read .tri .vert files
         vtkSmartPointer<vtkToscaReader> reader = vtkSmartPointer<vtkToscaReader>::New();
+        
+        // vtk error handling
+        vtkSmartPointer<ErrorObserver> errorObserver = vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent, errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent, errorObserver);
+        
         reader->SetFileName(filename.toStdString().c_str());
-        importShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        vtkAlgorithmOutput* output;
+        output = reader->GetOutputPort();
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(".ply")) {
         // read .ply file
         vtkSmartPointer<vtkPLYReader> reader = vtkSmartPointer<vtkPLYReader>::New();
+        
+        // vtk error handling
+        vtkSmartPointer<ErrorObserver> errorObserver = vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent, errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent, errorObserver);
+        
         reader->SetFileName(filename.toStdString().c_str());
-        importShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        vtkAlgorithmOutput* output;
+        output = reader->GetOutputPort();
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else {
         // read .obj file
         vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
+        
+        // vtk error handling
+        vtkSmartPointer<ErrorObserver> errorObserver = vtkSmartPointer<ErrorObserver>::New();
+        reader->AddObserver(vtkCommand::ErrorEvent, errorObserver);
+        reader->AddObserver(vtkCommand::WarningEvent, errorObserver);
+        
         reader->SetFileName(filename.toStdString().c_str());
-        importShape(reader, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        vtkAlgorithmOutput* output;
+        output = reader->GetOutputPort();
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
+        
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     }
 }
 
@@ -1279,10 +1375,8 @@ void ShapeAnalyzer::vtkSetup() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::importShape(vtkPolyDataAlgorithm* reader, string name) {
+void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
     // the following will filter the shape for certain properties
-    vtkAlgorithmOutput* output;
-    output = reader->GetOutputPort();
     
     // dialog for options
     QDialog* dialog = new QDialog(this, 0);
@@ -1450,8 +1544,9 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType f
             result = correspondencePicker_->addShape(shape, this->actionAddFaceCorrespondences->isChecked() ? faceId : pointId);
         } catch (invalid_argument e) {
             // the shape was not added correctly, nothing happens
-            QErrorMessage* errorDialog;
-            errorDialog->showMessage(QString::fromStdString(string("Invalid Argument: ").append(e.what())));
+            QErrorMessage errorDialog;
+            errorDialog.showMessage(QString::fromStdString(string("Invalid Argument: ").append(e.what())));
+            errorDialog.exec();
             return;
         }
         if(result == 1)
@@ -1887,7 +1982,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     }
     
     //second delete all correspondences belonging to the shape
-    for(HashMap<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end();) {
+    for(auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end();) {
 
         
         //check whether one of the shapes of correspondence equals our shape that we want to delete
@@ -1908,7 +2003,7 @@ void ShapeAnalyzer::deleteShape(int i) {
             ++it;
         }
     }
-    for(HashMap<vtkActor*, FaceCorrespondence*>::iterator it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end();) {
+    for(auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end();) {
         
         
         //check whether one of the shapes of correspondence equals our shape that we want to delete
@@ -1930,7 +2025,7 @@ void ShapeAnalyzer::deleteShape(int i) {
         }
     }
     //third delete all data that belongs to the shape
-    for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end();) {
+    for(auto it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end();) {
         
         PointCorrespondenceData* data = it->first;
         //check whether one of the shapes of correspondence equals our shape that we want to delete
@@ -2037,5 +2132,11 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     
     
     qvtkWidget->GetRenderWindow()->Render();
+}
+//////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::showErrorMessage(string description, string error) {
+    QErrorMessage msgBox;
+    msgBox.showMessage(QString::fromStdString(description + string(": ") + error));
+    msgBox.exec();
 }
 

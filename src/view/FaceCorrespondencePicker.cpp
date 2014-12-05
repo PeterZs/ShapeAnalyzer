@@ -1,20 +1,12 @@
-//
-//  FaceCorrespondencePicker.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 08.05.14.
-//
-//
-
 #include "FaceCorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) throw(std::invalid_argument) {
+void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) {
     // invalid input check
     if(shape == nullptr) {
-        throw new invalid_argument("Shape null pointer input in FaceCorrespondencePicker in getCurrentSelectionPoint.");
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
     } else if (shape->getPolyData()->GetNumberOfCells() <= faceId) {
-        throw new invalid_argument("faceId input larger than number of faces in FaceCorrespondencePicker in getCurrentSelectionPoint.");
+        throw invalid_argument("Source point (" + to_string(faceId) + ") larger than number of points (" + to_string(shape->getPolyData()->GetNumberOfCells()) + ") in " + __PRETTY_FUNCTION__);
     }
     
     double p1[3];
@@ -29,12 +21,12 @@ void FaceCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) throw(std::invalid_argument) {
+void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType faceId) {
     // invalid input check
     if(shape == nullptr) {
-        throw new invalid_argument("Shape null pointer input in FaceCorrespondencePicker in visualizeCurrentSelection.");
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
     } else if (shape->getPolyData()->GetNumberOfCells() <= faceId) {
-        throw new invalid_argument("faceId input larger than number of faces in FaceCorrespondencePicker in visualizeCurrentSelection.");
+        throw invalid_argument("Source point (" + to_string(faceId) + ") larger than number of points (" + to_string(shape->getPolyData()->GetNumberOfCells()) + ") in " + __PRETTY_FUNCTION__);
     }
     
     vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));

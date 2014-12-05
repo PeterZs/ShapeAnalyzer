@@ -5,20 +5,22 @@
 #include <exception>
 
 #include <QApplication>
+#include <QErrorMessage>
 
 #include "ShapeAnalyzer.h"
 
 int main( int argc, char** argv ) {
     // QT Stuff
+    QApplication app( argc, argv );
+    
     try {
-        QApplication app( argc, argv );
-  
         ShapeAnalyzer shapeAnalyzer;
         shapeAnalyzer.show();
-  
         return app.exec();
     } catch(exception e) {
-        cout << "Exception occured: " << e.what() <<endl;
+        QErrorMessage msgBox;
+        msgBox.showMessage(QString::fromStdString(string(e.what())));
+        msgBox.exec();
         exit(-1);
     }
 }

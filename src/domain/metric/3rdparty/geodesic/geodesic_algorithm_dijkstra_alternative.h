@@ -118,7 +118,7 @@ inline unsigned GeodesicAlgorithmDijkstraAlternative::best_source(SurfacePoint& 
 			}
 		}
 		if(!min_vertex){
-            throw geodesic_error("Geodesic error: No vertex with minimal distance was found.");
+            throw geodesic_error("No vertex with minimal distance was found.");
         }
 		node_pointer node = &m_nodes[min_vertex->id()];
 		return node->source_index();
@@ -151,7 +151,7 @@ inline void GeodesicAlgorithmDijkstraAlternative::trace_back(SurfacePoint& desti
 			}
 		}
 		if(!min_vertex) {
-            throw geodesic_error("Geodesic error: No vertex with minimal distance was found.");
+            throw geodesic_error("No vertex with minimal distance was found.");
         }
 		path.push_back(SurfacePoint(min_vertex));
 	}
@@ -246,7 +246,7 @@ inline void GeodesicAlgorithmDijkstraAlternative::propagate(std::vector<SurfaceP
 				{
 					queue_type::iterator iter = m_queue.find(next_node);
 					if(iter == m_queue.end()) {
-                        throw geodesic_error("Geodesic error: There is a problem with the mesh.");
+                        throw geodesic_error("There is a problem with the mesh.");
                     }
 					m_queue.erase(iter);
 				}

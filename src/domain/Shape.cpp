@@ -22,7 +22,10 @@ Shape::Shape(vtkSmartPointer<vtkRenderer> renderer)
     // do not call initialize here! Poly data is not yet initialized!
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::initialize() {
+    
     //Visualize with normals. Looks smoother ;)
     polyDataNormals_ = vtkSmartPointer<vtkPolyDataNormals>::New();
     polyDataNormals_->SetInputData(polyData_);
@@ -244,6 +247,8 @@ vtkIdType Shape::getRandomPoint() {
     return std::rand() % polyData_->GetPoints()->GetNumberOfPoints();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     // release old shared_ptr. Decrements ref count and if there is no other object referencing the coloring it will be destroyed.
     coloring_.reset();
@@ -251,6 +256,15 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     
     mapper_->ScalarVisibilityOn();
     if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::PointSegmentation) {
+        // argument check
+        if(coloring->values->GetNumberOfComponents() != 1) {
+            throw invalid_argument(string("The Coloring is of type PointScalar or PointSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
+        }
+        if(coloring->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
+            throw invalid_argument(string("The number of coloring values does not match the number of vertices in").append(__PRETTY_FUNCTION__));
+        }
+        
+        // set coloring
         double range[2];
         coloring_->values->GetRange(range);
         
@@ -261,6 +275,15 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->SetColorModeToMapScalars();
         mapper_->SetScalarRange(range[0], range[1]);
     } else if(coloring_->type == Coloring::Type::FaceScalar || coloring_->type == Coloring::Type::FaceSegmentation) {
+        // argument check
+        if(coloring->values->GetNumberOfComponents() != 1) {
+            throw invalid_argument(string("The Coloring is of type FaceScalar or FaceSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
+        }
+        if(coloring->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
+            throw invalid_argument(string("The number of coloring values does not match the number of faces in").append(__PRETTY_FUNCTION__));
+        }
+        
+        // set coloring
         double range[2];
         coloring_->values->GetRange(range);
         
@@ -271,12 +294,30 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->SetColorModeToMapScalars();
         mapper_->SetScalarRange(range[0], range[1]);
     } else if(coloring_->type == Coloring::Type::PointRgb) {
+        // argument check
+        if(coloring->values->GetNumberOfComponents() != 3) {
+            throw invalid_argument(string("The Coloring is of type PointRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
+        }
+        if(coloring->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
+            throw invalid_argument(string("The number of coloring values does not match the number of vertices in").append(__PRETTY_FUNCTION__));
+        }
+        
+        // set coloring
         polyData_->GetPointData()->SetScalars(coloring_->values);
         
         mapper_->SetScalarModeToUsePointData();
         mapper_->SetColorModeToDefault();
         mapper_->ScalarVisibilityOn();
     } else if(coloring_->type == Coloring::Type::FaceRgb) {
+        // argument check
+        if(coloring->values->GetNumberOfComponents() != 3) {
+            throw invalid_argument(string("The Coloring is of type FaceRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
+        }
+        if(coloring->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
+            throw invalid_argument(string("The number of coloring values does not match the number of faces in").append(__PRETTY_FUNCTION__));
+        }
+        
+        // set coloring
         polyData_->GetCellData()->SetScalars(coloring_->values);
         
         mapper_->SetScalarModeToUseCellData();

@@ -23,7 +23,9 @@ namespace signature {
         void getComponent(int i, Vec* component);
         virtual vtkSmartPointer<vtkDoubleArray> getComponent(int i);
     protected:
+        /// Petsc matrix of the signature
         Mat signature_;
+        /// Reference to the LPO of the shape.
         PetscLaplaceBeltramiOperator* laplacian_;
     };
     

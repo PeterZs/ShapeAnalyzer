@@ -10,7 +10,7 @@
 
 #include <limits>
 
-
+///////////////////////////////////////////////////////////////////////////////
 signature::PetscWaveKernelSignature::PetscWaveKernelSignature(Shape* shape, int dimension, PetscLaplaceBeltramiOperator* laplacian, double wksVariance) : PetscLaplaceBeltramiSignature(shape, dimension, laplacian), wksVariance_(wksVariance) {
 
     PetscScalar* logLambda = new PetscScalar[laplacian_->getNumberOfEigenfunctions()];

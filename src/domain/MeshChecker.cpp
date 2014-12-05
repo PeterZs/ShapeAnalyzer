@@ -15,6 +15,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 MeshChecker::MeshChecker(Shape* shape) : shape_(shape) {
+    if (shape_ == nullptr) {
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    }
 }
 
 
@@ -133,14 +136,10 @@ void MeshChecker::createHalfEdgeStructure() {
     
     halfEdges_.reserve(numberOfVertices);
     
-    cout << halfEdges_.size() << endl;
-    
     // create fake array with 0s everywhere
     for (vtkIdType i = 0; i < numberOfVertices; i++) {
         halfEdges_.push_back(new vector<int>(numberOfVertices, 0));
     }
-    
-    cout << halfEdges_.size() << endl;
     
     // raise value [i, j] for every edge of an cell between the vertices i and j
     for (vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfCells(); i++) {
@@ -156,6 +155,7 @@ void MeshChecker::createHalfEdgeStructure() {
             else {
                 id2 = ids->GetId(j+1);
             }
+            
             (*halfEdges_[id1])[id2] = (*halfEdges_[id1])[id2] + 1;
         }
     }

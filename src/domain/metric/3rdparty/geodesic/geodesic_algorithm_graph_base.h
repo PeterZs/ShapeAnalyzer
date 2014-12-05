@@ -35,7 +35,7 @@ public:
 		GeodesicAlgorithmBase::print_statistics();
 
 		double memory = m_nodes.size()*sizeof(Node);
-		std::cout << "uses about " << memory/1e6 << "Mb of memory" <<std::endl;
+		//std::cout << "uses about " << memory/1e6 << "Mb of memory" <<std::endl;
 	}
 
 protected:

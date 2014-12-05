@@ -1,20 +1,14 @@
-//
-//  ErrorObserver.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 29.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__ErrorObserver__
 #define __ShapeAnalyzer__ErrorObserver__
 
-#include <string>
-
 #include <vtkSmartPointer.h>
-#include <vtkImageData.h>
 #include <vtkCommand.h>
 
+/// \brief Can detect errors and warnings in vtk objects.
+/// \details Add an instance of this class to an vtk object as
+/// an observer and errors and warnings will be written into it.
+/// from http://www.vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ObserveError
+/// @author Emanuel Laude and Zorah Lähner
 class ErrorObserver : public vtkCommand {
 public:
     ErrorObserver():
@@ -78,5 +72,4 @@ private:
     std::string WarningMessage;
 };
 
-
-#endif /* defined(__ShapeAnalyzer__ErrorObserver__) */
+#endif

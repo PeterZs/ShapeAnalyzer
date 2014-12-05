@@ -8,8 +8,16 @@
 
 #include "PetscHeatDiffusion.h"
 
+///////////////////////////////////////////////////////////////////////////////
 PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : HeatDiffusion(shape, initialCondition), laplacian_(laplacian) {
 
+    if (shape_ == nullptr) {
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    }
+    
+    if (laplacian_ == nullptr) {
+        throw invalid_argument(string("Null pointer input 'laplacian' in ").append(__PRETTY_FUNCTION__));
+    }
     
     Mat Phi;
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
@@ -38,10 +46,14 @@ PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperato
     VecDestroy(&u0);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 PetscHeatDiffusion::~PetscHeatDiffusion() {
     VecDestroy(&PhiTMu0_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
     PetscInt m = shape_->getPolyData()->GetNumberOfPoints();
     

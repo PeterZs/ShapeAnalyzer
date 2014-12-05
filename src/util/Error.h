@@ -4,7 +4,10 @@
 using namespace std;
 
 ///
-/// \brief Used to throw exceptions within the ShapeAnalyzer.
+/// \brief Used to throw and catch exceptions within the ShapeAnalyzer.
+/// \details Exceptions that inherit from Error are expected to be catched, or
+/// it is generally possible to catch and handle them. Every namespace has its
+/// own Error class to allow more specific error handling.
 /// @author Emanuel Laude and Zorah Lähner
 ///
 class Error : public exception {
@@ -23,6 +26,6 @@ public:
     
 private:
     std::string what_;
-}
+};
 
 #endif

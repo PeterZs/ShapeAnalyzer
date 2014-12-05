@@ -182,6 +182,7 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
     
     string line;
     
+    // read shapes
     unsigned int numberOfShapes;
     {
         stringstream ss;
@@ -204,18 +205,167 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
         
     }
     
+    // read correspondences
+    
+    //read last insert correspondence ID
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> lastInsertCorrespondenceID;
+    }
+    
+    
+    //read point correspondences
+    int numberOfPointCorrespondences;
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> numberOfPointCorrespondences;
+    }
+    
+    for(int i = 0; i < numberOfPointCorrespondences; i++) {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        
+        int id;
+        ss >> id;
+        
+        PointCorrespondenceData* data = new PointCorrespondenceData(id);
+        
+        bool visible;
+        ss >> visible;
+        
+        int numberOfShapes;
+        ss >> numberOfShapes;
+        
+        for(int j = 0; j < numberOfShapes; j++) {
+            int shapeId;
+            int pointId;
+            ss >> shapeId;
+            ss >> pointId;
+            data->addShape(shapeId, pointId);
+        }
+        
+        PointCorrespondence* correspondence = nullptr;
+        if(visible) {
+        //    correspondence = new PointCorrespondence(renderer, data, shapesByActor);
+        //    correspondence->initialize();
+        }
+        
+        pointCorrespondences.insert(data, correspondence);
+    }
+    
+    //read face correspondences
+    int64_t numberOfFaceCorrespondences;
+    is.read(reinterpret_cast<char*>(&numberOfFaceCorrespondences), sizeof(int64_t));
+    
+    for(int64_t i = 0; i < numberOfFaceCorrespondences; i++) {
+        int64_t id;
+        is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
+        FaceCorrespondenceData* data = new FaceCorrespondenceData(id);
+        
+        bool visible;
+        is.read(reinterpret_cast<char*>(&visible), sizeof(bool));
+        
+        int64_t numberOfShapes;
+        is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+        
+        for(int64_t j = 0; j < numberOfShapes; j++) {
+            int64_t shapeId;
+            int64_t faceId;
+            is.read(reinterpret_cast<char*>(&shapeId), sizeof(int64_t));
+            is.read(reinterpret_cast<char*>(&faceId), sizeof(int64_t));
+            data->addShape(shapeId, faceId);
+        }
+        
+        FaceCorrespondence* correspondence = nullptr;
+        if(visible) {
+        //    correspondence = new FaceCorrespondence(renderer, data, shapesByActor);
+        //    correspondence->initialize();
+        }
+        
+        faceCorrespondences.insert(data, correspondence);
+        
+    }
+    
     is.close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportSceneASCII(string filename, vector<Shape*>& shapes, int lastInsertShapeID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences, int lastInsertCorrespondenceID) {
+void SceneWriterReader::exportSceneASCII
+            (string filename,
+             vector<Shape*>& shapes,
+             int lastInsertShapeID,
+             HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences,
+             HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences,
+             int lastInsertCorrespondenceID)
+{
     ofstream os(filename);
     
+    // write shapes
     os << shapes.size() << endl;
     os << lastInsertShapeID << endl;
     for(int i = 0; i < shapes.size(); i++) {
         shapes[i]->writeASCII(os);
     }
+    
+    // write last insert correspondence id
+    os << lastInsertCorrespondenceID;
+    os << endl;
+    
+    // write point correspondences
+    int numberOfPointCorrespondences = pointCorrespondences.size();
+    os << numberOfPointCorrespondences;
+    os << endl;
+    
+    for(auto it = pointCorrespondences.begin(); it != pointCorrespondences.end(); it++) {
+        int id = it->first->getId();
+        os << id << "\t";
+        
+        bool visible = it->second != nullptr;
+        os << visible << "\t";
+        
+        int numberOfShapes = it->first->size();
+        os << numberOfShapes << "\t";
+        
+        for(int i = 0; i < numberOfShapes; i++) {
+            int shapeId = it->first->getShapeIds()[i];
+            int pointId = it->first->getCorrespondingIds()[i];
+            os << shapeId << "\t";
+            os << pointId << "\t";
+        }
+        
+        os << endl;
+    }
+    
+    // write face correspondences
+    int numberOfFaceCorrespondences = faceCorrespondences.size();
+    os << numberOfFaceCorrespondences;
+    os << endl;
+    
+    for(auto it = faceCorrespondences.begin(); it != faceCorrespondences.end(); it++) {
+        int id = it->first->getId();
+        os << id << "\t";
+        
+        bool visible = it->second != nullptr;
+        os << visible << "\t";
+        
+        int numberOfShapes = it->first->size();
+        os << numberOfShapes << "\t";
+        
+        for(int i = 0; i < numberOfShapes; i++) {
+            int shapeId = it->first->getShapeIds()[i];
+            int faceId = it->first->getCorrespondingIds()[i];
+            os << shapeId << "\t";
+            os << faceId << "\t";
+        }
+        
+        os << endl;
+    }
+    
     os.close();
 }
 

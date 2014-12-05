@@ -57,8 +57,12 @@ public:
 private:
     void createHalfEdgeStructure();
     
+    /// Reference to the checked shape
     Shape*                  shape_;
-    vector<vector<int>* >    halfEdges_;
+    /// \brief Representation of the half-edge data structure.
+    /// \details 1 in the position [i,j] there is a half edge from i to j. 0 there is no half edge.
+    /// \note Might change the vectors for something more optimal.
+    vector<vector<int>* >   halfEdges_;
 };
 
 #endif /* defined(__ShapeAnalyzer__MeshChecker__) */

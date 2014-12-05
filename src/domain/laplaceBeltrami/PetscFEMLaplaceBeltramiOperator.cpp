@@ -8,6 +8,7 @@
 
 #include "PetscFEMLaplaceBeltramiOperator.h"
 
+///////////////////////////////////////////////////////////////////////////////
 laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperator(Shape *shape, int numberOfEigenfunctions) : PetscLaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
     PetscErrorCode ierr;
     
@@ -45,7 +46,8 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
     ierr = EPSPrintSolution(eps_, NULL);
 }
 
-//detroy all data structures
+
+///////////////////////////////////////////////////////////////////////////////
 laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
@@ -54,14 +56,20 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperat
     ierr = MatDestroy(&M_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 Mat* laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getMassMatrix() {
     return &M_;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 Mat* laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getStiffnessMatrix() {
     return &L_;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtkIdType numberOfPoints, vtkIdType numberOfFaces) {
 
     set<vtkIdType>* adjacencyList = new set<vtkIdType>[numberOfPoints];
@@ -85,11 +93,14 @@ void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getNnz(PetscInt *nnz, vtk
     delete [] adjacencyList;
 }
 
-//get value of mass matrix at ij
+
+///////////////////////////////////////////////////////////////////////////////
 PetscScalar laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getMass(double *a, double *b, double *c) {
     return vtkTriangle::TriangleArea(a, b, c) / 12.0;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 PetscScalar laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getStiffness(double *a, double *b, double *c) {
     double ca[3];
     ca[0] = a[0] - c[0];
@@ -114,6 +125,8 @@ PetscScalar laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getStiffness(doubl
     return 0.5 * cotan;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 //setup cotan and mass matrix for further computation (e.g. eigenfunctions)
 void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::setupMatrices() {
     PetscErrorCode ierr;
@@ -176,6 +189,8 @@ void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::setupMatrices() {
     delete [] nnz;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getEigenfunction(int i) {
     Vec vec;
     getEigenfunction(i, &vec);
@@ -187,13 +202,15 @@ vtkSmartPointer<vtkDoubleArray> laplaceBeltrami::PetscFEMLaplaceBeltramiOperator
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getEigenfunction(PetscInt i, Vec* phi) {
     PetscErrorCode ierr;
     MatGetVecs(L_, NULL, phi);
     ierr = EPSGetEigenvector(eps_, i, *phi, NULL);
 }
 
-//returns i-th eigenvalue
+
+///////////////////////////////////////////////////////////////////////////////
 double laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getEigenvalue(int i) {
     PetscErrorCode ierr;
     PetscScalar lambda;
@@ -202,6 +219,8 @@ double laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getEigenvalue(int i) {
     return lambda;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) {
     PetscErrorCode ierr;
     MatGetVecs(L_, NULL, phi);

@@ -1,11 +1,3 @@
-//
-//  FunctionTransferTab.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 24.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__FunctionTransferTab__
 #define __ShapeAnalyzer__FunctionTransferTab__
 

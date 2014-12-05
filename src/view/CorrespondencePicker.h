@@ -1,11 +1,3 @@
-//
-//  CorrespondencePicker.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 25.04.14.
-//
-//
-
 #ifndef CorrespondencePicker_H
 #define CorrespondencePicker_H
 
@@ -56,9 +48,9 @@ protected:
     }
     
     //returns point coordinates of current selection (center of selected triangle in case of FaceCorrespondence) to draw line between this point and mouse coordinates
-    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) throw (std::invalid_argument) = 0;
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) = 0;
 
-    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType) throw (std::invalid_argument) = 0;
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType) = 0;
 
     virtual Correspondence* createCorrespondence() = 0;
     

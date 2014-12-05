@@ -1,17 +1,11 @@
-
-//
-//  FunctionTransferTab.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 24.08.14.
-//
-//
-
 #include "FunctionTransferTab.h"
 
+///////////////////////////////////////////////////////////////////////////////
 FunctionTransferTab::~FunctionTransferTab() {
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent) {
     this->setupUi(this);
     
@@ -35,6 +29,8 @@ FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shape
             this,                                   SLOT(slotTransfer()));
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void FunctionTransferTab::slotTransfer() {
     vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
     vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
@@ -125,6 +121,7 @@ void FunctionTransferTab::slotTransfer() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void FunctionTransferTab::onShapeAdd(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
@@ -133,6 +130,8 @@ void FunctionTransferTab::onShapeAdd(Shape* shape) {
     this->buttonTransfer->setEnabled(true);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void FunctionTransferTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
         if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
@@ -152,6 +151,8 @@ void FunctionTransferTab::onShapeDelete(Shape* shape) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void FunctionTransferTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
@@ -171,6 +172,8 @@ void FunctionTransferTab::onShapeEdit(Shape* shape) {
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void FunctionTransferTab::onClear() {
     this->comboBoxSourceShape->clear();
     this->comboBoxTargetShape->clear();

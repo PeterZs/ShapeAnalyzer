@@ -171,11 +171,16 @@ public:
     /// the only overwritten function is the calculation of the color for each face.
     void colorFacesCoordinates();
 
-private:    
+private:
+    /// \brief Unique id of the shape
+    /// \details Although the ShapeAnalyzer only assigns unique ids, the uniqueness is not
+    /// forced unconditionally
     vtkIdType id_;
+    /// Non-unique name of the shape
     string name_;
     
-    // vtk objects
+    /// @name VTK objects
+    ///@{
     vtkSmartPointer<vtkActor> actor_;
     vtkSmartPointer<vtkPolyDataMapper> mapper_;
     vtkSmartPointer<vtkBoxWidget2> boxWidget_;
@@ -183,7 +188,9 @@ private:
     vtkSmartPointer<vtkPolyDataNormals> polyDataNormals_;
     
     vtkSmartPointer<vtkRenderer> renderer_;
+    ///@}
     
+    /// \brief Current Coloring of the shape, if there is any
     shared_ptr<Coloring> coloring_;
 };
 

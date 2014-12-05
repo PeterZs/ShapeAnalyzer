@@ -32,24 +32,35 @@ class Metric {
  
     
 public:
-    /// Protected constructor since Metric should only be initialized via Factory
-    Metric(Shape* shape) : shape_(shape) {}
+    /// Basic constructor
+    /// \throws MetricError Some implementations may throw MetricError here.
+    Metric(Shape* shape) : shape_(shape) {
+        if (shape == nullptr) {
+            throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+        }
+    }
     
     /// Empty destructor
     virtual ~Metric() {};
 
     /// Returns the distance between the points with the ids a and b
+    /// \throws MetricError Some implementations may throw MetricError here.
     virtual double getDistance(vtkIdType a, vtkIdType b) = 0;
     
     /// Returns the distances from vertex with id source to all other vertices. The result is stored in distances which is of type ScalarPointAttribute.
+    /// \throws MetricError Some implementations may throw MetricError here.
     virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source) = 0;
     
-    /// Returns the id of the point with the greatest distance to all points in the source list
+    /// \brief Returns the id of the point with the greatest distance to all points in the source list.
+    /// \details The behaivor for an empty input list in undefined, but no error will occur.
+    /// \throws MetricError Some implementations may throw MetricError here.
     virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) = 0;
     
     /// Returns voronoi cells that correspond to the vertices in argument seeds. The result is of type vtkIntArray and it contains the corresponding cell id for each vertex.
+    /// \throws MetricError Some implementations may throw MetricError here.
     virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
 protected:
+    /// Reference to the shape the metric is calculated on.
     Shape* shape_;
 };
     

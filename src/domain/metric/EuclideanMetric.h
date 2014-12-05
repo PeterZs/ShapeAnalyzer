@@ -20,10 +20,10 @@ namespace metric {
     public:
         EuclideanMetric(Shape* shape) : Metric(shape) {}
         
-        virtual double getDistance(vtkIdType a, vtkIdType b);
         virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source);
-        virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
+        virtual double getDistance(vtkIdType a, vtkIdType b);
         virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
+        virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
     };
 }
 

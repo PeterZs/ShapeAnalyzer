@@ -18,11 +18,28 @@ public:
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the source shape.
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the target shape.
     /// @param int Number of eigenfunctions that are used for the representation of the functions.
-    FunctionalMaps(Shape* shape1, Shape* shape2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : shape1_(shape1), shape2_(shape2), c1_(c1), c2_(c2), numberOfEigenfunctions_(numberOfEigenfunctions) {
-        numberOfConstraints_ = c1_.size();
+    FunctionalMaps(Shape* shape1,
+                   Shape* shape2,
+                   vector<vtkSmartPointer<vtkDoubleArray>>& c1,
+                   vector<vtkSmartPointer<vtkDoubleArray>>& c2,
+                   int numberOfEigenfunctions
+                   ) :  shape1_(shape1),
+                        shape2_(shape2),
+                        c1_(c1),
+                        c2_(c2),
+                        numberOfEigenfunctions_(numberOfEigenfunctions)
+    {
         
+        if (shape1_ == nullptr) {
+            throw invalid_argument(string("Null pointer input 'shape1' in ").append(__PRETTY_FUNCTION__));
+        }
+        if (shape2_ == nullptr) {
+            throw invalid_argument(string("Null pointer input 'shape2' in ").append(__PRETTY_FUNCTION__));
+        }
+        
+        numberOfConstraints_ = c1_.size();
         if(c1_.size() != c2_.size()) {
-            throw new invalid_argument("Number of elements in constraint vectors c1 and c2 does not match.");
+            throw invalid_argument(string("Number of elements in constraint vectors c1 and c2 do not match in ").append(__PRETTY_FUNCTION__));
         }
         
     }

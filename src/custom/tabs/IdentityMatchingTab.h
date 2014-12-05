@@ -1,11 +1,3 @@
-//
-//  IdentityMatchingTab.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 24.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__IdentityMatchingTab__
 #define __ShapeAnalyzer__IdentityMatchingTab__
 
@@ -27,7 +19,10 @@
 
 #include "ui_IdentityMatchingTabWidget.h"
 
-
+/// \brief Tab to match same point/face ids on two shapes.
+/// \details If two different shapes have been selected points/faces with the same ids will be matched together.
+/// If a lower density is selected the ids will be selected evenly (e.g. every second id). The shapes do not
+/// need to have the same number of points/faces, the lower number will be chosen as a reference. 
 class IdentityMatchingTab : public QWidget, private Ui::IdentityMatchingTabWidget, public CustomTab {
     Q_OBJECT
     

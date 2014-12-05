@@ -19,9 +19,9 @@ public:
     PointCorrespondencePicker(vtkRenderer* renderer, int& lastInsertCorrespondenceID) : CorrespondencePicker(renderer, lastInsertCorrespondenceID) {
     }
 private:
-    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]) throw(std::invalid_argument);
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType, double point[3]);
     
-    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType pointId) throw(std::invalid_argument);
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType pointId);
     
     virtual Correspondence* createCorrespondence();
 

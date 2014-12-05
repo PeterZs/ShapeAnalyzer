@@ -3,11 +3,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data) : renderer_(renderer), data_(data) {
+    if (data_ == nullptr) {
+        throw invalid_argument(string("Null pointer input 'data' in ").append(__PRETTY_FUNCTION__));
+    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 Correspondence::Correspondence(vtkSmartPointer<vtkRenderer> renderer, CorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes) : renderer_(renderer), data_(data) {
+    
+    if (data_ == nullptr) {
+        throw invalid_argument(string("Null pointer input 'data' in ").append(__PRETTY_FUNCTION__));
+    }
     
     // fill shape_ vector
     for (int i = 0; i < data_->size(); i++) {
@@ -76,6 +83,10 @@ void Correspondence::initialize() {
 
 ///////////////////////////////////////////////////////////////////////////////
 int Correspondence::addShape(Shape* shape, vtkIdType id) {
+    if (shape == nullptr) {
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    }
+    
     if(shapes_.size() > 0 && shapes_[shapes_.size()-1] == shape) {
         // in case shape is equal to last added shape replace point
         //get coordinates of line target

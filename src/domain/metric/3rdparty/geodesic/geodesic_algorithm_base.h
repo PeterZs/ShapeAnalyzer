@@ -51,7 +51,7 @@ public:
 
 	virtual void print_statistics()		//print info about timing and memory usage in the propagation step of the algorithm
 	{
-		std::cout << "propagation step took " << m_time_consumed << " seconds " << std::endl;
+		//std::cout << "propagation step took " << m_time_consumed << " seconds " << std::endl;
 	};	
 
 	AlgorithmType type(){return m_type;};
@@ -95,9 +95,9 @@ inline double length(std::vector<SurfacePoint>& path)
 
 inline void print_info_about_path(std::vector<SurfacePoint>& path)
 {
-	std::cout << "number of the points in the path = " << path.size()
-			  << ", length of the path = " << length(path) 
-			  << std::endl;
+	//std::cout << "number of the points in the path = " << path.size()
+	//		  << ", length of the path = " << length(path)
+	//		  << std::endl;
 }
 
 inline std::string GeodesicAlgorithmBase::name()
@@ -182,7 +182,7 @@ inline void GeodesicAlgorithmBase::set_stop_conditions(std::vector<SurfacePoint>
 			}
 		}
 		if(!closest_vertex) {
-            throw geodesic_error("Geodesic error: No closest vertex was found.");
+            throw geodesic_error("No closest vertex was found.");
         }
 
 		m_stop_vertices[i].first = closest_vertex;

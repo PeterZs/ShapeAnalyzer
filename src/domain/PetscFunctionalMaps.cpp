@@ -8,6 +8,7 @@
 
 #include "PetscFunctionalMaps.h"
 
+///////////////////////////////////////////////////////////////////////////////
 PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLaplaceBeltramiOperator* laplacian1, PetscLaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), laplacian1_(laplacian1), laplacian2_(laplacian2) {
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
@@ -135,6 +136,8 @@ PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLapl
     VecDestroy(&c);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 PetscFunctionalMaps::~PetscFunctionalMaps() {
     MatDestroy(&C_);
     MatDestroy(&AT_);
@@ -149,6 +152,8 @@ PetscFunctionalMaps::~PetscFunctionalMaps() {
     KSPDestroy(&ksp_);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> PetscFunctionalMaps::transferFunction(vtkSmartPointer<vtkDoubleArray> f) {
     Vec fv;
     VecCreateSeq(PETSC_COMM_SELF, f->GetNumberOfTuples(), &fv);
@@ -178,6 +183,8 @@ vtkSmartPointer<vtkDoubleArray> PetscFunctionalMaps::transferFunction(vtkSmartPo
     return Tf;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscFunctionalMaps::setupPhiTM(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM) {
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
     

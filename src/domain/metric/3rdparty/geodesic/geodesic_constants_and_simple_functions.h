@@ -30,13 +30,13 @@ inline double cos_from_edges(double const a,			//compute the cosine of the angle
 							 double const c)
 {
 	if(!(a>1e-50)){
-        throw geodesic_error("Geodesic error: Undefined cos.");
+        throw geodesic_error("Undefined cosine.");
     }
 	if(!(b>1e-50)){
-        throw geodesic_error("Geodesic error: Undefined cos.");
+        throw geodesic_error("Undefined cosine.");
     }
 	if(!(c>1e-50)){
-        throw geodesic_error("Geodesic error: Undefined cos.");
+        throw geodesic_error("Undefined cosine.");
     }
 
 	double result = (b*b + c*c - a*a)/(2.0*b*c);
@@ -58,14 +58,14 @@ inline bool read_mesh_from_file(char* filename,
 {
 	std::ifstream file(filename);
 	if(!file.is_open()){
-        throw geodesic_error("Geodesic error: File could not be opened.");
+        throw geodesic_error("File could not be opened.");
     }
 	if(!file.is_open()) return false;
 	
 	unsigned num_points;
 	file >> num_points;
 	if(!(num_points>=3)){
-        throw geodesic_error("Geodesic error: File contains invalid polygons.");
+        throw geodesic_error("File contains invalid polygons.");
     }
 
 	unsigned num_faces;

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Metric.h"
+#include "MetricError.h"
 #include "../Shape.h"
 
 #include <vtkCellData.h>
@@ -27,7 +28,11 @@ namespace metric {
 
 ///
 /// \brief Class for the representation and computation of the geodesic metric on a Shape.
-/// \details This class is a wrapper class for the implementation of the exact geodesic metric obtained from https://code.google.com/p/geodesic/.
+/// \details This class is a wrapper class for the implementation of the exact geodesic
+/// metric obtained from https://code.google.com/p/geodesic/.
+/// All MetricErrors in this class are caused by the geodesic implementation which is very
+/// sensitive to mesh errors. Not all errors have a description or the description is not
+/// very meaningful, but the problem will almost surely be with the mesh.
 /// \author Emanuel Laude and Zorah Lähner
 ///
 class GeodesicMetric : public Metric {
@@ -84,17 +89,28 @@ private:
     };
     
 public:
-    GeodesicMetric(Shape* shape) throw(geodesic_error);
+    /// \exception geodesic_error
+    GeodesicMetric(Shape* shape);
     
     /// Empty destructor.
     virtual ~GeodesicMetric();
     
-    virtual double getDistance(vtkIdType a, vtkIdType b) throw(geodesic_error);
-    virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source) throw(geodesic_error);
-    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) throw(geodesic_error);
-    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources) throw(geodesic_error);
+    /// \brief See description of Metric::getAllDistances
+    /// \throws MetricError
+    virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source);
+    /// \brief See description of Metric::getDistance
+    /// \throws MetricError
+    virtual double getDistance(vtkIdType a, vtkIdType b);
+    /// \brief See description of Metric::getFarthestPoint
+    /// \throws MetricError
+    virtual vtkIdType getFarthestPoint(vtkSmartPointer<vtkIdList> sources);
+    /// \brief See description of Metric::getVoronoiCells
+    /// \throws MetricError
+    virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds);
+    
 private:
     /// @{
+    /// Internal data structures for the geodesic.
     Mesh                                mesh_;
     GeodesicAlgorithmExact*             algorithm_;
     geodesicPoints*                     points_;

@@ -19,6 +19,8 @@ template <class KEY, class VALUE>
 /// It manages a unordered_map<KEY, VALUE> object and has some special features. The first one
 /// is that the [] operator does not add keys to the hash map when you try to access them
 /// although they did not exist. Additionally you can get random subsets of the elements, keys or values.
+/// @tparam KEY type used as the key in the hash map
+/// @tparam VALUE type of the mapped values
 /// \author Emanuel Laude and Zorah Lähner
 ///
 class HashMap {

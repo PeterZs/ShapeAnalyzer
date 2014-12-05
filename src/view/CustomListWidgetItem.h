@@ -7,6 +7,7 @@
 ///
 /// General QListWidgetItem that can contain a pointer to an
 /// object of class T.
+/// @tparam T The type of reference the list item contains
 ///
 /// @author Emanuel Laude and Zorah Lähner
 ///

@@ -60,15 +60,16 @@
 #include <memory>
 #include <typeinfo>
 
-#include "ShapeAnalyzerInterface.h"
 #include "CorrespondencePicker.h"
+#include "CustomListWidgetItem.h"
 #include "FaceCorrespondencePicker.h"
 #include "PointCorrespondencePicker.h"
 #include "ShapeAnalyzerInteractorStyle.h"
-#include "CustomListWidgetItem.h"
+#include "ShapeAnalyzerInterface.h"
 
 #include "../custom/RegisterCustomClasses.h"
 
+#include "../util/ErrorObserver.h"
 #include "../util/HashMap.h"
 
 #include "../domain/Shape.h"
@@ -299,7 +300,7 @@ private:
     void vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
 
-    void importShape(vtkPolyDataAlgorithm* reader, string name);
+    void importShape(vtkAlgorithmOutput* reader, string name);
     void addShape(Shape* shape);
     void deleteShape(int i);
     void deleteCorrespondence(int i);
@@ -311,7 +312,7 @@ private:
 
     void clear();
 
-
+    static void showErrorMessage(string description, string error);
     
     
     /// \brief Maps the vtkActor pointer to a shape pointer.

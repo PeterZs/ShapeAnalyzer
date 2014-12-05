@@ -11,7 +11,14 @@ namespace signature {
         /// \brief Signature constructor.
         /// @param Shape* The shape on which the signature is computed.
         /// @param int Number of components that the signature should have.
-        Signature(Shape* shape, int dimension) : shape_(shape), dimension_(dimension) {}
+        Signature(Shape* shape, int dimension) : shape_(shape), dimension_(dimension) {
+            if (shape == nullptr) {
+                throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+            }
+            if (dimension_ <= 0) {
+                throw invalid_argument(string("Input dimension not positive in ").append(__PRETTY_FUNCTION__));
+            }
+        }
         
         /// \brief Virtual destructor.
         virtual ~Signature() {}
@@ -27,7 +34,9 @@ namespace signature {
         
         
     protected:
+        /// Reference to the shape the signature is from
         Shape* shape_;
+        /// Number of components of the signature
         int dimension_;
     };
 }

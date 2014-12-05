@@ -94,10 +94,10 @@ public:
 		m_max_number_of_blocks = max_number_of_blocks;
 
 		if(!(m_block_size > 0)){
-            throw geodesic_error("Geodesic error: block size not greater than 0.");
+            throw geodesic_error("Block size is not greater than 0.");
         }
 		if(!(m_max_number_of_blocks > 0)){
-            throw geodesic_error("Geodesic error: maximum number of blocks not greater than 0.");
+            throw geodesic_error("Maximum number of blocks is not greater than 0.");
         }
 
 		m_current_position = 0;

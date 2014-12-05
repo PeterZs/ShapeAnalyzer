@@ -17,13 +17,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 double metric::EuclideanMetric::getDistance(vtkIdType a, vtkIdType b) {
+    // argument check
+    if(a >= shape_->getPolyData()->GetPoints()->GetNumberOfPoints()
+       || b >= shape_->getPolyData()->GetPoints()->GetNumberOfPoints()) {
+        throw invalid_argument("Source point (" + to_string(a) + " or " + to_string(b) + ") larger than number of points (" + to_string(shape_->getPolyData()->GetPoints()->GetNumberOfPoints()) + ") in " + __PRETTY_FUNCTION__);
+    }
+    
     double p1[3], p2[3];
     shape_->getPolyData()->GetPoints()->GetPoint(a, p1);
     shape_->getPolyData()->GetPoints()->GetPoint(b, p2);
     
     return sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2));
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> metric::EuclideanMetric::getAllDistances(vtkIdType source) {
@@ -47,6 +52,7 @@ vtkIdType metric::EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> s
         double dist = std::numeric_limits<double>::infinity();
         // iterate over all sources
         for (vtkIdType j = 0; j < sources->GetNumberOfIds(); j++) {
+            
             // test for minimum distance of sources
             double d = getDistance(i, sources->GetId(j));
             if (d < dist)
@@ -63,7 +69,14 @@ vtkIdType metric::EuclideanMetric::getFarthestPoint(vtkSmartPointer<vtkIdList> s
     return id;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkIntArray> metric::EuclideanMetric::getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) {
+    
+    if(seeds->GetNumberOfIds() == 0) {
+        throw invalid_argument(string("Input list empty in ").append(__PRETTY_FUNCTION__));
+    }
+    
     vtkSmartPointer<vtkIntArray> voronoiCells = vtkSmartPointer<vtkIntArray>::New();
     voronoiCells->SetNumberOfValues(shape_->getPolyData()->GetPoints()->GetNumberOfPoints());
     

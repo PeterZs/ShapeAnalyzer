@@ -1,18 +1,10 @@
-//
-//  ShapeAnalyzerInteractrorStyle.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 06.08.14.
-//
-//
-
 #ifndef ShapeAnalyzer_ShapeAnalyzerInteractrorStyle_h
 #define ShapeAnalyzer_ShapeAnalyzerInteractrorStyle_h
 
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkObjectFactory.h>
 
-// Define interaction style
+/// \brief Surpresses certain short cuts of the vtkWidget.
 class ShapeAnalyzerInteractorStyle : public vtkInteractorStyleTrackballCamera {
 public:
     static ShapeAnalyzerInteractorStyle* New();

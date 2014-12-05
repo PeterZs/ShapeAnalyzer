@@ -19,11 +19,11 @@ public:
 private:
     /// \throws invalid_argument Shape null pointer.
     /// \throws invalid_argument Shape faceId is larger than the number of faces in the shape.
-    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]) throw (std::invalid_argument);
+    virtual void getCurrentSelectionPoint(Shape* shape, vtkIdType faceId, double point[3]);
     
     /// \throws invalid_argument Shape null pointer.
     /// \throws invalid_argument Shape faceId is larger than the number of faces in the shape.
-    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType faceId) throw (std::invalid_argument);
+    virtual void visualizeCurrentSelection(Shape* shape, vtkIdType faceId);
     
     virtual Correspondence* createCorrespondence();
     

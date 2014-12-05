@@ -20,7 +20,11 @@ namespace sampling {
         
     public:
         /// \brief Basic constructor.
-        Sampling(Shape* shape) : shape_(shape) {}
+        Sampling(Shape* shape) : shape_(shape) {
+            if (shape == nullptr) {
+                throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+            }
+        }
         
         /// Virtual empty destructor.
         virtual ~Sampling() {}

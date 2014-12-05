@@ -243,7 +243,7 @@ inline void Mesh::build_adjacencies()
 			if(i<half_edges.size()-1)		//sanity check: there should be at most two equal half-edges
 			{								//if it fails, most likely the input data are messed up
 				if(half_edges[i] == half_edges[i+1]){
-                    throw geodesic_error("Geodesic error: Number of half-edges does not match.");
+                    throw geodesic_error("Number of half-edges does not match.");
                 }
 			}
 		}
@@ -264,7 +264,7 @@ inline void Mesh::build_adjacencies()
 
 		e.length() = e.adjacent_vertices()[0]->distance(e.adjacent_vertices()[1]);
 		if(!(e.length() > 1e-100)){		//algorithm works well with non-degenerate meshes only
-            throw geodesic_error("Geodesic error: Mesh is degenerated.");
+            throw geodesic_error("Mesh is degenerated.");
         }
         
 		if(i != half_edges.size()-1 && half_edges[i] == half_edges[i+1])	//double edge
@@ -346,14 +346,14 @@ inline void Mesh::build_adjacencies()
 
 			double angle = angle_from_edges(abc[0], abc[1], abc[2]);
 			if(!(angle>1e-5)){
-                throw geodesic_error("Geodesic error: Mesh is degenerated.");
+                throw geodesic_error("Mesh is degenerated.");
             }//algorithm works well with non-degenerate meshes only
 
 			f.corner_angles()[j] = angle;
 			sum += angle;
 		}
 		if(!(std::abs(sum - M_PI) < 1e-5)){		//algorithm works well with non-degenerate meshes only
-            throw geodesic_error("Geodesic error: Mesh is degenerated.");
+            throw geodesic_error("Mesh is degenerated.");
         }
     }
 
@@ -436,10 +436,10 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
     }
 
 	//print some mesh statistics that can be useful in debugging
-	std::cout << "mesh has "	<< m_vertices.size() 
-			  << " vertices, "	<< m_faces.size() 
-			  << " faces, "		<< m_edges.size() 
-			  << " edges\n";
+	//std::cout << "mesh has "	<< m_vertices.size()
+	//		  << " vertices, "	<< m_faces.size()
+	//		  << " faces, "		<< m_edges.size()
+	//		  << " edges\n";
 	
 	unsigned total_boundary_edges = 0;
 	double longest_edge = 0;
@@ -451,12 +451,12 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
 		longest_edge = std::max(longest_edge, e.length());
 		shortest_edge = std::min(shortest_edge, e.length());
 	}
-	std::cout << total_boundary_edges << " edges are boundary edges\n";
-	std::cout << "shortest/longest edges are " 
-			  << shortest_edge << "/"
-			  << longest_edge << " = "
-			  << shortest_edge/longest_edge
-			  << std::endl;
+	//std::cout << total_boundary_edges << " edges are boundary edges\n";
+	//std::cout << "shortest/longest edges are "
+	//		  << shortest_edge << "/"
+	//		  << longest_edge << " = "
+	//		  << shortest_edge/longest_edge
+	//		  << std::endl;
 
 	double minx = 1e100;
 	double maxx = -1e100;
@@ -474,18 +474,18 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
 		minz = std::min(minz, v.z());
 		maxz = std::max(maxz, v.z());
 	}
-	std::cout << "enclosing XYZ box:"
-			  <<" X[" << minx << "," << maxx << "]"
-			  <<" Y[" << miny << "," << maxy << "]"
-			  <<" Z[" << minz << "," << maxz << "]"
-			  << std::endl;
+	//std::cout << "enclosing XYZ box:"
+	//		  <<" X[" << minx << "," << maxx << "]"
+	//		  <<" Y[" << miny << "," << maxy << "]"
+	//		  <<" Z[" << minz << "," << maxz << "]"
+	//		  << std::endl;
 
-	double dx = maxx - minx;
-	double dy = maxy - miny;
-	double dz = maxz - minz;
-	std::cout << "approximate diameter of the mesh is "
-			  << sqrt(dx*dx + dy*dy + dz*dz)
-			  << std::endl;
+	//double dx = maxx - minx;
+	//double dy = maxy - miny;
+	//double dz = maxz - minz;
+	//std::cout << "approximate diameter of the mesh is "
+	//		  << sqrt(dx*dx + dy*dy + dz*dz)
+	//		  << std::endl;
 
 	double min_angle = 1e100;
 	double max_angle = -1e100;
@@ -499,12 +499,12 @@ inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some 
 			max_angle = std::max(max_angle, angle);
 		}
 	}
-	std::cout << "min/max face angles are "
-			  << min_angle/M_PI*180.0 << "/"
-			  << max_angle/M_PI*180.0
-			  << " degrees\n";
+	//std::cout << "min/max face angles are "
+	//		  << min_angle/M_PI*180.0 << "/"
+	//		  << max_angle/M_PI*180.0
+	//		  << " degrees\n";
 
-	std::cout << std::endl;
+	//std::cout << std::endl;
 	return true;
 }
 

@@ -1,20 +1,12 @@
-//
-//  PointCorrespondencePicker.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 08.05.14.
-//
-//
-
 #include "PointCorrespondencePicker.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) throw(std::invalid_argument) {
+void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType pointId, double point[3]) {
     // invalid input check
     if(shape == nullptr) {
-        throw new invalid_argument("Shape null pointer input in PointCorrespondencePicker in getCurrentSelectionPoint.");
-    } else if (shape->getPolyData()->GetNumberOfCells() <= pointId) {
-        throw new invalid_argument("pointId input larger than number of vertices in PointCorrespondencePicker in getCurrentSelectionPoint.");
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    } else if (shape->getPolyData()->GetPoints()->GetNumberOfPoints() <= pointId) {
+        throw invalid_argument("Source point (" + to_string(pointId) + ") larger than number of points (" + to_string(shape->getPolyData()->GetPoints()->GetNumberOfPoints()) + ") in " + __PRETTY_FUNCTION__);
     }
     
     shape->getPolyData()->GetPoint(pointId, point);
@@ -22,12 +14,12 @@ void PointCorrespondencePicker::getCurrentSelectionPoint(Shape* shape, vtkIdType
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType pointId) throw(std::invalid_argument) {
+void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType pointId) {
     // invalid input check
     if(shape == nullptr) {
-        throw new invalid_argument("Shape null pointer input in PointCorrespondencePicker in visualizeCurrentSelection.");
-    } else if (shape->getPolyData()->GetNumberOfCells() <= pointId) {
-        throw new invalid_argument("pointId input larger than number of vertices in PointCorrespondencePicker in visualizeCurrentSelection.");
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    } else if (shape->getPolyData()->GetPoints()->GetNumberOfPoints() <= pointId) {
+        throw invalid_argument("Source point (" + to_string(pointId) + ") larger than number of points (" + to_string(shape->getPolyData()->GetPoints()->GetNumberOfPoints()) + ") in " + __PRETTY_FUNCTION__);
     }
     
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();

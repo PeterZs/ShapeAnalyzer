@@ -8,6 +8,7 @@
 
 #include "PetscHelper.h"
 
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     PetscInt size;
     VecGetSize(ai, &size);
@@ -24,6 +25,8 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     delete [] colIdx;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
     PetscInt m;
     MatGetSize(A, &m, NULL);
@@ -41,6 +44,8 @@ void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
     VecAssemblyEnd(ai);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     PetscInt size;
     VecGetSize(ai, &size);
@@ -57,6 +62,8 @@ void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     delete [] rowIdx;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::setBlock(Mat &A, Mat &B, PetscInt i, PetscInt j) {
     PetscInt m;
     PetscInt n;
@@ -91,6 +98,8 @@ void PetscHelper::setBlock(Mat &A, Mat &B, PetscInt i, PetscInt j) {
     delete [] rowIdx;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
     PetscInt* rowIdx = new PetscInt[m];
     for(PetscInt l = 0; l < m; l++) {
@@ -111,6 +120,8 @@ void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
     delete [] rowIdx;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec) {
     PetscInt size = arr->GetNumberOfTuples();
     
@@ -123,6 +134,7 @@ void PetscHelper::vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, 
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> PetscHelper::petscVecToVtkDoubleArray(Vec& vec) {
     PetscScalar* arr;
     VecGetArray(vec, &arr);
@@ -133,7 +145,7 @@ vtkSmartPointer<vtkDoubleArray> PetscHelper::petscVecToVtkDoubleArray(Vec& vec) 
 }
 
 
-
+///////////////////////////////////////////////////////////////////////////////
 vtkSmartPointer<vtkDoubleArray> PetscHelper::petscScalarArrayToVtkDoubleArray(const PetscScalar *array, PetscInt size) {
     vtkSmartPointer<vtkDoubleArray> vtkArr = vtkSmartPointer<vtkDoubleArray>::New();
     vtkArr->SetNumberOfValues(size);

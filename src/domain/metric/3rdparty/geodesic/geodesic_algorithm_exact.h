@@ -325,7 +325,7 @@ inline bool GeodesicAlgorithmExact::erase_from_queue(interval_pointer p)
 	if(p->min() < GEODESIC_INF/10.0)// && p->min >= queue->begin()->first)
 	{
 		if(!(m_queue.count(p)<=1)){			//the set is unique
-            throw geodesic_error("Geodesic error: An interval is not unique.");
+            throw geodesic_error("An interval is not unique.");
         }
 
 		IntervalQueue::iterator it = m_queue.find(p);
@@ -344,10 +344,10 @@ inline unsigned GeodesicAlgorithmExact::intersect_intervals(interval_pointer zer
 															   IntervalWithStop* one)			//intersecting two intervals with up to three intervals in the end
 {
 	if(!(zero->edge()->id() == one->edge()->id())) {
-        throw geodesic_error("Geodesic error: The intersection of two identical intervals were taken.");
+        throw geodesic_error("The intersection of two identical intervals were taken.");
     }
 	if(!(zero->stop() > one->start() && zero->start() < one->stop())) {
-        throw geodesic_error("Geodesic error: No intersection of intervals.");
+        throw geodesic_error("No intersection of intervals.");
     }
 	if(!(one->min() < GEODESIC_INF/10.0)){
         throw geodesic_error();
@@ -719,7 +719,7 @@ inline void GeodesicAlgorithmExact::update_list_and_queue(list_pointer list,
 												unsigned num_candidates)
 {
 	if(!(num_candidates <= 2)){
-        throw geodesic_error("Geodesic error: More than 1 candidate.");
+        throw geodesic_error("More than 1 candidate.");
     }
 	edge_pointer edge = list->edge();
 	double const local_epsilon = SMALLEST_INTERVAL_RATIO * edge->length(); 
@@ -890,7 +890,7 @@ inline void GeodesicAlgorithmExact::update_list_and_queue(list_pointer list,
 			}
 
 			if(previous) {
-                throw geodesic_error("Geodesic error: There was no previous element.");
+                throw geodesic_error("There was no previous element.");
             }
 
 			for(unsigned j=1; j<N; ++j)					
@@ -969,7 +969,7 @@ inline unsigned GeodesicAlgorithmExact::compute_propagated_parameters(double pse
         throw geodesic_error();
     }
 	if(!(begin<=end)){
-        throw geodesic_error("Geodesic error: the beginning of the interval was after the end.");
+        throw geodesic_error("The beginning of the interval was after the end.");
     }
 	if(!(first_interval ? (begin == 0.0) : true)){
         throw geodesic_error();
@@ -1363,7 +1363,7 @@ inline void GeodesicAlgorithmExact::trace_back(SurfacePoint& destination,		//tra
 
 			//std::cout << total_distance + length(path) << std::endl;
 			if(!(total_distance<GEODESIC_INF)){
-                throw geodesic_error("Geodesic error: Total distance is infinity.");
+                throw geodesic_error("Total distance is infinity.");
             }
 			source_index = interval->source_index();
 
@@ -1401,17 +1401,17 @@ inline void GeodesicAlgorithmExact::print_statistics()
 	{
 		interval_counter += m_edge_interval_lists[i].number_of_intervals();
 	}
-	double intervals_per_edge = (double)interval_counter/(double)m_edge_interval_lists.size();
+	//double intervals_per_edge = (double)interval_counter/(double)m_edge_interval_lists.size();
 
-	double memory = m_edge_interval_lists.size()*sizeof(IntervalList) + 
-					interval_counter*sizeof(Interval);
+	//double memory = m_edge_interval_lists.size()*sizeof(IntervalList) +
+	//				interval_counter*sizeof(Interval);
 
-	std::cout << "uses about " << memory/1e6 << "Mb of memory" <<std::endl;
-	std::cout << interval_counter << " total intervals, or " 
-			  << intervals_per_edge << " intervals per edge"
-			  << std::endl;
-	std::cout << "maximum interval queue size is " << m_queue_max_size << std::endl;
-	std::cout << "number of interval propagations is " << m_iterations << std::endl;
+	//std::cout << "uses about " << memory/1e6 << "Mb of memory" <<std::endl;
+	//std::cout << interval_counter << " total intervals, or "
+	//		  << intervals_per_edge << " intervals per edge"
+	//		  << std::endl;
+	//std::cout << "maximum interval queue size is " << m_queue_max_size << std::endl;
+	//std::cout << "number of interval propagations is " << m_iterations << std::endl;
 }
 
 }		//geodesic

@@ -34,6 +34,9 @@
        <property name="text">
         <string>Load only the largest connected component</string>
        </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>

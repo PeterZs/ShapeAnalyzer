@@ -1419,7 +1419,8 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
             
             // get vtk actor and add to renderer_
             vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();
-            Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
+            
+            Shape* shape = new Shape(lastInsertShapeID_, name + ":cc" + to_string(i), polyDataReader->GetOutput(), renderer_);
             shape->initialize();
             addShape(shape);
         }

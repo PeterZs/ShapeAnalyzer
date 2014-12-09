@@ -6,7 +6,7 @@ FunctionTransferTab::~FunctionTransferTab() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent) {
+FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer) {
     this->setupUi(this);
     
     QStringList labels;
@@ -48,14 +48,14 @@ void FunctionTransferTab::slotTransfer() {
         }
     }
     if(source == target) {
-        QMessageBox::warning(parent_, "Error", "The shapes source \"" + QString(source->getName().c_str()) + "\" and target \"" + QString(source->getName().c_str()) + "\" have to be diffrent.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The shapes source \"" + QString(source->getName().c_str()) + "\" and target \"" + QString(source->getName().c_str()) + "\" have to be diffrent.");
         return;
     }
     
 
     
     if(source->getColoring() == nullptr || (source->getColoring()->type != Shape::Coloring::Type::PointScalar && source->getColoring()->type != Shape::Coloring::Type::PointSegmentation)) {
-        QMessageBox::warning(parent_, "Error", "Shape \"" + QString(source->getName().c_str()) + "\" does neither have a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Shape \"" + QString(source->getName().c_str()) + "\" does neither have a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
         return;
     }
     

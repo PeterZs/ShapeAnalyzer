@@ -4,6 +4,8 @@
 
 #include <vtkActor.h>
 
+#include "../../view/ShapeAnalyzerInterface.h"
+
 #include "../../domain/Shape.h"
 
 #include "../../domain/correspondences/PointCorrespondenceData.h"
@@ -19,9 +21,9 @@
 ///
 class CustomTab {
 public:
-    CustomTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent)
+    CustomTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
     : shapes_(shapes), pointCorrespondences_(pointCorrespondences),
-    faceCorrespondences_(faceCorrespondences), parent_(parent) {}
+    faceCorrespondences_(faceCorrespondences), shapeAnalyzer_(shapeAnalyzer) {}
     
     /// \brief Virtual Destructor
     virtual ~CustomTab() {}
@@ -48,8 +50,7 @@ protected:
     const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences_;
 
     /// \brief Pointer to the ShapeAnalyzer widget parent.
-    /// \details If a tab needs to access the public functions for adding new Shape objects or CorrespondenceData objects it has to casted to ShapeAnalyzerInterface dynamically.
-    QWidget* parent_;
+    ShapeAnalyzerInterface* shapeAnalyzer_;
 };
 
 #endif

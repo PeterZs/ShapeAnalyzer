@@ -5,27 +5,27 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     this->setupUi(this);
     
     //Group actions related to different Views. Automatically unselected other members of group.
-    this->actionGroupCorrespondenceType_ = new QActionGroup(this);
+    actionGroupCorrespondenceType_ = new QActionGroup(this);
     actionGroupCorrespondenceType_->addAction(this->actionDisplayFaceCorrespondences);
     actionGroupCorrespondenceType_->addAction(this->actionDisplayPointCorrespondences);
     
     
     //Group actions related to different modes.
-    this->actionGroupMode_ = new QActionGroup(this);
+    actionGroupMode_ = new QActionGroup(this);
     actionGroupMode_->addAction(this->actionTransformScene);
     actionGroupMode_->addAction(this->actionTransformShapes);
     actionGroupMode_->addAction(this->actionAddPointCorrespondences);
     actionGroupMode_->addAction(this->actionAddFaceCorrespondences);
     
     
-    this->actionGroupShapeDisplayMode_ = new QActionGroup(this);
-    actionGroupShapeDisplayMode_->addAction(this->actionShowSurface);
-    actionGroupShapeDisplayMode_->addAction(this->actionShowSurfaceNormals);
-    actionGroupShapeDisplayMode_->addAction(this->actionShowTriangulatedMesh);
-    actionGroupShapeDisplayMode_->addAction(this->actionShowPointCloud);
+    actionGroupVisualRepresentation_ = new QActionGroup(this);
+    actionGroupVisualRepresentation_->addAction(this->actionShowSurface);
+    actionGroupVisualRepresentation_->addAction(this->actionShowSurfaceNormals);
+    actionGroupVisualRepresentation_->addAction(this->actionShowTriangulatedMesh);
+    actionGroupVisualRepresentation_->addAction(this->actionShowPointCloud);
     
     
-    this->actionGroupProjectionMode_ = new QActionGroup(this);
+    actionGroupProjectionMode_ = new QActionGroup(this);
     actionGroupProjectionMode_->addAction(this->actionProjectionPerspective);
     actionGroupProjectionMode_->addAction(this->actionProjectionParallel);
     
@@ -74,8 +74,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
     connect(this->actionGroupCorrespondenceType_,   SIGNAL(triggered(QAction*)),
             this,                                   SLOT(slotSetCorrespondenceType()));
     
-    connect(this->actionGroupShapeDisplayMode_,     SIGNAL(triggered(QAction*)),
-                                                    SLOT(slotSetShapeDisplayMode()));
+    connect(this->actionGroupVisualRepresentation_, SIGNAL(triggered(QAction*)),
+                                                    SLOT(slotSetVisualRepresentationShape()));
     
     connect(this->actionHelp,                       SIGNAL(triggered()),
             this,                                   SLOT(slotShowHelp()));
@@ -107,8 +107,8 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
 
     this->vtkSetup();
     
-    RegisterCustomClasses::registerTabs();
-    RegisterCustomClasses::registerContextMenuItems();
+    CustomClassesRegistry::registerTabs();
+    CustomClassesRegistry::registerContextMenuItems();
     
     //Initialize Slepc for eigenfunction computation
     SlepcInitializeNoArguments();
@@ -378,8 +378,8 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape);
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem]));
-            menuItem->onClick(currentShape, pointId, faceId, this);
+            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape, dynamic_cast<ShapeAnalyzerInterface*>(this)));
+            menuItem->onClick(pointId, faceId, this);
         }
     }
 }
@@ -533,11 +533,7 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
             actionAddFaceCorrespondences->setChecked(true);
             actionAddFaceCorrespondences->trigger();
         }
-        
-        //TODO remove this
-        if(tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Face Correspondences") {
-            tabWidgetCorrespondences->setCurrentIndex(0);
-        }
+
         
         // current picker is deleted
         delete correspondencePicker_;
@@ -643,42 +639,19 @@ void ShapeAnalyzer::slotToggleProjectionMode() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::slotSetShapeDisplayMode() {
-    if(this->actionShowSurface->isChecked()) {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getMapper()->SetInputData(it->second->getPolyData());
-            it->second->getActor()->GetProperty()->SetRepresentationToSurface();
-            it->second->getActor()->GetProperty()->SetColor(1, 1, 1);
-            
-            it->second->getActor()->Modified();
+void ShapeAnalyzer::slotSetVisualRepresentationShape() {
+    for(auto entry : shapesByActor_) {
+        if(this->actionShowSurface->isChecked()) {
+            entry.second->setVisualRepresentation(Shape::VisualRepresentation::MeshSurface);
+        } else if(this->actionShowSurfaceNormals->isChecked()) {
+            entry.second->setVisualRepresentation(Shape::VisualRepresentation::InterpolatedNormals);
+        } else if(this->actionShowTriangulatedMesh->isChecked()) {
+            entry.second->setVisualRepresentation(Shape::VisualRepresentation::Mesh);
+        } else if(this->actionShowPointCloud->isChecked()) {
+            entry.second->setVisualRepresentation(Shape::VisualRepresentation::PointCloud);
+        } else {
+            ;
         }
-    } else if(this->actionShowSurfaceNormals->isChecked()) {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getMapper()->SetInputData(it->second->getPolyDataNormals()->GetOutput());
-            it->second->getActor()->GetProperty()->SetRepresentationToSurface();
-            it->second->getActor()->GetProperty()->SetColor(1, 1, 1);
-            
-            it->second->getActor()->Modified();
-        }
-    } else if(this->actionShowTriangulatedMesh->isChecked()) {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getMapper()->SetInputData(it->second->getPolyData());
-            it->second->getActor()->GetProperty()->SetRepresentationToWireframe();
-            it->second->getActor()->GetProperty()->SetColor(1, 1, 0);
-            
-            it->second->getActor()->Modified();
-        }
-    } else if(this->actionShowPointCloud->isChecked()) {
-        for(unordered_map<vtkActor*, Shape*>::iterator it = shapesByActor_.begin(); it != shapesByActor_.end(); ++it) {
-            it->second->getActor()->GetProperty()->SetPointSize(3);
-            it->second->getActor()->GetProperty()->SetRepresentationToPoints();
-            it->second->getActor()->GetProperty()->SetColor(0, 0, 1);
-            
-            it->second->getActor()->Modified();
-        }
-    } else {
-        //
-        ;
     }
     
     this->qvtkWidget->GetRenderWindow()->Render();
@@ -810,7 +783,7 @@ void ShapeAnalyzer::slotImportShape() {
         }
         
         vtkAlgorithmOutput* output;
-        output = reader->GetOutputPort();
+        output = reader->GetOutputPort(); 
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
@@ -941,10 +914,14 @@ void ShapeAnalyzer::slotImportCorrespondences() {
     
     
     // insert point correspondences
-    //addCorrespondences(pointCorrespondences);
+    for(auto c : pointCorrespondences) {
+        pointCorrespondenceData_.insert((PointCorrespondenceData*) c, false);
+    }
     
     // insert face correspondences and fire corresponding events if vector not empty
-    //addCorrespondences(faceCorrespondences);
+    for(auto c : faceCorrespondences) {
+        faceCorrespondenceData_.insert((FaceCorrespondenceData*) c, false);
+    }
     
     qtUpdateLabelVisibleCorrespondences();
 }
@@ -1208,9 +1185,9 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
         Shape* selectedShape = ((CustomListWidgetItem<Shape>*) listShapes->currentItem())->getItem();
         if(this->actionTransformShapes->isChecked()) {
-            selectedShape->getBoxWidget()->On();
+            selectedShape->setShowBoxWidget(true);
         } else {
-            selectedShape->getBoxWidget()->Off();
+            selectedShape->setShowBoxWidget(false);
         }
     }
     render();
@@ -1262,16 +1239,16 @@ void ShapeAnalyzer::slotSetSelectedCurrentShape(QListWidgetItem* current, QListW
     if(current != nullptr) {
         Shape* currentShape = ((CustomListWidgetItem<Shape>*) current)->getItem();
         
-        scalarBar_->SetLookupTable(currentShape->getMapper()->GetLookupTable());
+        scalarBar_->SetLookupTable(currentShape->getLookupTable());
         scalarBar_->SetTitle(currentShape->getName().c_str());
         scalarBar_->Modified();
         qvtkWidget->GetRenderWindow()->Render();
         
         if(this->actionTransformShapes->isChecked()) {
-            currentShape->getBoxWidget()->On();
+            currentShape->setShowBoxWidget(true);
             
             if(previous != nullptr) {
-                ((CustomListWidgetItem<Shape>*) previous)->getItem()->getBoxWidget()->Off();
+                ((CustomListWidgetItem<Shape>*) previous)->getItem()->setShowBoxWidget(false);
             }
         }
     }
@@ -2093,26 +2070,28 @@ Shape* ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyData> polyDat
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::addShape(Shape* shape) {
-    if(actionShowSurfaceNormals->isChecked()) {
-        shape->getMapper()->SetInputData(shape->getPolyDataNormals()->GetOutput());
+    if(this->actionShowSurface->isChecked()) {
+        shape->setVisualRepresentation(Shape::VisualRepresentation::MeshSurface);
+    } else if(this->actionShowSurfaceNormals->isChecked()) {
+        shape->setVisualRepresentation(Shape::VisualRepresentation::InterpolatedNormals);
+    } else if(this->actionShowTriangulatedMesh->isChecked()) {
+        shape->setVisualRepresentation(Shape::VisualRepresentation::Mesh);
+    } else if(this->actionShowPointCloud->isChecked()) {
+        shape->setVisualRepresentation(Shape::VisualRepresentation::PointCloud);
+    } else {
+        ;
     }
     
     
     if(shapesByActor_.size() == 0)
         renderer_->ResetCamera();
     
-    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    lookupTable->SetTableRange(1.0, 1.0);
-    lookupTable->SetHueRange(0.667, 0.0);
-    lookupTable->Build();
-    
-    shape->getMapper()->SetLookupTable(lookupTable);
-    
+
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
     callback->shape = shape;
     
-    shape->getBoxWidget()->AddObserver(vtkCommand::InteractionEvent, callback);
+    shape->addObserver(callback);
 
     shapesByActor_.insert(shape->getActor(), shape);
     

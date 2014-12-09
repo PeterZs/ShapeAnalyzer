@@ -45,7 +45,7 @@ public:
     CorrespondenceColoringTab(const HashMap<vtkActor*, Shape*>& shapes,
                               const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
                               const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
-                              QWidget* parent);
+                              ShapeAnalyzerInterface* shapeAnalyzer);
     /// Empty destructor.
     virtual ~CorrespondenceColoringTab() {}
     

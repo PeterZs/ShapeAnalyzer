@@ -26,7 +26,8 @@ class FunctionTransferTab : public QWidget, private Ui::FunctionTransferTabWidge
     Q_OBJECT
     
 public:
-    FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent);
+    FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
+                        ShapeAnalyzerInterface* shapeAnalyzer);
     
     virtual ~FunctionTransferTab();
     

@@ -9,7 +9,7 @@
 #include "ColorEigenfunctionContextMenuItem.h"
 
 
-void ColorEigenfunctionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void ColorEigenfunctionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     int i = QInputDialog::getInt(
                                  parent,
@@ -17,18 +17,18 @@ void ColorEigenfunctionContextMenuItem::onClick(Shape* shape, vtkIdType pointId,
                                  "Choose an eigenfunction.",
                                  0,
                                  0,
-                                 std::min((vtkIdType) 99, shape->getPolyData()->GetNumberOfPoints()),
+                                 std::min((vtkIdType) 99, shape_->getPolyData()->GetNumberOfPoints()),
                                  1,
                                  &ok
                                  );
     // show eigenfunction
     if (ok) {
-        PetscFEMLaplaceBeltramiOperator laplacian(shape, 100);
+        PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
         vtkSmartPointer<vtkDoubleArray> eigenfunction = laplacian.getEigenfunction(i);
         
         shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
         coloring->type = Shape::Coloring::Type::PointScalar;
         coloring->values = eigenfunction;
-        shape->setColoring(coloring);
+        shape_->setColoring(coloring);
     }
 }

@@ -91,7 +91,7 @@ void CorrespondencePicker::visualizeMouseLine(Shape* shape, double point[3]) {
     //create mapper and actor. mapper maps the poly data to the line actor
     mouseLineMapper_->SetInputData(mouseLinePolyData);
     
-    vtkLinearTransform* t1 = shape->getActor()->GetUserTransform();
+    vtkLinearTransform* t1 = shape->getTransformation();
     if(t1 != nullptr) {
         mouseLinePolyData->GetPoints()->SetPoint(0, t1->TransformPoint(point));
         mouseLinePolyData->GetPoints()->SetPoint(1, t1->TransformPoint(point));

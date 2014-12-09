@@ -9,7 +9,7 @@
 #include "ShapeInfoContextMenuItem.h"
 
 
-void ShapeInfoContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void ShapeInfoContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
 
     QDialog* dialog = new QDialog(parent, 0);
     Ui_ShapeInfoDialog ui;
@@ -27,26 +27,26 @@ void ShapeInfoContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdTyp
     //insert data
     
     // shape id
-    ui.tableWidgetInfo->setItem(0, 0, new QTableWidgetItem(QString::number(shape->getId())));
+    ui.tableWidgetInfo->setItem(0, 0, new QTableWidgetItem(QString::number(shape_->getId())));
     // shape name
-    ui.tableWidgetInfo->setItem(1, 0, new QTableWidgetItem(QString::fromStdString(shape->getName())));
+    ui.tableWidgetInfo->setItem(1, 0, new QTableWidgetItem(QString::fromStdString(shape_->getName())));
     // number of vertices
     ui.tableWidgetInfo->setItem(2, 0, new QTableWidgetItem(
                                                     QString::number(
-                                                                    (int) shape->getPolyData()->GetPoints()->GetNumberOfPoints()
+                                                                    (int) shape_->getPolyData()->GetPoints()->GetNumberOfPoints()
                                                                     )
                                                     ));
     // number of cells
     ui.tableWidgetInfo->setItem(3, 0, new QTableWidgetItem(
                                                     QString::number(
-                                                                    (int) shape->getPolyData()->GetNumberOfCells()
+                                                                    (int) shape_->getPolyData()->GetNumberOfCells()
                                                                     )
                                                     )
                          );
     // area of the shape
     ui.tableWidgetInfo->setItem(4, 0, new QTableWidgetItem(
                                                     QString::number(
-                                                                    (double) shape->getArea()
+                                                                    (double) shape_->getArea()
                                                                     )
                                                     )
                          );

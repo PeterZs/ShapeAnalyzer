@@ -40,7 +40,7 @@ void PointCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdTyp
     currentSelectionActor_->GetProperty()->SetColor(0, 1, 1);
     currentSelectionActor_->GetProperty()->SetPointSize(5);
     currentSelectionActor_->GetProperty()->SetRepresentationToPoints();
-    currentSelectionActor_->SetUserTransform(shape->getActor()->GetUserTransform());
+    currentSelectionActor_->SetUserTransform(shape->getTransformation());
     renderer_->AddActor(currentSelectionActor_);
 }
 

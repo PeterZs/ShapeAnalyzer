@@ -17,8 +17,8 @@
 CorrespondenceColoringTab::CorrespondenceColoringTab(
                                                      const HashMap<vtkActor*, Shape*>& shapes,
                                                      const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
-                                                     const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent)
-: QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent)
+                                                     const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
+: QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer)
 {
     this->setupUi(this);
     

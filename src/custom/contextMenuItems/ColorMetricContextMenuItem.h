@@ -25,9 +25,9 @@ using namespace metric;
 template<class T = Metric>
 class ColorMetricContextMenuItem : public CustomContextMenuItem {
 public:
-    ColorMetricContextMenuItem<T>() {}
+    ColorMetricContextMenuItem<T>(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape_, shapeAnalyzer) {}
     
-    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         vtkIdType source = QInputDialog::getInt(
                                                 parent,
@@ -35,19 +35,19 @@ public:
                                                 "Choose ID of source vertex.",
                                                 0,
                                                 0,
-                                                shape->getPolyData()->GetNumberOfPoints()-1,
+                                                shape_->getPolyData()->GetNumberOfPoints()-1,
                                                 1,
                                                 &ok
                                                 );
         
         if (ok) {
-            T m(shape);
+            T m(shape_);
             vtkSmartPointer<vtkDoubleArray> distances = m.getAllDistances(source);
 
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointScalar;
             coloring->values = distances;
-            shape->setColoring(coloring);
+            shape_->setColoring(coloring);
         }
     }
 };

@@ -27,9 +27,9 @@ using namespace segmentation;
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
-    VoronoiCellsContextMenuItem<T>() {}
+    VoronoiCellsContextMenuItem<T>(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
-    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         vtkIdType source = QInputDialog::getInt(
                                                 parent,
@@ -37,7 +37,7 @@ public:
                                                 "Choose ID of source vertex.",
                                                 0,
                                                 0,
-                                                shape->getPolyData()->GetNumberOfPoints()-1,
+                                                shape_->getPolyData()->GetNumberOfPoints()-1,
                                                 1,
                                                 &ok
                                                 );
@@ -51,20 +51,20 @@ public:
                                                           "Choose number of segments",
                                                           0,
                                                           0,
-                                                          shape->getPolyData()->GetNumberOfPoints()-1,
+                                                          shape_->getPolyData()->GetNumberOfPoints()-1,
                                                           1,
                                                           &ok
                                                           );
         if(ok) {
-            T m(shape);
-            FarthestPointSampling fps(shape, &m, source, numberOfSegments);
-            VoronoiCellSegmentation segmentation(shape, &m, &fps);
+            T m(shape_);
+            FarthestPointSampling fps(shape_, &m, source, numberOfSegments);
+            VoronoiCellSegmentation segmentation(shape_, &m, &fps);
             
             // save current segmentation for being able to create new shapes out of the segments
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointSegmentation;
             coloring->values = segmentation.getSegments();
-            shape->setColoring(coloring);
+            shape_->setColoring(coloring);
         }
     }
 };

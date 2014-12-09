@@ -29,6 +29,7 @@
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
+#include <vtkCommand.h>
 
 #include <math.h>
 #include <iostream>
@@ -50,10 +51,12 @@ using namespace std;
 ///
 class Shape : public Serializable {
 public:
+    enum class VisualRepresentation { MeshSurface, InterpolatedNormals, PointCloud, Mesh };
+    
     /// \brief Coloring struct. Contains a type and the coloring data as vtkSmartPointer<vtkDataArray>.
     struct Coloring {
         /// \brief Type enum.
-        enum class Type {PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar, FaceScalar};
+        enum class Type { PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar, FaceScalar };
         
         /// \brief Color data. It can be either point or face data.
         /// \details Moreover it is either an 1D (scalar) or an 3D (RGB) array.
@@ -105,37 +108,91 @@ public:
     
     // Getters
     
-    
     /// \brief Returns the actor of the shape.
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
     }
-    
-    /// \brief Returns the box widget, that can be used to transform the shape independently from the scene.
-    vtkSmartPointer<vtkBoxWidget2> getBoxWidget() {
-        return boxWidget_;
-    }
-    
+
     /// \brief Returns the mesh data.
     vtkSmartPointer<vtkPolyData> getPolyData() {
         return polyData_;
     }
     
-    /// \brief Returns the renderer.
-    vtkSmartPointer<vtkRenderer> getRenderer() {
-        return renderer_;
+    vtkLinearTransform* getTransformation() {
+        return actor_->GetUserTransform();
     }
     
-    /// \brief Returns the smoothed version of the mesh data.
-    vtkSmartPointer<vtkPolyDataNormals> getPolyDataNormals() {
-        return polyDataNormals_;
+    vtkScalarsToColors* getLookupTable() {
+        return mapper_->GetLookupTable();
     }
     
-    /// \brief Returns the mapper of the shape.
-    vtkSmartPointer<vtkPolyDataMapper> getMapper() {
-        return mapper_;
+    ///@}
+    
+    /// \brief This function has to be called after polyData was modified.
+    /// \details It rerenders the shape and updates the bounding box of the BoxWidget.
+    void modified() {
+        polyData_->Modified();
+        actor_->Modified();
+        
+        static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->PlaceWidget(polyData_->GetBounds());
+        static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform((vtkTransform*) actor_->GetUserTransform());
     }
     
+    /// \brief Adds an observer to the boxWidget. If the shape is transformed independently from the scene via the boxWidget the observers are executed.
+    void addObserver(vtkSmartPointer<vtkCommand> callback) {
+        boxWidget_->AddObserver(vtkCommand::InteractionEvent, callback);
+    }
+    
+    /// \brief Transforms the shape
+    /// @param vtkSmartPointer<vtkTransform> The transformation object.
+    void transform(vtkSmartPointer<vtkTransform> t) {
+        actor_->SetUserTransform(t);
+    }
+    
+    void setVisualRepresentation(VisualRepresentation representation) {
+        switch (representation) {
+            case VisualRepresentation::MeshSurface:
+                mapper_->SetInputData(polyData_);
+                actor_->GetProperty()->SetRepresentationToSurface();
+                actor_->GetProperty()->SetColor(1, 1, 1);
+                actor_->Modified();
+                
+                break;
+            case VisualRepresentation::InterpolatedNormals:
+                mapper_->SetInputData(polyDataNormals_->GetOutput());
+                actor_->GetProperty()->SetRepresentationToSurface();
+                actor_->GetProperty()->SetColor(1, 1, 1);
+                actor_->Modified();
+                
+                break;
+                
+            case VisualRepresentation::PointCloud:
+                actor_->GetProperty()->SetPointSize(3);
+                actor_->GetProperty()->SetRepresentationToPoints();
+                actor_->GetProperty()->SetColor(0, 0, 1);
+                actor_->Modified();
+                
+                break;
+                
+            case VisualRepresentation::Mesh:
+                mapper_->SetInputData(polyData_);
+                actor_->GetProperty()->SetRepresentationToWireframe();
+                actor_->GetProperty()->SetColor(1, 1, 0);
+                actor_->Modified();
+                
+                break;
+            default:
+                break;
+        }
+    }
+    
+    void setShowBoxWidget(bool showBoxWidget) {
+        if(showBoxWidget) {
+            boxWidget_->On();
+        } else {
+            boxWidget_->Off();
+        }
+    }
     
     /// \brief Returns the unique id of the shape.
     vtkIdType getId() {
@@ -157,7 +214,7 @@ public:
     /// @param shared_ptr<Coloring>. Contains the color data for the points or faces and the type of the coloring.
     void setColoring(shared_ptr<Coloring> coloring);
 
-    shared_ptr<Coloring> getColoring() {
+    shared_ptr<const Coloring> getColoring() const {
         return coloring_;
     }
 

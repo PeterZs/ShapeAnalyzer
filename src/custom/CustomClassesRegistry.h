@@ -42,13 +42,13 @@
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
 
-typedef Factory<CustomTab, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, QWidget*> CustomTabFactory;
+typedef Factory<CustomTab, const HashMap<vtkActor*, Shape*>&, const HashMap<PointCorrespondenceData*, bool>&, const HashMap<FaceCorrespondenceData*, bool>&, ShapeAnalyzerInterface*> CustomTabFactory;
 
-typedef Factory<CustomContextMenuItem> CustomContextMenuItemFactory;
+typedef Factory<CustomContextMenuItem, Shape*, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;
 
 ///\brief Class for registration of concrete CustomTab and CustomContextMenuItem classes.
 ///\details The registered classes and their methods are automatically connected to the respective menu items and widgest in the QT GUI.
-struct RegisterCustomClasses {
+struct CustomClassesRegistry {
     /// \brief This function is responsible for the registration of all CustomTab classes in the CustomTabFactory.
     /// \details It is called in the constructor of ShapeAnalyzer. For each CustomTab an entry in the "View" main menu is created to display and hide the tab. Moreover the GUI has two tab containers that can contain multiple tabs at the same time: "Shapes" (upper right third of the GUI) and "Correspondences" (lower right third of the GUI). To which of the two containers the tab is added can be controlled by specifying a path in the label when the tab is registered: CustomTabFactory::getInstance()->Register<MyTab>("my_tab", "Shapes>>My tab") for the upper or CustomTabFactory::getInstance()->Register<MyTab>("my_tab", "Correspondences>>My tab") for the lower tab container. The second part of the label that comes after the ">>" is used as the actual label. The first sting argument in the Register function of the Factory is the unique key of the registered class.
     static void registerTabs() {

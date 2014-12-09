@@ -58,7 +58,7 @@ void FaceCorrespondencePicker::visualizeCurrentSelection(Shape* shape, vtkIdType
     currentSelectionActor_->GetProperty()->EdgeVisibilityOn();
     currentSelectionActor_->GetProperty()->SetEdgeColor(0, 1, 1);
     currentSelectionActor_->GetProperty()->SetLineWidth(3);
-    currentSelectionActor_->SetUserTransform(shape->getActor()->GetUserTransform());
+    currentSelectionActor_->SetUserTransform(shape->getTransformation());
     
     renderer_->AddActor(currentSelectionActor_);
     renderer_->Render();

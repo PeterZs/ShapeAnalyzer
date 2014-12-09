@@ -179,7 +179,7 @@ void Correspondence::setSelected(bool selected) {
 void Correspondence::transform(Shape* shape) {
     for(int i = 0; i < shapes_.size(); i++) {
         if(shapes_[i] == shape) {
-            vtkLinearTransform* t = shape->getActor()->GetUserTransform();
+            vtkLinearTransform* t = shape->getTransformation();
             if(t != nullptr) {
                 double point[3];
                 lineReferencePoints_->GetPoint(i, point);

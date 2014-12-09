@@ -11,7 +11,7 @@
 ShapeInterpolationTab::~ShapeInterpolationTab() {
 }
 
-ShapeInterpolationTab::ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent), source_(nullptr), target_(nullptr), shape_(nullptr) {
+ShapeInterpolationTab::ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer), source_(nullptr), target_(nullptr), shape_(nullptr) {
     this->setupUi(this);
     
     QStringList labels;
@@ -71,7 +71,7 @@ void ShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
     
-    shape_ = dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addShape(name, polyData);
+    shape_ = shapeAnalyzer_->addShape(name, polyData);
 
     
     this->labelInterpolation->setEnabled(true);
@@ -91,9 +91,7 @@ void ShapeInterpolationTab::slotAddShape() {
     this->buttonChoose->setEnabled(true);
     
 
-    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->PlaceWidget(shape_->getPolyData()->GetBounds());
-    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->SetTransform((vtkTransform*) shape_->getActor()->GetUserTransform());
-    
+    shape_->modified();
 
     shape_ = nullptr;
     source_ = nullptr;
@@ -136,18 +134,14 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
         c[1] = (1-lambda) * a[1] + lambda * b[1];
         c[2] = (1-lambda) * a[2] + lambda * b[2];
         
+        //modify polyData
         shape_->getPolyData()->GetPoints()->SetPoint(pointId, c);
     }
     
+    // Tell the shape that polyData has been modified. Trigger recomputation of bounding box and rerendering
+    shape_->modified();
     
-
-    shape_->getPolyData()->Modified();
-    shape_->getActor()->Modified();
-    
-    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->PlaceWidget(shape_->getPolyData()->GetBounds());
-    static_cast<vtkBoxRepresentation*>(shape_->getBoxWidget()->GetRepresentation())->SetTransform((vtkTransform*) shape_->getActor()->GetUserTransform());
-    
-    dynamic_cast<ShapeAnalyzerInterface*>(parent_)->render();
+    shapeAnalyzer_->render();
 }
 
 void ShapeInterpolationTab::onShapeAdd(Shape* shape) {

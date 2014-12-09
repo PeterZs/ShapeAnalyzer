@@ -42,7 +42,7 @@ void PointCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape
     actor->GetProperty()->SetPointSize(5);
     actor->GetProperty()->SetRepresentationToPoints();
     actor->GetProperty()->SetColor(0, 1, 0);
-    actor->SetUserTransform(shape->getActor()->GetUserTransform());
+    actor->SetUserTransform(shape->getTransformation());
 }
 
 

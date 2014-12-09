@@ -27,9 +27,9 @@ using namespace std;
 template<class T = PetscLaplaceBeltramiSignature>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
-    ColorSignatureContextMenuItem<T>() {}
+    ColorSignatureContextMenuItem<T>(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
-    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
         int i = QInputDialog::getInt(
                                      parent,
@@ -43,16 +43,16 @@ public:
                                      );
         
         if (ok) {
-            PetscFEMLaplaceBeltramiOperator laplacian(shape, 100);
+            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
             
-            T s(shape, 100, &laplacian);
+            T s(shape_, 100, &laplacian);
 
             vtkSmartPointer<vtkDoubleArray> component = s.getComponent(i);
 
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointScalar;
             coloring->values = component;
-            shape->setColoring(coloring);
+            shape_->setColoring(coloring);
         }
     }
 };

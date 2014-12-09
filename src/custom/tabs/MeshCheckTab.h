@@ -25,7 +25,7 @@ class MeshCheckTab : public QWidget, public Ui::MeshCheckTabWidget, public Custo
     Q_OBJECT
     
 public:
-    MeshCheckTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent);
+    MeshCheckTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer);
     
     virtual ~MeshCheckTab() {}
     

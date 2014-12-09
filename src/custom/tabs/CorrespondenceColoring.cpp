@@ -139,9 +139,6 @@ void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtk
             
         }
     }
-    
-    // rerender
-    reference_->getRenderer()->GetRenderWindow()->Render();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -257,7 +254,4 @@ void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkI
             }
         }
     }
-    
-    // rerender
-    reference_->getRenderer()->GetRenderWindow()->Render();
 }

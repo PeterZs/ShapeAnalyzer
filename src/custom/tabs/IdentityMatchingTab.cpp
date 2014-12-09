@@ -14,7 +14,7 @@ IdentityMatchingTab::~IdentityMatchingTab() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-IdentityMatchingTab::IdentityMatchingTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent) : QWidget(parent, 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, parent) {
+IdentityMatchingTab::IdentityMatchingTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer) {
     this->setupUi(this);
     
     QStringList labels;
@@ -57,7 +57,7 @@ void IdentityMatchingTab::slotMatch() {
         }
     }
     if(shape1 == shape2) {
-        QMessageBox::warning(parent_, "Error", "The two shapes \"" + QString(shape1->getName().c_str()) + "\" and \"" + QString(shape2->getName().c_str()) + "\" have to be different.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The two shapes \"" + QString(shape1->getName().c_str()) + "\" and \"" + QString(shape2->getName().c_str()) + "\" have to be different.");
         return;
     }
 
@@ -71,7 +71,7 @@ void IdentityMatchingTab::slotMatch() {
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
             
-            dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addCorrespondence(correspondence, typeid(PointCorrespondenceData));
+            shapeAnalyzer_->addCorrespondence(correspondence, typeid(PointCorrespondenceData));
         }
     } else {
         for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
@@ -79,7 +79,7 @@ void IdentityMatchingTab::slotMatch() {
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
             
-            dynamic_cast<ShapeAnalyzerInterface*>(parent_)->addCorrespondence(correspondence, typeid(FaceCorrespondenceData));
+            shapeAnalyzer_->addCorrespondence(correspondence, typeid(FaceCorrespondenceData));
         }
     }
 }

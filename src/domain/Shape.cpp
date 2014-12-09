@@ -36,6 +36,11 @@ void Shape::initialize() {
     mapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper_->SetInputData(polyData_);
     
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(1.0, 1.0);
+    lookupTable->SetHueRange(0.667, 0.0);
+    lookupTable->Build();
+    mapper_->SetLookupTable(lookupTable);
     
     actor_->SetMapper(mapper_);
     renderer_->AddActor(actor_);

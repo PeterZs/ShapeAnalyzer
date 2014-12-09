@@ -50,7 +50,7 @@ void FaceCorrespondence::initializeActor(vtkSmartPointer<vtkActor> actor, Shape*
     actor->GetProperty()->EdgeVisibilityOn();
     actor->GetProperty()->SetEdgeColor(0, 1, 0);
     actor->GetProperty()->SetLineWidth(3);
-    actor->SetUserTransform(shape->getActor()->GetUserTransform());
+    actor->SetUserTransform(shape->getTransformation());
 }
 
 

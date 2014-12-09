@@ -67,7 +67,7 @@
 #include "ShapeAnalyzerInteractorStyle.h"
 #include "ShapeAnalyzerInterface.h"
 
-#include "../custom/RegisterCustomClasses.h"
+#include "../custom/CustomClassesRegistry.h"
 
 #include "../util/ErrorObserver.h"
 #include "../util/HashMap.h"
@@ -125,7 +125,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
             vtkBoxWidget2 *widget = reinterpret_cast<vtkBoxWidget2*>(caller);
             static_cast<vtkBoxRepresentation*>(widget->GetRepresentation())->GetTransform(t);
             
-            shape->getActor()->SetUserTransform(t);
+            shape->transform(t);
             
             // transform correspondences
             for(auto it = sa->pointCorrespondencesByActor_.begin(); it != sa->pointCorrespondencesByActor_.end(); it++) {
@@ -218,11 +218,11 @@ private slots:
     /// correspondece tabs, this might take time depending on the tabs.
     virtual void slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous);
     
-    /// \brief Switches the display mode of the shape depending on the seleced action in the GUI.
+    /// \brief Switches the visual representation of the shape depending on the seleced action in the GUI.
     /// \details If one of the following actions is activated: actionShowSurface, actionShowSurfaceNormals,
     /// actionShowTriangulatedMesh or actionShowPointCloud, the display mode will be changed to
     /// that for all shapes.
-    virtual void slotSetShapeDisplayMode();
+    virtual void slotSetVisualRepresentationShape();
     /// Switches the correspondence mode between point and face correspondences depending on the GUI.
     virtual void slotSetCorrespondenceType();
     
@@ -343,7 +343,7 @@ private:
     //QT
     QActionGroup* actionGroupCorrespondenceType_;
     QActionGroup* actionGroupMode_;
-    QActionGroup* actionGroupShapeDisplayMode_;
+    QActionGroup* actionGroupVisualRepresentation_;
     QActionGroup* actionGroupProjectionMode_;
     
 

@@ -22,9 +22,9 @@ using namespace std;
 
 class ShapeInfoContextMenuItem : public CustomContextMenuItem {
 public:
-    ShapeInfoContextMenuItem() {}
+    ShapeInfoContextMenuItem(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
-    virtual void onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent);
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };
 
 #endif /* defined(__ShapeAnalyzer__ShapeInfoContextMenuItem__) */

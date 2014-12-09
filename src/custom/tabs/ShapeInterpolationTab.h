@@ -31,7 +31,7 @@ class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationTabW
     Q_OBJECT
     
 public:
-    ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, QWidget* parent);
+    ShapeInterpolationTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer);
     
     virtual ~ShapeInterpolationTab();
     

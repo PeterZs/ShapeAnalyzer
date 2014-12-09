@@ -9,7 +9,7 @@
 #include "HeatDiffusionContextMenuItem.h"
 
 
-void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+void HeatDiffusionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     double t = QInputDialog::getDouble(
                                        parent,
@@ -31,7 +31,7 @@ void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkI
                                             "Choose ID of source vertex.",
                                             0,
                                             0,
-                                            shape->getPolyData()->GetNumberOfPoints()-1,
+                                            shape_->getPolyData()->GetNumberOfPoints()-1,
                                             1,
                                             &ok
                                             );
@@ -39,22 +39,22 @@ void HeatDiffusionContextMenuItem::onClick(Shape* shape, vtkIdType pointId, vtkI
     if (ok) {
         
         vtkSmartPointer<vtkDoubleArray> u0 = vtkSmartPointer<vtkDoubleArray>::New();
-        u0->SetNumberOfValues(shape->getPolyData()->GetNumberOfPoints());
-        for(vtkIdType i = 0; i < shape->getPolyData()->GetNumberOfPoints(); i++) {
+        u0->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
+        for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
             if(i == source) {
                 u0->SetValue(i, 1.0);
             } else {
                 u0->SetValue(i, 0.0);
             }
         }
-        PetscFEMLaplaceBeltramiOperator laplacian(shape, 100);
+        PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
         
-        PetscHeatDiffusion heatDiffusion(shape, &laplacian, u0);
+        PetscHeatDiffusion heatDiffusion(shape_, &laplacian, u0);
         vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
 
         shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
         coloring->type = Shape::Coloring::Type::PointScalar;
         coloring->values = ut;
-        shape->setColoring(coloring);
+        shape_->setColoring(coloring);
     }
 }

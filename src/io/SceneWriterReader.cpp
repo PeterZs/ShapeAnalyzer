@@ -227,8 +227,40 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
         ss >> position2;
         ss >> position3;
     }
-    
     renderer->GetActiveCamera()->SetPosition(position1, position2, position3);
+    
+    double windowCenter1, windowCenter2;
+    
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> windowCenter1;
+        ss >> windowCenter2;
+    }
+    renderer->GetActiveCamera()->SetWindowCenter(windowCenter1, windowCenter2);
+    
+    double viewangle, eyeangle;
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> viewangle;
+        ss >> eyeangle;
+    }
+    renderer->GetActiveCamera()->SetViewAngle(viewangle);
+    renderer->GetActiveCamera()->SetEyeAngle(eyeangle);
+    
+    double* eyeposition = new double[3];
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> eyeposition[0];
+        ss >> eyeposition[1];
+        ss >> eyeposition[2];
+    }
+    renderer->GetActiveCamera()->SetEyePosition(eyeposition);
     
     // read correspondences
     
@@ -353,6 +385,19 @@ void SceneWriterReader::exportSceneASCII
     renderer->GetActiveCamera()->GetPosition(position1, position2, position3);
     
     os << position1 << "\t" << position2 << "\t" << position3 << endl;
+    
+    double windowCenter1, windowCenter2;
+    renderer->GetActiveCamera()->GetWindowCenter(windowCenter1, windowCenter2);
+    os << windowCenter1 << "\t" << windowCenter2 << endl;
+    
+    double viewangle = renderer->GetActiveCamera()->GetViewAngle();
+    double eyeangle = renderer->GetActiveCamera()->GetEyeAngle();
+    os << viewangle << "\t" << eyeangle << endl;
+    
+    double* eyePosition = new double[3];
+    renderer->GetActiveCamera()->GetEyePosition(eyePosition);
+    os << eyePosition[0] << "\t" << eyePosition[1] << "\t" << eyePosition[2] << endl;
+    delete eyePosition;
     
     // write last insert correspondence id
     os << lastInsertCorrespondenceID;

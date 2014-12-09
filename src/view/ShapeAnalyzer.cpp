@@ -685,6 +685,8 @@ void ShapeAnalyzer::slotOpenScene() {
     
     clear();
     
+    renderer_->ResetCamera();
+    
     vector<Shape*> shapes;
     
     HashMap<PointCorrespondenceData*, PointCorrespondence*> pointCorrespondences;
@@ -736,7 +738,6 @@ void ShapeAnalyzer::slotOpenScene() {
         }
     }
     
-    renderer_->ResetCamera();
     
     qvtkWidget->GetRenderWindow()->Render();
     qtUpdateLabelVisibleCorrespondences();

@@ -17,6 +17,8 @@
 #include <QString>
 
 #include <vtkCamera.h>
+#include <vtkHomogeneousTransform.h>
+#include <vtkMatrix4x4.h>
 
 #include <iostream>
 #include <string>

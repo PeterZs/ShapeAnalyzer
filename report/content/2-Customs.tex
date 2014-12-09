@@ -1,0 +1,29 @@
+% !TeX encoding=utf8
+% !TeX spellcheck = en-US
+
+\chapter{Customs}
+
+\section{Exceptions}
+\label{sec:Exceptions}
+
+There are two types of exceptions you might want to throw: Exceptions (\ref{subsec:Exceptions}) and Errors (\ref{subsec:Errors}). The first one is kind of optional, it includes all normal exceptions C++ provides, the second one is for non-fatal problems that might occur and that can actually be handled.
+
+\subsection{Errors}
+\label{subsec:Errors}
+
+
+\subsection{Exceptions}
+\label{subsec:Exceptions}
+
+\begin{itemize}
+	\item \textbf{Throw when} you have special cases that are due to previous faulty programming or unexpected errors
+	\item \textbf{Documentation} not necessary
+\end{itemize}
+
+Any exception will be caught by the main program and showed within an error message. The program will then terminate. In order to make debugging easier a short description of the problem is useful.
+
+\begin{lstlisting}[style=lstStyleCpp]if(s >= points_->size()) {
+        throw invalid_argument("Source point (" + to_string(s) + ") 
+        larger than number of points (" + to_string(points_->size()) + ") 
+        in " + __PRETTY_FUNCTION__);
+}\end{lstlisting}

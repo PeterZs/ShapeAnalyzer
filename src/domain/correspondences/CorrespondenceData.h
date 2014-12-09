@@ -27,6 +27,31 @@ public:
         correspondingIds_.push_back(newCorrespondence);
     }
     
+    /// \brief Removes this shape from the data.
+    /// @return 1 if the shape was removed, 0 if not
+    int removeShape(const vtkIdType toBeRemovedShape) {
+        int removed = 0;
+        for(int i = 0; i < shapeIds_.size(); i++) {
+            // move all elements one to the front if a shape was deleted
+            if(removed) {
+                shapeIds_[i-1] = shapeIds_[i];
+                correspondingIds_[i-1] = correspondingIds_[i];
+            }
+            
+            if(shapeIds_[i] == toBeRemovedShape) {
+                removed = 1;
+            }
+        }
+        
+        // delete last element (that is now double) if a shape was deleted
+        if(removed) {
+            shapeIds_.pop_back();
+            correspondingIds_.pop_back();
+        }
+        
+        return removed;
+    }
+    
     /// \brief Clears the Correspondence Data without deleting the object.
     void clear() {
         shapeIds_.clear();

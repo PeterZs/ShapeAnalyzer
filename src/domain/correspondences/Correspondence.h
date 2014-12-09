@@ -54,6 +54,12 @@ public:
     /// \details Returns 1 if shape plus data id combination has successfully been added (shape has not been selected twice). Returns 0 if the shape equals the last added shape and updates the  coordinates of the lines end point with the new coordinates. Returns -1 if the shape is identical to another shape that has already been added before and the shape is not equals to the last added shape.
     int addShape(Shape* shape, vtkIdType);
     
+    /// \brief Removes this shape from the Correspondence, if it was a part of it.
+    /// \details The actor is updated and the vtk widget rendered, if necessary.
+    /// @return 1 if the shape was removed...
+    /// \note TODO
+    int removeShape(Shape* shape);
+    
 
     /// Returns the actor representing the line
     vtkActor* getLinesActor() {

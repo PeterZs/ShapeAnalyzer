@@ -777,6 +777,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -787,6 +788,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -806,6 +808,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -816,6 +819,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -835,6 +839,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -845,6 +850,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -864,6 +870,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -874,6 +881,7 @@ void ShapeAnalyzer::slotImportShape() {
         
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
         }
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
@@ -986,7 +994,7 @@ void ShapeAnalyzer::slotSaveScene() {
         if(filename.isEmpty()) {
             return;
         }
-        SceneWriterReader::exportSceneASCII(filename.toStdString(), shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
+        SceneWriterReader::exportSceneASCII(filename.toStdString(), renderer_, shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
     }
 }
 

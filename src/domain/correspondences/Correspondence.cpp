@@ -136,6 +136,15 @@ int Correspondence::addShape(Shape* shape, vtkIdType id) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+int Correspondence::removeShape(Shape* shape) {
+    if (shape == nullptr) {
+        throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
+    }
+    
+    
+    return 0;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // removes correspondence actor from renderer

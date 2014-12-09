@@ -10,7 +10,15 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::importSceneBinary(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes, int& lastInsertCorrespondenceID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences) {
+void SceneWriterReader::importSceneBinary(
+                                          string filename,
+                                          vtkSmartPointer<vtkRenderer> renderer,
+                                          int& lastInsertShapeID,
+                                          vector<Shape*>& shapes,
+                                          int& lastInsertCorrespondenceID,
+                                          HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences,
+                                          HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences
+                                          ) {
 
     
     //open input file stream in binary mode
@@ -198,12 +206,29 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
         ss >> lastInsertShapeID;
     }
     
+    HashMap<vtkActor*, Shape*> shapesByActor;
+    //read shapes
     for(unsigned int i = 0; i < numberOfShapes; i++) {
         Shape* shape = new Shape(renderer);
+        
         shape->readASCII(is);
         shapes.push_back(shape);
-        
+        shapesByActor.insert(shape->getActor(), shape);
     }
+    
+    // read camera attributes
+    double position1, position2, position3;
+    
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> position1;
+        ss >> position2;
+        ss >> position3;
+    }
+    
+    renderer->GetActiveCamera()->SetPosition(position1, position2, position3);
     
     // read correspondences
     
@@ -251,40 +276,50 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
         
         PointCorrespondence* correspondence = nullptr;
         if(visible) {
-        //    correspondence = new PointCorrespondence(renderer, data, shapesByActor);
-        //    correspondence->initialize();
+            correspondence = new PointCorrespondence(renderer, data, shapesByActor);
+            correspondence->initialize();
         }
         
         pointCorrespondences.insert(data, correspondence);
     }
     
     //read face correspondences
-    int64_t numberOfFaceCorrespondences;
-    is.read(reinterpret_cast<char*>(&numberOfFaceCorrespondences), sizeof(int64_t));
+    int numberOfFaceCorrespondences;
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> numberOfFaceCorrespondences;
+    }
     
-    for(int64_t i = 0; i < numberOfFaceCorrespondences; i++) {
-        int64_t id;
-        is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
+    for(int i = 0; i < numberOfFaceCorrespondences; i++) {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        
+        int id;
+        ss >> id;
+        
         FaceCorrespondenceData* data = new FaceCorrespondenceData(id);
         
         bool visible;
-        is.read(reinterpret_cast<char*>(&visible), sizeof(bool));
+        ss >> visible;
         
-        int64_t numberOfShapes;
-        is.read(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
+        int numberOfShapes;
+        ss >> numberOfShapes;
         
-        for(int64_t j = 0; j < numberOfShapes; j++) {
-            int64_t shapeId;
-            int64_t faceId;
-            is.read(reinterpret_cast<char*>(&shapeId), sizeof(int64_t));
-            is.read(reinterpret_cast<char*>(&faceId), sizeof(int64_t));
+        for(int j = 0; j < numberOfShapes; j++) {
+            int shapeId;
+            int faceId;
+            ss >> shapeId;
+            ss >> faceId;
             data->addShape(shapeId, faceId);
         }
         
         FaceCorrespondence* correspondence = nullptr;
         if(visible) {
-        //    correspondence = new FaceCorrespondence(renderer, data, shapesByActor);
-        //    correspondence->initialize();
+            correspondence = new FaceCorrespondence(renderer, data, shapesByActor);
+            correspondence->initialize();
         }
         
         faceCorrespondences.insert(data, correspondence);
@@ -297,6 +332,7 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
 ///////////////////////////////////////////////////////////////////////////////
 void SceneWriterReader::exportSceneASCII
             (string filename,
+             vtkSmartPointer<vtkRenderer> renderer,
              vector<Shape*>& shapes,
              int lastInsertShapeID,
              HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences,
@@ -311,6 +347,12 @@ void SceneWriterReader::exportSceneASCII
     for(int i = 0; i < shapes.size(); i++) {
         shapes[i]->writeASCII(os);
     }
+    
+    // write camera attributes
+    double position1, position2, position3;
+    renderer->GetActiveCamera()->GetPosition(position1, position2, position3);
+    
+    os << position1 << "\t" << position2 << "\t" << position3 << endl;
     
     // write last insert correspondence id
     os << lastInsertCorrespondenceID;

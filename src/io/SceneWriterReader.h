@@ -16,6 +16,8 @@
 #include <QObject>
 #include <QString>
 
+#include <vtkCamera.h>
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -43,7 +45,9 @@ public:
     static void importSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, int& lastInsertShapeID, vector<Shape*>& shapes, int& lastInsertCorrespondenceID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences);
     
     /// Exports a scene in ASCII including both shapes and correspondences. It takes an ordered vector of the shapes, two maps containing point face correspondences respectively and the last used IDs for shapes and correspondences as arguments.
-    static void exportSceneASCII(string filename, vector<Shape*>& shapes, int lastInsertShapeID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences, int lastInsertCorrespondenceID);
+    static void exportSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, vector<Shape*>& shapes, int lastInsertShapeID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences, int lastInsertCorrespondenceID);
+    
+    
     
     /// Exports a list of point correspondences in ASCII. It takes a map containing PointCorrespondenceData objects a vector of the corresponding shapes ordered by ID and the filename as arguments.
     static void exportPointCorrespondencesASCII(

@@ -683,11 +683,6 @@ void ShapeAnalyzer::slotOpenScene() {
     if(filename.isEmpty())
         return;
     
-    // for some strange reasen scalar bar has to be turned off before shapes are loaded otherwise application will crash.
-    // This is probably a bug of VTK.
-    scalarBar_->SetVisibility(0);
-    scalarBar_->Modified();
-    qvtkWidget->GetRenderWindow()->Render();
     clear();
     
     vector<Shape*> shapes;
@@ -743,11 +738,7 @@ void ShapeAnalyzer::slotOpenScene() {
     
     renderer_->ResetCamera();
     
-    // Turn on scalarbar again.
-    scalarBar_->SetVisibility(actionShowScalarBar->isChecked());
-    scalarBar_->Modified();
     qvtkWidget->GetRenderWindow()->Render();
-    
     qtUpdateLabelVisibleCorrespondences();
 }
 
@@ -1572,15 +1563,10 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType f
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
-    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    lookupTable->SetTableRange(1.0, 1.0);
-    lookupTable->SetHueRange(0.667, 0.0);
-    lookupTable->Build();
-    scalarBar_->SetLookupTable(lookupTable);
-    scalarBar_->SetTitle(" ");
-    scalarBar_->Modified();
-
-
+    if(this->shapesByActor_.size() > 0) {
+        scalarBar_->SetTitle(" ");
+    }
+    
     // fire event for customTabs
     for(auto entry : customTabs_) {
         entry.second->onClear();
@@ -1589,7 +1575,7 @@ void ShapeAnalyzer::clear() {
     // qt
     listShapes->disconnect();
     listCorrespondences->disconnect();
-    
+
     //delete all items from the list. Remove displayed correspondences from renderer
     for(int i = listCorrespondences->count()-1; i > -1; i--) {
         //get correspondence
@@ -1600,6 +1586,7 @@ void ShapeAnalyzer::clear() {
         correspondence->removeFromRenderer();
     }
     
+
     //delete all correspondences (not neccessarily all correspondences are in the listWidget)
     for(HashMap<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
         
@@ -1613,7 +1600,6 @@ void ShapeAnalyzer::clear() {
         delete it->second;
     }
     faceCorrespondencesByActor_.clear();
-    
     
     // delete all correspondence data
     for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
@@ -1642,12 +1628,12 @@ void ShapeAnalyzer::clear() {
         delete shape;
     }
     
-    
     lastInsertShapeID_ = 0;
     lastInsertCorresondenceID_ = 0;
     
     correspondencePicker_->clearSelection();
     pickerCounter_ = 0;
+
     
     this->qvtkWidget->GetRenderWindow()->Render();
     

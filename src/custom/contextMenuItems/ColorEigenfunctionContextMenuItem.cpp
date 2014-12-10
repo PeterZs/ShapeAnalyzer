@@ -23,12 +23,16 @@ void ColorEigenfunctionContextMenuItem::onClick(vtkIdType pointId, vtkIdType fac
                                  );
     // show eigenfunction
     if (ok) {
-        PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
-        vtkSmartPointer<vtkDoubleArray> eigenfunction = laplacian.getEigenfunction(i);
-        
-        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-        coloring->type = Shape::Coloring::Type::PointScalar;
-        coloring->values = eigenfunction;
-        shape_->setColoring(coloring);
+        try {
+            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
+            vtkSmartPointer<vtkDoubleArray> eigenfunction = laplacian.getEigenfunction(i);
+            
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointScalar;
+            coloring->values = eigenfunction;
+            shape_->setColoring(coloring);
+        } catch(LaplaceBeltramiError& e) {
+            QMessageBox::warning(parent, "Exception", e.what());
+        }
     }
 }

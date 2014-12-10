@@ -48,7 +48,7 @@ void FunctionTransferTab::slotTransfer() {
         }
     }
     if(source == target) {
-        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The shapes source \"" + QString(source->getName().c_str()) + "\" and target \"" + QString(source->getName().c_str()) + "\" have to be diffrent.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The shapes source and target have to be diffrent.");
         return;
     }
     
@@ -87,37 +87,47 @@ void FunctionTransferTab::slotTransfer() {
         }
     }
     
-    laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianSource(source, 100);
-    laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianTarget(target, 100);
-    
-    
-    // compute 200-dimensional wave kernel discriptor on both shapes
-    PetscWaveKernelSignature wksSource(source, 200, &laplacianSource);
-    
-    
-    PetscWaveKernelSignature wksTarget(target, 200, &laplacianTarget);
-    
-    // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-    for(int i = 0; i < 200; i++) {
-        vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-        cs.push_back(wksiSource);
+    try {
+        laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianSource(source, 100);
+        laplaceBeltrami::PetscFEMLaplaceBeltramiOperator laplacianTarget(target, 100);
         
-        vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-        ct.push_back(wksiTarget);
+        
+        // compute 200-dimensional wave kernel discriptor on both shapes
+        PetscWaveKernelSignature wksSource(source, 200, &laplacianSource);
+        
+        
+        PetscWaveKernelSignature wksTarget(target, 200, &laplacianTarget);
+        
+        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
+        for(int i = 0; i < 200; i++) {
+            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
+            cs.push_back(wksiSource);
+            
+            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+            ct.push_back(wksiTarget);
+        }
+        
+        // compute correspondence matrix C
+        PetscFunctionalMaps functionalMaps(source, target, &laplacianSource, &laplacianTarget, cs, ct, 100);
+        
+        
+        // transfer the coordinate function
+        vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(vtkDoubleArray::SafeDownCast(source->getColoring()->values));
+        
+        // color 2nd shape
+        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+        coloring->type = Shape::Coloring::Type::PointScalar;
+        coloring->values = Tf;
+        target->setColoring(coloring);
+    } catch(metric::MetricError& me) {
+        QErrorMessage msgBox;
+        msgBox.showMessage(QString::fromStdString(me.what()));
+        msgBox.exec();
+    } catch(laplaceBeltrami::LaplaceBeltramiError& le) {
+        QErrorMessage msgBox;
+        msgBox.showMessage(QString::fromStdString(le.what()));
+        msgBox.exec();
     }
-    
-    // compute correspondence matrix C
-    PetscFunctionalMaps functionalMaps(source, target, &laplacianSource, &laplacianTarget, cs, ct, 100);
-
-    
-    // transfer the coordinate function
-    vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(vtkDoubleArray::SafeDownCast(source->getColoring()->values));
-    
-    // color 2nd shape
-    shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-    coloring->type = Shape::Coloring::Type::PointScalar;
-    coloring->values = Tf;
-    target->setColoring(coloring);
 }
 
 

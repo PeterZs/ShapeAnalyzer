@@ -17,7 +17,8 @@
 
 #include "../Factory.h"
 
-#include <qinputdialog.h>
+#include <QInputDialog>
+#include <QMessageBox>
 
 using namespace std;
 using namespace metric;
@@ -41,13 +42,17 @@ public:
                                                 );
         
         if (ok) {
-            T m(shape_);
-            vtkSmartPointer<vtkDoubleArray> distances = m.getAllDistances(source);
-
-            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-            coloring->type = Shape::Coloring::Type::PointScalar;
-            coloring->values = distances;
-            shape_->setColoring(coloring);
+            try {
+                T m(shape_);
+                vtkSmartPointer<vtkDoubleArray> distances = m.getAllDistances(source);
+                
+                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+                coloring->type = Shape::Coloring::Type::PointScalar;
+                coloring->values = distances;
+                shape_->setColoring(coloring);
+            } catch(MetricError& e) {
+                QMessageBox::warning(parent, "Exception", e.what());
+            }
         }
     }
 };

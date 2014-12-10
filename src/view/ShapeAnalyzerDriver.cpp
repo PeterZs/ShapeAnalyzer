@@ -10,27 +10,21 @@
 
 #include "ShapeAnalyzer.h"
 
-class MyApplication : public QApplication
-{
+class MyApplication : public QApplication {
 public:
     MyApplication(int argc, char** argv) : QApplication(argc, argv) {}
-    // ~MyApplication();
 private:
     bool notify(QObject *receiver, QEvent *event) {
         try {
             return QApplication::notify(receiver, event);
         } catch (std::exception &e) {
-            QMessageBox::critical( NULL, "Exception",
-                                  ("Error sending event %s to object %s (%s)\nAn exception of type \"%s\" has been thrown: %s", typeid(*event).name(),
-                                  qPrintable(receiver->objectName()), typeid(*receiver).name(), typeid(e).name(), e.what()));
+            QMessageBox::critical(nullptr, "Exception", tr("Error sending event ") + typeid(*event).name() + " to object " + qPrintable(receiver->objectName() + " (" + typeid(*receiver).name() + ")\nAn exception of type \"" + typeid(e).name() + "\" has been thrown: " + e.what()));
+            exit(EXIT_FAILURE);
         } catch (...) {
-            QMessageBox::critical( NULL, "Exception",
-                                  ("Error <unknown> sending event %s to object %s (%s)", typeid(*event).name(), qPrintable(receiver->objectName()),
-                                   typeid(*receiver).name()));
+            QMessageBox::critical(nullptr, "Exception", tr("Error <unknown> sending event ") + typeid(*event).name() + " to object " + qPrintable(receiver->objectName() + " (" + typeid(*receiver).name() + ")"));
+            exit(EXIT_FAILURE);
         }
         
-        // qFatal aborts, so this isn't really necessary
-        // but you might continue if you use a different logging lib
         return false;
     }
 };
@@ -44,8 +38,9 @@ int main( int argc, char** argv ) {
         shapeAnalyzer.show();
         return app.exec();
     } catch(...) {
-        QMessageBox::critical( NULL, "Exception",
+        QMessageBox::critical(nullptr, "Exception",
                               "Error <unknown> has occured\n");
+        exit(EXIT_FAILURE);
     }
 }
 

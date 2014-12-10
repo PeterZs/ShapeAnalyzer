@@ -14,11 +14,13 @@
 #include "CustomContextMenuItem.h"
 
 #include "../../domain/laplaceBeltrami/PetscLaplaceBeltramiOperator.h"
+#include "../../domain/laplaceBeltrami/LaplaceBeltramiError.h"
 #include "../../domain/signatures/PetscLaplaceBeltramiSignature.h"
 
 #include "../Factory.h"
 
-#include <qinputdialog.h>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include <vtkDoubleArray.h>
 
@@ -43,6 +45,7 @@ public:
                                      );
         
         if (ok) {
+            try {
             PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
             
             T s(shape_, 100, &laplacian);
@@ -53,6 +56,9 @@ public:
             coloring->type = Shape::Coloring::Type::PointScalar;
             coloring->values = component;
             shape_->setColoring(coloring);
+            } catch(LaplaceBeltramiError& e) {
+                QMessageBox::warning(parent, "Exception", e.what());
+            }
         }
     }
 };

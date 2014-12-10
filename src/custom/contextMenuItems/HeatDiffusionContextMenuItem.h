@@ -14,11 +14,13 @@
 #include "CustomContextMenuItem.h"
 
 #include "../../domain/laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
+#include "../../domain/laplaceBeltrami/LaplaceBeltramiError.h"
 #include "../../domain/PetscHeatDiffusion.h"
 
 #include "../Factory.h"
 
-#include <qinputdialog.h>
+#include <QInputDialog>
+#include <QMessageBox>
 
 using namespace std;
 using namespace laplaceBeltrami;

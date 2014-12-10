@@ -1539,16 +1539,8 @@ void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtk
 void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
     if((this->actionAddFaceCorrespondences->isChecked() || this->actionAddPointCorrespondences->isChecked())&& vtkEvent == vtkCommand::LeftButtonPressEvent) {
         
-        int result;
-        try {
-            result = correspondencePicker_->addShape(shape, this->actionAddFaceCorrespondences->isChecked() ? faceId : pointId);
-        } catch (invalid_argument e) {
-            // the shape was not added correctly, nothing happens
-            QErrorMessage errorDialog;
-            errorDialog.showMessage(QString::fromStdString(string("Invalid Argument: ").append(e.what())));
-            errorDialog.exec();
-            return;
-        }
+        int result = correspondencePicker_->addShape(shape, this->actionAddFaceCorrespondences->isChecked() ? faceId : pointId);
+
         if(result == 1)
             pickerCounter_++;
         else if(result == -1)

@@ -37,24 +37,27 @@ void HeatDiffusionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, 
                                             );
     
     if (ok) {
-        
-        vtkSmartPointer<vtkDoubleArray> u0 = vtkSmartPointer<vtkDoubleArray>::New();
-        u0->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
-        for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
-            if(i == source) {
-                u0->SetValue(i, 1.0);
-            } else {
-                u0->SetValue(i, 0.0);
+        try {
+            vtkSmartPointer<vtkDoubleArray> u0 = vtkSmartPointer<vtkDoubleArray>::New();
+            u0->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
+            for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
+                if(i == source) {
+                    u0->SetValue(i, 1.0);
+                } else {
+                    u0->SetValue(i, 0.0);
+                }
             }
+            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
+            
+            PetscHeatDiffusion heatDiffusion(shape_, &laplacian, u0);
+            vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
+            
+            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+            coloring->type = Shape::Coloring::Type::PointScalar;
+            coloring->values = ut;
+            shape_->setColoring(coloring);
+        } catch(LaplaceBeltramiError& e) {
+            QMessageBox::warning(parent, "Exception", e.what());
         }
-        PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
-        
-        PetscHeatDiffusion heatDiffusion(shape_, &laplacian, u0);
-        vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
-
-        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-        coloring->type = Shape::Coloring::Type::PointScalar;
-        coloring->values = ut;
-        shape_->setColoring(coloring);
     }
 }

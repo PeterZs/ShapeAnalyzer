@@ -7,6 +7,7 @@
 #include <vtkRenderer.h>
 
 #include <QMessageBox>
+#include <QErrorMessage>
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondenceData.h"

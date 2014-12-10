@@ -16,10 +16,11 @@
 #include "../../domain/laplaceBeltrami/LaplaceBeltramiOperator.h"
 #include "../../domain/segmentation/VoronoiCellSegmentation.h"
 #include "../../domain/samplings/FarthestPointSampling.h"
+#include "../../domain/metric/MetricError.h"
 
 #include "../Factory.h"
 
-#include <qinputdialog.h>
+#include <QInputDialog>
 
 using namespace std;
 using namespace segmentation;
@@ -56,15 +57,19 @@ public:
                                                           &ok
                                                           );
         if(ok) {
-            T m(shape_);
-            FarthestPointSampling fps(shape_, &m, source, numberOfSegments);
-            VoronoiCellSegmentation segmentation(shape_, &m, &fps);
-            
-            // save current segmentation for being able to create new shapes out of the segments
-            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-            coloring->type = Shape::Coloring::Type::PointSegmentation;
-            coloring->values = segmentation.getSegments();
-            shape_->setColoring(coloring);
+            try {
+                T m(shape_);
+                FarthestPointSampling fps(shape_, &m, source, numberOfSegments);
+                VoronoiCellSegmentation segmentation(shape_, &m, &fps);
+                
+                // save current segmentation for being able to create new shapes out of the segments
+                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+                coloring->type = Shape::Coloring::Type::PointSegmentation;
+                coloring->values = segmentation.getSegments();
+                shape_->setColoring(coloring);
+            } catch(metric::MetricError& e) {
+                QMessageBox::warning(parent, "Exception", e.what());
+            }
         }
     }
 };

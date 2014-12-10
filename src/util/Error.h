@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#include <cstdlib>
+
 ///
 /// \brief Used to throw and catch exceptions within the ShapeAnalyzer.
 /// \details Exceptions that inherit from Error are expected to be catched, or
@@ -18,14 +20,15 @@ public:
     Error() : what_("An error occured in the Shape Analyzer framework.") {}
     /// \brief Specific constructor.
     /// \details The given string will be shown in an error dialog. Please make it meaningful.
-    Error(const std::string& str) : what_(str) {
+    Error(const std::string& str) {
+        what_ = strdup(str.c_str());
     }
     
     /// \brief Returns the what_-message indicating the kind of problem.
-    virtual const char* what() const throw() { return what_.c_str(); }
+    virtual const char* what() const throw() { return what_; }
     
 private:
-    std::string what_;
+    const char* what_;
 };
 
 #endif

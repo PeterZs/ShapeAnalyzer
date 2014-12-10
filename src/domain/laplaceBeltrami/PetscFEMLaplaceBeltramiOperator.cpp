@@ -41,6 +41,9 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
     EPSSetFromOptions(eps_);
     // Solve the eigensystem
     ierr = EPSSolve(eps_);
+    if(ierr != 0) {
+        throw LaplaceBeltramiError(string("Error occured in computation of Laplace-Beltrami eigenfunction (Probably due to corrupted shape)").append(" in ").append(__PRETTY_FUNCTION__));
+    }
     
     ierr = EPSView(eps_, PETSC_VIEWER_STDOUT_SELF);
     ierr = EPSPrintSolution(eps_, NULL);

@@ -4,8 +4,11 @@
 #include <slepceps.h>
 
 #include "../PetscHelper.h"
+#include "../PetscError.h"
 
 #include "LaplaceBeltramiOperator.h"
+#include "LaplaceBeltramiError.h"
+
 
 namespace laplaceBeltrami {
     

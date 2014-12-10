@@ -1,5 +1,5 @@
-#ifndef Shape_H
-#define Shape_H
+#ifndef __ShapeAnalyzer__Shape__
+#define __ShapeAnalyzer__Shape__
 
 #include <vtkActor.h>
 #include <vtkBoxWidget2.h>
@@ -49,26 +49,56 @@ using namespace std;
 ///
 class Shape {
 public:
-    enum class VisualRepresentation { MeshSurface, InterpolatedNormals, PointCloud, Mesh };
+    /// \brief Enum that contains several types of a visual representation of a shape.
+    /// \details The current visual representation of the shape can be set via the method setVisualRepresentation().
+    enum class VisualRepresentation {
+        /// \brief Stands for a (triangulated) mesh surface representation (default). Filled faces are visualized.
+        MeshSurface,
+        /// \brief Stands for a smooth representation using the shapes normal vectors.
+        InterpolatedNormals,
+        /// \brief Stands for a point cloud representation of the shapes. Only the vertices of the shape a visualized.
+        PointCloud,
+        /// \brief Stands for a triangulated mesh representation. Only the edges of the faces are visualized.
+        Mesh
+    };
     
-    /// \brief Coloring struct. Contains a type and the coloring data as vtkSmartPointer<vtkDataArray>.
+    /// \brief Coloring struct. Contains a type and the colors as vtkSmartPointer<vtkDataArray>.
     struct Coloring {
         /// \brief Type enum.
-        enum class Type { PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar, FaceScalar };
+        enum class Type {
+            /// \brief Stands for a segmentation that is represented as a discrete vertex map. Each vertex is mapped to an int that stands for its segment ID.
+            PointSegmentation,
+            /// \brief Stands for a segmentation that is represented as a discrete face map. Each face is mapped to an int that stands for its segment ID.
+            FaceSegmentation,
+            /// \brief Stands for a 3D RGB point map.
+            PointRgb,
+            /// \brief Stands for a 3D RGB face map.
+            FaceRgb,
+            /// \brief Stands for a scalar valued point map.
+            PointScalar,
+            /// \brief Stands for a scalar valued face map.
+            FaceScalar
+        };
         
-        /// \brief Color data. It can be either point or face data.
-        /// \details Moreover it is either an 1D (scalar) or an 3D (RGB) array.
+        /// \brief Color data. It can be either point or face data. It is either a scalar (1D) or a RGB (3D) map.
         vtkSmartPointer<vtkDataArray> values;
         
         /// \brief Type of the coloring. It is either PointSegmentation, FaceSegmentation, PointRgb, FaceRgb, PointScalar or FaceScalar
         Type type;
     };
     
-    /// Constructor.
+    /// \brief Constructor.
+    /// @param vtkIdType The unique shape ID.
+    /// @param string The name of the shape.
+    /// @param vtkSmartPointer<vtkPolyData> The faces and triangles of the shape.
+    /// @param vtkSmartPointer<vtkRenderer> The renderer object which is responsible for rendering the shape.
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     
     /// Virtual destructor.
     virtual ~Shape() {
+        // remove shape from renderer.
+        renderer_->RemoveActor(actor_);
+        boxWidget_->SetInteractor(nullptr);
     }
     
     /// \brief Returns the area of the shape.
@@ -85,8 +115,8 @@ public:
     /// \brief Removes any Scalar information that is used to color the shape and resets all properties of the mapper to default.
     void clearColoring();
     
-    // Getters
-    
+    /// @name Getters
+    ///@{
     /// \brief Returns the actor of the shape.
     vtkSmartPointer<vtkActor> getActor() {
         return actor_;
@@ -97,10 +127,13 @@ public:
         return polyData_;
     }
     
+    /// \brief Returns the current user transformation.
     vtkLinearTransform* getTransformation() {
         return actor_->GetUserTransform();
     }
     
+    
+    /// \brief Returns the lookup table that is associated with the mapper.
     vtkScalarsToColors* getLookupTable() {
         return mapper_->GetLookupTable();
     }
@@ -121,8 +154,11 @@ public:
         actor_->SetUserTransform(t);
     }
     
+    /// \brief Sets the type of visual representation of the shape.
     void setVisualRepresentation(VisualRepresentation representation);
     
+    
+    /// \brief Toggles the bounding box widget.
     void setShowBoxWidget(bool showBoxWidget) {
         if(showBoxWidget) {
             boxWidget_->On();

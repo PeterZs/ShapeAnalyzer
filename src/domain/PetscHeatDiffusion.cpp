@@ -38,7 +38,7 @@ PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperato
     Vec u0;
     MatGetVecs(PhiTM, &u0, &PhiTMu0_);
     
-    PetscHelper::vtkDoubleArrayToPetscVec(initialCondition, u0);
+    PetscHelper::vtkDataArrayToPetscVec(initialCondition, u0);
     
     MatMult(PhiTM, u0, PhiTMu0_);
 

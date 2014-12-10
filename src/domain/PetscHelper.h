@@ -1,6 +1,9 @@
 #ifndef __ShapeAnalyzer__PetscHelper__
 #define __ShapeAnalyzer__PetscHelper__
 
+#include <string>
+#include <exception>
+
 #include <slepceps.h>
 
 #include <vtkSmartPointer.h>
@@ -24,8 +27,8 @@ public:
     /// \brief Reshapes n*m-dimensional vector b as matrix B with m rows and n columns. Elements are filled row wise into matrix B.
     static void reshape(Mat& B, Vec& b, PetscInt m, PetscInt n);
     
-    /// \brief Converts a vtkDoubleArray to a Petsc vector
-    static void vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec);
+    /// \brief Converts a vtkDataArray to a Petsc vector
+    static void vtkDataArrayToPetscVec(vtkSmartPointer<vtkDataArray> arr, Vec &vec);
     
     /// \brief Converts a PETSC vector to a vtkDoubleArray
     static vtkSmartPointer<vtkDoubleArray> petscVecToVtkDoubleArray(Vec& vec);

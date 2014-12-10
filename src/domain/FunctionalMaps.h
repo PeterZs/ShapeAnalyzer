@@ -39,13 +39,39 @@ public:
         
         numberOfConstraints_ = c1_.size();
         if(c1_.size() != c2_.size()) {
-            throw invalid_argument(string("Number of elements in constraint vectors c1 and c2 do not match in ").append(__PRETTY_FUNCTION__));
+            throw invalid_argument(string("Number of constraints of the given shapes c1.size() and c2.size() do not coincide in ").append(__PRETTY_FUNCTION__));
+        }
+        
+        for(int i = 0; i < c1_.size(); i++) {
+            if(c1_.at(i)->GetNumberOfTuples() != shape1_->getPolyData()->GetNumberOfPoints()) {
+                throw invalid_argument(string("Number of tuples in c1[" + to_string(i) + "] and number of points of shape1 do not coincide in ").append(__PRETTY_FUNCTION__));
+            }
+
+            if(c2_.at(i)->GetNumberOfTuples() != shape2_->getPolyData()->GetNumberOfPoints()) {
+                throw invalid_argument(string("Number of tuples in c2[" + to_string(i) + "] and number of points of shape2 do not coincide in ").append(__PRETTY_FUNCTION__));
+            }
+            
+            if(c2_.at(i)->GetNumberOfTuples() != shape2_->getPolyData()->GetNumberOfPoints()) {
+                throw invalid_argument(string("Number of components of contraint c1[" + to_string(i) + "] is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+            }
+            
+            if(c2_.at(i)->GetNumberOfComponents() != 1) {
+                throw invalid_argument(string("Number of components of contraint c2[" + to_string(i) + "] is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+            }
+            
+            if(c1_.at(i)->GetNumberOfComponents() != 1) {
+                throw invalid_argument(string("Number of components of contraint c1[" + to_string(i) + "] is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+            }
+
+            if(c2_.at(i)->GetNumberOfComponents() != 1) {
+                throw invalid_argument(string("Number of components of contraint c2[" + to_string(i) + "] is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+            }
         }
         
     }
     
-    /// \brief Transfers and returns a function f from the source to the target shape.
-    virtual vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDoubleArray> f) = 0;
+    /// \brief Transfers and returns a scalar valued function f from the source to the target shape.
+    virtual vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f) = 0;
     
     virtual ~FunctionalMaps() {}
 

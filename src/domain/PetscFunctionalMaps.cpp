@@ -31,7 +31,7 @@ PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLapl
         MatGetVecs(PhiTM1_, &ci1, &ai);
         
         //copy contraint c1_ which is of type scalar point attribute into Petsc vector
-        PetscHelper::vtkDoubleArrayToPetscVec(c1_[i], ci1);
+        PetscHelper::vtkDataArrayToPetscVec(c1_[i], ci1);
         
         
         //compute i-th row (ai) of A^T
@@ -44,7 +44,7 @@ PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLapl
         Vec ci2;
         Vec bi;
         MatGetVecs(PhiTM2_, &ci2, &bi);
-        PetscHelper::vtkDoubleArrayToPetscVec(c2_[i], ci2);
+        PetscHelper::vtkDataArrayToPetscVec(c2_[i], ci2);
         
         MatMult(PhiTM2_, ci2, bi);
         
@@ -154,10 +154,18 @@ PetscFunctionalMaps::~PetscFunctionalMaps() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkSmartPointer<vtkDoubleArray> PetscFunctionalMaps::transferFunction(vtkSmartPointer<vtkDoubleArray> f) {
+vtkSmartPointer<vtkDoubleArray> PetscFunctionalMaps::transferFunction(vtkSmartPointer<vtkDataArray> f) {
+    if(f->GetNumberOfTuples() != shape2_->getPolyData()->GetNumberOfPoints()) {
+        throw invalid_argument(string("Number of tuples in f and number of points of the shape do not coincide in ").append(__PRETTY_FUNCTION__));
+    }
+    
+    if(f->GetNumberOfComponents() != 1) {
+        throw invalid_argument(string("Number of components of f is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+    }
+    
     Vec fv;
     VecCreateSeq(PETSC_COMM_SELF, f->GetNumberOfTuples(), &fv);
-    PetscHelper::vtkDoubleArrayToPetscVec(f, fv);
+    PetscHelper::vtkDataArrayToPetscVec(f, fv);
     
     
     Vec a;

@@ -38,8 +38,6 @@
 
 #include "PetscHelper.h"
 
-#include "../io/Serializable.h"
-
 
 using namespace std;
 
@@ -49,7 +47,7 @@ using namespace std;
 /// \author Emanuel Laude and Zorah Lähner
 /// \note Documentation not finished.
 ///
-class Shape : public Serializable {
+class Shape {
 public:
     enum class VisualRepresentation { MeshSurface, InterpolatedNormals, PointCloud, Mesh };
     
@@ -68,9 +66,6 @@ public:
     
     /// Constructor.
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
-    
-    /// Constructor.
-    Shape(vtkSmartPointer<vtkRenderer> renderer);
     
     /// Virtual destructor.
     virtual ~Shape() {
@@ -91,20 +86,6 @@ public:
     void removeFromRenderer();
     /// \brief Removes any Scalar information that is used to color the shape and resets all properties of the mapper to default.
     void clearColoring();
-    
-    /// @name Serialization functions
-    /// \brief Can write / read the shape into / from binary or ASCII format.
-    ///@{
-    
-    virtual ostream& writeBinary(ostream& os);
-    
-    virtual ostream& writeASCII(ostream& os);
-    
-    virtual istream& readBinary(istream& is);
-    
-    virtual istream& readASCII(istream& is);
-    
-    ///@}
     
     // Getters
     

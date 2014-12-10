@@ -93,13 +93,13 @@ void FunctionTransferTab::slotTransfer() {
         
         
         // compute 200-dimensional wave kernel discriptor on both shapes
-        PetscWaveKernelSignature wksSource(source, 200, &laplacianSource);
+        PetscWaveKernelSignature wksSource(source, 100, &laplacianSource);
         
         
-        PetscWaveKernelSignature wksTarget(target, 200, &laplacianTarget);
+        PetscWaveKernelSignature wksTarget(target, 100, &laplacianTarget);
         
         // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-        for(int i = 0; i < 200; i++) {
+        for(int i = 0; i < 10; i++) {
             vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
             cs.push_back(wksiSource);
             
@@ -112,7 +112,7 @@ void FunctionTransferTab::slotTransfer() {
         
         
         // transfer the coordinate function
-        vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(vtkDoubleArray::SafeDownCast(source->getColoring()->values));
+        vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(source->getColoring()->values);
         
         // color 2nd shape
         shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();

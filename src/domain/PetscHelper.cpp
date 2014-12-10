@@ -122,11 +122,15 @@ void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void PetscHelper::vtkDoubleArrayToPetscVec(vtkSmartPointer<vtkDoubleArray> arr, Vec &vec) {
+void PetscHelper::vtkDataArrayToPetscVec(vtkSmartPointer<vtkDataArray> arr, Vec &vec) {
     PetscInt size = arr->GetNumberOfTuples();
     
+    if(arr->GetNumberOfComponents() != 1) {
+        throw std::invalid_argument(std::string("Number of components of arr is not equal to 1 in ").append(__PRETTY_FUNCTION__));
+    }
+    
     for(PetscInt i = 0; i < size; i++) {
-        VecSetValue(vec, i, arr->GetValue(i), INSERT_VALUES);
+        VecSetValue(vec, i, arr->GetComponent(i, 0), INSERT_VALUES);
     }
     
     VecAssemblyBegin(vec);

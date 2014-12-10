@@ -262,6 +262,37 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
     }
     renderer->GetActiveCamera()->SetEyePosition(eyeposition);
     
+    double* screenLeftBottom = new double[3];
+    double* screenRightBottom = new double[3];
+    double* screenRightTop = new double[3];
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> screenLeftBottom[0];
+        ss >> screenLeftBottom[1];
+        ss >> screenLeftBottom[2];
+    }
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> screenRightBottom[0];
+        ss >> screenRightBottom[1];
+        ss >> screenRightBottom[2];
+    }
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> screenRightTop[0];
+        ss >> screenRightTop[1];
+        ss >> screenRightTop[2];
+    }
+    renderer->GetActiveCamera()->SetScreenBottomLeft(screenLeftBottom);
+    renderer->GetActiveCamera()->SetScreenBottomRight(screenRightBottom);
+    renderer->GetActiveCamera()->SetScreenTopRight(screenRightTop);
+    
     // read correspondences
     
     //read last insert correspondence ID
@@ -398,6 +429,19 @@ void SceneWriterReader::exportSceneASCII
     renderer->GetActiveCamera()->GetEyePosition(eyePosition);
     os << eyePosition[0] << "\t" << eyePosition[1] << "\t" << eyePosition[2] << endl;
     delete eyePosition;
+    
+    double* screenLeftBottom = new double[3];
+    double* screenRightBottom = new double[3];
+    double* screenRightTop = new double[3];
+    renderer->GetActiveCamera()->GetScreenBottomLeft(screenLeftBottom);
+    renderer->GetActiveCamera()->GetScreenBottomRight(screenRightBottom);
+    renderer->GetActiveCamera()->GetScreenTopRight(screenRightTop);
+    os << screenLeftBottom[0] << "\t" << screenLeftBottom[1] << "\t" << screenLeftBottom[2] << endl;
+    os << screenRightBottom[0] << "\t" << screenRightBottom[1] << "\t" << screenRightBottom[2] << endl;
+    os << screenRightTop[0] << "\t" << screenRightTop[1] << "\t" << screenRightTop[2] << endl;
+    delete screenLeftBottom;
+    delete screenRightBottom;
+    delete screenRightTop;
     
     // write last insert correspondence id
     os << lastInsertCorrespondenceID;

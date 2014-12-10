@@ -292,6 +292,8 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     } else if (selectedItem == hideAction) { // correspondence data is stored, vtkActor is deleted
         hideCorrespondence(this->listCorrespondences->currentRow());
     }
+    
+    throw invalid_argument("bla");
 }
 
 
@@ -767,26 +769,18 @@ void ShapeAnalyzer::slotImportShape() {
         
         reader->SetFileName(filename.toStdString().c_str());
         
-        if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
-            return;
-        }
-        if (errorObserver->GetWarning()) {
-            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
-        }
-        
         vtkAlgorithmOutput* output;
-        output = reader->GetOutputPort(); 
-        
-        if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
-            return;
-        }
-        if (errorObserver->GetWarning()) {
-            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
-        }
+        output = reader->GetOutputPort();
         
         importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
+        if (errorObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            return;
+        }
+        if (errorObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
+        }
     } else if(filename.endsWith(tr(".vert"))) {
         // read .tri .vert files
         vtkSmartPointer<vtkToscaReader> reader = vtkSmartPointer<vtkToscaReader>::New();
@@ -798,17 +792,11 @@ void ShapeAnalyzer::slotImportShape() {
         
         reader->SetFileName(filename.toStdString().c_str());
         
-        if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
-            return;
-        }
-        if (errorObserver->GetWarning()) {
-            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
-        }
-        
         vtkAlgorithmOutput* output;
         output = reader->GetOutputPort();
         
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
             return;
@@ -816,8 +804,6 @@ void ShapeAnalyzer::slotImportShape() {
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
         }
-        
-        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else if(filename.endsWith(".ply")) {
         // read .ply file
         vtkSmartPointer<vtkPLYReader> reader = vtkSmartPointer<vtkPLYReader>::New();
@@ -829,17 +815,11 @@ void ShapeAnalyzer::slotImportShape() {
         
         reader->SetFileName(filename.toStdString().c_str());
         
-        if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
-            return;
-        }
-        if (errorObserver->GetWarning()) {
-            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
-        }
-        
         vtkAlgorithmOutput* output;
         output = reader->GetOutputPort();
         
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
             return;
@@ -847,8 +827,6 @@ void ShapeAnalyzer::slotImportShape() {
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
         }
-        
-        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     } else {
         // read .obj file
         vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
@@ -860,17 +838,11 @@ void ShapeAnalyzer::slotImportShape() {
         
         reader->SetFileName(filename.toStdString().c_str());
         
-        if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
-            return;
-        }
-        if (errorObserver->GetWarning()) {
-            showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
-        }
-        
         vtkAlgorithmOutput* output;
         output = reader->GetOutputPort();
         
+        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
+        
         if (errorObserver->GetError()) {
             showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
             return;
@@ -878,8 +850,6 @@ void ShapeAnalyzer::slotImportShape() {
         if (errorObserver->GetWarning()) {
             showErrorMessage("There was a warning reading the file", errorObserver->GetWarningMessage());
         }
-        
-        importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
     }
 }
 
@@ -1364,9 +1334,17 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         return;
     }
     
-    
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     vtkSmartPointer<vtkCleanPolyData> cleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
+    
+    // vtk error observe
+    vtkSmartPointer<ErrorObserver> triangleObserver = vtkSmartPointer<ErrorObserver>::New();
+    triangleFilter->AddObserver(vtkCommand::ErrorEvent, triangleObserver);
+    triangleFilter->AddObserver(vtkCommand::WarningEvent, triangleObserver);
+    
+    vtkSmartPointer<ErrorObserver> cleanDataObserver = vtkSmartPointer<ErrorObserver>::New();
+    cleanPolyData->AddObserver(vtkCommand::ErrorEvent, cleanDataObserver);
+    cleanPolyData->AddObserver(vtkCommand::WarningEvent, cleanDataObserver);
     
     // filter to triangulate shape
     if(ui.checkTriangulation->isChecked()) {
@@ -1375,6 +1353,14 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         triangleFilter->Update();
         output = triangleFilter->GetOutputPort();
     }
+    
+    if (triangleObserver->GetError()) {
+        showErrorMessage("The file cound not be opended", triangleObserver->GetErrorMessage());
+        return;
+    }
+    if (triangleObserver->GetWarning()) {
+        showErrorMessage("There was a warning reading the file", triangleObserver->GetWarningMessage());
+    }
 
     //Remove all isolated points.
     if(ui.checkDegeneratedElements->isChecked()) {
@@ -1382,16 +1368,38 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         cleanPolyData->Update();
         output = cleanPolyData->GetOutputPort();
     }
+    
+    if (cleanDataObserver->GetError()) {
+        showErrorMessage("The file cound not be opended", cleanDataObserver->GetErrorMessage());
+        return;
+    }
+    if (cleanDataObserver->GetWarning()) {
+        showErrorMessage("There was a warning reading the file", cleanDataObserver->GetWarningMessage());
+    }
 
     
     //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
     if(ui.checkLargestComponent->isChecked()) {
         vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
         vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+        
+        // vtk error observer
+        vtkSmartPointer<ErrorObserver> connectivityObserver = vtkSmartPointer<ErrorObserver>::New();
+        connectivityFilter->AddObserver(vtkCommand::ErrorEvent, connectivityObserver);
+        connectivityFilter->AddObserver(vtkCommand::WarningEvent, connectivityObserver);
+        
         connectivityFilter->SetInputConnection(output);
         connectivityFilter->SetExtractionModeToLargestRegion();
         connectivityFilter->Update();
         output = connectivityFilter->GetOutputPort();
+        
+        if (connectivityObserver->GetError()) {
+            showErrorMessage("The file cound not be opended", connectivityObserver->GetErrorMessage());
+            return;
+        }
+        if (connectivityObserver->GetWarning()) {
+            showErrorMessage("There was a warning reading the file", connectivityObserver->GetWarningMessage());
+        }
         
         // get vtk actor and add to renderer_
         vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
@@ -1403,6 +1411,12 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         // extract all regions in different shapes
         vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
         vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+        
+        // vtk error observer
+        vtkSmartPointer<ErrorObserver> connectivityObserver = vtkSmartPointer<ErrorObserver>::New();
+        connectivityFilter->AddObserver(vtkCommand::ErrorEvent, connectivityObserver);
+        connectivityFilter->AddObserver(vtkCommand::WarningEvent, connectivityObserver);
+        
         connectivityFilter->SetInputConnection(output);
         connectivityFilter->SetExtractionModeToAllRegions();
         connectivityFilter->Update();
@@ -1416,6 +1430,14 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
             connectivityFilter->SetExtractionModeToSpecifiedRegions();
             connectivityFilter->AddSpecifiedRegion(i);
             connectivityFilter->Update();
+            
+            if (connectivityObserver->GetError()) {
+                showErrorMessage("The file cound not be opended", connectivityObserver->GetErrorMessage());
+                return;
+            }
+            if (connectivityObserver->GetWarning()) {
+                showErrorMessage("There was a warning reading the file", connectivityObserver->GetWarningMessage());
+            }
             
             // get vtk actor and add to renderer_
             vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();

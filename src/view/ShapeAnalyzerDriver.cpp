@@ -6,6 +6,7 @@
 
 #include <QApplication>
 #include <QErrorMessage>
+#include <QMessageBox>
 
 #include "ShapeAnalyzer.h"
 
@@ -19,12 +20,13 @@ private:
         try {
             return QApplication::notify(receiver, event);
         } catch (std::exception &e) {
-            qFatal("Error sending event %s to object %s (%s)\nAn exception of type \"%s\" has been thrown: %s", typeid(*event).name(),
-                   qPrintable(receiver->objectName()), typeid(*receiver).name(), typeid(e).name(), e.what());
+            QMessageBox::critical( NULL, "Exception",
+                                  ("Error sending event %s to object %s (%s)\nAn exception of type \"%s\" has been thrown: %s", typeid(*event).name(),
+                                  qPrintable(receiver->objectName()), typeid(*receiver).name(), typeid(e).name(), e.what()));
         } catch (...) {
-            qFatal("Error <unknown> sending event %s to object %s (%s)",
-                   typeid(*event).name(), qPrintable(receiver->objectName()),
-                   typeid(*receiver).name());
+            QMessageBox::critical( NULL, "Exception",
+                                  ("Error <unknown> sending event %s to object %s (%s)", typeid(*event).name(), qPrintable(receiver->objectName()),
+                                   typeid(*receiver).name()));
         }
         
         // qFatal aborts, so this isn't really necessary
@@ -37,13 +39,15 @@ int main( int argc, char** argv ) {
     // QT Stuff
     try {
         MyApplication app(argc, argv);
-
+        
         ShapeAnalyzer shapeAnalyzer;
         shapeAnalyzer.show();
         return app.exec();
     } catch(...) {
-        qFatal("Error <unknown> has occured\n");
+        QMessageBox::critical( NULL, "Exception",
+                              "Error <unknown> has occured\n");
     }
 }
+
 
 

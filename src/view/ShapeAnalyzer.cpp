@@ -1404,7 +1404,6 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         // get vtk actor and add to renderer_
         vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
         Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
-        shape->initialize();
         addShape(shape);
         
     } else {
@@ -1443,7 +1442,6 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
             vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();
             
             Shape* shape = new Shape(lastInsertShapeID_, name + ":cc" + to_string(i), polyDataReader->GetOutput(), renderer_);
-            shape->initialize();
             addShape(shape);
         }
     }
@@ -2072,7 +2070,6 @@ void ShapeAnalyzer::deleteShape(int i) {
 ///////////////////////////////////////////////////////////////////////////////
 Shape* ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyData> polyData) {
     Shape* shape = new Shape(lastInsertShapeID_, name, polyData, renderer_);
-    shape->initialize();
     addShape(shape);
     
     return shape;

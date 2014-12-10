@@ -71,8 +71,6 @@ public:
     virtual ~Shape() {
     }
     
-    void initialize();
-    
     /// \brief Returns the area of the shape.
     /// \details Calculates the area of every cell in the poly data and adds them up. Assumes that all cells are
     /// triangles, the results will be faulty for non-triangulated meshes.
@@ -111,14 +109,7 @@ public:
     
     /// \brief This function has to be called after polyData was modified.
     /// \details It rerenders the shape and updates the bounding box of the BoxWidget.
-    void modified() {
-        polyData_->Modified();
-        actor_->Modified();
-        
-        static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->PlaceWidget(polyData_->GetBounds());
-        static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform((vtkTransform*) actor_->GetUserTransform());
-    }
-    
+    void modified();
     /// \brief Adds an observer to the boxWidget. If the shape is transformed independently from the scene via the boxWidget the observers are executed.
     void addObserver(vtkSmartPointer<vtkCommand> callback) {
         boxWidget_->AddObserver(vtkCommand::InteractionEvent, callback);
@@ -130,42 +121,7 @@ public:
         actor_->SetUserTransform(t);
     }
     
-    void setVisualRepresentation(VisualRepresentation representation) {
-        switch (representation) {
-            case VisualRepresentation::MeshSurface:
-                mapper_->SetInputData(polyData_);
-                actor_->GetProperty()->SetRepresentationToSurface();
-                actor_->GetProperty()->SetColor(1, 1, 1);
-                actor_->Modified();
-                
-                break;
-            case VisualRepresentation::InterpolatedNormals:
-                mapper_->SetInputData(polyDataNormals_->GetOutput());
-                actor_->GetProperty()->SetRepresentationToSurface();
-                actor_->GetProperty()->SetColor(1, 1, 1);
-                actor_->Modified();
-                
-                break;
-                
-            case VisualRepresentation::PointCloud:
-                actor_->GetProperty()->SetPointSize(3);
-                actor_->GetProperty()->SetRepresentationToPoints();
-                actor_->GetProperty()->SetColor(0, 0, 1);
-                actor_->Modified();
-                
-                break;
-                
-            case VisualRepresentation::Mesh:
-                mapper_->SetInputData(polyData_);
-                actor_->GetProperty()->SetRepresentationToWireframe();
-                actor_->GetProperty()->SetColor(1, 1, 0);
-                actor_->Modified();
-                
-                break;
-            default:
-                break;
-        }
-    }
+    void setVisualRepresentation(VisualRepresentation representation);
     
     void setShowBoxWidget(bool showBoxWidget) {
         if(showBoxWidget) {

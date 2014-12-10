@@ -13,11 +13,8 @@ Shape::Shape(
              vtkSmartPointer<vtkPolyData> polyData,
              vtkSmartPointer<vtkRenderer> renderer
              )
-: id_(id), name_(name), polyData_(polyData), renderer_(renderer){}
+: id_(id), name_(name), polyData_(polyData), renderer_(renderer) {
 
-
-///////////////////////////////////////////////////////////////////////////////
-void Shape::initialize() {
     
     //Visualize with normals. Looks smoother ;)
     polyDataNormals_ = vtkSmartPointer<vtkPolyDataNormals>::New();
@@ -74,6 +71,55 @@ void Shape::clearColoring() {
     mapper_->Modified();
     
     renderer_->GetRenderWindow()->Render();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void Shape::modified() {
+    polyData_->Modified();
+    actor_->Modified();
+    
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->PlaceWidget(polyData_->GetBounds());
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform((vtkTransform*) actor_->GetUserTransform());
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void Shape::setVisualRepresentation(VisualRepresentation representation) {
+    switch (representation) {
+        case VisualRepresentation::MeshSurface:
+            mapper_->SetInputData(polyData_);
+            actor_->GetProperty()->SetRepresentationToSurface();
+            actor_->GetProperty()->SetColor(1, 1, 1);
+            actor_->Modified();
+            
+            break;
+        case VisualRepresentation::InterpolatedNormals:
+            mapper_->SetInputData(polyDataNormals_->GetOutput());
+            actor_->GetProperty()->SetRepresentationToSurface();
+            actor_->GetProperty()->SetColor(1, 1, 1);
+            actor_->Modified();
+            
+            break;
+            
+        case VisualRepresentation::PointCloud:
+            actor_->GetProperty()->SetPointSize(3);
+            actor_->GetProperty()->SetRepresentationToPoints();
+            actor_->GetProperty()->SetColor(0, 0, 1);
+            actor_->Modified();
+            
+            break;
+            
+        case VisualRepresentation::Mesh:
+            mapper_->SetInputData(polyData_);
+            actor_->GetProperty()->SetRepresentationToWireframe();
+            actor_->GetProperty()->SetColor(1, 1, 0);
+            actor_->Modified();
+            
+            break;
+        default:
+            break;
+    }
 }
 
 

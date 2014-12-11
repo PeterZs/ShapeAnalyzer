@@ -9,6 +9,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 
+using namespace correspondences;
+
 /// \brief Interface declaring all public functions accessable by CustomTab or CustomContextMenuItem objects. All of them rerender the vtkWidget.
 /// \details Implemented by ShapeAnalyzer. Read access to all shapes and all correspondences is
 /// provided via the protected read-only (const) class members shapes_, pointCorrespondences_ and

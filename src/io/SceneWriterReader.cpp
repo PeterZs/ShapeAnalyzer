@@ -1,11 +1,3 @@
-////
-////  SceneWriterReader.cpp
-////  ShapeAnalyzer
-////
-////  Created by Zorah on 28.07.14.
-////
-////
-//
 //#include "SceneWriterReader.h"
 //
 //

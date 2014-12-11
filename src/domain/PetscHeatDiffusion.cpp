@@ -1,11 +1,3 @@
-//
-//  PetscHeatDiffusion.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 30.07.14.
-//
-//
-
 #include "PetscHeatDiffusion.h"
 
 ///////////////////////////////////////////////////////////////////////////////

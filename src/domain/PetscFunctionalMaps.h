@@ -1,11 +1,3 @@
-//
-//  PetscFunctionalMaps.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 02.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__PetscFunctionalMaps__
 #define __ShapeAnalyzer__PetscFunctionalMaps__
 

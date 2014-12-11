@@ -23,6 +23,7 @@
 #include "../domain/correspondences/PointCorrespondence.h"
 #include "../domain/correspondences/FaceCorrespondence.h"
 
+using namespace correspondences;
 
 //Class responsible for creating a correspondence
 template<class T>

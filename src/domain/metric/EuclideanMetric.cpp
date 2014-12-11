@@ -1,11 +1,3 @@
-//
-//  EuclideanMetric.cpp
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 27.05.14.
-//
-//
-
 #include "EuclideanMetric.h"
 #include <limits>
 

@@ -1,4 +1,3 @@
-
 #ifndef __ShapeAnalyzer__MeshChecker__
 #define __ShapeAnalyzer__MeshChecker__
 

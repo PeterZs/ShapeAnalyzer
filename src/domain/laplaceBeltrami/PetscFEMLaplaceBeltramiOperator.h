@@ -1,11 +1,3 @@
-//
-//  PetscFEMLaplaceBeltramiOperator.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 28.07.14.
-//
-//
-
 #ifndef ShapeAnalyzer_PetscFEMLaplaceBeltramiOperator_h
 #define ShapeAnalyzer_PetscFEMLaplaceBeltramiOperator_h
 

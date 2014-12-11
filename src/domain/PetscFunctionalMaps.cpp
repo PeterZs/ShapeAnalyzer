@@ -1,11 +1,3 @@
-//
-//  PetscFunctionalMaps.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 02.08.14.
-//
-//
-
 #include "PetscFunctionalMaps.h"
 
 ///////////////////////////////////////////////////////////////////////////////

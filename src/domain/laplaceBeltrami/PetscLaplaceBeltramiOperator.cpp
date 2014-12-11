@@ -1,11 +1,3 @@
-//
-//  PetscLaplaceBeltramiOperator.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 26.11.14.
-//
-//
-
 #include "PetscLaplaceBeltramiOperator.h"
 
 ///////////////////////////////////////////////////////////////////////////////

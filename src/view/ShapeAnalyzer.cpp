@@ -1735,17 +1735,18 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
     if(item != nullptr) {
         pointCorrespondences_[item->getItem()->getCorrespondence()] = false;
         visualPointCorrespondences_.remove(item->getItem()->getActor());
+        
+        item->getItem()->removeFromRenderer();
+        delete item;
     } else {
         CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*>(listCorrespondences->item(i));
         
         faceCorrespondences_[item->getItem()->getCorrespondence()] = false;
         visualFaceCorrespondences_.remove(item->getItem()->getActor());
+        
+        item->getItem()->removeFromRenderer();
+        delete item;
     }
-    
-    
-    
-    item->getItem()->removeFromRenderer();
-    delete item;
     
     this->qvtkWidget->GetRenderWindow()->Render();
     

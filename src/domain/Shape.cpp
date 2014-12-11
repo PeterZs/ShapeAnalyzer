@@ -14,26 +14,8 @@ Shape::Shape(
              vtkSmartPointer<vtkRenderer> renderer
              )
 : id_(id), name_(name), polyData_(polyData), renderer_(renderer) {
-    initialize(id, name, polyData, renderer);
-}
 
-///////////////////////////////////////////////////////////////////////////////
-Shape::Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkMatrix4x4> matrix) : id_(id), name_(name), polyData_(polyData), renderer_(renderer)
-{
-    initialize(id, name, polyData, renderer);
-    actor_->SetUserMatrix(matrix);
-    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-    transform->SetMatrix(matrix);
-    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void Shape::initialize(
-                       vtkIdType id,
-                       string name,
-                       vtkSmartPointer<vtkPolyData> polyData,
-                       vtkSmartPointer<vtkRenderer> renderer
-                       ) {
+    
     //Visualize with normals. Looks smoother ;)
     polyDataNormals_ = vtkSmartPointer<vtkPolyDataNormals>::New();
     polyDataNormals_->SetInputData(polyData_);
@@ -62,6 +44,16 @@ void Shape::initialize(
     boxRepresentation->PlaceWidget(actor_->GetBounds());
     boxWidget_->SetRepresentation(boxRepresentation);
     boxWidget_->SetInteractor(renderer_->GetRenderWindow()->GetInteractor());
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+Shape::Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkMatrix4x4> matrix) : Shape(id, name, polyData, renderer)
+{
+    actor_->SetUserMatrix(matrix);
+    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+    transform->SetMatrix(matrix);
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
 }
 
 

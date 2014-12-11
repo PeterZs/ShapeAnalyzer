@@ -10,7 +10,7 @@
 #include <QErrorMessage>
 
 #include "../../domain/Shape.h"
-#include "../../domain/correspondences/PointCorrespondenceData.h"
+#include "../../domain/correspondences/PointCorrespondence.h"
 #include "../../domain/metric/GeodesicMetric.h"
 #include "../../domain/laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
 #include "../../domain/signatures/PetscWaveKernelSignature.h"
@@ -25,19 +25,19 @@
 
 class FunctionTransferTab : public QWidget, private Ui::FunctionTransferTabWidget, public CustomTab {
     Q_OBJECT
-    
-public:
-    FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
-                        ShapeAnalyzerInterface* shapeAnalyzer);
-    
-    virtual ~FunctionTransferTab();
-    
-    virtual void onShapeDelete(Shape* shape);
-    virtual void onShapeAdd(Shape* shape);
-    virtual void onShapeEdit(Shape* shape);
-    virtual void onClear();
-private slots:
-    virtual void slotTransfer();
+//    
+//public:
+//    FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
+//                        ShapeAnalyzerInterface* shapeAnalyzer);
+//    
+//    virtual ~FunctionTransferTab();
+//    
+//    virtual void onShapeDelete(Shape* shape);
+//    virtual void onShapeAdd(Shape* shape);
+//    virtual void onShapeEdit(Shape* shape);
+//    virtual void onClear();
+//private slots:
+//    virtual void slotTransfer();
 };
 
 #endif /* defined(__ShapeAnalyzer__FunctionTransferTab__) */

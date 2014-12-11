@@ -98,7 +98,7 @@ public:
     /// @param vtkSmartPointer<vtkRenderer> The renderer object which is responsible for rendering the shape.
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
     
-    /// \brief Constructor with predefined Transform.
+    /// \brief Constructor with predefined transform.
     /// @param vtkIdType The unique shape ID.
     /// @param string The name of the shape.
     /// @param vtkSmartPointer<vtkPolyData> The faces and triangles of the shape.
@@ -108,8 +108,7 @@ public:
     /// Virtual destructor.
     virtual ~Shape() {
         // remove shape from renderer.
-        renderer_->RemoveActor(actor_);
-        boxWidget_->SetInteractor(nullptr);
+        removeFromRenderer();
     }
     
     /// \brief Returns the area of the shape.
@@ -213,8 +212,6 @@ public:
     void colorFacesCoordinates();
 
 private:
-    void initialize(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
-    
     /// \brief Unique id of the shape
     /// \details Although the ShapeAnalyzer only assigns unique ids, the uniqueness is not
     /// forced unconditionally

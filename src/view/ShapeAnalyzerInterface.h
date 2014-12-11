@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../domain/correspondences/CorrespondenceData.h"
+#include "../domain/correspondences/Correspondence.h"
 #include "../domain/Shape.h"
 
 #include <vtkSmartPointer.h>
@@ -22,13 +22,13 @@ public:
     /// \details Creates a new Correspondence and CorrespondenceData object visualizes it inserts an entry into the internal data structures and returns the created CorrespondenceData object.
     /// @param const vector<Shape*, vtkIdType>& correspondence. vector of Shape plus face or point ID pairs that are part of the correspondence.
     /// @param const type_info& type. Can either be PointCorrespondenceData or FaceCorrespondenceData
-    virtual CorrespondenceData* addCorrespondence(const vector<pair<Shape*, vtkIdType>>& correspondence, const type_info& type) = 0;
+    virtual shared_ptr<Correspondence> addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type) = 0;
     
     /// \brief Adds and visualizes a new shape.
     /// \details Creates a new Shape object given a name and the mesh data and returns the created Shape object.
     /// @param string name. The name of the shape.
     /// @param vtkSmartPointer<vtkPolyData> polyData. The mesh data.
-    virtual Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData) = 0;
+    virtual shared_ptr<Shape> addShape(string name, vtkSmartPointer<vtkPolyData> polyData) = 0;
     
     /// \brief Rerenders the vtkWidget scene.
     /// \details Any changes made for example by CustomTab classes to Correspondences or Shapes are not instantly visible.

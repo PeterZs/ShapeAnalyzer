@@ -12,6 +12,9 @@
 /// @author Emanuel Laude and Zorah Lähner
 ///
 ///
+
+using namespace std;
+
 template<class T>
 class CustomListWidgetItem : public QListWidgetItem {
 public:
@@ -22,18 +25,18 @@ public:
     /// @param view optional pointer to the ListWidget
     /// @param type see reference of QListWidgetItem for details
     CustomListWidgetItem(
-                  const QString &text,
-                  T*            item,
-                  QListWidget   *view   = nullptr,
-                  int           type    = Type
+                  const QString     &text,
+                  shared_ptr<T>     item,
+                  QListWidget       *view = nullptr,
+                  int               type = Type
                   ) : QListWidgetItem(text, view, type), item_(item) {};
     
     /// Returns a pointer to the referenced item.
-    T* getItem() {
+    shared_ptr<T> getItem() {
         return item_;
     }
 private:
-    T* item_;
+    shared_ptr<T> item_;
 };
 
 #endif

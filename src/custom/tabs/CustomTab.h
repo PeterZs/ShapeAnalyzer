@@ -8,8 +8,8 @@
 
 #include "../../domain/Shape.h"
 
-#include "../../domain/correspondences/PointCorrespondenceData.h"
-#include "../../domain/correspondences/FaceCorrespondenceData.h"
+#include "../../domain/correspondences/PointCorrespondence.h"
+#include "../../domain/correspondences/FaceCorrespondence.h"
 
 #include "../../util/HashMap.h"
 
@@ -21,7 +21,7 @@
 ///
 class CustomTab {
 public:
-    CustomTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
+    CustomTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes, const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences, const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
     : shapes_(shapes), pointCorrespondences_(pointCorrespondences),
     faceCorrespondences_(faceCorrespondences), shapeAnalyzer_(shapeAnalyzer) {}
     
@@ -43,11 +43,11 @@ public:
     
 protected:
     /// \brief Read-only reference to HashMap containing all Shape objects
-    const HashMap<vtkActor*, Shape*>& shapes_;
+    const HashMap<vtkActor*, shared_ptr<Shape>>& shapes_;
     /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
-    const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences_;
+    const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences_;
     /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
-    const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences_;
+    const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences_;
 
     /// \brief Pointer to the ShapeAnalyzer widget parent.
     ShapeAnalyzerInterface* shapeAnalyzer_;

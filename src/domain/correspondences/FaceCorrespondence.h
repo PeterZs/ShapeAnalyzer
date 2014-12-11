@@ -1,34 +1,46 @@
-#ifndef FaceCorrespondence_H
-#define FaceCorrespondence_H
-
-#include <vtkSmartPointer.h>
-#include <vtkActor.h>
-#include <vtkTriangle.h>
+#ifndef __ShapeAnalyzer__FaceCorrespondence__
+#define __ShapeAnalyzer__FaceCorrespondence__
 
 #include "Correspondence.h"
-#include "FaceCorrespondenceData.h"
-
-#include "../../util/HashMap.h"
-#include "../Shape.h"
 
 ///
-/// \brief Class that represents a concrete FaceCorrespondence.
-///
-/// \details Implements the abstract functions initializeActor() and getCorrespondencePoint() of the superclass to provide a specific visualization behavior for face correspondences.
-///
-/// \author Emanuel Laude and Zorah Lähner
+/// \brief Stores multi correspondences between faces of an arbitrary number of shapes.
+/// \details The main implementation can be seen in CorrespondenceData, this class
+/// purely insures that point and face correspondences can not be mixed up in some
+/// data structures (especially faceCorrespondencesData_ in ShapeAnalyzer).
 ///
 class FaceCorrespondence : public Correspondence {
 public:
-    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data);
-    FaceCorrespondence(vtkSmartPointer<vtkRenderer> renderer, FaceCorrespondenceData* data, HashMap<vtkActor*, Shape*>& shapes);
+    /// \brief Basic Constructor.
+    /// @param id The final id of this correspondence data. It should be unique
+    /// among all correspondence data, but this is not enforced.
+    FaceCorrespondence(vtkIdType id) : Correspondence(id) {
+    }
     
-    FaceCorrespondenceData* getData() { return (FaceCorrespondenceData*) data_; }
-    
-protected:
-    virtual void initializeActor(vtkSmartPointer<vtkActor> actor, Shape* shape, vtkIdType faceId);
-    
-    virtual void getCorrespondencePoint(double point[3], Shape* shape, vtkIdType);
+    virtual string toString() {
+        string str;
+        
+        str.append("Type: ");
+        str.append("FaceCorrespondence");
+        str.append("\n");
+        
+        str.append("ID: ");
+        str.append(to_string(id_));
+        str.append("\n");
+        
+        
+        for(int i = 0; i < shapes_.size(); i++) {
+            str.append("S");
+            str.append(to_string(shapes_.at(i)->getId()));
+            str.append(":");
+            str.append(to_string(correspondingIds_.at(i)));
+            if(i < shapes_.size()-1) {
+                str.append("->");
+            }
+        }
+        
+        return str;
+    }
 };
 
-#endif /* defined(FaceCorrespondence_H) */
+#endif /* defined(__ShapeAnalyzer__FaceCorrespondence__) */

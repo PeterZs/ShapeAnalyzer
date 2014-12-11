@@ -9,7 +9,7 @@
 #include <QMessageBox>
 
 #include "../../domain/Shape.h"
-#include "../../domain/correspondences/PointCorrespondenceData.h"
+#include "../../domain/correspondences/PointCorrespondence.h"
 #include "../../util/HashMap.h"
 
 #include "../../view/ShapeAnalyzerInterface.h"
@@ -25,18 +25,18 @@
 /// need to have the same number of points/faces, the lower number will be chosen as a reference. 
 class IdentityMatchingTab : public QWidget, private Ui::IdentityMatchingTabWidget, public CustomTab {
     Q_OBJECT
-    
-public:
-    IdentityMatchingTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer);
-    
-    virtual ~IdentityMatchingTab();
-    
-    virtual void onShapeDelete(Shape* shape);
-    virtual void onShapeAdd(Shape* shape);
-    virtual void onShapeEdit(Shape* shape);
-    virtual void onClear();
-private slots:
-    virtual void slotMatch();
+//    
+//public:
+//    IdentityMatchingTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer);
+//    
+//    virtual ~IdentityMatchingTab();
+//    
+//    virtual void onShapeDelete(Shape* shape);
+//    virtual void onShapeAdd(Shape* shape);
+//    virtual void onShapeEdit(Shape* shape);
+//    virtual void onClear();
+//private slots:
+//    virtual void slotMatch();
 };
 
 #endif /* defined(__ShapeAnalyzer__IdentityMatchingTab__) */

@@ -62,8 +62,6 @@
 
 #include "CorrespondencePicker.h"
 #include "CustomListWidgetItem.h"
-#include "FaceCorrespondencePicker.h"
-#include "PointCorrespondencePicker.h"
 #include "ShapeAnalyzerInteractorStyle.h"
 #include "ShapeAnalyzerInterface.h"
 
@@ -128,11 +126,11 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
             shape->transform(t);
             
             // transform correspondences
-            for(auto it = sa->pointCorrespondencesByActor_.begin(); it != sa->pointCorrespondencesByActor_.end(); it++) {
-                it->second->transform(shape);
+            for(auto entry : sa->visualPointCorrespondences_) {
+                entry.second->transform(shape);
             }
-            for(auto it = sa->faceCorrespondencesByActor_.begin(); it != sa->faceCorrespondencesByActor_.end(); it++) {
-                it->second->transform(shape);
+            for(auto entry : sa->visualFaceCorrespondences_) {
+                entry.second->transform(shape);
             }
             
             sa->qvtkWidget->GetRenderWindow()->Render();
@@ -153,14 +151,11 @@ public:
     /// \details Deletes the CorrespondencePicker.
     /// Finalizes Slepc.
     ~ShapeAnalyzer() {
-
-        delete correspondencePicker_;
-        
         SlepcFinalize();
     };
     ///@{
-    virtual CorrespondenceData* addCorrespondence(const vector<pair<Shape*, vtkIdType>>& correspondence, const type_info& type);
-    virtual Shape* addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
+    virtual shared_ptr<Correspondence> addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type);
+    virtual shared_ptr<Shape> addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
     virtual void render();
     ///@}
 private slots:
@@ -293,15 +288,42 @@ private:
     
     void qtUpdateLabelVisibleCorrespondences();
     
-    CustomListWidgetItem<Correspondence>* qtAddListCorrespondencesItem(Correspondence* correspondence);
+    template<class T>
+    CustomListWidgetItem<VisualCorrespondence<T>>* qtAddListCorrespondencesItem(shared_ptr<VisualCorrespondence<T>> visualCorrespondence) {
+        string label = "Correspondence ";
+        if(typeid(T) == typeid(PointCorrespondence)) {
+            label.append("P");
+        } else {
+            label.append("F");
+        }
+        label.append(to_string(visualCorrespondence->getCorrespondence()->getId()));
+        CustomListWidgetItem<VisualCorrespondence<T>>* item = new CustomListWidgetItem<VisualCorrespondence<T>>(
+                                                                                              QString::fromStdString(label),
+                                                                                              visualCorrespondence);
+        item->setToolTip(visualCorrespondence->getCorrespondence()->toString().c_str());
+        this->listCorrespondences->addItem(item);
+        return item;
+    }
     
     //vtk
-    void vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
-    void vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
+    template<class T>
+    void vtkCorrespondenceClicked(VisualCorrespondence<T>* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
+        command->AbortFlagOn();
+        for(int i = 0; i < listCorrespondences->count(); i++) {
+            if(((CustomListWidgetItem<VisualCorrespondence<T>>*) listCorrespondences->item(i))->getItem().get() == correspondence) {
+                listCorrespondences->setCurrentRow(i);
+                if(vtkEvent == vtkCommand::RightButtonPressEvent) {
+                    qtShowContextMenuCorrepondences(pos);
+                }
+                break;
+            }
+        }
+    }
+    void vtkShapeClicked(shared_ptr<Shape> shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command);
     void vtkSetup();
 
     void importShape(vtkAlgorithmOutput* reader, string name);
-    void addShape(Shape* shape);
+    void addShape(shared_ptr<Shape> shape);
     void deleteShape(int i);
     void deleteCorrespondence(int i);
     void hideCorrespondence(int i);
@@ -317,20 +339,20 @@ private:
     
     /// \brief Maps the vtkActor pointer to a shape pointer.
     /// \details Access in linear time worst case. Usually constant time.
-    HashMap<vtkActor*, Shape*> shapesByActor_;
+    HashMap<vtkActor*, shared_ptr<Shape>> shapes_;
     
     /// Maps the vtkActor to a FaceCorrespondence pointer.
-    HashMap<vtkActor*, FaceCorrespondence*> faceCorrespondencesByActor_;
+    HashMap<vtkActor*, shared_ptr<VisualCorrespondence<FaceCorrespondence>>> visualFaceCorrespondences_;
     /// Maps the vtkActor to a PointCorrespondence pointer.
-    HashMap<vtkActor*, PointCorrespondence*> pointCorrespondencesByActor_;
+    HashMap<vtkActor*, shared_ptr<VisualCorrespondence<PointCorrespondence>>> visualPointCorrespondences_;
     
     /// \brief All PointCorrespondenceData instances.
     /// \details Maps a PointCorrespondenceData to a bool that indicates if for the data there exists a corresponding PointCorrespondence object.
-    HashMap<FaceCorrespondenceData*, bool> faceCorrespondenceData_;    
+    HashMap<shared_ptr<FaceCorrespondence>, bool> faceCorrespondences_;
 
     /// \brief All FaceCorrespondenceData instances.
     /// \details Maps a FaceCorrespondenceData to a bool that indicates if for the data there exists a corresponding FaceCorrespondence object.
-    HashMap<PointCorrespondenceData*, bool> pointCorrespondenceData_;
+    HashMap<shared_ptr<PointCorrespondence>, bool> pointCorrespondences_;
 
     
     //vtk stuff
@@ -338,7 +360,9 @@ private:
     vtkSmartPointer<vtkEventQtSlotConnect> connections_;
     
     
-    CorrespondencePicker* correspondencePicker_;
+    unique_ptr<CorrespondencePicker<PointCorrespondence>> pointCorrespondencePicker_;
+    unique_ptr<CorrespondencePicker<FaceCorrespondence>> faceCorrespondencePicker_;
+    
     
     //QT
     QActionGroup* actionGroupCorrespondenceType_;
@@ -351,11 +375,9 @@ private:
     HashMap<QAction*, string> viewCustomTabActions_;
     
     //counter for ids
-    int lastInsertShapeID_;
-    int lastInsertCorresondenceID_;
-    
-    int pickerCounter_;
-    
+    int lastInsertShapeId_;
+    int lastInsertCorrespondenceId_;
+
     
     vtkSmartPointer<vtkScalarBarActor> scalarBar_;
 };

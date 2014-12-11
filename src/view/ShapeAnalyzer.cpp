@@ -1,7 +1,7 @@
 #include "ShapeAnalyzer.h"
 
 // Constructor
-ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorrespondencesByActor_(1000), faceCorrespondenceData_(100000), pointCorrespondenceData_(100000), lastInsertShapeID_(0), lastInsertCorresondenceID_(0), pickerCounter_(0) {
+ShapeAnalyzer::ShapeAnalyzer() : visualFaceCorrespondences_(1000), visualPointCorrespondences_(1000), faceCorrespondences_(100000), pointCorrespondences_(100000), lastInsertShapeId_(0), lastInsertCorrespondenceId_(0) {
     this->setupUi(this);
     
     //Group actions related to different Views. Automatically unselected other members of group.
@@ -119,7 +119,6 @@ ShapeAnalyzer::ShapeAnalyzer() : faceCorrespondencesByActor_(1000), pointCorresp
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::qtConnectListCorrespondences() {
-    listCorrespondences->setCurrentRow(-1);
     connect(this->listCorrespondences,              SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this,                                   SLOT(slotSetSelectedCurrentCorrespondence(QListWidgetItem*, QListWidgetItem*)));
     connect(this->listCorrespondences,              SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -210,7 +209,7 @@ void ShapeAnalyzer::qtInputDialogRenameShape(CustomListWidgetItem<Shape>* item) 
         
         // fire event for shapeTabs
         for(auto entry : customTabs_) {
-            entry.second->onShapeEdit(item->getItem());
+            entry.second->onShapeEdit(item->getItem().get());
         }
     }
 }
@@ -292,8 +291,6 @@ void ShapeAnalyzer::qtShowContextMenuCorrepondences(const QPoint &pos) {
     } else if (selectedItem == hideAction) { // correspondence data is stored, vtkActor is deleted
         hideCorrespondence(this->listCorrespondences->currentRow());
     }
-    
-    throw invalid_argument("bla");
 }
 
 
@@ -363,7 +360,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     HashMap<QAction*, string> customActions;
     qtParseContextMenuItems(&myMenu, customActions);
 
-    Shape* currentShape;
+    shared_ptr<Shape> currentShape;
     CustomListWidgetItem<Shape> *item = (CustomListWidgetItem<Shape> *) this->listShapes->currentItem();
     currentShape = item->getItem();
     
@@ -375,12 +372,12 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     } else if (selectedItem == renameAction) {
         qtInputDialogRenameShape((CustomListWidgetItem<Shape>*) this->listShapes->currentItem());
     } else if (selectedItem == exportAction) {
-        qtExportShapeDialog(currentShape);
+        qtExportShapeDialog(currentShape.get());
     } else if (selectedItem == opacityAction) {
-        qtInputDialogOpacity(currentShape);
+        qtInputDialogOpacity(currentShape.get());
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape, dynamic_cast<ShapeAnalyzerInterface*>(this)));
+            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape.get(), dynamic_cast<ShapeAnalyzerInterface*>(this)));
             menuItem->onClick(pointId, faceId, this);
         }
     }
@@ -417,11 +414,11 @@ void ShapeAnalyzer::qtUpdateLabelVisibleCorrespondences() {
     int numberOfVisibleCorrespondences = 0;
     int numberOfAllCorrespondences = 0;
     if(this->actionDisplayPointCorrespondences->isChecked()) {
-        numberOfAllCorrespondences = pointCorrespondenceData_.size();
-        numberOfVisibleCorrespondences = pointCorrespondencesByActor_.size();
+        numberOfAllCorrespondences = pointCorrespondences_.size();
+        numberOfVisibleCorrespondences = visualPointCorrespondences_.size();
     } else {
-        numberOfAllCorrespondences = faceCorrespondenceData_.size();
-        numberOfVisibleCorrespondences = faceCorrespondencesByActor_.size();
+        numberOfAllCorrespondences = faceCorrespondences_.size();
+        numberOfVisibleCorrespondences = visualFaceCorrespondences_.size();
     }
     
     double ratio = 100.0;
@@ -435,19 +432,6 @@ void ShapeAnalyzer::qtUpdateLabelVisibleCorrespondences() {
     this->labelNumberOfVisibleCorrespondences->setText(QString(ss.str().c_str()));
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-CustomListWidgetItem<Correspondence>* ShapeAnalyzer::qtAddListCorrespondencesItem(Correspondence* correspondence) {
-    string label = "Correspondence ";
-    label.append(to_string(correspondence->getData()->getId()));
-    CustomListWidgetItem<Correspondence>* item = new CustomListWidgetItem<Correspondence>(
-                                                                                  QString::fromStdString(label),
-                                                                                  correspondence);
-    item->setToolTip(correspondence->getData()->toString().c_str());
-    this->listCorrespondences->addItem(item);
-    return item;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // QT slots
 ///////////////////////////////////////////////////////////////////////////////
@@ -459,7 +443,7 @@ void ShapeAnalyzer::slotViewCustomTab(bool visible) {
     // obtain sender action and query key of selected CustomTab
     string key = viewCustomTabActions_[(QAction*) sender()];
     if(visible) {
-        CustomTab* tab = CustomTabFactory::getInstance()->create(key, shapesByActor_, pointCorrespondenceData_, faceCorrespondenceData_, this);
+        CustomTab* tab = CustomTabFactory::getInstance()->create(key, shapes_, pointCorrespondences_, faceCorrespondences_, this);
         
         QString path(CustomTabFactory::getInstance()->getLabel(key).c_str());
         QStringList list = path.split(">>");
@@ -491,19 +475,19 @@ void ShapeAnalyzer::slotSetBackgroundColor() {
     double dcurrentColor[3];
     renderer_->GetBackground(dcurrentColor);
     QColor currentColor;
-    currentColor.setRed(dcurrentColor[0]*255);
-    currentColor.setGreen(dcurrentColor[1]*255);
-    currentColor.setBlue(dcurrentColor[2]*255);
+    currentColor.setRed(dcurrentColor[0] * 255);
+    currentColor.setGreen(dcurrentColor[1] * 255);
+    currentColor.setBlue(dcurrentColor[2] * 255);
     QColor color = QColorDialog::getColor(currentColor);
-    renderer_->SetBackground(color.red()/255.0, color.green()/255.0, color.blue()/255.0);
+    renderer_->SetBackground(color.red() / 255.0, color.green() / 255.0, color.blue() / 255.0);
     renderer_->GetRenderWindow()->Render();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotClearCurrentSelection() {
-    correspondencePicker_->clearSelection();
-    pickerCounter_ = 0;
+    pointCorrespondencePicker_->clearSelection();
+    faceCorrespondencePicker_->clearSelection();
 }
 
 
@@ -537,16 +521,12 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         }
 
         
-        // current picker is deleted
-        delete correspondencePicker_;
-        correspondencePicker_ = new FaceCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
-        
 
         // vtk: remove all point correspondences from renderer
         for(int i = listCorrespondences->count()-1; i > -1; i--) {
             //get correspondence
-            CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-            Correspondence *correspondence = item->getItem();
+            CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* item = (CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*) listCorrespondences->item(i);
+            shared_ptr<VisualCorrespondence<PointCorrespondence>> correspondence = item->getItem();
             
             correspondence->removeFromRenderer();
         }
@@ -555,16 +535,15 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         
         
         // add face correspondences from before
-        for (auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
+        for (auto entry : visualFaceCorrespondences_) {
             // add to list
-            qtAddListCorrespondencesItem(it->second);
+            qtAddListCorrespondencesItem<FaceCorrespondence>(entry.second);
             
             // add to renderer
-            it->second->addToRenderer();
-            
+            entry.second->addToRenderer();
         }
 
-        if(faceCorrespondencesByActor_.size() > 0)
+        if(visualFaceCorrespondences_.size() > 0)
             listCorrespondences->setCurrentRow(0);
         
     } else {
@@ -577,16 +556,12 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         if(tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Point Correspondences") {
             tabWidgetCorrespondences->setCurrentIndex(0);
         }
-        
-        // current selection of picker is deleted
-        delete correspondencePicker_;
-        correspondencePicker_ = new PointCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
-        
+
         // vtk: remove all face correspondences from renderer
         for(int i = listCorrespondences->count()-1; i > -1; i--) {
             //get correspondence
-            CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-            Correspondence *correspondence = item->getItem();
+            CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* item = (CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*) listCorrespondences->item(i);
+            shared_ptr<VisualCorrespondence<FaceCorrespondence>> correspondence = item->getItem();
             
             correspondence->removeFromRenderer();
         }
@@ -595,16 +570,15 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         
         
         // add point correspondences from before
-        for (auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
+        for (auto entry : visualPointCorrespondences_) {
             // add to list
-            qtAddListCorrespondencesItem(it->second);
+            qtAddListCorrespondencesItem<PointCorrespondence>(entry.second);
             
             // add to renderer
-            it->second->addToRenderer();
-            
+            entry.second->addToRenderer();
         }
         
-        if(pointCorrespondencesByActor_.size() > 0)
+        if(visualPointCorrespondences_.size() > 0)
             listCorrespondences->setCurrentRow(0);
     }
     
@@ -642,7 +616,7 @@ void ShapeAnalyzer::slotToggleProjectionMode() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetVisualRepresentationShape() {
-    for(auto entry : shapesByActor_) {
+    for(auto entry : shapes_) {
         if(this->actionShowSurface->isChecked()) {
             entry.second->setVisualRepresentation(Shape::VisualRepresentation::MeshSurface);
         } else if(this->actionShowSurfaceNormals->isChecked()) {
@@ -675,81 +649,80 @@ void ShapeAnalyzer::slotShowHelp() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenScene() {
-    correspondencePicker_->clearSelection();
-    pickerCounter_ = 0;
-    
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open Scene"),
-                                                    tr(""),
-                                                    tr("Files (*.bin *.txt)"));
-    
-    if(filename.isEmpty())
-        return;
-    
-    clear();
-    
-    renderer_->ResetCamera();
-    
-    vector<Shape*> shapes;
-    
-    HashMap<PointCorrespondenceData*, PointCorrespondence*> pointCorrespondences;
-    HashMap<FaceCorrespondenceData*, FaceCorrespondence*> faceCorrespondences;
-    
-    if(filename.endsWith(tr(".bin"))) {
-        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeID_, shapes, lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences);
-    } else {
-        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeID_, shapes, lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences);
-    }
-    
-    for(int i = 0; i < shapes.size(); i++) {
-        addShape(shapes[i]);
-    }
-    
-    for(auto i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
-
-        
-        if(i->second != nullptr) {
-            pointCorrespondenceData_.insert(i->first, true);
-            pointCorrespondencesByActor_.insert(i->second->getLinesActor(), i->second);
-            
-            // add correspondence to qt list widget
-            if(actionDisplayPointCorrespondences->isChecked()) {
-                i->second->addToRenderer();
-                
-                qtAddListCorrespondencesItem(i->second);
-            }
-        } else {
-            pointCorrespondenceData_.insert(i->first, false);
-        }
-    }
-
-    for(auto i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
-        
-        
-        if(i->second != nullptr) {
-            faceCorrespondenceData_.insert(i->first, true);
-            faceCorrespondencesByActor_.insert(i->second->getLinesActor(), i->second);
-            
-            // add correspondence to qt list widget
-            if(actionDisplayFaceCorrespondences->isChecked()) {
-                i->second->addToRenderer();
-                
-                qtAddListCorrespondencesItem(i->second);
-            }
-        } else {
-            faceCorrespondenceData_.insert(i->first, false);
-        }
-    }
-    
-    
-    qvtkWidget->GetRenderWindow()->Render();
-    qtUpdateLabelVisibleCorrespondences();
+//    correspondencePicker_->clearSelection();
+//    
+//    QString filename = QFileDialog::getOpenFileName(this, tr("Open Scene"),
+//                                                    tr(""),
+//                                                    tr("Files (*.bin *.txt)"));
+//    
+//    if(filename.isEmpty())
+//        return;
+//    
+//    clear();
+//    
+//    renderer_->ResetCamera();
+//    
+//    vector<Shape*> shapes;
+//    
+//    HashMap<PointCorrespondence*, PointCorrespondence*> pointCorrespondences;
+//    HashMap<FaceCorrespondence*, FaceCorrespondence*> faceCorrespondences;
+//    
+//    if(filename.endsWith(tr(".bin"))) {
+//        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeId_, shapes, lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences);
+//    } else {
+//        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeId_, shapes, lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences);
+//    }
+//    
+//    for(int i = 0; i < shapes.size(); i++) {
+//        addShape(shapes[i]);
+//    }
+//    
+//    for(auto i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
+//
+//        
+//        if(i->second != nullptr) {
+//            pointCorrespondences_.insert(i->first, true);
+//            visualPointCorrespondences_.insert(i->second->getLinesActor(), i->second);
+//            
+//            // add correspondence to qt list widget
+//            if(actionDisplayPointCorrespondences->isChecked()) {
+//                i->second->addToRenderer();
+//                
+//                qtAddListCorrespondencesItem(i->second);
+//            }
+//        } else {
+//            pointCorrespondences_.insert(i->first, false);
+//        }
+//    }
+//
+//    for(auto i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
+//        
+//        
+//        if(i->second != nullptr) {
+//            faceCorrespondences_.insert(i->first, true);
+//            visualFaceCorrespondences_.insert(i->second->getLinesActor(), i->second);
+//            
+//            // add correspondence to qt list widget
+//            if(actionDisplayFaceCorrespondences->isChecked()) {
+//                i->second->addToRenderer();
+//                
+//                qtAddListCorrespondencesItem(i->second);
+//            }
+//        } else {
+//            faceCorrespondences_.insert(i->first, false);
+//        }
+//    }
+//    
+//    
+//    qvtkWidget->GetRenderWindow()->Render();
+//    qtUpdateLabelVisibleCorrespondences();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotImportShape() {
-    correspondencePicker_->clearSelection();
-    pickerCounter_ = 0;
+    pointCorrespondencePicker_->clearSelection();
+    faceCorrespondencePicker_->clearSelection();
     
     QString filename = QFileDialog::getOpenFileName(this, tr("Import Shape"),
                                                     tr(""),
@@ -856,191 +829,191 @@ void ShapeAnalyzer::slotImportShape() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotImportCorrespondences() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                    tr(""),
-                                                    tr("Files (*.txt *.bin)"));
-    
-    if(filename.isEmpty())
-        return;
-    
-    SceneWriterReader reader = SceneWriterReader();
-    
-    vector<Shape*> shapes;
-    shapesByActor_.getValues(shapes);
-    
-    ShapeComparator comp;
-    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
-    std::sort(shapes.begin(), shapes.end(), comp);
-    
-    vector<CorrespondenceData*> pointCorrespondences;
-    vector<CorrespondenceData*> faceCorrespondences;
-    
-    if(filename.endsWith(".txt")) {
-        reader.importCorrespondencesASCII(filename.toStdString(), lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences, shapes, this);
-
-    } else {
-        reader.importCorrespondencesBinary(filename.toStdString(), lastInsertCorresondenceID_, pointCorrespondences, faceCorrespondences, shapes, this);
-    }
-    
-    
-    // insert point correspondences
-    for(auto c : pointCorrespondences) {
-        pointCorrespondenceData_.insert((PointCorrespondenceData*) c, false);
-    }
-    
-    // insert face correspondences and fire corresponding events if vector not empty
-    for(auto c : faceCorrespondences) {
-        faceCorrespondenceData_.insert((FaceCorrespondenceData*) c, false);
-    }
-    
+//    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+//                                                    tr(""),
+//                                                    tr("Files (*.txt *.bin)"));
+//    
+//    if(filename.isEmpty())
+//        return;
+//    
+//    SceneWriterReader reader = SceneWriterReader();
+//    
+//    vector<Shape*> shapes;
+//    shapes_.getValues(shapes);
+//    
+//    ShapeComparator comp;
+//    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+//    std::sort(shapes.begin(), shapes.end(), comp);
+//    
+//    vector<Correspondence*> pointCorrespondences;
+//    vector<Correspondence*> faceCorrespondences;
+//    
+//    if(filename.endsWith(".txt")) {
+//        reader.importCorrespondencesASCII(filename.toStdString(), lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences, shapes, this);
+//
+//    } else {
+//        reader.importCorrespondencesBinary(filename.toStdString(), lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences, shapes, this);
+//    }
+//    
+//    
+//    // insert point correspondences
+//    for(auto c : pointCorrespondences) {
+//        pointCorrespondences_.insert((PointCorrespondenceData*) c, false);
+//    }
+//    
+//    // insert face correspondences and fire corresponding events if vector not empty
+//    for(auto c : faceCorrespondences) {
+//        faceCorrespondences_.insert((FaceCorrespondenceData*) c, false);
+//    }
+//    
     qtUpdateLabelVisibleCorrespondences();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveScene() {
-    QStringList formats;
-    formats << "Binary" << "Text (ASCII)";
-    
-    bool ok;
-    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
-    
-    if(!ok) {
-        return;
-    }
-    
-    vector<Shape*> shapes;
-    shapesByActor_.getValues(shapes);
-    
-    ShapeComparator comp;
-    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
-    std::sort(shapes.begin(), shapes.end(), comp);
-    
-    HashMap<PointCorrespondenceData*, PointCorrespondence*> pointCorrespondences;
-    HashMap<FaceCorrespondenceData*, FaceCorrespondence*> faceCorrespondences;
-    
-    for(HashMap<PointCorrespondenceData*, bool>::iterator i = pointCorrespondenceData_.begin(); i != pointCorrespondenceData_.end(); i++) {
-        if(i->second) {
-            for(HashMap<vtkActor*, PointCorrespondence*>::iterator j = pointCorrespondencesByActor_.begin(); j != pointCorrespondencesByActor_.end(); j++) {
-                if(j->second->getData() == i->first) {
-                    pointCorrespondences.insert(i->first, j->second);
-                    break;
-                }
-            }
-        } else {
-            pointCorrespondences.insert(i->first, nullptr);
-        }
-    }
-
-    for(HashMap<FaceCorrespondenceData*, bool>::iterator i = faceCorrespondenceData_.begin(); i != faceCorrespondenceData_.end(); i++) {
-        if(i->second) {
-            for(HashMap<vtkActor*, FaceCorrespondence*>::iterator j = faceCorrespondencesByActor_.begin(); j != faceCorrespondencesByActor_.end(); j++) {
-                if(j->second->getData() == i->first) {
-                    faceCorrespondences.insert(i->first, j->second);
-                    break;
-                }
-            }
-        } else {
-            faceCorrespondences.insert(i->first, nullptr);
-        }
-    }
-    
-    if(format == formats.value(0)) {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.bin)"));
-        if(filename.isEmpty()) {
-            return;
-        }
-        SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
-    } else {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Text (ASCII) Scene Files (*.txt)"));
-        if(filename.isEmpty()) {
-            return;
-        }
-        SceneWriterReader::exportSceneASCII(filename.toStdString(), renderer_, shapes, lastInsertShapeID_, pointCorrespondences, faceCorrespondences, lastInsertCorresondenceID_);
-    }
+//    QStringList formats;
+//    formats << "Binary" << "Text (ASCII)";
+//    
+//    bool ok;
+//    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
+//    
+//    if(!ok) {
+//        return;
+//    }
+//    
+//    vector<Shape*> shapes;
+//    shapes_.getValues(shapes);
+//    
+//    ShapeComparator comp;
+//    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+//    std::sort(shapes.begin(), shapes.end(), comp);
+//    
+//    HashMap<PointCorrespondence*, PointCorrespondence*> pointCorrespondences;
+//    HashMap<FaceCorrespondence*, FaceCorrespondence*> faceCorrespondences;
+//    
+//    for(HashMap<PointCorrespondenceData*, bool>::iterator i = pointCorrespondences_.begin(); i != pointCorrespondences_.end(); i++) {
+//        if(i->second) {
+//            for(HashMap<vtkActor*, PointCorrespondence*>::iterator j = visualPointCorrespondences_.begin(); j != visualPointCorrespondences_.end(); j++) {
+//                if(j->second->getData() == i->first) {
+//                    pointCorrespondences.insert(i->first, j->second);
+//                    break;
+//                }
+//            }
+//        } else {
+//            pointCorrespondences.insert(i->first, nullptr);
+//        }
+//    }
+//
+//    for(HashMap<FaceCorrespondenceData*, bool>::iterator i = faceCorrespondences_.begin(); i != faceCorrespondences_.end(); i++) {
+//        if(i->second) {
+//            for(HashMap<vtkActor*, FaceCorrespondence*>::iterator j = visualFaceCorrespondences_.begin(); j != visualFaceCorrespondences_.end(); j++) {
+//                if(j->second->getData() == i->first) {
+//                    faceCorrespondences.insert(i->first, j->second);
+//                    break;
+//                }
+//            }
+//        } else {
+//            faceCorrespondences.insert(i->first, nullptr);
+//        }
+//    }
+//    
+//    if(format == formats.value(0)) {
+//        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.bin)"));
+//        if(filename.isEmpty()) {
+//            return;
+//        }
+//        SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
+//    } else {
+//        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Text (ASCII) Scene Files (*.txt)"));
+//        if(filename.isEmpty()) {
+//            return;
+//        }
+//        SceneWriterReader::exportSceneASCII(filename.toStdString(), renderer_, shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
+//    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotExportCorrespondences() {
-    SceneWriterReader writer = SceneWriterReader();
-    
-    QStringList types;
-    types << "Point Correspondences" << "Face Correspondences";
-    bool ok; // stores if user pressed ok button
-    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
-    
-    if(!ok) {
-        return;
-    }
-    
-    QStringList formats;
-    formats << "Binary" << "Text (ASCII)";
-    
-    
-    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
-    
-    if(!ok) {
-        return;
-    }
-
-    
-    //sort shapes since result of HashMap.getValues is unordered
-    vector<Shape*> shapes;
-    shapesByActor_.getValues(shapes);
-    
-    ShapeComparator comp;
-    
-    std::sort(shapes.begin(), shapes.end(), comp);
-    
-    if (save == types.value(0) && pointCorrespondenceData_.size() > 0) {
-        if(format == formats.value(0)) {
-            QString filename = QFileDialog::getSaveFileName(
-                                                            this,
-                                                            tr("Save file"),
-                                                            tr(""),
-                                                            tr("Binary Point Correspondence Files (*.bin)")
-                                                            );
-            if (!filename.isEmpty()) {
-                writer.exportPointCorrespondencesBinary(pointCorrespondenceData_, shapes, filename.toStdString());
-            }
-        } else {
-            QString filename = QFileDialog::getSaveFileName(
-                                                            this,
-                                                            tr("Save file"),
-                                                            tr(""),
-                                                            tr("ASCII Point Correspondence Files (*.txt)")
-                                                            );
-            if (!filename.isEmpty()) {
-                writer.exportPointCorrespondencesASCII(pointCorrespondenceData_, shapes, filename.toStdString());
-            }
-        }
-    }
-    
-    
-    if (save == types.value(1) && faceCorrespondenceData_.size() > 0) {
-        if(format == formats.value(0)) {
-            QString filename = QFileDialog::getSaveFileName(
-                                                            this,
-                                                            tr("Save file"),
-                                                            tr(""),
-                                                            tr("Binary Face Correspondence Files (*.bin)")
-                                                            );
-            if (!filename.isEmpty()) {
-                writer.exportFaceCorrespondencesBinary(faceCorrespondenceData_, shapes, filename.toStdString());
-            }
-        } else {
-            QString filename = QFileDialog::getSaveFileName(
-                                                            this,
-                                                            tr("Save file"),
-                                                            tr(""),
-                                                            tr("ASCII Face Correspondence Files (*.txt)")
-                                                            );
-            if (!filename.isEmpty()) {
-                writer.exportFaceCorrespondencesASCII(faceCorrespondenceData_, shapes, filename.toStdString());
-            }
-        }
-    }
+//    SceneWriterReader writer = SceneWriterReader();
+//    
+//    QStringList types;
+//    types << "Point Correspondences" << "Face Correspondences";
+//    bool ok; // stores if user pressed ok button
+//    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
+//    
+//    if(!ok) {
+//        return;
+//    }
+//    
+//    QStringList formats;
+//    formats << "Binary" << "Text (ASCII)";
+//    
+//    
+//    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
+//    
+//    if(!ok) {
+//        return;
+//    }
+//
+//    
+//    //sort shapes since result of HashMap.getValues is unordered
+//    vector<Shape*> shapes;
+//    shapes_.getValues(shapes);
+//    
+//    ShapeComparator comp;
+//    
+//    std::sort(shapes.begin(), shapes.end(), comp);
+//    
+//    if (save == types.value(0) && pointCorrespondences_.size() > 0) {
+//        if(format == formats.value(0)) {
+//            QString filename = QFileDialog::getSaveFileName(
+//                                                            this,
+//                                                            tr("Save file"),
+//                                                            tr(""),
+//                                                            tr("Binary Point Correspondence Files (*.bin)")
+//                                                            );
+//            if (!filename.isEmpty()) {
+//                writer.exportPointCorrespondencesBinary(pointCorrespondences_, shapes, filename.toStdString());
+//            }
+//        } else {
+//            QString filename = QFileDialog::getSaveFileName(
+//                                                            this,
+//                                                            tr("Save file"),
+//                                                            tr(""),
+//                                                            tr("ASCII Point Correspondence Files (*.txt)")
+//                                                            );
+//            if (!filename.isEmpty()) {
+//                writer.exportPointCorrespondencesASCII(pointCorrespondences_, shapes, filename.toStdString());
+//            }
+//        }
+//    }
+//    
+//    
+//    if (save == types.value(1) && faceCorrespondences_.size() > 0) {
+//        if(format == formats.value(0)) {
+//            QString filename = QFileDialog::getSaveFileName(
+//                                                            this,
+//                                                            tr("Save file"),
+//                                                            tr(""),
+//                                                            tr("Binary Face Correspondence Files (*.bin)")
+//                                                            );
+//            if (!filename.isEmpty()) {
+//                writer.exportFaceCorrespondencesBinary(faceCorrespondences_, shapes, filename.toStdString());
+//            }
+//        } else {
+//            QString filename = QFileDialog::getSaveFileName(
+//                                                            this,
+//                                                            tr("Save file"),
+//                                                            tr(""),
+//                                                            tr("ASCII Face Correspondence Files (*.txt)")
+//                                                            );
+//            if (!filename.isEmpty()) {
+//                writer.exportFaceCorrespondencesASCII(faceCorrespondences_, shapes, filename.toStdString());
+//            }
+//        }
+//    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1153,7 +1126,7 @@ void ShapeAnalyzer::slotShowContextMenuShapes(const QPoint& pos) {
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotToggleBoxWidget() {
     if(listShapes->count() > 0) {
-        Shape* selectedShape = ((CustomListWidgetItem<Shape>*) listShapes->currentItem())->getItem();
+        shared_ptr<Shape> selectedShape = ((CustomListWidgetItem<Shape>*) listShapes->currentItem())->getItem();
         if(this->actionTransformShapes->isChecked()) {
             selectedShape->setShowBoxWidget(true);
         } else {
@@ -1202,18 +1175,16 @@ void ShapeAnalyzer::slotModeAddCorrespondences() {
 }
 
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSetSelectedCurrentShape(QListWidgetItem* current, QListWidgetItem* previous) {
     if(current != nullptr) {
-        Shape* currentShape = ((CustomListWidgetItem<Shape>*) current)->getItem();
+        shared_ptr<Shape> currentShape = ((CustomListWidgetItem<Shape>*) current)->getItem();
         
+
         scalarBar_->SetLookupTable(currentShape->getLookupTable());
         scalarBar_->SetTitle(currentShape->getName().c_str());
         scalarBar_->Modified();
-        qvtkWidget->GetRenderWindow()->Render();
-        
+
         if(this->actionTransformShapes->isChecked()) {
             currentShape->setShowBoxWidget(true);
             
@@ -1221,8 +1192,11 @@ void ShapeAnalyzer::slotSetSelectedCurrentShape(QListWidgetItem* current, QListW
                 ((CustomListWidgetItem<Shape>*) previous)->getItem()->setShowBoxWidget(false);
             }
         }
+        
+        this->qvtkWidget->GetRenderWindow()->Render();
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotClear() {
@@ -1242,10 +1216,17 @@ void ShapeAnalyzer::slotResetCamera() {
 void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* current, QListWidgetItem* previous) {
     // only change color if there is a selection
     if(current != nullptr) {
-        Correspondence* currentCorrespondence = ((CustomListWidgetItem<Correspondence>*) current)->getItem();
+        CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* currentItem = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*>(current);
+        if(currentItem != nullptr) {
+            // set current correspondence red
+            currentItem->getItem()->setSelected(true);
+        } else {
+            CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* currentItem = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*>(current);
+            // set current correspondence red
+            currentItem->getItem()->setSelected(true);
+        }
         
-        // set current correspondence red
-        currentCorrespondence->setSelected(true);
+
         
         // update
         this->qvtkWidget->GetRenderWindow()->Render();
@@ -1253,7 +1234,15 @@ void ShapeAnalyzer::slotSetSelectedCurrentCorrespondence(QListWidgetItem* curren
     
     //if there exists a previous selection set previous correspondence to green
     if(previous != nullptr) {
-        ((CustomListWidgetItem<Correspondence>*) previous)->getItem()->setSelected(false);
+        CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* previousItem = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*>(previous);
+        
+        if(previousItem != nullptr) {
+            previousItem->getItem()->setSelected(false);
+        } else {
+            CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* previousItem = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*>(previous);
+            previousItem->getItem()->setSelected(false);
+        }
+        
         
         // update
         this->qvtkWidget->GetRenderWindow()->Render();
@@ -1316,8 +1305,8 @@ void ShapeAnalyzer::vtkSetup() {
     vtkSmartPointer<ShapeAnalyzerInteractorStyle>::New();
     this->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle( style );
     
-    this->correspondencePicker_ = new PointCorrespondencePicker(renderer_, lastInsertCorresondenceID_);
-    
+    this->pointCorrespondencePicker_.reset(new CorrespondencePicker<PointCorrespondence>(renderer_, [this]()->shared_ptr<PointCorrespondence> { return make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++); }));
+    this->faceCorrespondencePicker_.reset(new CorrespondencePicker<FaceCorrespondence>(renderer_, [this]()->shared_ptr<FaceCorrespondence> { return make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++); }));
 }
 
 
@@ -1403,7 +1392,7 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
         
         // get vtk actor and add to renderer_
         vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) output->GetProducer();
-        Shape* shape = new Shape(lastInsertShapeID_, name, polyDataReader->GetOutput(), renderer_);
+        shared_ptr<Shape> shape = make_shared<Shape>(lastInsertShapeId_, name, polyDataReader->GetOutput(), renderer_);
         addShape(shape);
         
     } else {
@@ -1441,7 +1430,7 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
             // get vtk actor and add to renderer_
             vtkSmartPointer<vtkPolyDataReader> polyDataReader = (vtkPolyDataReader*) connectivityFilter->GetOutputPort()->GetProducer();
             
-            Shape* shape = new Shape(lastInsertShapeID_, name + ":cc" + to_string(i), polyDataReader->GetOutput(), renderer_);
+            shared_ptr<Shape> shape = make_shared<Shape>(lastInsertShapeId_, name + ":cc" + to_string(i), polyDataReader->GetOutput(), renderer_);
             addShape(shape);
         }
     }
@@ -1468,16 +1457,16 @@ void ShapeAnalyzer::vtkClickHandler(vtkObject *caller, unsigned long vtkEvent, v
     // check if pick was valid
     if(picker->GetPointId() != -1 && picker->GetCellId() != -1) {
         
-        if(shapesByActor_.containsKey(picker->GetActor())) {
-            Shape* shape = shapesByActor_[picker->GetActor()];
+        if(shapes_.containsKey(picker->GetActor())) {
+            shared_ptr<Shape> shape = shapes_[picker->GetActor()];
             // depending on whether we want to add face or point correspondences provide picker->GetCellId or picker->GetPointId to vtkShapeClicked method
             vtkShapeClicked(shape, picker->GetPointId(), picker->GetCellId(), globalPos, vtkEvent, command);
         } else {
-            if(pointCorrespondencesByActor_.containsKey(picker->GetActor())) {
-                vtkCorrespondenceClicked(pointCorrespondencesByActor_[picker->GetActor()], picker->GetPointId(), globalPos, vtkEvent, command);
+            if(visualPointCorrespondences_.containsKey(picker->GetActor())) {
+                vtkCorrespondenceClicked(visualPointCorrespondences_[picker->GetActor()].get(), picker->GetPointId(), globalPos, vtkEvent, command);
             }
-            if(faceCorrespondencesByActor_.containsKey(picker->GetActor())) {
-                vtkCorrespondenceClicked(faceCorrespondencesByActor_[picker->GetActor()], picker->GetPointId(), globalPos, vtkEvent, command);
+            if(visualFaceCorrespondences_.containsKey(picker->GetActor())) {
+                vtkCorrespondenceClicked(visualFaceCorrespondences_[picker->GetActor()].get(), picker->GetPointId(), globalPos, vtkEvent, command);
             }
         }
     }
@@ -1490,21 +1479,27 @@ void ShapeAnalyzer::vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent
     
     std::string key = interactor->GetKeySym();
     
-    if(key == "a") {
-        if(this->actionAddFaceCorrespondences->isChecked() || this->actionAddPointCorrespondences->isChecked()) {
+    if(this->actionAddPointCorrespondences->isChecked()) {
+        if(key == "a") {
             // add current seleceted correspondence if more than one shape
             // is involved
-            if(pickerCounter_ > 1) {
+            if(pointCorrespondencePicker_->getCounter() > 1) {
                 pickCorrespondence();
             }
-            
-            
+        } else if(key == "Escape") {
+            pointCorrespondencePicker_->clearSelection();
         }
-    } else if(key == "Escape") {
-        correspondencePicker_->clearSelection();
-        pickerCounter_ = 0;
+    } else if(this->actionAddFaceCorrespondences->isChecked()) {
+        if(key == "a") {
+            // add current seleceted correspondence if more than one shape
+            // is involved
+            if(faceCorrespondencePicker_->getCounter() > 1) {
+                pickCorrespondence();
+            }
+        } else if(key == "Escape") {
+            faceCorrespondencePicker_->clearSelection();
+        }
     }
-    
 }
 
 
@@ -1514,44 +1509,31 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
     // Get the location of the click (in window coordinates)
     int* pos =interactor->GetEventPosition();
     
-    correspondencePicker_->updateMouseLine(pos[0], pos[1]);
+    if(this->actionAddPointCorrespondences->isChecked()) {
+        pointCorrespondencePicker_->onMouseMove(pos[0], pos[1]);
+    } else if(this->actionAddFaceCorrespondences->isChecked()) {
+        faceCorrespondencePicker_->onMouseMove(pos[0], pos[1]);
+    } else {}
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkCorrespondenceClicked(Correspondence* correspondence, vtkIdType cellId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
-    command->AbortFlagOn();
-    for(int i = 0; i < listCorrespondences->count(); i++) {
-        if(((CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i))->getItem() == correspondence) {
-            listCorrespondences->setCurrentRow(i);
-            if(vtkEvent == vtkCommand::RightButtonPressEvent) {
-                qtShowContextMenuCorrepondences(pos);
-            }
-            break;
-        }
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
-    if((this->actionAddFaceCorrespondences->isChecked() || this->actionAddPointCorrespondences->isChecked())&& vtkEvent == vtkCommand::LeftButtonPressEvent) {
+void ShapeAnalyzer::vtkShapeClicked(shared_ptr<Shape> shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
+    if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionAddPointCorrespondences->isChecked()) {
+        pointCorrespondencePicker_->addShape(shape, pointId);
         
-        int result = correspondencePicker_->addShape(shape, this->actionAddFaceCorrespondences->isChecked() ? faceId : pointId);
-
-        if(result == 1)
-            pickerCounter_++;
-        else if(result == -1)
-            pickerCounter_ = 1;
-        else
-            ;
         
         // all shapes are in the current correspondence
-        if(shapesByActor_.size() > 1 && pickerCounter_ == shapesByActor_.size()) {
+        if(shapes_.size() > 1 && pointCorrespondencePicker_->getCounter() == shapes_.size()) {
             pickCorrespondence();
         }
+    } else if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionAddFaceCorrespondences->isChecked()) {
+        faceCorrespondencePicker_->addShape(shape, faceId);
         
-        
+        // all shapes are in the current correspondence
+        if(shapes_.size() > 1 && faceCorrespondencePicker_->getCounter() == shapes_.size()) {
+            pickCorrespondence();
+        }
     } else {
         //select item in list if clicked on shape
         for(int i = 0; i < listShapes->count(); i++) {
@@ -1563,8 +1545,6 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType f
                 }
             }
         }
-        
-        
     }
 }
 
@@ -1577,7 +1557,7 @@ void ShapeAnalyzer::vtkShapeClicked(Shape* shape, vtkIdType pointId, vtkIdType f
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::clear() {
-    if(this->shapesByActor_.size() > 0) {
+    if(this->shapes_.size() > 0) {
         scalarBar_->SetTitle(" ");
     }
     
@@ -1590,64 +1570,41 @@ void ShapeAnalyzer::clear() {
     listShapes->disconnect();
     listCorrespondences->disconnect();
 
-    //delete all items from the list. Remove displayed correspondences from renderer
-    for(int i = listCorrespondences->count()-1; i > -1; i--) {
-        //get correspondence
-        CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-        Correspondence *correspondence = item->getItem();
-        
-        delete item;
-        correspondence->removeFromRenderer();
-    }
+    //delete all items from the list.
+    listCorrespondences->clear();
     
 
     //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-    for(HashMap<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
+    for(auto entry : visualPointCorrespondences_) {
         
-        it->second->removeFromRenderer();
-        delete it->second;
+        entry.second->removeFromRenderer();
     }
-    pointCorrespondencesByActor_.clear();
-    for(HashMap<vtkActor*, FaceCorrespondence*>::iterator it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
+    visualPointCorrespondences_.clear();
+    
+    for(auto entry : visualFaceCorrespondences_) {
         
-        it->second->removeFromRenderer();
-        delete it->second;
+        entry.second->removeFromRenderer();
     }
-    faceCorrespondencesByActor_.clear();
+    visualFaceCorrespondences_.clear();
     
     // delete all correspondence data
-    for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
-        
-        delete it->first;
-    }
-    pointCorrespondenceData_.clear();
-    for(HashMap<FaceCorrespondenceData*, bool>::iterator it = faceCorrespondenceData_.begin(); it != faceCorrespondenceData_.end(); it++) {
-        
-        delete it->first;
-    }
-    faceCorrespondenceData_.clear();
+    pointCorrespondences_.clear();
+    faceCorrespondences_.clear();
     
     
     
     // delete all shapes
-    for(int i = listShapes->count()-1; i > -1; i--) {
-        //get shape
-        CustomListWidgetItem<Shape> *item = (CustomListWidgetItem<Shape>*) listShapes->item(i);
-        Shape* shape = item->getItem();
-        shape->removeFromRenderer();
-        
-        shapesByActor_.remove(shape->getActor());
-        delete item;
-        
-        delete shape;
+    for(auto entry : shapes_) {
+        entry.second->removeFromRenderer();
     }
+    shapes_.clear();
+    listShapes->clear();
     
-    lastInsertShapeID_ = 0;
-    lastInsertCorresondenceID_ = 0;
+    lastInsertShapeId_ = 0;
+    lastInsertCorrespondenceId_ = 0;
     
-    correspondencePicker_->clearSelection();
-    pickerCounter_ = 0;
-
+    pointCorrespondencePicker_->clearSelection();
+    faceCorrespondencePicker_->clearSelection();
     
     this->qvtkWidget->GetRenderWindow()->Render();
     
@@ -1662,49 +1619,30 @@ void ShapeAnalyzer::clearCorrespondences() {
     listCorrespondences->disconnect();
     
     //delete all items from the list if point correspondences are currently in the listWidget. Remove displayed correspondences from renderer
-    for(int i = listCorrespondences->count()-1; i > -1; i--) {
-        //get correspondence
-        CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-        Correspondence *correspondence = item->getItem();
-        
-        delete item;
-        correspondence->removeFromRenderer();
-    }
+    listCorrespondences->clear();
     
     if(actionDisplayPointCorrespondences->isChecked()) {
         //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-        for(HashMap<vtkActor*, PointCorrespondence*>::iterator it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end(); it++) {
-            
-            it->second->removeFromRenderer();
-            delete it->second;
+        for(auto entry : visualPointCorrespondences_) {
+            entry.second->removeFromRenderer();
         }
-        pointCorrespondencesByActor_.clear();
+        visualPointCorrespondences_.clear();
         
         
         // delete all correspondence data
-        for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
-            
-            delete it->first;
-        }
-        pointCorrespondenceData_.clear();
+        pointCorrespondences_.clear();
         
         this->qvtkWidget->GetRenderWindow()->Render();
     } else {
         //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-        for(HashMap<vtkActor*, FaceCorrespondence*>::iterator it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end(); it++) {
-            
-            it->second->removeFromRenderer();
-            delete it->second;
+        for(auto entry : visualFaceCorrespondences_) {
+            entry.second->removeFromRenderer();
         }
-        faceCorrespondencesByActor_.clear();
+        visualFaceCorrespondences_.clear();
         
         
         // delete all correspondence data
-        for(HashMap<FaceCorrespondenceData*, bool>::iterator it = faceCorrespondenceData_.begin(); it != faceCorrespondenceData_.end(); it++) {
-            
-            delete it->first;
-        }
-        faceCorrespondenceData_.clear();
+        faceCorrespondences_.clear();
         
         this->qvtkWidget->GetRenderWindow()->Render();
     }
@@ -1719,26 +1657,29 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
     // qt
     listCorrespondences->disconnect();
     
-    CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-    
-    
     // correspondence deleting
-    if(dynamic_cast<PointCorrespondenceData*>(item->getItem()->getData()) != nullptr) {
-        pointCorrespondenceData_.remove((PointCorrespondenceData*) item->getItem()->getData());
-        pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
-    } else {
-        faceCorrespondenceData_.remove((FaceCorrespondenceData*) item->getItem()->getData());
-        faceCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
-    }
-    
 
-    //delete CorrespondenceData object
-    delete item->getItem()->getData();
-    
-    item->getItem()->removeFromRenderer();
-    delete item->getItem();
-    delete item;
-    
+    CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*>(listCorrespondences->item(i));
+    if(item != nullptr) {
+        
+        
+        pointCorrespondences_.remove(item->getItem()->getCorrespondence());
+        visualPointCorrespondences_.remove(item->getItem()->getActor());
+
+        item->getItem()->removeFromRenderer();
+        
+        delete item;
+    } else {
+        CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*>(listCorrespondences->item(i));
+        
+        faceCorrespondences_.remove(item->getItem()->getCorrespondence());
+        visualFaceCorrespondences_.remove(item->getItem()->getActor());
+        
+        item->getItem()->removeFromRenderer();
+        
+        delete item;
+    }
+
     this->qvtkWidget->GetRenderWindow()->Render();
     
     qtConnectListCorrespondences();
@@ -1750,30 +1691,30 @@ void ShapeAnalyzer::deleteCorrespondence(int i) {
 void ShapeAnalyzer::hideCorrespondences() {
     listCorrespondences->disconnect();
 
-    for(int i = listCorrespondences->count()-1; i > -1; i--) {
-        //get correspondence
-        CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-        Correspondence *correspondence = item->getItem();
-        
-        delete item;
-        correspondence->removeFromRenderer();
-        delete correspondence;
-    }
+    listCorrespondences->clear();
     
     if(actionDisplayPointCorrespondences->isChecked()) {
-        // Set flag "displayed" to false for each CorrespondenceData object
-        for(HashMap<PointCorrespondenceData*, bool>::iterator it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end(); it++) {
-            it->second = false;
+        for(auto entry : visualPointCorrespondences_) {
+            entry.second->removeFromRenderer();
         }
         
-        pointCorrespondencesByActor_.clear();
+        // Set flag "displayed" to false for each Correspondence object
+        for(auto entry : pointCorrespondences_) {
+            entry.second = false;
+        }
+        
+        visualPointCorrespondences_.clear();
     } else {
-        // Set flag "displayed" to false for each CorrespondenceData object
-        for(HashMap<FaceCorrespondenceData*, bool>::iterator it = faceCorrespondenceData_.begin(); it != faceCorrespondenceData_.end(); it++) {
-            it->second = false;
+        for(auto entry : visualFaceCorrespondences_) {
+            entry.second->removeFromRenderer();
         }
         
-        faceCorrespondencesByActor_.clear();
+        // Set flag "displayed" to false for each Correspondence object
+        for(auto entry : faceCorrespondences_) {
+            entry.second = false;
+        }
+        
+        visualFaceCorrespondences_.clear();
     }
     this->qvtkWidget->GetRenderWindow()->Render();
     
@@ -1788,22 +1729,22 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
     // qt
     listCorrespondences->disconnect();
     
-    CustomListWidgetItem<Correspondence> *item = (CustomListWidgetItem<Correspondence>*) listCorrespondences->item(i);
-    
-    
+
     // correspondence deleting
-    if(dynamic_cast<PointCorrespondenceData*>(item->getItem()->getData()) != nullptr) {
-        pointCorrespondenceData_[(PointCorrespondenceData*) item->getItem()->getData()] = false;
-        pointCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
+    CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*>(listCorrespondences->item(i));
+    if(item != nullptr) {
+        pointCorrespondences_[item->getItem()->getCorrespondence()] = false;
+        visualPointCorrespondences_.remove(item->getItem()->getActor());
     } else {
-        faceCorrespondenceData_[(FaceCorrespondenceData*) item->getItem()->getData()] = false;
-        faceCorrespondencesByActor_.remove(item->getItem()->getLinesActor());
+        CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*>(listCorrespondences->item(i));
+        
+        faceCorrespondences_[item->getItem()->getCorrespondence()] = false;
+        visualFaceCorrespondences_.remove(item->getItem()->getActor());
     }
     
     
     
     item->getItem()->removeFromRenderer();
-    delete item->getItem();
     delete item;
     
     this->qvtkWidget->GetRenderWindow()->Render();
@@ -1817,37 +1758,35 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
 void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
     hideCorrespondences();
     if (this->actionDisplayPointCorrespondences->isChecked()) { // point correspondence
-        vector<PointCorrespondenceData*> data;
-        pointCorrespondenceData_.getRandomSampleKeys(size, data);
+        vector<shared_ptr<PointCorrespondence>> correspondences;
+        pointCorrespondences_.getRandomSampleKeys(size, correspondences);
         
-        for(int i = 0; i < data.size(); i++) {
+        for(int i = 0; i < correspondences.size(); i++) {
             
-            PointCorrespondence* correspondence = new PointCorrespondence(renderer_, data[i], shapesByActor_);
+            shared_ptr<VisualCorrespondence<PointCorrespondence>> correspondence = make_shared<VisualCorrespondence<PointCorrespondence>>(renderer_, correspondences[i]);
             
             // create actor and add to vtk
-            correspondence->initialize();
             correspondence->addToRenderer();
             
-            pointCorrespondenceData_[data[i]] = true;
-            pointCorrespondencesByActor_.insert(correspondence->getLinesActor(), correspondence);
+            pointCorrespondences_[correspondences[i]] = true;
+            visualPointCorrespondences_.insert(correspondence->getActor(), correspondence);
             
             // add shape to qt list widget
             qtAddListCorrespondencesItem(correspondence);
         }
     } else {
-        vector<FaceCorrespondenceData*> data;
-        faceCorrespondenceData_.getRandomSampleKeys(size, data);
+        vector<shared_ptr<FaceCorrespondence>> correspondences;
+        faceCorrespondences_.getRandomSampleKeys(size, correspondences);
         
-        for(int i = 0; i < data.size(); i++) {
+        for(int i = 0; i < correspondences.size(); i++) {
             
-            FaceCorrespondence* correspondence = new FaceCorrespondence(renderer_, data[i], shapesByActor_);
+            shared_ptr<VisualCorrespondence<FaceCorrespondence>> correspondence = make_shared<VisualCorrespondence<FaceCorrespondence>>(renderer_, correspondences[i]);
             
             // create actor and add to vtk
-            correspondence->initialize();
             correspondence->addToRenderer();
             
-            faceCorrespondenceData_[data[i]] = true;
-            faceCorrespondencesByActor_.insert(correspondence->getLinesActor(), correspondence);
+            faceCorrespondences_[correspondences[i]] = true;
+            visualFaceCorrespondences_.insert(correspondence->getActor(), correspondence);
             
             // add shape to qt list widget
             qtAddListCorrespondencesItem(correspondence);
@@ -1860,61 +1799,51 @@ void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-CorrespondenceData* ShapeAnalyzer::addCorrespondence(const vector<pair<Shape*, vtkIdType>>& correspondence, const type_info& type) {
-    CorrespondenceData* data;
-    if(type == typeid(PointCorrespondenceData)) {
-        data = new PointCorrespondenceData(lastInsertCorresondenceID_);
+shared_ptr<Correspondence> ShapeAnalyzer::addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type) {
+    shared_ptr<Correspondence> c;
+    if(type == typeid(PointCorrespondence)) {
+        c = make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++);
         for(auto p : correspondence) {
-            data->getShapeIds().push_back(p.first->getId());
-            data->getCorrespondingIds().push_back(p.second);
+            c->addShape(p.first, p.second);
         }
-        lastInsertCorresondenceID_++;
-        pointCorrespondenceData_.insert((PointCorrespondenceData*) data, false);
+        pointCorrespondences_.insert(dynamic_pointer_cast<PointCorrespondence>(c), false);
     } else {
-        data = new FaceCorrespondenceData(lastInsertCorresondenceID_);
+        c = make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
         for(auto p : correspondence) {
-            data->getShapeIds().push_back(p.first->getId());
-            data->getCorrespondingIds().push_back(p.second);
+            c->addShape(p.first, p.second);
         }
-        lastInsertCorresondenceID_++;
-        faceCorrespondenceData_.insert((FaceCorrespondenceData*) data, false);
+        faceCorrespondences_.insert(dynamic_pointer_cast<FaceCorrespondence>(c), false);
     }
     
     qtUpdateLabelVisibleCorrespondences();
     
-    return data;
+    return c;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::pickCorrespondence() {
-    Correspondence* correspondence;
-    
-    // adding to correspondenceByActor, vtkPart
-    if(correspondencePicker_->pick(&correspondence)) {
-        // add to qt
-        lastInsertCorresondenceID_++;
-        
-        // adding to face/point data
-        if (dynamic_cast<PointCorrespondenceData*>(correspondence->getData()) != nullptr) { // point correspondence
-            PointCorrespondence* pointCorrespondence = (PointCorrespondence*) correspondence;
-            pointCorrespondenceData_.insert(pointCorrespondence->getData(), true);
-            pointCorrespondencesByActor_.insert(pointCorrespondence->getLinesActor(), pointCorrespondence);
+    if(actionAddPointCorrespondences->isChecked()) {
+        shared_ptr<VisualCorrespondence<PointCorrespondence>> pointCorrespondence;
+        if(pointCorrespondencePicker_->pick(pointCorrespondence)) {
+            pointCorrespondences_.insert(pointCorrespondence->getCorrespondence(), true);
+            visualPointCorrespondences_.insert(pointCorrespondence->getActor(), pointCorrespondence);
             
             // add shape to qt list widget
-            qtAddListCorrespondencesItem(correspondence);
-        } else { // face correspondence
-            FaceCorrespondence* faceCorrespondence = (FaceCorrespondence*) correspondence;
-            faceCorrespondenceData_.insert(faceCorrespondence->getData(), true);
-            faceCorrespondencesByActor_.insert(faceCorrespondence->getLinesActor(), faceCorrespondence);
-            
+            qtAddListCorrespondencesItem(pointCorrespondence);
+        }
+    } else {
+        shared_ptr<VisualCorrespondence<FaceCorrespondence>> faceCorrespondence;
+        if(faceCorrespondencePicker_->pick(faceCorrespondence)) {
+            faceCorrespondences_.insert(faceCorrespondence->getCorrespondence(), true);
+            visualFaceCorrespondences_.insert(faceCorrespondence->getActor(), faceCorrespondence);
             
             // add shape to qt list widget
-            qtAddListCorrespondencesItem(correspondence);
+            qtAddListCorrespondencesItem(faceCorrespondence);
         }
     }
-    
-    pickerCounter_ = 0;
+
+
     qtUpdateLabelVisibleCorrespondences();
 }
 
@@ -1935,119 +1864,97 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     // qt
     CustomListWidgetItem<Shape> *item = (CustomListWidgetItem<Shape>*) this->listShapes->item(i);
-    Shape* shape = item->getItem();
+    shared_ptr<Shape> shape = item->getItem();
     
 
     // fire event for shapesTabs
     for(auto entry : customTabs_) {
-        entry.second->onShapeDelete(shape);
+        entry.second->onShapeDelete(shape.get());
     }
     
     
-    correspondencePicker_->clearSelection();
-    pickerCounter_ = 0;
-    //first remove shape from list
+    pointCorrespondencePicker_->clearSelection();
+    faceCorrespondencePicker_->clearSelection();
+    
+    // remove shape from list
     delete item;
     
-    //first delete all items in the list
-    //iterate through the correspondence list backwards beginning from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete.
+    
+    // delete all items in the list
+    // iterate through the correspondence list backwards beginning from the end of the list since delete listItem decreases list->count() and to make sure that we get all correspondences that we want to delete.
     for(int j = listCorrespondences->count()-1; j > -1; j--) {
-        //get correspondence
-        Correspondence *correspondence = ((CustomListWidgetItem<Correspondence>*) listCorrespondences->item(j))->getItem();
         
-
-        //check whether one of the shapes of correspondence equals our shape that we want to delete
-        for(int i = 0; i < correspondence->getShapes().size(); i++) {
-            if(shape == correspondence->getShapes()[i]) {
+        shared_ptr<Correspondence> correspondence;
+        CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<PointCorrespondence>>*> (listCorrespondences->item(j));
+        if(item != nullptr) {
+            correspondence = item->getItem()->getCorrespondence();
+        } else {
+            CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>* item = dynamic_cast<CustomListWidgetItem<VisualCorrespondence<FaceCorrespondence>>*> (listCorrespondences->item(j));
+            correspondence = item->getItem()->getCorrespondence();
+        }
+        if(correspondence->getShapes().size() == 2) {
+            //check whether one of the shapes of correspondence equals our shape that we want to delete
+            if(shape == correspondence->getShapes().at(0) || shape == correspondence->getShapes().at(1)) {
                 //destroy widgetItem object
                 delete listCorrespondences->item(j);
-                break;
             }
         }
     }
     
-    //second delete all correspondences belonging to the shape
-    for(auto it = pointCorrespondencesByActor_.begin(); it != pointCorrespondencesByActor_.end();) {
+    // delete all visual correspondences belonging to the shape
+    for(auto it = visualPointCorrespondences_.begin(); it != visualPointCorrespondences_.end();) {
 
-        
-        //check whether one of the shapes of correspondence equals our shape that we want to delete
-        bool found = false;
-        for(int i = 0; i < it->second->getShapes().size(); i++) {
-            if(shape == it->second->getShapes()[i]) {
-                found = true;
-                it->second->removeFromRenderer();
-                delete it->second;
-                break;
-            }
-        }
-        
-        // call erase instead of remove since we are removing on iterating through the map
-        if(found) {
-            it = pointCorrespondencesByActor_.getEntries().erase(it);
+        if(it->second->getCorrespondence()->size() == 2 && (it->second->getCorrespondence()->getShapes().at(0) == shape || it->second->getCorrespondence()->getShapes().at(1) == shape)) {
+            
+            it->second->removeFromRenderer();
+            it = visualPointCorrespondences_.getEntries().erase(it);
         } else {
+            if(it->second->getCorrespondence()->size() > 2) {
+                it->second->removeShape(shape.get());
+            }
             ++it;
         }
     }
-    for(auto it = faceCorrespondencesByActor_.begin(); it != faceCorrespondencesByActor_.end();) {
+    for(auto it = visualFaceCorrespondences_.begin(); it != visualFaceCorrespondences_.end();) {
         
-        
-        //check whether one of the shapes of correspondence equals our shape that we want to delete
-        bool found = false;
-        for(int i = 0; i < it->second->getShapes().size(); i++) {
-            if(shape == it->second->getShapes()[i]) {
-                found = true;
-                it->second->removeFromRenderer();
-                delete it->second;
-                break;
-            }
-        }
-        
-        // call erase instead of remove since we are removing on iterating through the map
-        if(found) {
-            it = faceCorrespondencesByActor_.getEntries().erase(it);
+        if(it->second->getCorrespondence()->size() == 2 && (it->second->getCorrespondence()->getShapes().at(0) == shape || it->second->getCorrespondence()->getShapes().at(1) == shape)) {
+            
+            it->second->removeFromRenderer();
+            it = visualFaceCorrespondences_.getEntries().erase(it);
         } else {
+            if(it->second->getCorrespondence()->size() > 2) {
+                it->second->removeShape(shape.get());
+            }
             ++it;
         }
     }
-    //third delete all data that belongs to the shape
-    for(auto it = pointCorrespondenceData_.begin(); it != pointCorrespondenceData_.end();) {
+    
+    // delete all correspondences that belong to the shape
+    for(auto it = pointCorrespondences_.begin(); it != pointCorrespondences_.end();) {
         
-        PointCorrespondenceData* data = it->first;
+        shared_ptr<PointCorrespondence> correspondence = it->first;
         //check whether one of the shapes of correspondence equals our shape that we want to delete
         
-        bool found = false;
-        for(int i = 0; i < data->getShapeIds().size(); i++) {
-            if(shape->getId() == data->getShapeIds()[i]) {
-                found = true;
-                delete data;
-                break;
-            }
-        }
-        
-        // call erase instead of remove since we are removing on iterating through the map
-        if(found) {
-            it = pointCorrespondenceData_.getEntries().erase(it);
+        if(correspondence->size() == 2 && (correspondence->getShapes().at(0) == shape || correspondence->getShapes().at(1) == shape)) {
+            it = pointCorrespondences_.getEntries().erase(it);
         } else {
+            if(correspondence->size() > 2) {
+                correspondence->removeShape(shape.get());
+            }
             ++it;
         }
     }
-    for(HashMap<FaceCorrespondenceData*, bool>::iterator it = faceCorrespondenceData_.begin(); it != faceCorrespondenceData_.end();) {
+    for(auto it = faceCorrespondences_.begin(); it != faceCorrespondences_.end();) {
         
-        FaceCorrespondenceData* data = it->first;
+        shared_ptr<FaceCorrespondence> correspondence = it->first;
         //check whether one of the shapes of correspondence equals our shape that we want to delete
         
-        bool found = false;
-        for(int i = 0; i < data->getShapeIds().size(); i++) {
-            if(shape->getId() == data->getShapeIds()[i]) {
-                found = true;
-                delete data;
-                break;
-            }
-        }
-        
-        if(found) {
-            it = faceCorrespondenceData_.getEntries().erase(it);
+        if(correspondence->size() == 2 && (correspondence->getShapes().at(0) == shape || correspondence->getShapes().at(1) == shape)) {
+            it = faceCorrespondences_.getEntries().erase(it);
         } else {
+            if(correspondence->size() > 2) {
+                correspondence->removeShape(shape.get());
+            }
             ++it;
         }
     }
@@ -2055,9 +1962,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     
     // delete shape
     shape->removeFromRenderer();
-    shapesByActor_.remove(shape->getActor());
-    
-    delete shape;
+    shapes_.remove(shape->getActor());
     
     this->qvtkWidget->GetRenderWindow()->Render();
     
@@ -2068,15 +1973,15 @@ void ShapeAnalyzer::deleteShape(int i) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-Shape* ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyData> polyData) {
-    Shape* shape = new Shape(lastInsertShapeID_, name, polyData, renderer_);
+shared_ptr<Shape> ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyData> polyData) {
+    shared_ptr<Shape> shape = make_shared<Shape>(lastInsertShapeId_, name, polyData, renderer_);
     addShape(shape);
     
     return shape;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ShapeAnalyzer::addShape(Shape* shape) {
+void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {
     if(this->actionShowSurface->isChecked()) {
         shape->setVisualRepresentation(Shape::VisualRepresentation::MeshSurface);
     } else if(this->actionShowSurfaceNormals->isChecked()) {
@@ -2090,25 +1995,25 @@ void ShapeAnalyzer::addShape(Shape* shape) {
     }
     
     
-    if(shapesByActor_.size() == 0)
+    if(shapes_.size() == 0)
         renderer_->ResetCamera();
     
 
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();
     callback->sa = this;
-    callback->shape = shape;
+    callback->shape = shape.get();
     
     shape->addObserver(callback);
 
-    shapesByActor_.insert(shape->getActor(), shape);
+    shapes_.insert(shape->getActor(), shape);
     
     // fire event for shapesTabs
     for(auto entry : customTabs_) {
-        entry.second->onShapeAdd(shape);
+        entry.second->onShapeAdd(shape.get());
     }
     
     // add shape to qt list widget
-    lastInsertShapeID_++;
+    lastInsertShapeId_++;
     
     CustomListWidgetItem<Shape> *item = new CustomListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
     listShapes->addItem(item);

@@ -24,11 +24,14 @@
 
 using namespace std;
 
+/// \brief Selection visualization strategy. For each Correspondence type the visualization behavior is defined in the functions initActor() and getCoordinates()
 template<class T>
 struct SelectionVisualizationStrategy;
 
+/// \brief Selection visualization strategy for type PointCorrespondence.
 template<>
 struct SelectionVisualizationStrategy<PointCorrespondence> {
+    /// \brief Initializes the actors representing the vertices of the Correspondence.
     static void initActor(vtkSmartPointer<vtkActor> actor, vtkSmartPointer<vtkPolyDataMapper> mapper, double color[3], Shape* shape, vtkIdType pointId) {
         vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
@@ -51,13 +54,16 @@ struct SelectionVisualizationStrategy<PointCorrespondence> {
         actor->SetUserTransform(shape->getTransformation());
     }
     
+    /// \brief Returns the 3D coordinates of the selection vertex.
     static void getCoordinates(double point[3], Shape* shape, vtkIdType pointId) {
         shape->getPolyData()->GetPoints()->GetPoint(pointId, point);
     }
 };
 
+/// \brief Selection visualization strategy for type PointCorrespondence.
 template<>
 struct SelectionVisualizationStrategy<FaceCorrespondence> {
+    /// \brief Initializes the actors representing the faces of the Correspondence.
     static void initActor(vtkSmartPointer<vtkActor> actor, vtkSmartPointer<vtkPolyDataMapper> mapper, double color[3], Shape* shape, vtkIdType faceId) {
         vtkSmartPointer<vtkTriangle> face = vtkTriangle::SafeDownCast(shape->getPolyData()->GetCell(faceId));
         vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
@@ -92,6 +98,7 @@ struct SelectionVisualizationStrategy<FaceCorrespondence> {
         actor->SetUserTransform(shape->getTransformation());
     }
     
+    /// \brief Returns the 3D coordinates of the center of the selected face.
     static void getCoordinates(double point[3], Shape* shape, vtkIdType faceId) {
         double p1[3];
         double p2[3];
@@ -107,19 +114,18 @@ struct SelectionVisualizationStrategy<FaceCorrespondence> {
 };
 
 ///
-/// \brief Abstract Class for Correspondences that are shown in the GUI.
+/// \brief Abstract Template Class for VisualCorrespondences that are shown in the GUI.
 ///
-/// \details Contains a CorrespondenceData Pointer and can visualize this data
+/// \details Contains a Correspondence Pointer and can visualize this data
 /// in the GUI with lines and highlighted faces or points.
-///
+/// @tparam Correspondence Can either be PointCorrespondence or FaceCorrespondence.
 template<class T>
 class VisualCorrespondence {
 
 public:
-    /// \brief Protected contructor since class is abstract. Empty CorrespondenceData. Call initialize afterwards.
+    /// \brief Constructor
     /// @param vtkSmartPointer<vtkRenderer> renderer. The renderer to which the correspondence is added afterwards using the function addToRenderer().
-    /// @param CorrespondenceData * data. An empty CorrespondenceData object.
-    
+    /// @param shared_ptr<T> a Correspondence object of type T.
     VisualCorrespondence(vtkSmartPointer<vtkRenderer> renderer, shared_ptr<T> correspondence) : correspondence_(correspondence), renderer_(renderer) {
         referencePoints_ = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> linePoints = vtkSmartPointer<vtkPoints>::New();
@@ -182,7 +188,7 @@ public:
     
     /// \brief Transforms this correspondence in case the shape provided as a parameter is part of it.
     /// \details To do so it applies the current user transformation of the shape to the original coordinates of the respective end point of the line representing the correspondence. Afterwards it updates the line with the transformed coordinates and sets the current user transformation of the actor representing the point or face of the transformed shape to the new one.
-    /// @param Shape * shape. The shape that was transformed by the user.
+    /// @param Shape* shape. The shape that was transformed by the user.
     void transform(Shape* shape) {
         for(int i = 0; i < correspondence_->getShapes().size(); i++) {
             if(correspondence_->getShapes().at(i).get() == shape) {
@@ -217,7 +223,7 @@ public:
         }
     }
 
-    /// \brief Adds another shape plus face ID (or vertex ID) pair to this correspondence.
+    /// \brief Adds another shape plus face ID (or vertex ID) pair to this correspondence. Manages the Correspondence object.
     /// \details Returns 1 if shape plus data id combination has successfully been added (shape has not been selected twice). Returns 0 if the shape equals the last added shape and updates the  coordinates of the lines end point with the new coordinates. Returns -1 if the shape is identical to another shape that has already been added before and the shape is not equals to the last added shape.
     int addShape(shared_ptr<Shape> shape, vtkIdType id) {
         if (shape == nullptr) {
@@ -275,6 +281,10 @@ public:
         return 1;
     }
 
+    
+    /// \brief Removes a shape plus corresponding data id pair from the object. Manages the Correspondence object.
+    /// @return Returns index i of the deleted shape. If shape is not part of correspondence it returns -1.
+    /// @throws invalid_argument if the function is called when the correspondence is binary (2 shapes).
     int removeShape(Shape* shape) {
         int size = correspondence_->size();
         int i = correspondence_->removeShape(shape);
@@ -334,10 +344,12 @@ public:
         renderer_->AddActor(actor_);
     }
     
+    /// \brief Returns managed Correspondence object of type T.
     shared_ptr<T> getCorrespondence() {
         return correspondence_;
     }
     
+    /// \brief Removes all shape plus data id pairs from the correspondence. Deletes the VTK ojects.
     void clear() {
         for(int i = 0; i < selectionActors_.size(); i++) {
             renderer_->RemoveActor(selectionActors_[i]);
@@ -356,16 +368,16 @@ public:
     }
     
 private:
+    /// \brief The managed Correspondence object.
     shared_ptr<T> correspondence_;
     
+    
+    ///@{ @name VTK ojects
     /// \brief Renderer.
     vtkSmartPointer<vtkRenderer>    renderer_;
-
-    
-    ///@{
     
     /// \brief Actors highlighting the data (vertices of faces) on the corresponding shapes
-    /// \details The order correspondes to the order of the shapes in the CorrespondenesData
+    /// \details The order correspondes to the order of the shapes in the Correspondenes
     /// data_ and shapes_.
     vector<vtkSmartPointer<vtkActor>>  selectionActors_;
     

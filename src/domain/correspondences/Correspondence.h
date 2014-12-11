@@ -13,9 +13,9 @@ using namespace std;
 ///
 /// \brief Abstract class to store correspondence information.
 ///
-/// \details CorrespondenceData matches data ids of an arbitrary number of shapes
+/// \details Correspondence matches data ids of an arbitrary number of shapes
 /// to each other. Each CorrespondenceData has a unique id and stores a vector
-/// of shape ids and a vector of data ids with the same size. The ids on the same
+/// of shapes and a vector of data ids with the same size. The ids on the same
 /// position of each vector belong to each other.
 /// It is possible to add more data after initialization, but not to delete it.
 ///
@@ -30,6 +30,9 @@ public:
         correspondingIds_.push_back(correspondingId);
     }
     
+    /// \brief Removes a shape plus corresponding data id pair from the object.
+    /// @return Returns index i of the deleted shape. If shape is not part of correspondence it returns -1.
+    /// @throws invalid_argument if the function is called when the correspondence is binary (2 shapes).
     int removeShape(Shape* shape) {
         if(shapes_.size() <= 2) {
             throw invalid_argument(string("Cannot remove a shape from a correspondence containing only 2 shapes in ").append(__PRETTY_FUNCTION__));

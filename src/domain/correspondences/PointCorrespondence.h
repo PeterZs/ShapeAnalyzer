@@ -5,9 +5,9 @@
 
 ///
 /// \brief Stores multi correspondences between points of an arbitrary number of shapes.
-/// \details The main implementation can be seen in CorrespondenceData, this class
+/// \details The main implementation can be seen in Correspondence, this class
 /// purely insures that point and face correspondences can not be mixed up in some
-/// data structures (especially pointCorrespondenceData_ in ShapeAnalyzer).
+/// data structures (especially pointCorrespondence_ in ShapeAnalyzer).
 ///
 class PointCorrespondence : public Correspondence {
 public:

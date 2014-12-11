@@ -6,12 +6,17 @@
 #include <vtkBoxRepresentation.h>
 #include <vtkCell.h>
 #include <vtkCellArray.h>
+#include <vtkCellData.h>
+#include <vtkCharArray.h>
+#include <vtkCommand.h>
+#include <vtkDataArray.h>
 #include <vtkGlyph3D.h>
 #include <vtkIdList.h>
 #include <vtkLookupTable.h>
 #include <vtkLinearTransform.h>
 #include <vtkMatrix4x4.h>
 #include <vtkObjectBase.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataNormals.h>
@@ -25,11 +30,6 @@
 #include <vtkTriangle.h>
 #include <vtkType.h>
 #include <vtkVertexGlyphFilter.h>
-#include <vtkSmartPointer.h>
-#include <vtkDataArray.h>
-#include <vtkPointData.h>
-#include <vtkCellData.h>
-#include <vtkCommand.h>
 
 #include <math.h>
 #include <iostream>
@@ -62,7 +62,11 @@ public:
         Mesh
     };
     
-    /// \brief Coloring struct. Contains a type and the colors as vtkSmartPointer<vtkDataArray>.
+    /// \brief Coloring struct. Contains a type and the coloring data as vtkSmartPointer<vtkDataArray>.
+    /// \details The values of PointRgb, FaceRgb, PointScalar and FaceScalar have to be in an vtkDoubleArray.
+    /// Additionally the values of *Rgb have to be between 0 and 1 (otherwise the visualisation will probably
+    /// not look like intended). The values of PointSegmentation and FaceSegmentation have to be in an
+    /// vtkCharArray.
     struct Coloring {
         /// \brief Type enum.
         enum class Type {
@@ -93,6 +97,13 @@ public:
     /// @param vtkSmartPointer<vtkPolyData> The faces and triangles of the shape.
     /// @param vtkSmartPointer<vtkRenderer> The renderer object which is responsible for rendering the shape.
     Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// \brief Constructor with predefined Transform.
+    /// @param vtkIdType The unique shape ID.
+    /// @param string The name of the shape.
+    /// @param vtkSmartPointer<vtkPolyData> The faces and triangles of the shape.
+    /// @param vtkSmartPointer<vtkRenderer> The renderer object which is responsible for rendering the shape.
+    Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkMatrix4x4>);
     
     /// Virtual destructor.
     virtual ~Shape() {
@@ -202,6 +213,8 @@ public:
     void colorFacesCoordinates();
 
 private:
+    void initialize(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer);
+    
     /// \brief Unique id of the shape
     /// \details Although the ShapeAnalyzer only assigns unique ids, the uniqueness is not
     /// forced unconditionally

@@ -36,11 +36,9 @@ void SceneWriterReader::importSceneBinary(
     HashMap<vtkActor*, Shape*> shapesByActor;
     //read shapes
     for(int64_t i = 0; i < numberOfShapes; i++) {
-        //Shape* shape = new Shape(renderer);
-        
-        //shape->readBinary(is);
-        //shapes.push_back(shape);
-        //shapesByActor.insert(shape->getActor(), shape);
+        Shape* shape = importShapeBinary(is, renderer);
+        shapes.push_back(shape);
+        shapesByActor.insert(shape->getActor(), shape);
     }
     
     //read last insert correspondence ID
@@ -127,7 +125,7 @@ void SceneWriterReader::exportSceneBinary(string filename, vector<Shape*>& shape
     
     // write shapes
     for(int i = 0; i < shapes.size(); i++) {
-        //shapes[i]->writeBinary(os);
+        exportShapeBinary(os, shapes[i]);
     }
     
     // write last insert correspondence id
@@ -209,16 +207,26 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
     HashMap<vtkActor*, Shape*> shapesByActor;
     //read shapes
     for(unsigned int i = 0; i < numberOfShapes; i++) {
-        //Shape* shape = new Shape(renderer);
+        Shape* shape = importShapeASCII(is, renderer);
         
-        //shape->readASCII(is);
-        //shapes.push_back(shape);
-        //shapesByActor.insert(shape->getActor(), shape);
+        shapes.push_back(shape);
+        shapesByActor.insert(shape->getActor(), shape);
     }
     
     // read camera attributes
-    double position1, position2, position3;
+    double* focalPoint = new double[3];
+    {
+        stringstream ss;
+        getline(is, line);
+        ss << line;
+        ss >> focalPoint[0];
+        ss >> focalPoint[1];
+        ss >> focalPoint[2];
+    }
+    renderer->GetActiveCamera()->SetFocalPoint(focalPoint);
+    delete focalPoint;
     
+    double position1, position2, position3;
     {
         stringstream ss;
         getline(is, line);
@@ -229,69 +237,35 @@ void SceneWriterReader::importSceneASCII(string filename, vtkSmartPointer<vtkRen
     }
     renderer->GetActiveCamera()->SetPosition(position1, position2, position3);
     
-    double windowCenter1, windowCenter2;
-    
+    double* viewUp = new double[3];
     {
         stringstream ss;
         getline(is, line);
         ss << line;
-        ss >> windowCenter1;
-        ss >> windowCenter2;
+        ss >> viewUp[0];
+        ss >> viewUp[1];
+        ss >> viewUp[2];
     }
-    renderer->GetActiveCamera()->SetWindowCenter(windowCenter1, windowCenter2);
+    renderer->GetActiveCamera()->SetViewUp(viewUp);
+    delete viewUp;
     
-    double viewangle, eyeangle;
+    double viewangle;
     {
         stringstream ss;
         getline(is, line);
         ss << line;
         ss >> viewangle;
-        ss >> eyeangle;
     }
     renderer->GetActiveCamera()->SetViewAngle(viewangle);
-    renderer->GetActiveCamera()->SetEyeAngle(eyeangle);
     
-    double* eyeposition = new double[3];
+    double parallelScale;
     {
         stringstream ss;
         getline(is, line);
         ss << line;
-        ss >> eyeposition[0];
-        ss >> eyeposition[1];
-        ss >> eyeposition[2];
+        ss >> parallelScale;
     }
-    renderer->GetActiveCamera()->SetEyePosition(eyeposition);
-    
-    double* screenLeftBottom = new double[3];
-    double* screenRightBottom = new double[3];
-    double* screenRightTop = new double[3];
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> screenLeftBottom[0];
-        ss >> screenLeftBottom[1];
-        ss >> screenLeftBottom[2];
-    }
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> screenRightBottom[0];
-        ss >> screenRightBottom[1];
-        ss >> screenRightBottom[2];
-    }
-    {
-        stringstream ss;
-        getline(is, line);
-        ss << line;
-        ss >> screenRightTop[0];
-        ss >> screenRightTop[1];
-        ss >> screenRightTop[2];
-    }
-    renderer->GetActiveCamera()->SetScreenBottomLeft(screenLeftBottom);
-    renderer->GetActiveCamera()->SetScreenBottomRight(screenRightBottom);
-    renderer->GetActiveCamera()->SetScreenTopRight(screenRightTop);
+    renderer->GetActiveCamera()->SetParallelScale(parallelScale);
     
     // read correspondences
     
@@ -408,40 +382,29 @@ void SceneWriterReader::exportSceneASCII
     os << shapes.size() << endl;
     os << lastInsertShapeID << endl;
     for(int i = 0; i < shapes.size(); i++) {
-        //shapes[i]->writeASCII(os);
+        exportShapeASCII(os, shapes[i]);
     }
     
     // write camera attributes
+    double* focalPoint = new double[3];
+    renderer->GetActiveCamera()->GetFocalPoint(focalPoint);
+    os << focalPoint[0] << "\t" << focalPoint[1] << "\t" << focalPoint[2] << endl;
+    delete focalPoint;
+    
     double position1, position2, position3;
     renderer->GetActiveCamera()->GetPosition(position1, position2, position3);
-    
     os << position1 << "\t" << position2 << "\t" << position3 << endl;
     
-    double windowCenter1, windowCenter2;
-    renderer->GetActiveCamera()->GetWindowCenter(windowCenter1, windowCenter2);
-    os << windowCenter1 << "\t" << windowCenter2 << endl;
+    double* viewUp = new double[3];
+    renderer->GetActiveCamera()->GetViewUp(viewUp);
+    os << viewUp[0] << "\t" << viewUp[1] << "\t" << viewUp[2] << endl;
+    delete viewUp;
     
     double viewangle = renderer->GetActiveCamera()->GetViewAngle();
-    double eyeangle = renderer->GetActiveCamera()->GetEyeAngle();
-    os << viewangle << "\t" << eyeangle << endl;
+    os << viewangle << endl;
     
-    double* eyePosition = new double[3];
-    renderer->GetActiveCamera()->GetEyePosition(eyePosition);
-    os << eyePosition[0] << "\t" << eyePosition[1] << "\t" << eyePosition[2] << endl;
-    delete eyePosition;
-    
-    double* screenLeftBottom = new double[3];
-    double* screenRightBottom = new double[3];
-    double* screenRightTop = new double[3];
-    renderer->GetActiveCamera()->GetScreenBottomLeft(screenLeftBottom);
-    renderer->GetActiveCamera()->GetScreenBottomRight(screenRightBottom);
-    renderer->GetActiveCamera()->GetScreenTopRight(screenRightTop);
-    os << screenLeftBottom[0] << "\t" << screenLeftBottom[1] << "\t" << screenLeftBottom[2] << endl;
-    os << screenRightBottom[0] << "\t" << screenRightBottom[1] << "\t" << screenRightBottom[2] << endl;
-    os << screenRightTop[0] << "\t" << screenRightTop[1] << "\t" << screenRightTop[2] << endl;
-    delete screenLeftBottom;
-    delete screenRightBottom;
-    delete screenRightTop;
+    double parallelScale = renderer->GetActiveCamera()->GetParallelScale();
+    os << parallelScale << endl;
     
     // write last insert correspondence id
     os << lastInsertCorrespondenceID;
@@ -844,244 +807,274 @@ void SceneWriterReader::importCorrespondencesBinary(string                      
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//ostream& Shape::writeBinary(ostream& os) {
-//    //write shape ID.
-//    int64_t id = (int64_t) id_;
-//    os.write(reinterpret_cast<const char*>(&id), sizeof(int64_t));
-//    
-//    const char* name = name_.c_str();
-//    
-//    int64_t length = name_.length();
-//    os.write(reinterpret_cast<const char*>(&length), sizeof(int64_t));
-//    os.write(name, length*sizeof(char));
-//    
-//    vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
-//    //if user has not transformed shape write identity.
-//    if(transform == nullptr) {
-//        transform = vtkSmartPointer<vtkMatrix4x4>::New();
-//        transform->Identity();
-//    }
-//    
-//    //write elements of 4x4 matrix
-//    for(int i = 0; i < 4; i++) {
-//        for(int j = 0; j < 4; j++) {
-//            double value = transform->GetElement(i, j);
-//            os.write(reinterpret_cast<const char*>(&value), sizeof(double));
-//        }
-//    }
-//    
-//    //write number of points.
-//    int64_t numberOfPoints = (int64_t) polyData_->GetNumberOfPoints();
-//    os.write(reinterpret_cast<const char*>(&numberOfPoints), sizeof(int64_t));
-//    
-//    
-//    //write number of faces.
-//    int64_t numberOfFaces = (int64_t) polyData_->GetNumberOfCells();
-//    os.write(reinterpret_cast<const char*>(&numberOfFaces), sizeof(int64_t));
-//    
-//    //write points.
-//    for(int64_t i = 0; i < numberOfPoints; i++) {
-//        double point[3];
-//        polyData_->GetPoints()->GetPoint(i, point);
-//        
-//        os.write(reinterpret_cast<const char*>(point), 3 * sizeof(double));
-//    }
-//    
-//    //write faces.
-//    for(int64_t i = 0; i < numberOfFaces; i++) {
-//        for(int j = 0; j < 3; j++) {
-//            int64_t pointId = (int64_t) polyData_->GetCell(i)->GetPointId(j);
-//            os.write(reinterpret_cast<const char*>(&pointId), sizeof(int64_t));
-//        }
-//    }
-//    
-//    return os;
-//}
-//
-//
+void SceneWriterReader::exportShapeBinary(string filename, Shape* shape) {
+    ofstream os(filename, ios::binary);
+    
+    exportShapeBinary(os, shape);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
-//istream& Shape::readBinary(istream& is) {
-//    //read shape ID
-//    int64_t id;
-//    is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
-//    id_ = id;
-//    
-//    int64_t length;
-//    is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
-//    char* name = new char[length+1];
-//    is.read(name, length*sizeof(char));
-//    name[length] = '\0';
-//    
-//    name_ = name;
-//    delete [] name;
-//    
-//    //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
-//    vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-//    for(int i = 0; i < 4; i++) {
-//        for(int j = 0; j < 4; j++) {
-//            double value;
-//            is.read(reinterpret_cast<char*>(&value), sizeof(double));
-//            matrix->SetElement(i, j, value);
-//        }
-//    }
-//    
-//    //read number of points.
-//    int64_t numberOfPoints;
-//    is.read(reinterpret_cast<char*>(&numberOfPoints), sizeof(int64_t));
-//    //read number of faces.
-//    int64_t numberOfFaces;
-//    is.read(reinterpret_cast<char*>(&numberOfFaces), sizeof(int64_t));
-//    
-//    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-//    vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
-//    
-//    //read points
-//    for(int64_t i = 0; i < numberOfPoints; i++) {
-//        double point[3];
-//        is.read(reinterpret_cast<char*>(point), sizeof(double) * 3);
-//        points->InsertNextPoint(point);
-//    }
-//    
-//    //read faces
-//    for(int64_t i = 0; i < numberOfFaces; i++) {
-//        vtkSmartPointer<vtkTriangle> face = vtkSmartPointer<vtkTriangle>::New();
-//        for(int j = 0; j < 3; j++) {
-//            int64_t pointId;
-//            is.read(reinterpret_cast<char*>(&pointId), sizeof(int64_t));
-//            
-//            face->GetPointIds()->SetId(j, pointId);
-//        }
-//        polys->InsertNextCell(face);
-//    }
-//    polyData_ = vtkSmartPointer<vtkPolyData>::New();
-//    polyData_->SetPoints(points);
-//    polyData_->SetPolys(polys);
-//    
-//    initialize();
-//    
-//    actor_->SetUserMatrix(matrix);
-//    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-//    transform->SetMatrix(matrix);
-//    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
-//    return is;
-//}
-//
-//
+void SceneWriterReader::exportShapeBinary(ostream& os, Shape* shape) {
+    
+        //write shape ID.
+        int64_t id = (int64_t) shape->getId();
+        os.write(reinterpret_cast<const char*>(&id), sizeof(int64_t));
+    
+        const char* name = shape->getName().c_str();
+    
+        int64_t length = shape->getName().length();
+        os.write(reinterpret_cast<const char*>(&length), sizeof(int64_t));
+        os.write(name, length*sizeof(char));
+    
+        vtkSmartPointer<vtkPolyData> polyData = shape->getPolyData();
+    
+        vtkSmartPointer<vtkMatrix4x4> transform = shape->getActor()->GetUserMatrix();
+        //if user has not transformed shape write identity.
+        if(transform == nullptr) {
+            transform = vtkSmartPointer<vtkMatrix4x4>::New();
+            transform->Identity();
+        }
+    
+        //write elements of 4x4 matrix
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 4; j++) {
+                double value = transform->GetElement(i, j);
+                os.write(reinterpret_cast<const char*>(&value), sizeof(double));
+            }
+        }
+    
+        //write number of points.
+        int64_t numberOfPoints = (int64_t) polyData->GetNumberOfPoints();
+        os.write(reinterpret_cast<const char*>(&numberOfPoints), sizeof(int64_t));
+    
+    
+        //write number of faces.
+        int64_t numberOfFaces = (int64_t) polyData->GetNumberOfCells();
+        os.write(reinterpret_cast<const char*>(&numberOfFaces), sizeof(int64_t));
+    
+        //write points.
+        for(int64_t i = 0; i < numberOfPoints; i++) {
+            double point[3];
+            polyData->GetPoints()->GetPoint(i, point);
+    
+            os.write(reinterpret_cast<const char*>(point), 3 * sizeof(double));
+        }
+    
+        //write faces.
+        for(int64_t i = 0; i < numberOfFaces; i++) {
+            for(int j = 0; j < 3; j++) {
+                int64_t pointId = (int64_t) polyData->GetCell(i)->GetPointId(j);
+                os.write(reinterpret_cast<const char*>(&pointId), sizeof(int64_t));
+            }
+        }
+}
+
 /////////////////////////////////////////////////////////////////////////////////
-//ostream& Shape::writeASCII(ostream& os) {
-//    os << id_<< endl;
-//    os << name_ << endl;
-//    
-//    vtkSmartPointer<vtkMatrix4x4> transform = actor_->GetUserMatrix();
-//    if(transform == nullptr) {
-//        transform = vtkSmartPointer<vtkMatrix4x4>::New();
-//        transform->Identity();
-//    }
-//    
-//    for(int i = 0; i < 4; i++) {
-//        for(int j = 0; j < 4; j++) {
-//            os << transform->GetElement(i, j) << (j != 3 ? "\t" : "");
-//        }
-//        os << endl;
-//    }
-//    
-//    os << polyData_->GetNumberOfPoints() << "\t" << polyData_->GetNumberOfCells() << endl;
-//    
-//    for(vtkIdType i = 0; i < polyData_->GetNumberOfPoints(); i++) {
-//        double point[3];
-//        polyData_->GetPoints()->GetPoint(i, point);
-//        os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
-//    }
-//    
-//    for(vtkIdType i = 0; i < polyData_->GetNumberOfCells(); i++) {
-//        os << polyData_->GetCell(i)->GetPointId(0) << "\t" << polyData_->GetCell(i)->GetPointId(1) << "\t" << polyData_->GetCell(i)->GetPointId(2) << endl;
-//    }
-//    
-//    return os;
-//}
-//
+Shape* SceneWriterReader::importShapeBinary(string filename, vtkSmartPointer<vtkRenderer> renderer) {
+    ifstream is(filename, ios::binary);
+    
+    return importShapeBinary(is, renderer);
+}
+
 /////////////////////////////////////////////////////////////////////////////////
-//istream& Shape::readASCII(istream& is) {
-//    string line;
-//    
-//    //read shape ID.
-//    {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        ss >> id_;
-//    }
-//    
-//    {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        ss >> name_;
-//    }
-//    
-//    //read user transform.
-//    vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-//    for(int i = 0; i < 4; i++) {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        for(int j = 0; j < 4; j++) {
-//            double value;
-//            ss >> value;
-//            matrix->SetElement(i, j, value);
-//        }
-//    }
-//    
-//    //read number of points, number of faces
-//    vtkIdType numberOfPoints, numberOfFaces;
-//    {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        ss >> numberOfPoints >> numberOfFaces;
-//    }
-//    
-//    //read points, faces
-//    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-//    vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
-//    
-//    for(vtkIdType i = 0; i < numberOfPoints; i++) {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        double point[3];
-//        ss >> point[0] >> point[1] >> point[2];
-//        
-//        points->InsertNextPoint(point);
-//        
-//    }
-//    
-//    for(vtkIdType i = 0; i < numberOfFaces; i++) {
-//        getline(is, line);
-//        stringstream ss;
-//        ss << line;
-//        
-//        vtkSmartPointer<vtkTriangle> face = vtkSmartPointer<vtkTriangle>::New();
-//        
-//        for(int j = 0; j < 3; j++) {
-//            vtkIdType pointId;
-//            ss >> pointId;
-//            face->GetPointIds()->SetId(j, pointId);
-//        }
-//        polys->InsertNextCell(face);
-//    }
-//    
-//    polyData_ = vtkSmartPointer<vtkPolyData>::New();
-//    polyData_->SetPoints(points);
-//    polyData_->SetPolys(polys);
-//    
-//    initialize();
-//    
-//    actor_->SetUserMatrix(matrix);
-//    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-//    transform->SetMatrix(matrix);
-//    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
-//    
-//    return is;
-//}
+Shape* SceneWriterReader::importShapeBinary(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
+    
+    vtkIdType id_in;
+    string name_in;
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+    
+        //read shape ID
+        int64_t id;
+        is.read(reinterpret_cast<char*>(&id), sizeof(int64_t));
+        id_in = id;
+    
+        int64_t length;
+        is.read(reinterpret_cast<char*>(&length), sizeof(int64_t));
+        char* name = new char[length+1];
+        is.read(name, length*sizeof(char));
+        name[length] = '\0';
+    
+        name_in = name;
+        delete [] name;
+    
+        //read user transform. Set user transform in actor after poly data has been read and shape has been initialized and therefore actor_ != nullptr
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 4; j++) {
+                double value;
+                is.read(reinterpret_cast<char*>(&value), sizeof(double));
+                matrix->SetElement(i, j, value);
+            }
+        }
+    
+        //read number of points.
+        int64_t numberOfPoints;
+        is.read(reinterpret_cast<char*>(&numberOfPoints), sizeof(int64_t));
+        //read number of faces.
+        int64_t numberOfFaces;
+        is.read(reinterpret_cast<char*>(&numberOfFaces), sizeof(int64_t));
+    
+        vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
+    
+        //read points
+        for(int64_t i = 0; i < numberOfPoints; i++) {
+            double point[3];
+            is.read(reinterpret_cast<char*>(point), sizeof(double) * 3);
+            points->InsertNextPoint(point);
+        }
+    
+        //read faces
+        for(int64_t i = 0; i < numberOfFaces; i++) {
+            vtkSmartPointer<vtkTriangle> face = vtkSmartPointer<vtkTriangle>::New();
+            for(int j = 0; j < 3; j++) {
+                int64_t pointId;
+                is.read(reinterpret_cast<char*>(&pointId), sizeof(int64_t));
+    
+                face->GetPointIds()->SetId(j, pointId);
+            }
+            polys->InsertNextCell(face);
+        }
+        polyData->SetPoints(points);
+        polyData->SetPolys(polys);
+    
+    
+    return new Shape(id_in, name_in, polyData, renderer, matrix);
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportShapeASCII(string filename, Shape* shape) {
+    ofstream os(filename);
+    
+    exportShapeASCII(os, shape);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+void SceneWriterReader::exportShapeASCII(ostream& os, Shape* shape) {
+    
+    os << shape->getId() << endl;
+    os << shape->getName() << endl;
+    
+    vtkSmartPointer<vtkPolyData> polydata = shape->getPolyData();
+    
+    vtkSmartPointer<vtkMatrix4x4> transform = shape->getActor()->GetUserMatrix();
+    if(transform == nullptr) {
+        transform = vtkSmartPointer<vtkMatrix4x4>::New();
+        transform->Identity();
+
+    }
+    
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+            os << transform->GetElement(i, j) << (j != 3 ? "\t" : "");
+        }
+        os << endl;
+    }
+    
+    os << polydata->GetNumberOfPoints() << "\t" << polydata->GetNumberOfCells() << endl;
+    
+    for(vtkIdType i = 0; i < polydata->GetNumberOfPoints(); i++) {
+        double point[3];
+        polydata->GetPoints()->GetPoint(i, point);
+        os << point[0] << "\t" << point[1] << "\t" << point[2] << endl;
+    }
+    
+    for(vtkIdType i = 0; i < polydata->GetNumberOfCells(); i++) {
+        os << polydata->GetCell(i)->GetPointId(0) << "\t" << polydata->GetCell(i)->GetPointId(1) << "\t" << polydata->GetCell(i)->GetPointId(2) << endl;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+Shape* SceneWriterReader::importShapeASCII(string filename, vtkSmartPointer<vtkRenderer> renderer) {
+    ifstream is(filename);
+    
+    return importShapeASCII(is, renderer);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+Shape* SceneWriterReader::importShapeASCII(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
+    
+    vtkIdType id;
+    string name;
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+    
+    string line;
+    
+        //read shape ID.
+        {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+            ss >> id;
+        }
+    
+        {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+            ss >> name;
+        }
+    
+        //read user transform.
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+        for(int i = 0; i < 4; i++) {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+            for(int j = 0; j < 4; j++) {
+                double value;
+                ss >> value;
+                matrix->SetElement(i, j, value);
+            }
+        }
+    
+        //read number of points, number of faces
+        vtkIdType numberOfPoints, numberOfFaces;
+        {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+            ss >> numberOfPoints >> numberOfFaces;
+        }
+    
+        //read points, faces
+        vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkCellArray> polys = vtkSmartPointer<vtkCellArray>::New();
+    
+        for(vtkIdType i = 0; i < numberOfPoints; i++) {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+            double point[3];
+            ss >> point[0] >> point[1] >> point[2];
+    
+            points->InsertNextPoint(point);
+    
+        }
+    
+        for(vtkIdType i = 0; i < numberOfFaces; i++) {
+            getline(is, line);
+            stringstream ss;
+            ss << line;
+    
+            vtkSmartPointer<vtkTriangle> face = vtkSmartPointer<vtkTriangle>::New();
+    
+            for(int j = 0; j < 3; j++) {
+                vtkIdType pointId;
+                ss >> pointId;
+                face->GetPointIds()->SetId(j, pointId);
+            }
+            polys->InsertNextCell(face);
+        }
+    
+        polyData->SetPoints(points);
+        polyData->SetPolys(polys);
+        
+    return new Shape(id, name, polyData, renderer, matrix);
+}
 

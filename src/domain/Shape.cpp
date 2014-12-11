@@ -14,8 +14,26 @@ Shape::Shape(
              vtkSmartPointer<vtkRenderer> renderer
              )
 : id_(id), name_(name), polyData_(polyData), renderer_(renderer) {
+    initialize(id, name, polyData, renderer);
+}
 
-    
+///////////////////////////////////////////////////////////////////////////////
+Shape::Shape(vtkIdType id, string name, vtkSmartPointer<vtkPolyData> polyData, vtkSmartPointer<vtkRenderer> renderer, vtkSmartPointer<vtkMatrix4x4> matrix) : id_(id), name_(name), polyData_(polyData), renderer_(renderer)
+{
+    initialize(id, name, polyData, renderer);
+    actor_->SetUserMatrix(matrix);
+    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+    transform->SetMatrix(matrix);
+    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform(transform);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void Shape::initialize(
+                       vtkIdType id,
+                       string name,
+                       vtkSmartPointer<vtkPolyData> polyData,
+                       vtkSmartPointer<vtkRenderer> renderer
+                       ) {
     //Visualize with normals. Looks smoother ;)
     polyDataNormals_ = vtkSmartPointer<vtkPolyDataNormals>::New();
     polyDataNormals_->SetInputData(polyData_);
@@ -298,12 +316,30 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     coloring_.reset();
     coloring_ = coloring;
     
+    // check if input array matches coloring type
+    if(coloring_->type == Coloring::Type::FaceRgb || coloring_->type == Coloring::Type::PointRgb
+       || coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::FaceScalar) {
+        if(vtkDoubleArray::SafeDownCast (coloring_->values) == nullptr) {
+            throw invalid_argument(string("The Coloring of type Point/FaceScalar or Point/Facergb was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__).append(". Be aware that for RGB colorings only values between 0 and 1 are valid."));
+        }
+    }
+    if(coloring_->type == Coloring::Type::FaceSegmentation || coloring_->type == Coloring::Type::PointSegmentation) {
+        if(vtkCharArray::SafeDownCast (coloring_->values) == nullptr) {
+            throw invalid_argument(string("The Coloring of type PointSegmentation or FaceSegmentation was not a vtkCharArray in ").append(__PRETTY_FUNCTION__));
+        }
+    }
+    
+    
     mapper_->ScalarVisibilityOn();
     if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::PointSegmentation) {
         // argument check
+        
+        // wrong number of components
         if(coloring->values->GetNumberOfComponents() != 1) {
             throw invalid_argument(string("The Coloring is of type PointScalar or PointSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
         }
+        
+        // wrong number of values
         if(coloring->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
             throw invalid_argument(string("The number of coloring values does not match the number of vertices in").append(__PRETTY_FUNCTION__));
         }
@@ -320,9 +356,13 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->SetScalarRange(range[0], range[1]);
     } else if(coloring_->type == Coloring::Type::FaceScalar || coloring_->type == Coloring::Type::FaceSegmentation) {
         // argument check
+        
+        // wrong number of components
         if(coloring->values->GetNumberOfComponents() != 1) {
             throw invalid_argument(string("The Coloring is of type FaceScalar or FaceSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
         }
+        
+        // wrong number of values
         if(coloring->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
             throw invalid_argument(string("The number of coloring values does not match the number of faces in").append(__PRETTY_FUNCTION__));
         }
@@ -339,6 +379,7 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->SetScalarRange(range[0], range[1]);
     } else if(coloring_->type == Coloring::Type::PointRgb) {
         // argument check
+        
         if(coloring->values->GetNumberOfComponents() != 3) {
             throw invalid_argument(string("The Coloring is of type PointRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
         }
@@ -354,6 +395,10 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->ScalarVisibilityOn();
     } else if(coloring_->type == Coloring::Type::FaceRgb) {
         // argument check
+        // wrong type of array
+        if(vtkDoubleArray::SafeDownCast (coloring_->values) == nullptr) {
+            throw invalid_argument(string("The Coloring of type FaceRgb was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__));
+        }
         if(coloring->values->GetNumberOfComponents() != 3) {
             throw invalid_argument(string("The Coloring is of type FaceRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
         }

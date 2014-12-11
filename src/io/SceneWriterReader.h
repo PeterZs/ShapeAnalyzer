@@ -50,6 +50,30 @@ public:
     static void exportSceneASCII(string filename, vtkSmartPointer<vtkRenderer> renderer, vector<Shape*>& shapes, int lastInsertShapeID, HashMap<PointCorrespondenceData*, PointCorrespondence*>& pointCorrespondences, HashMap<FaceCorrespondenceData*, FaceCorrespondence*>& faceCorrespondences, int lastInsertCorrespondenceID);
     
     
+    /// Exports a shape in ASCII file.
+    static void exportShapeASCII(string filename, Shape* shape);
+    
+    /// Exports a shape in ASCII stream.
+    static void exportShapeASCII(ostream& os, Shape* shape);
+    
+    /// Exports a shape in Binary file.
+    static void exportShapeBinary(string filename, Shape* shape);
+    
+    /// Exports a shape in Binary stream.
+    static void exportShapeBinary(ostream& os, Shape* shape);
+    
+    /// Imports a shape from ASCII file.
+    static Shape* importShapeASCII(string filename, vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// Imports a shape from ASCII stream.
+    static Shape* importShapeASCII(istream& is, vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// Imports a shape from Binary file.
+    static Shape* importShapeBinary(string filename, vtkSmartPointer<vtkRenderer> renderer);
+    
+    /// Imports a shape from Binary stream.
+    static Shape* importShapeBinary(istream& is, vtkSmartPointer<vtkRenderer> renderer);
+    
     
     /// Exports a list of point correspondences in ASCII. It takes a map containing PointCorrespondenceData objects a vector of the corresponding shapes ordered by ID and the filename as arguments.
     static void exportPointCorrespondencesASCII(

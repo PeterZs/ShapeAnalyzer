@@ -1,11 +1,3 @@
-//
-//  CorrespondenceColoring.cpp
-//  ShapeAnalyzer
-//
-//  Created by Zorah on 08.07.14.
-//
-//
-
 #include "CorrespondenceColoring.h"
 #include <utility>
 
@@ -32,7 +24,7 @@ void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtk
     reference_->colorPointsCoordinates();
     
     vtkIdType referenceId = reference_->getId();
-    vtkSmartPointer<vtkDataArray> referenceColors = reference_->getColoring()->values;
+    vtkSmartPointer<vtkUnsignedCharArray> referenceColors = vtkUnsignedCharArray::SafeDownCast(reference_->getColoring()->values);
     pointAttributes_.insert(make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
@@ -84,7 +76,7 @@ void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtk
                 // dont color reference shape
                 if (shapes.at(i)->getId() != referenceId) {
                     if(pointAttributes_.count(shapes.at(i)->getId()) != 0) {
-                        vtkSmartPointer<vtkDataArray> colors = pointAttributes_.find(shapes.at(i)->getId())->second;
+                        vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(shapes.at(i)->getId())->second;
                         // color of point is the same as the corresponding point on the reference shape has
                         double color[3];
                         referenceColors->GetTuple(referenceCorrespondence, color);
@@ -104,7 +96,7 @@ void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtk
     // color all shapes
     for (auto entry : shapes_) {
         if (entry.second.get() != reference_) {
-            vtkSmartPointer<vtkDataArray> colors = pointAttributes_.find(entry.second->getId())->second;
+            vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(entry.second->getId())->second;
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointRgb;
             coloring->values = colors;
@@ -150,7 +142,7 @@ void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkI
     reference_->colorFacesCoordinates();
     
     vtkIdType referenceId = reference_->getId();
-    vtkSmartPointer<vtkDataArray> referenceColors = reference_->getColoring()->values;
+    vtkSmartPointer<vtkUnsignedCharArray> referenceColors = vtkUnsignedCharArray::SafeDownCast(reference_->getColoring()->values);
     faceAttributes_.insert(make_pair(referenceId, referenceColors));
     
     // for evaluating matched points
@@ -200,7 +192,7 @@ void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkI
                 // dont color reference shape
                 if (shapes.at(i)->getId() != referenceId) {
                     if(faceAttributes_.count(shapes.at(i)->getId()) != 0) {
-                        vtkSmartPointer<vtkDataArray> colors = faceAttributes_.find(shapes.at(i)->getId())->second;
+                        vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(shapes.at(i)->getId())->second;
                         // color of point is the same as the corresponding point on the reference shape has
                         double color[3];
                         referenceColors->GetTuple(referenceCorrespondence, color);
@@ -220,7 +212,7 @@ void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkI
     // color all shapes
     for (auto entry : shapes_) {
         if(entry.second.get() != reference_) {
-            vtkSmartPointer<vtkDataArray> colors = faceAttributes_.find(entry.second->getId())->second;
+            vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(entry.second->getId())->second;
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::FaceRgb;
             coloring->values = colors;

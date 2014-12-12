@@ -78,8 +78,8 @@ protected:
     
     Shape* reference_;
     
-    unordered_map<vtkIdType, vtkSmartPointer<vtkDataArray>> pointAttributes_;
-    unordered_map<vtkIdType, vtkSmartPointer<vtkDataArray>> faceAttributes_;
+    unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> pointAttributes_;
+    unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> faceAttributes_;
     
 };
 

@@ -309,17 +309,20 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     coloring_ = coloring;
     
     // check if input array matches coloring type
-    if(coloring_->type == Coloring::Type::FaceRgb || coloring_->type == Coloring::Type::PointRgb
-       || coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::FaceScalar) {
+    if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::FaceScalar) {
         if(vtkDoubleArray::SafeDownCast (coloring_->values) == nullptr) {
-            throw invalid_argument(string("The Coloring of type Point/FaceScalar or Point/Facergb was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__).append(". Be aware that for RGB colorings only values between 0 and 1 are valid."));
+            throw invalid_argument(string("The Coloring of type Point/FaceScalar was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__));
         }
-    }
-    if(coloring_->type == Coloring::Type::FaceSegmentation || coloring_->type == Coloring::Type::PointSegmentation) {
+    } else if(coloring_->type == Coloring::Type::FaceSegmentation || coloring_->type == Coloring::Type::PointSegmentation) {
         if(vtkCharArray::SafeDownCast (coloring_->values) == nullptr) {
             throw invalid_argument(string("The Coloring of type PointSegmentation or FaceSegmentation was not a vtkCharArray in ").append(__PRETTY_FUNCTION__));
         }
+    } else if(coloring_->type == Coloring::Type::FaceRgb || coloring_->type == Coloring::Type::PointRgb) {
+        if(vtkUnsignedCharArray::SafeDownCast (coloring_->values) == nullptr) {
+            throw invalid_argument(string("The Coloring of type PointSegmentation or FaceSegmentation was not a vtkUnsignedCharArray in ").append(__PRETTY_FUNCTION__).append(". Be aware that for RGB colorings only values between 0 and 1 are valid."));
+        }
     }
+    
     
     
     mapper_->ScalarVisibilityOn();
@@ -387,10 +390,7 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         mapper_->ScalarVisibilityOn();
     } else if(coloring_->type == Coloring::Type::FaceRgb) {
         // argument check
-        // wrong type of array
-        if(vtkDoubleArray::SafeDownCast (coloring_->values) == nullptr) {
-            throw invalid_argument(string("The Coloring of type FaceRgb was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__));
-        }
+
         if(coloring->values->GetNumberOfComponents() != 3) {
             throw invalid_argument(string("The Coloring is of type FaceRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
         }

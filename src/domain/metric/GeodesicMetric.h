@@ -90,7 +90,7 @@ private:
     
 public:
     /// \exception geodesic_error
-    GeodesicMetric(Shape* shape);
+    GeodesicMetric(shared_ptr<Shape> shape);
     
     /// Empty destructor.
     virtual ~GeodesicMetric();

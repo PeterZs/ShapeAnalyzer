@@ -12,7 +12,7 @@ class CustomContextMenuItem {
     
 public:
     /// \brief Empty constructor.
-    CustomContextMenuItem(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : shape_(shape), shapeAnalyzer_(shapeAnalyzer) {}
+    CustomContextMenuItem(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : shape_(shape), shapeAnalyzer_(shapeAnalyzer) {}
     
     /// \brief This function is called when the menu item is clicked.
     /// \details Concrete classes implement this method and perform a specific task in it.
@@ -23,7 +23,7 @@ public:
     
 protected:
     /// \brief Shape* The shape for which the context menu item has been clicked.
-    Shape* shape_;
+    shared_ptr<Shape> shape_;
     ShapeAnalyzerInterface* shapeAnalyzer_;
 };
 

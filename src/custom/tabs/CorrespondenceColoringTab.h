@@ -39,32 +39,32 @@
 ///
 class CorrespondenceColoringTab : public QWidget, public Ui::CorrespondenceColoringTabWidget, public CustomTab {
     Q_OBJECT
-//    
-//public:
-//    /// \brief Standard constructor. Sets up the tab.
-//    CorrespondenceColoringTab(const HashMap<vtkActor*, Shape*>& shapes,
-//                              const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences,
-//                              const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
-//                              ShapeAnalyzerInterface* shapeAnalyzer);
-//    /// Empty destructor.
-//    virtual ~CorrespondenceColoringTab() {}
-//    
-//    /// Deletes the shape out of the shape drop menu.
-//    virtual void onShapeDelete(Shape* shape);
-//    /// Adds the shape to the shape drop menu.
-//    virtual void onShapeAdd(Shape* shape);
-//    /// Nothing happens.
-//    virtual void onShapeEdit(Shape* shape);
-//    /// Clears the shape drop menu. Clears old information about the density of correspondences.
-//    virtual void onClear();
-//
-//private slots:
-//    virtual void slotColorCorrespondences();
-//    virtual void slotClearColoring();
-//    
-//private:
-//    /// Clears the correspondence density grid.
-//    void clearGrid();
+    
+public:
+    /// \brief Standard constructor. Sets up the tab.
+    CorrespondenceColoringTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                              const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                              const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                              ShapeAnalyzerInterface* shapeAnalyzer);
+    /// Empty destructor.
+    virtual ~CorrespondenceColoringTab() {}
+    
+    /// Deletes the shape out of the shape drop menu.
+    virtual void onShapeDelete(Shape* shape);
+    /// Adds the shape to the shape drop menu.
+    virtual void onShapeAdd(Shape* shape);
+    /// Nothing happens.
+    virtual void onShapeEdit(Shape* shape);
+    /// Clears the shape drop menu. Clears old information about the density of correspondences.
+    virtual void onClear();
+
+private slots:
+    virtual void slotColorCorrespondences();
+    virtual void slotClearColoring();
+    
+private:
+    /// Clears the correspondence density grid.
+    void clearGrid();
 };
 
 

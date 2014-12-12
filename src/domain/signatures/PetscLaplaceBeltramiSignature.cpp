@@ -1,7 +1,7 @@
 #include "PetscLaplaceBeltramiSignature.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-signature::PetscLaplaceBeltramiSignature::PetscLaplaceBeltramiSignature(Shape *shape, int dimension, PetscLaplaceBeltramiOperator* laplacian) : Signature(shape, dimension), laplacian_(laplacian) {
+signature::PetscLaplaceBeltramiSignature::PetscLaplaceBeltramiSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian) : Signature(shape, dimension), laplacian_(laplacian) {
     // argument check
     if (laplacian_ == nullptr) {
         throw invalid_argument(string("Null pointer input 'laplacian' in ").append(__PRETTY_FUNCTION__));

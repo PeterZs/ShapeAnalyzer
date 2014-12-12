@@ -20,7 +20,7 @@ namespace sampling {
         
     public:
         /// \brief Basic constructor.
-        Sampling(Shape* shape) : shape_(shape) {
+        Sampling(shared_ptr<Shape> shape) : shape_(shape) {
             if (shape == nullptr) {
                 throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
             }
@@ -33,11 +33,11 @@ namespace sampling {
         virtual vtkSmartPointer<vtkIdList> getPoints() = 0;
         
         /// \brief Returns a pointer to the shape.
-        Shape*  getShape()      { return shape_; }
+        shared_ptr<Shape>  getShape()      { return shape_; }
         
     protected:
         /// \brief The shape that is sampled.
-        Shape* shape_;
+        shared_ptr<Shape> shape_;
     };
     
 }

@@ -12,8 +12,8 @@ namespace sampling {
         /// @param Metric* A refernce to the metric that is used for the computation of the sampled points.
         /// @param vtkIdType Source point ID.
         /// @param vtkIdType Number of samples that are computed.
-        FarthestPointSampling(Shape* shape,
-                              Metric* metric,
+        FarthestPointSampling(shared_ptr<Shape> shape,
+                              shared_ptr<Metric> metric,
                               vtkIdType source,
                               vtkIdType numberOfPoints
                               ) : MetricSampling(shape, metric), source_(source), numberOfPoints_(numberOfPoints) {

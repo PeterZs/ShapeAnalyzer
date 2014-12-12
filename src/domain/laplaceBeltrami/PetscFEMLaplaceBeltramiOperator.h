@@ -22,7 +22,7 @@ namespace laplaceBeltrami {
         /// \brief Constructor
         /// @param Shape* The shape which serves as the domain to which the Laplace-Beltrami operator is applied
         /// @param int The number of eigenpairs that should be computed
-        PetscFEMLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions);
+        PetscFEMLaplaceBeltramiOperator(shared_ptr<Shape> shape, int numberOfEigenfunctions);
         
         virtual double getEigenvalue(int i);
         

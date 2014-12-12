@@ -1,7 +1,7 @@
 #include "PetscHeatDiffusion.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-PetscHeatDiffusion::PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : HeatDiffusion(shape, initialCondition), laplacian_(laplacian) {
+PetscHeatDiffusion::PetscHeatDiffusion(shared_ptr<Shape> shape, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition) : HeatDiffusion(shape, initialCondition), laplacian_(laplacian) {
 
     if (shape_ == nullptr) {
         throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));

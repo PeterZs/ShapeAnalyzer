@@ -18,7 +18,7 @@ namespace laplaceBeltrami {
         /// \brief Constructor
         /// @param Shape* The shape which serves as the domain to which the Laplace-Beltrami operator is applied
         /// @param int The number of eigenpairs that should be computed
-        LaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
+        LaplaceBeltramiOperator(shared_ptr<Shape> shape, int numberOfEigenfunctions) : shape_(shape), numberOfEigenfunctions_(numberOfEigenfunctions) {
             if (shape == nullptr) {
                 throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
             }
@@ -44,7 +44,7 @@ namespace laplaceBeltrami {
         }
     protected:
         /// Pointer to the shape which serves as the domain to which the Laplace-Beltrami operator is applied
-        Shape* shape_;
+        shared_ptr<Shape> shape_;
         
         /// Number of eigenpairs that are computed.
         int numberOfEigenfunctions_;

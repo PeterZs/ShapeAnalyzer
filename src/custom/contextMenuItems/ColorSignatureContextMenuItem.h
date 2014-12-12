@@ -29,7 +29,7 @@ using namespace std;
 template<class T = PetscLaplaceBeltramiSignature>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
 public:
-    ColorSignatureContextMenuItem<T>(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    ColorSignatureContextMenuItem<T>(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
@@ -46,16 +46,16 @@ public:
         
         if (ok) {
             try {
-            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
-            
-            T s(shape_, 100, &laplacian);
-
-            vtkSmartPointer<vtkDoubleArray> component = s.getComponent(i);
-
-            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-            coloring->type = Shape::Coloring::Type::PointScalar;
-            coloring->values = component;
-            shape_->setColoring(coloring);
+                shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 100);
+                
+                shared_ptr<T> s = make_shared<T>(shape_, 100, laplacian);
+                
+                vtkSmartPointer<vtkDoubleArray> component = s->getComponent(i);
+                
+                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
+                coloring->type = Shape::Coloring::Type::PointScalar;
+                coloring->values = component;
+                shape_->setColoring(coloring);
             } catch(LaplaceBeltramiError& e) {
                 QMessageBox::warning(parent, "Exception", e.what());
             }

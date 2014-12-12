@@ -15,7 +15,7 @@ public:
     /// \brief Constructor
     /// @param Shape* The shape to which the heat diffusion process is applied.
     /// @param vtkSmartPointer<vtkDoubleArray> The initial condition as an array of values each corresponding to the vertex with the same index
-    HeatDiffusion(Shape* shape, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), initialCondition_(initialCondition) {}
+    HeatDiffusion(shared_ptr<Shape> shape, vtkSmartPointer<vtkDoubleArray> initialCondition) : shape_(shape), initialCondition_(initialCondition) {}
     
     /// \brief Virtual destructor.
     virtual ~HeatDiffusion() {}
@@ -24,7 +24,7 @@ public:
     /// @param double The time t at which the heat distribution shall be computed.
     virtual vtkSmartPointer<vtkDoubleArray> getHeat(double t) = 0;
 protected:
-    Shape* shape_;
+    shared_ptr<Shape> shape_;
     vtkSmartPointer<vtkDoubleArray> initialCondition_;
 };
 

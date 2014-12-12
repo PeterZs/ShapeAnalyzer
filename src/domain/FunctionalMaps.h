@@ -18,8 +18,8 @@ public:
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the source shape.
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the target shape.
     /// @param int Number of eigenfunctions that are used for the representation of the functions.
-    FunctionalMaps(Shape* shape1,
-                   Shape* shape2,
+    FunctionalMaps(shared_ptr<Shape> shape1,
+                   shared_ptr<Shape> shape2,
                    vector<vtkSmartPointer<vtkDoubleArray>>& c1,
                    vector<vtkSmartPointer<vtkDoubleArray>>& c2,
                    int numberOfEigenfunctions
@@ -76,8 +76,8 @@ public:
     virtual ~FunctionalMaps() {}
 
 protected:
-    Shape* shape1_;
-    Shape* shape2_;
+    shared_ptr<Shape> shape1_;
+    shared_ptr<Shape> shape2_;
     vector<vtkSmartPointer<vtkDoubleArray>>& c1_;
     vector<vtkSmartPointer<vtkDoubleArray>>& c2_;
     int numberOfEigenfunctions_;

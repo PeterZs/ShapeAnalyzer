@@ -18,7 +18,7 @@ namespace laplaceBeltrami {
         /// \brief Constructor
         /// @param Shape* The shape which serves as the domain to which the Laplace-Beltrami operator is applied
         /// @param int The number of eigenpairs that should be computed
-        PetscLaplaceBeltramiOperator(Shape* shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {}
+        PetscLaplaceBeltramiOperator(shared_ptr<Shape> shape, int numberOfEigenfunctions) : LaplaceBeltramiOperator(shape, numberOfEigenfunctions) {}
         
         // Tell the compiler that both getEigenfunction methods (the one from the Base class and the one declared here) are used since they are different
         using LaplaceBeltramiOperator::getEigenfunction;

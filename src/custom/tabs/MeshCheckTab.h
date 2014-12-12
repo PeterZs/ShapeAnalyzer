@@ -23,22 +23,25 @@
 /// the output will be displayed in a text field.
 class MeshCheckTab : public QWidget, public Ui::MeshCheckTabWidget, public CustomTab {
     Q_OBJECT
-//    
-//public:
-//    MeshCheckTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer);
-//    
-//    virtual ~MeshCheckTab() {}
-//    
-//    virtual void onShapeDelete(Shape* shape);
-//    virtual void onShapeAdd(Shape* shape);
-//    virtual void onShapeEdit(Shape* shape);
-//    virtual void onClear();
-//private slots:
-//    virtual void slotCheckMesh();
-//private:
-//    /// \brief Fills the ComboBox with the names of all shapes.
-//    /// \details If an entry with the text of currentSelection is created, this entry will be selected. Otherwise the blank entry will be selected.
-//    void setUpComboBox();
+    
+public:
+    MeshCheckTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                 const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                 const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                 ShapeAnalyzerInterface* shapeAnalyzer);
+    
+    virtual ~MeshCheckTab() {}
+    
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onShapeAdd(Shape* shape);
+    virtual void onShapeEdit(Shape* shape);
+    virtual void onClear();
+private slots:
+    virtual void slotCheckMesh();
+private:
+    /// \brief Fills the ComboBox with the names of all shapes.
+    /// \details If an entry with the text of currentSelection is created, this entry will be selected. Otherwise the blank entry will be selected.
+    void setUpComboBox();
 };
 
 

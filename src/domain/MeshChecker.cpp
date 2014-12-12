@@ -6,19 +6,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-MeshChecker::MeshChecker(Shape* shape) : shape_(shape) {
+MeshChecker::MeshChecker(shared_ptr<Shape> shape) : shape_(shape) {
     if (shape_ == nullptr) {
         throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-MeshChecker::~MeshChecker() {
-    if(!halfEdges_.empty()) {
-        for (int i = 0; i < halfEdges_.size(); i++) {
-            delete halfEdges_[i];
-        }
     }
 }
 
@@ -130,7 +120,7 @@ void MeshChecker::createHalfEdgeStructure() {
     
     // create fake array with 0s everywhere
     for (vtkIdType i = 0; i < numberOfVertices; i++) {
-        halfEdges_.push_back(new vector<int>(numberOfVertices, 0));
+        halfEdges_.push_back(make_shared<vector<int>>(numberOfVertices, 0));
     }
     
     // raise value [i, j] for every edge of an cell between the vertices i and j

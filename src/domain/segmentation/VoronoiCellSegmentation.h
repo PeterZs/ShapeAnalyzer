@@ -16,9 +16,9 @@ namespace segmentation {
         /// @param Shape* The shape on which a segmentation should be computed.
         /// @param Metric* A refernence to a metric on the referenced shape that is used for the computation of the Voronoi cells.
         /// @param Sampling* A sampling of point ids on the referenced shape that is used to obtain the seeds for the segments
-        VoronoiCellSegmentation(Shape* shape,
-                                Metric* metric,
-                                Sampling* sampling
+        VoronoiCellSegmentation(shared_ptr<Shape> shape,
+                                shared_ptr<Metric> metric,
+                                shared_ptr<Sampling> sampling
                                 ) : Segmentation(shape), metric_(metric), sampling_(sampling) {
             // argument check
             if(metric_ == nullptr) {
@@ -36,10 +36,10 @@ namespace segmentation {
     private:
         /// \brief Reference to the metric used to calculate the voronoi cells.
         /// \details Must match the shape_ of this object
-        Metric* metric_;
+        shared_ptr<Metric> metric_;
         /// \brief Reference to the sampling the segmentation is based on.
         /// \details Must macth the shape_ of this object
-        Sampling* sampling_;
+        shared_ptr<Sampling> sampling_;
     };
     
 }

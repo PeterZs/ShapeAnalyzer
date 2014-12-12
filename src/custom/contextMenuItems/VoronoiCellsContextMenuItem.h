@@ -28,7 +28,7 @@ using namespace segmentation;
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
-    VoronoiCellsContextMenuItem<T>(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    VoronoiCellsContextMenuItem<T>(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
         bool ok;
@@ -58,9 +58,9 @@ public:
                                                           );
         if(ok) {
             try {
-                T m(shape_);
-                FarthestPointSampling fps(shape_, &m, source, numberOfSegments);
-                VoronoiCellSegmentation segmentation(shape_, &m, &fps);
+                auto m = make_shared<T>(shape_);
+                auto fps = make_shared<FarthestPointSampling>(shape_, m, source, numberOfSegments);
+                VoronoiCellSegmentation segmentation(shape_, m, fps);
                 
                 // save current segmentation for being able to create new shapes out of the segments
                 shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();

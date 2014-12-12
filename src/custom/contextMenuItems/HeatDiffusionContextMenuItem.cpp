@@ -47,9 +47,9 @@ void HeatDiffusionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, 
                     u0->SetValue(i, 0.0);
                 }
             }
-            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
+            shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 100);
             
-            PetscHeatDiffusion heatDiffusion(shape_, &laplacian, u0);
+            PetscHeatDiffusion heatDiffusion(shape_, laplacian, u0);
             vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
             
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();

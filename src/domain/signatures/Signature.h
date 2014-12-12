@@ -11,7 +11,7 @@ namespace signature {
         /// \brief Signature constructor.
         /// @param Shape* The shape on which the signature is computed.
         /// @param int Number of components that the signature should have.
-        Signature(Shape* shape, int dimension) : shape_(shape), dimension_(dimension) {
+        Signature(shared_ptr<Shape> shape, int dimension) : shape_(shape), dimension_(dimension) {
             if (shape == nullptr) {
                 throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
             }
@@ -35,7 +35,7 @@ namespace signature {
         
     protected:
         /// Reference to the shape the signature is from
-        Shape* shape_;
+        shared_ptr<Shape> shape_;
         /// Number of components of the signature
         int dimension_;
     };

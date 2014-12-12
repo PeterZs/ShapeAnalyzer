@@ -18,7 +18,7 @@ namespace metric {
     ///
     class EuclideanMetric : public Metric {
     public:
-        EuclideanMetric(Shape* shape) : Metric(shape) {}
+        EuclideanMetric(shared_ptr<Shape> shape) : Metric(shape) {}
         
         virtual vtkSmartPointer<vtkDoubleArray> getAllDistances(vtkIdType source);
         virtual double getDistance(vtkIdType a, vtkIdType b);

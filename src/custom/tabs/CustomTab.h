@@ -21,7 +21,10 @@
 ///
 class CustomTab {
 public:
-    CustomTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes, const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences, const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
+    CustomTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+              const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+              const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+              ShapeAnalyzerInterface* shapeAnalyzer)
     : shapes_(shapes), pointCorrespondences_(pointCorrespondences),
     faceCorrespondences_(faceCorrespondences), shapeAnalyzer_(shapeAnalyzer) {}
     

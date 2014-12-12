@@ -25,19 +25,21 @@
 
 class FunctionTransferTab : public QWidget, private Ui::FunctionTransferTabWidget, public CustomTab {
     Q_OBJECT
-//    
-//public:
-//    FunctionTransferTab(const HashMap<vtkActor*, Shape*>& shapes, const HashMap<PointCorrespondenceData*, bool>& pointCorrespondences, const HashMap<FaceCorrespondenceData*, bool>& faceCorrespondences,
-//                        ShapeAnalyzerInterface* shapeAnalyzer);
-//    
-//    virtual ~FunctionTransferTab();
-//    
-//    virtual void onShapeDelete(Shape* shape);
-//    virtual void onShapeAdd(Shape* shape);
-//    virtual void onShapeEdit(Shape* shape);
-//    virtual void onClear();
-//private slots:
-//    virtual void slotTransfer();
+    
+public:
+    FunctionTransferTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                        const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                        const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                        ShapeAnalyzerInterface* shapeAnalyzer);
+    
+    virtual ~FunctionTransferTab();
+    
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onShapeAdd(Shape* shape);
+    virtual void onShapeEdit(Shape* shape);
+    virtual void onClear();
+private slots:
+    virtual void slotTransfer();
 };
 
 #endif /* defined(__ShapeAnalyzer__FunctionTransferTab__) */

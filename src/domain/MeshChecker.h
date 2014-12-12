@@ -21,9 +21,9 @@ using namespace std;
 class MeshChecker {
 public:
     /// \brief Empty Constructor
-    MeshChecker(Shape* shape);
-    /// \brief Destructor, will delete the halfEdge structure if it exists
-    ~MeshChecker();
+    MeshChecker(shared_ptr<Shape> shape);
+    /// \brief Empty Destructor
+    ~MeshChecker() {}
     
     /// \brief Checks the shape for borders.
     /// \details Borders are found by checking the symmetry of the halfedge structure.
@@ -57,11 +57,11 @@ private:
     void createHalfEdgeStructure();
     
     /// Reference to the checked shape
-    Shape*                  shape_;
+    shared_ptr<Shape>                  shape_;
     /// \brief Representation of the half-edge data structure.
     /// \details 1 in the position [i,j] there is a half edge from i to j. 0 there is no half edge.
     /// \note Might change the vectors for something more optimal.
-    vector<vector<int>* >   halfEdges_;
+    vector<shared_ptr<vector<int>>>   halfEdges_;
 };
 
 #endif /* defined(__ShapeAnalyzer__MeshChecker__) */

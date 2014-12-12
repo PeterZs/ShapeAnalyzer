@@ -24,7 +24,7 @@ namespace signature {
         /// @param int Number of components that the signature should have.
         /// @param PetscLaplaceBeltramiOperator* A reference to an instance of a PETSC based Laplace-Beltrami operator
         /// @param double Optional paramter controlling the variance.
-        PetscWaveKernelSignature(Shape* shape, int dimension, PetscLaplaceBeltramiOperator* laplacian, double wksVariance = 6.0);
+        PetscWaveKernelSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, double wksVariance = 6.0);
         
     private:
         double wksVariance_;

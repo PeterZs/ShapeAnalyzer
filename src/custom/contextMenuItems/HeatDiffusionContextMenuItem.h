@@ -27,7 +27,7 @@ using namespace laplaceBeltrami;
 
 class HeatDiffusionContextMenuItem : public CustomContextMenuItem {
 public:
-    HeatDiffusionContextMenuItem(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    HeatDiffusionContextMenuItem(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };

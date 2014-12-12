@@ -14,7 +14,7 @@ namespace segmentation {
         
         /// \brief Constructor.
         /// @param Shape* The shape on which a segmentation should be computed.
-        Segmentation(Shape* shape) : shape_(shape) {
+        Segmentation(shared_ptr<Shape> shape) : shape_(shape) {
             if (shape == nullptr) {
                 throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
             }
@@ -28,7 +28,7 @@ namespace segmentation {
         
     protected:
         /// Reference to the shape the segmentation is calculated on.
-        Shape* shape_;
+        shared_ptr<Shape> shape_;
     };
     
 }

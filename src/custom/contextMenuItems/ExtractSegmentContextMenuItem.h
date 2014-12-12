@@ -27,7 +27,7 @@ using namespace std;
 
 class ExtractSegmentContextMenuItem : public CustomContextMenuItem {
 public:
-    ExtractSegmentContextMenuItem(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    ExtractSegmentContextMenuItem(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };

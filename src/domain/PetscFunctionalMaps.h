@@ -22,7 +22,7 @@ public:
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the source shape.
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the target shape.
     /// @param int Number of eigenfunctions that are used for the representation of the functions.
-    PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLaplaceBeltramiOperator* laplacian1, PetscLaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions);
+    PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions);
     
     vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f);
     
@@ -52,10 +52,10 @@ private:
     Mat PhiTM2_;
     
     /// \brief Laplacian of source shape.
-    PetscLaplaceBeltramiOperator* laplacian1_;
+    shared_ptr<PetscLaplaceBeltramiOperator> laplacian1_;
     
     /// \brief Laplacian of source shape.
-    PetscLaplaceBeltramiOperator* laplacian2_;
+    shared_ptr<PetscLaplaceBeltramiOperator> laplacian2_;
 
     /// \brief PETSC least squares solver
     KSP ksp_;

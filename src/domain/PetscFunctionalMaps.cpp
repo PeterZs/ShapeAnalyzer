@@ -1,11 +1,11 @@
 #include "PetscFunctionalMaps.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-PetscFunctionalMaps::PetscFunctionalMaps(Shape* shape1, Shape* shape2, PetscLaplaceBeltramiOperator* laplacian1, PetscLaplaceBeltramiOperator* laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), laplacian1_(laplacian1), laplacian2_(laplacian2) {
+PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), laplacian1_(laplacian1), laplacian2_(laplacian2) {
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
-    setupPhiTM(shape1_, laplacian1_, &Phi1_, &PhiTM1_);
-    setupPhiTM(shape2_, laplacian2_, &Phi2_, &PhiTM2_);
+    setupPhiTM(shape1_.get(), laplacian1_.get(), &Phi1_, &PhiTM1_);
+    setupPhiTM(shape2_.get(), laplacian2_.get(), &Phi2_, &PhiTM2_);
     
     
     // compute A^T which corresponds to all the constraits ci1 on shape M (shape1) and B which corresponds to contraints ci2 on shape N (shape2)

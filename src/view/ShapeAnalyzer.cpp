@@ -377,7 +377,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
         qtInputDialogOpacity(currentShape.get());
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape.get(), dynamic_cast<ShapeAnalyzerInterface*>(this)));
+            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape, dynamic_cast<ShapeAnalyzerInterface*>(this)));
             menuItem->onClick(pointId, faceId, this);
         }
     }

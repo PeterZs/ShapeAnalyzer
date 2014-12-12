@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Constructors and Destructor
 ///////////////////////////////////////////////////////////////////////////////
-metric::GeodesicMetric::GeodesicMetric(Shape* shape) : Metric(shape) {
+metric::GeodesicMetric::GeodesicMetric(shared_ptr<Shape> shape) : Metric(shape) {
     points_ = new geodesicPoints(shape_->getPolyData());
     faces_ = new geodesicFaces(shape_->getPolyData());
     

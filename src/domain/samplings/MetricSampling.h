@@ -16,10 +16,10 @@ public:
     /// \brief Basic constructor.
     /// @param Shape* The shape that is sampled.
     /// @param Metric* A refernce to the metric that is used for the computation of the sampled points.
-    MetricSampling(Shape* shape, Metric* metric) : Sampling(shape), metric_(metric) {}
+    MetricSampling(shared_ptr<Shape> shape, shared_ptr<Metric> metric) : Sampling(shape), metric_(metric) {}
     
 protected:
-    Metric* metric_;
+    shared_ptr<Metric> metric_;
 };
     
 }

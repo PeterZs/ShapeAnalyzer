@@ -1,7 +1,7 @@
 #include "PetscFEMLaplaceBeltramiOperator.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperator(Shape *shape, int numberOfEigenfunctions) : PetscLaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
+laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperator(shared_ptr<Shape> shape, int numberOfEigenfunctions) : PetscLaplaceBeltramiOperator(shape, numberOfEigenfunctions) {
     PetscErrorCode ierr;
     
     setupMatrices();

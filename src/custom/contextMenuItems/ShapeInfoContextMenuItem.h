@@ -22,7 +22,7 @@ using namespace std;
 
 class ShapeInfoContextMenuItem : public CustomContextMenuItem {
 public:
-    ShapeInfoContextMenuItem(Shape* shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    ShapeInfoContextMenuItem(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };

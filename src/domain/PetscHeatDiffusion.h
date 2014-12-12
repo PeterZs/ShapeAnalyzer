@@ -19,12 +19,12 @@ public:
     /// @param Shape* The shape to which the heat diffusion process is applied.
     /// @param PetscLaplaceBeltramiOperator* The laplacian of the shape.
     /// @param vtkSmartPointer<vtkDoubleArray> The initial condition as an array of values each corresponding to the vertex with the same index
-    PetscHeatDiffusion(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
+    PetscHeatDiffusion(shared_ptr<Shape> shape, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
     /// \brief Virtual destructor.
     ~PetscHeatDiffusion();
     vtkSmartPointer<vtkDoubleArray> getHeat(double t);
 private:
-    PetscLaplaceBeltramiOperator* laplacian_;
+    shared_ptr<PetscLaplaceBeltramiOperator> laplacian_;
 
     /// \brief The Vector Phi^T * M * u0
     Vec PhiTMu0_;

@@ -34,7 +34,7 @@ class Metric {
 public:
     /// Basic constructor
     /// \throws MetricError Some implementations may throw MetricError here.
-    Metric(Shape* shape) : shape_(shape) {
+    Metric(shared_ptr<Shape> shape) : shape_(shape) {
         if (shape == nullptr) {
             throw invalid_argument(string("Null pointer input 'shape' in ").append(__PRETTY_FUNCTION__));
         }
@@ -61,7 +61,7 @@ public:
     virtual vtkSmartPointer<vtkIntArray> getVoronoiCells(vtkSmartPointer<vtkIdList> seeds) = 0;
 protected:
     /// Reference to the shape the metric is calculated on.
-    Shape* shape_;
+    shared_ptr<Shape> shape_;
 };
     
 }

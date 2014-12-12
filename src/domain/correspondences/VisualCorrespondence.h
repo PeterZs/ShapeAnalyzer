@@ -211,15 +211,20 @@ namespace correspondences {
         void setSelected(bool selected) {
             if(selected) {
                 actor_->GetProperty()->SetColor(1, 0, 0);
+                actor_->GetProperty()->SetEdgeColor(1, 0, 0);
+                
+                actor_->Modified();
                 for(int i = 0; i < selectionActors_.size(); i++) {
-                    selectionActors_[i]->GetProperty()->SetColor(1, 0, 0);
-                    selectionActors_[i]->GetProperty()->SetEdgeColor(1, 0, 0);
-                    renderer_->AddActor(selectionActors_[i]);
+                    selectionActors_.at(i)->GetProperty()->SetColor(1, 0, 0);
+                    selectionActors_.at(i)->GetProperty()->SetEdgeColor(1, 0, 0);
+                    renderer_->AddActor(selectionActors_.at(i));
                 }
             } else {
                 actor_->GetProperty()->SetColor(0, 1, 0);
+                actor_->GetProperty()->SetEdgeColor(0, 1, 0);
+                actor_->Modified();
                 for(int i = 0; i < selectionActors_.size(); i++) {
-                    renderer_->RemoveActor(selectionActors_[i]);
+                    renderer_->RemoveActor(selectionActors_.at(i));
                 }
             }
         }

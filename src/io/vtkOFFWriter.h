@@ -1,11 +1,3 @@
-//
-//  vtkOFFWriter.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 28.08.14.
-//
-//
-
 #ifndef __ShapeAnalyzer__vtkOFFWriter__
 #define __ShapeAnalyzer__vtkOFFWriter__
 

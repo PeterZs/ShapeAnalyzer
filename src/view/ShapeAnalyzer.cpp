@@ -649,73 +649,74 @@ void ShapeAnalyzer::slotShowHelp() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotOpenScene() {
-//    correspondencePicker_->clearSelection();
-//    
-//    QString filename = QFileDialog::getOpenFileName(this, tr("Open Scene"),
-//                                                    tr(""),
-//                                                    tr("Files (*.bin *.txt)"));
-//    
-//    if(filename.isEmpty())
-//        return;
-//    
-//    clear();
-//    
-//    renderer_->ResetCamera();
-//    
-//    vector<Shape*> shapes;
-//    
-//    HashMap<PointCorrespondence*, PointCorrespondence*> pointCorrespondences;
-//    HashMap<FaceCorrespondence*, FaceCorrespondence*> faceCorrespondences;
-//    
-//    if(filename.endsWith(tr(".bin"))) {
-//        SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, lastInsertShapeId_, shapes, lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences);
-//    } else {
-//        SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, lastInsertShapeId_, shapes, lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences);
-//    }
-//    
-//    for(int i = 0; i < shapes.size(); i++) {
-//        addShape(shapes[i]);
-//    }
-//    
-//    for(auto i = pointCorrespondences.begin(); i != pointCorrespondences.end(); i++) {
-//
-//        
-//        if(i->second != nullptr) {
-//            pointCorrespondences_.insert(i->first, true);
-//            visualPointCorrespondences_.insert(i->second->getLinesActor(), i->second);
-//            
-//            // add correspondence to qt list widget
-//            if(actionDisplayPointCorrespondences->isChecked()) {
-//                i->second->addToRenderer();
-//                
-//                qtAddListCorrespondencesItem(i->second);
-//            }
-//        } else {
-//            pointCorrespondences_.insert(i->first, false);
-//        }
-//    }
-//
-//    for(auto i = faceCorrespondences.begin(); i != faceCorrespondences.end(); i++) {
-//        
-//        
-//        if(i->second != nullptr) {
-//            faceCorrespondences_.insert(i->first, true);
-//            visualFaceCorrespondences_.insert(i->second->getLinesActor(), i->second);
-//            
-//            // add correspondence to qt list widget
-//            if(actionDisplayFaceCorrespondences->isChecked()) {
-//                i->second->addToRenderer();
-//                
-//                qtAddListCorrespondencesItem(i->second);
-//            }
-//        } else {
-//            faceCorrespondences_.insert(i->first, false);
-//        }
-//    }
-//    
-//    
-//    qvtkWidget->GetRenderWindow()->Render();
-//    qtUpdateLabelVisibleCorrespondences();
+    pointCorrespondencePicker_->clearSelection();
+    faceCorrespondencePicker_->clearSelection();
+    
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open Scene"),
+                                                    tr(""),
+                                                    tr("Files (*.bin *.txt)"));
+    
+    if(filename.isEmpty())
+        return;
+    
+    clear();
+    
+    renderer_->ResetCamera();
+    
+    vector<shared_ptr<Shape>> shapes;
+    
+    vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>> pointCorrespondences;
+    vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>> faceCorrespondences;
+    
+    if(filename.endsWith(tr(".bin"))) {
+        pair<int, int> lastInsertIds = SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, shapes, pointCorrespondences, faceCorrespondences);
+        lastInsertShapeId_ = lastInsertIds.first;
+        lastInsertCorrespondenceId_ = lastInsertIds.second;
+    } else {
+        pair<int, int> lastInsertIds = SceneWriterReader::importSceneASCII(filename.toStdString(), renderer_, shapes, pointCorrespondences, faceCorrespondences);
+        lastInsertShapeId_ = lastInsertIds.first;
+        lastInsertCorrespondenceId_ = lastInsertIds.second;
+    }
+    
+    for(auto it : shapes) {
+        addShape(it);
+    }
+    
+    for(auto entry : pointCorrespondences) {
+        if(entry.second != nullptr) {
+            pointCorrespondences_.insert(entry.first, true);
+            visualPointCorrespondences_.insert(entry.second->getActor(), entry.second);
+            
+            // add correspondence to qt list widget
+            if(actionDisplayPointCorrespondences->isChecked()) {
+                entry.second->addToRenderer();
+                
+                qtAddListCorrespondencesItem(entry.second);
+            }
+        } else {
+            pointCorrespondences_.insert(entry.first, false);
+        }
+    }
+
+    for(auto entry : faceCorrespondences) {
+        if(entry.second != nullptr) {
+            faceCorrespondences_.insert(entry.first, true);
+            visualFaceCorrespondences_.insert(entry.second->getActor(), entry.second);
+            
+            // add correspondence to qt list widget
+            if(actionDisplayFaceCorrespondences->isChecked()) {
+                entry.second->addToRenderer();
+                
+                qtAddListCorrespondencesItem(entry.second);
+            }
+        } else {
+            faceCorrespondences_.insert(entry.first, false);
+        }
+    }
+    
+    
+    qvtkWidget->GetRenderWindow()->Render();
+    qtUpdateLabelVisibleCorrespondences();
 }
 
 
@@ -748,7 +749,7 @@ void ShapeAnalyzer::slotImportShape() {
         importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
         
         if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            showErrorMessage("The file cound not be opened", errorObserver->GetErrorMessage());
             return;
         }
         if (errorObserver->GetWarning()) {
@@ -771,7 +772,7 @@ void ShapeAnalyzer::slotImportShape() {
         importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
         
         if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            showErrorMessage("The file cound not be opened", errorObserver->GetErrorMessage());
             return;
         }
         if (errorObserver->GetWarning()) {
@@ -794,7 +795,7 @@ void ShapeAnalyzer::slotImportShape() {
         importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
         
         if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            showErrorMessage("The file cound not be opened", errorObserver->GetErrorMessage());
             return;
         }
         if (errorObserver->GetWarning()) {
@@ -817,7 +818,7 @@ void ShapeAnalyzer::slotImportShape() {
         importShape(output, filename.mid(filename.lastIndexOf('/')+1, filename.lastIndexOf('.')-filename.lastIndexOf('/')-1).toStdString());
         
         if (errorObserver->GetError()) {
-            showErrorMessage("The file cound not be opended", errorObserver->GetErrorMessage());
+            showErrorMessage("The file cound not be opened", errorObserver->GetErrorMessage());
             return;
         }
         if (errorObserver->GetWarning()) {
@@ -829,191 +830,194 @@ void ShapeAnalyzer::slotImportShape() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotImportCorrespondences() {
-//    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
-//                                                    tr(""),
-//                                                    tr("Files (*.txt *.bin)"));
-//    
-//    if(filename.isEmpty())
-//        return;
-//    
-//    SceneWriterReader reader = SceneWriterReader();
-//    
-//    vector<Shape*> shapes;
-//    shapes_.getValues(shapes);
-//    
-//    ShapeComparator comp;
-//    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
-//    std::sort(shapes.begin(), shapes.end(), comp);
-//    
-//    vector<Correspondence*> pointCorrespondences;
-//    vector<Correspondence*> faceCorrespondences;
-//    
-//    if(filename.endsWith(".txt")) {
-//        reader.importCorrespondencesASCII(filename.toStdString(), lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences, shapes, this);
-//
-//    } else {
-//        reader.importCorrespondencesBinary(filename.toStdString(), lastInsertCorrespondenceId_, pointCorrespondences, faceCorrespondences, shapes, this);
-//    }
-//    
-//    
-//    // insert point correspondences
-//    for(auto c : pointCorrespondences) {
-//        pointCorrespondences_.insert((PointCorrespondenceData*) c, false);
-//    }
-//    
-//    // insert face correspondences and fire corresponding events if vector not empty
-//    for(auto c : faceCorrespondences) {
-//        faceCorrespondences_.insert((FaceCorrespondenceData*) c, false);
-//    }
-//    
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    tr(""),
+                                                    tr("Files (*.txt *.bin)"));
+    
+    if(filename.isEmpty())
+        return;
+
+    vector<shared_ptr<Shape>> shapes;
+    shapes_.getValues(shapes);
+    
+    ShapeComparator comp;
+    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+    std::sort(shapes.begin(), shapes.end(), comp);
+    
+    vector<shared_ptr<PointCorrespondence>> pointCorrespondences;
+    vector<shared_ptr<FaceCorrespondence>> faceCorrespondences;
+    
+    function<shared_ptr<PointCorrespondence>()> pointCorrespondenceFactory = [this]()->shared_ptr<PointCorrespondence> {
+        return make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++);
+    };
+    
+    function<shared_ptr<FaceCorrespondence>()> faceCorrespondenceFactory = [this]()->shared_ptr<FaceCorrespondence> {
+        return make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
+    };
+    
+    if(filename.endsWith(".txt")) {
+        SceneWriterReader::importCorrespondencesASCII(filename.toStdString(), pointCorrespondenceFactory, faceCorrespondenceFactory, pointCorrespondences, faceCorrespondences, shapes, this);
+    } else {
+        SceneWriterReader::importCorrespondencesBinary(filename.toStdString(), pointCorrespondenceFactory, faceCorrespondenceFactory, pointCorrespondences, faceCorrespondences, shapes, this);
+    }
+    
+    
+    // insert point correspondences
+    for(auto c : pointCorrespondences) {
+        pointCorrespondences_.insert(c, false);
+    }
+    
+    // insert face correspondences and fire corresponding events if vector not empty
+    for(auto c : faceCorrespondences) {
+        faceCorrespondences_.insert(c, false);
+    }
+    
     qtUpdateLabelVisibleCorrespondences();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotSaveScene() {
-//    QStringList formats;
-//    formats << "Binary" << "Text (ASCII)";
-//    
-//    bool ok;
-//    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
-//    
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    vector<Shape*> shapes;
-//    shapes_.getValues(shapes);
-//    
-//    ShapeComparator comp;
-//    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
-//    std::sort(shapes.begin(), shapes.end(), comp);
-//    
-//    HashMap<PointCorrespondence*, PointCorrespondence*> pointCorrespondences;
-//    HashMap<FaceCorrespondence*, FaceCorrespondence*> faceCorrespondences;
-//    
-//    for(HashMap<PointCorrespondenceData*, bool>::iterator i = pointCorrespondences_.begin(); i != pointCorrespondences_.end(); i++) {
-//        if(i->second) {
-//            for(HashMap<vtkActor*, PointCorrespondence*>::iterator j = visualPointCorrespondences_.begin(); j != visualPointCorrespondences_.end(); j++) {
-//                if(j->second->getData() == i->first) {
-//                    pointCorrespondences.insert(i->first, j->second);
-//                    break;
-//                }
-//            }
-//        } else {
-//            pointCorrespondences.insert(i->first, nullptr);
-//        }
-//    }
-//
-//    for(HashMap<FaceCorrespondenceData*, bool>::iterator i = faceCorrespondences_.begin(); i != faceCorrespondences_.end(); i++) {
-//        if(i->second) {
-//            for(HashMap<vtkActor*, FaceCorrespondence*>::iterator j = visualFaceCorrespondences_.begin(); j != visualFaceCorrespondences_.end(); j++) {
-//                if(j->second->getData() == i->first) {
-//                    faceCorrespondences.insert(i->first, j->second);
-//                    break;
-//                }
-//            }
-//        } else {
-//            faceCorrespondences.insert(i->first, nullptr);
-//        }
-//    }
-//    
-//    if(format == formats.value(0)) {
-//        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.bin)"));
-//        if(filename.isEmpty()) {
-//            return;
-//        }
-//        SceneWriterReader::exportSceneBinary(filename.toStdString(), shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
-//    } else {
-//        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Text (ASCII) Scene Files (*.txt)"));
-//        if(filename.isEmpty()) {
-//            return;
-//        }
-//        SceneWriterReader::exportSceneASCII(filename.toStdString(), renderer_, shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
-//    }
+    QStringList formats;
+    formats << "Binary" << "Text (ASCII)";
+    
+    bool ok;
+    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
+    
+    if(!ok) {
+        return;
+    }
+    
+    vector<shared_ptr<Shape>> shapes;
+    shapes_.getValues(shapes);
+    
+    ShapeComparator comp;
+    // sort shapes to guarantee some ordering (in this case orderd by ID) which is not provided by unordered_map
+    std::sort(shapes.begin(), shapes.end(), comp);
+    
+    vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>> pointCorrespondences;
+    vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>> faceCorrespondences;
+    
+    for(auto i : pointCorrespondences_) {
+        if(i.second) {
+            for(auto j : visualPointCorrespondences_) {
+                if(j.second->getCorrespondence() == i.first) {
+                    pointCorrespondences.push_back(make_pair(i.first, j.second));
+                    break;
+                }
+            }
+        } else {
+            pointCorrespondences.push_back(make_pair(i.first, nullptr));
+        }
+    }
+
+    for(auto i : faceCorrespondences_) {
+        if(i.second) {
+            for(auto j : visualFaceCorrespondences_) {
+                if(j.second->getCorrespondence() == i.first) {
+                    faceCorrespondences.push_back(make_pair(i.first, j.second));
+                    break;
+                }
+            }
+        } else {
+            faceCorrespondences.push_back(make_pair(i.first, nullptr));
+        }
+    }
+    
+    if(format == formats.value(0)) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Binary Scene Files (*.bin)"));
+        if(filename.isEmpty()) {
+            return;
+        }
+        SceneWriterReader::exportSceneBinary(filename.toStdString(), renderer_, shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
+    } else {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), tr(""), tr("Text (ASCII) Scene Files (*.txt)"));
+        if(filename.isEmpty()) {
+            return;
+        }
+        SceneWriterReader::exportSceneASCII(filename.toStdString(), renderer_, shapes, lastInsertShapeId_, pointCorrespondences, faceCorrespondences, lastInsertCorrespondenceId_);
+    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotExportCorrespondences() {
-//    SceneWriterReader writer = SceneWriterReader();
-//    
-//    QStringList types;
-//    types << "Point Correspondences" << "Face Correspondences";
-//    bool ok; // stores if user pressed ok button
-//    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
-//    
-//    if(!ok) {
-//        return;
-//    }
-//    
-//    QStringList formats;
-//    formats << "Binary" << "Text (ASCII)";
-//    
-//    
-//    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
-//    
-//    if(!ok) {
-//        return;
-//    }
-//
-//    
-//    //sort shapes since result of HashMap.getValues is unordered
-//    vector<Shape*> shapes;
-//    shapes_.getValues(shapes);
-//    
-//    ShapeComparator comp;
-//    
-//    std::sort(shapes.begin(), shapes.end(), comp);
-//    
-//    if (save == types.value(0) && pointCorrespondences_.size() > 0) {
-//        if(format == formats.value(0)) {
-//            QString filename = QFileDialog::getSaveFileName(
-//                                                            this,
-//                                                            tr("Save file"),
-//                                                            tr(""),
-//                                                            tr("Binary Point Correspondence Files (*.bin)")
-//                                                            );
-//            if (!filename.isEmpty()) {
-//                writer.exportPointCorrespondencesBinary(pointCorrespondences_, shapes, filename.toStdString());
-//            }
-//        } else {
-//            QString filename = QFileDialog::getSaveFileName(
-//                                                            this,
-//                                                            tr("Save file"),
-//                                                            tr(""),
-//                                                            tr("ASCII Point Correspondence Files (*.txt)")
-//                                                            );
-//            if (!filename.isEmpty()) {
-//                writer.exportPointCorrespondencesASCII(pointCorrespondences_, shapes, filename.toStdString());
-//            }
-//        }
-//    }
-//    
-//    
-//    if (save == types.value(1) && faceCorrespondences_.size() > 0) {
-//        if(format == formats.value(0)) {
-//            QString filename = QFileDialog::getSaveFileName(
-//                                                            this,
-//                                                            tr("Save file"),
-//                                                            tr(""),
-//                                                            tr("Binary Face Correspondence Files (*.bin)")
-//                                                            );
-//            if (!filename.isEmpty()) {
-//                writer.exportFaceCorrespondencesBinary(faceCorrespondences_, shapes, filename.toStdString());
-//            }
-//        } else {
-//            QString filename = QFileDialog::getSaveFileName(
-//                                                            this,
-//                                                            tr("Save file"),
-//                                                            tr(""),
-//                                                            tr("ASCII Face Correspondence Files (*.txt)")
-//                                                            );
-//            if (!filename.isEmpty()) {
-//                writer.exportFaceCorrespondencesASCII(faceCorrespondences_, shapes, filename.toStdString());
-//            }
-//        }
-//    }
+    QStringList types;
+    types << "Point Correspondences" << "Face Correspondences";
+    bool ok; // stores if user pressed ok button
+    QString save = QInputDialog::getItem(this, tr("Which Correspondences?"), tr("Correspondences"), types, 0, true, &ok);
+    
+    if(!ok) {
+        return;
+    }
+    
+    QStringList formats;
+    formats << "Binary" << "Text (ASCII)";
+    
+    
+    QString format = QInputDialog::getItem(this, "Format", "Choose file format.", formats, 0, true, &ok);
+    
+    if(!ok) {
+        return;
+    }
+
+    
+    //sort shapes since result of HashMap.getValues is unordered
+    vector<shared_ptr<Shape>> shapes;
+    shapes_.getValues(shapes);
+    
+    ShapeComparator comp;
+    
+    std::sort(shapes.begin(), shapes.end(), comp);
+    
+    if (save == types.value(0) && pointCorrespondences_.size() > 0) {
+        if(format == formats.value(0)) {
+            QString filename = QFileDialog::getSaveFileName(
+                                                            this,
+                                                            tr("Save file"),
+                                                            tr(""),
+                                                            tr("Binary Point Correspondence Files (*.bin)")
+                                                            );
+            if (!filename.isEmpty()) {
+                SceneWriterReader::exportPointCorrespondencesBinary(pointCorrespondences_, shapes, filename.toStdString());
+            }
+        } else {
+            QString filename = QFileDialog::getSaveFileName(
+                                                            this,
+                                                            tr("Save file"),
+                                                            tr(""),
+                                                            tr("ASCII Point Correspondence Files (*.txt)")
+                                                            );
+            if (!filename.isEmpty()) {
+                SceneWriterReader::exportPointCorrespondencesASCII(pointCorrespondences_, shapes, filename.toStdString());
+            }
+        }
+    }
+    
+    
+    if (save == types.value(1) && faceCorrespondences_.size() > 0) {
+        if(format == formats.value(0)) {
+            QString filename = QFileDialog::getSaveFileName(
+                                                            this,
+                                                            tr("Save file"),
+                                                            tr(""),
+                                                            tr("Binary Face Correspondence Files (*.bin)")
+                                                            );
+            if (!filename.isEmpty()) {
+                SceneWriterReader::exportFaceCorrespondencesBinary(faceCorrespondences_, shapes, filename.toStdString());
+            }
+        } else {
+            QString filename = QFileDialog::getSaveFileName(
+                                                            this,
+                                                            tr("Save file"),
+                                                            tr(""),
+                                                            tr("ASCII Face Correspondence Files (*.txt)")
+                                                            );
+            if (!filename.isEmpty()) {
+                SceneWriterReader::exportFaceCorrespondencesASCII(faceCorrespondences_, shapes, filename.toStdString());
+            }
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1434,6 +1438,10 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
             addShape(shape);
         }
     }
+    
+    if(shapes_.size() == 1) {
+        renderer_->ResetCamera();
+    }
 }
 
 
@@ -1800,21 +1808,26 @@ void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-shared_ptr<Correspondence> ShapeAnalyzer::addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type) {
-    shared_ptr<Correspondence> c;
-    if(type == typeid(PointCorrespondence)) {
-        c = make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++);
-        for(auto p : correspondence) {
-            c->addShape(p.first, p.second);
-        }
-        pointCorrespondences_.insert(dynamic_pointer_cast<PointCorrespondence>(c), false);
-    } else {
-        c = make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
-        for(auto p : correspondence) {
-            c->addShape(p.first, p.second);
-        }
-        faceCorrespondences_.insert(dynamic_pointer_cast<FaceCorrespondence>(c), false);
+shared_ptr<PointCorrespondence> ShapeAnalyzer::addPointCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) {
+    shared_ptr<PointCorrespondence> c = make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++);
+    for(auto p : correspondence) {
+        c->addShape(p.first, p.second);
     }
+    pointCorrespondences_.insert(dynamic_pointer_cast<PointCorrespondence>(c), false);
+
+    qtUpdateLabelVisibleCorrespondences();
+    
+    return c;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+shared_ptr<FaceCorrespondence> ShapeAnalyzer::addFaceCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) {
+    shared_ptr<FaceCorrespondence> c = make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
+    for(auto p : correspondence) {
+        c->addShape(p.first, p.second);
+    }
+    faceCorrespondences_.insert(dynamic_pointer_cast<FaceCorrespondence>(c), false);
     
     qtUpdateLabelVisibleCorrespondences();
     
@@ -1854,6 +1867,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     listCorrespondences->disconnect();
     listShapes->disconnect();
     
+    // reset scalar bar. It displays the shapes coloring since the shape is selected when it is deleted.
     vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
     lookupTable->SetTableRange(1.0, 1.0);
     lookupTable->SetHueRange(0.667, 0.0);
@@ -1994,10 +2008,6 @@ void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {
     } else {
         ;
     }
-    
-    
-    if(shapes_.size() == 0)
-        renderer_->ResetCamera();
     
 
     vtkSmartPointer<vtkBoxWidgetCallback> callback = vtkSmartPointer<vtkBoxWidgetCallback>::New();

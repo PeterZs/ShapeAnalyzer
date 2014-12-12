@@ -18,10 +18,10 @@ namespace correspondences {
     /// \brief Abstract class to store correspondence information.
     ///
     /// \details Correspondence matches data ids of an arbitrary number of shapes
-    /// to each other. Each CorrespondenceData has a unique id and stores a vector
+    /// to each other. Each Correspondence has a unique id and stores a vector
     /// of shapes and a vector of data ids with the same size. The ids on the same
     /// position of each vector belong to each other.
-    /// It is possible to add more data after initialization, but not to delete it.
+    /// It is possible to add more data after initialization and to delete it.
     ///
     /// \author Emanuel Laude and Zorah Lähner
     ///

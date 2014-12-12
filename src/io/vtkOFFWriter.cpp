@@ -1,11 +1,3 @@
-//
-//  vtkOFFWriter.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 28.08.14.
-//
-//
-
 #include "vtkOFFWriter.h"
 
 vtkStandardNewMacro(vtkOFFWriter);

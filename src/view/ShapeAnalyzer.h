@@ -1,5 +1,5 @@
-#ifndef ShapeAnalyzer_H
-#define ShapeAnalyzer_H
+#ifndef __ShapeAnalyzer__ShapeAnalyzer__
+#define __ShapeAnalyzer__ShapeAnalyzer__
 
 #include <vtkActor.h>
 #include <vtkAlgorithmOutput.h>
@@ -89,7 +89,7 @@ using namespace std;
 
 ///
 /// \brief Manages the interaction with the GUI.
-/// \details TODO blabla
+/// \details Main class responsible for both the GUI and the data structures containing all the Shapes. It implements ShapeAnalyzerInterface
 ///
 /// \author Emanuel Laude and Zorah Lähner
 ///
@@ -100,7 +100,7 @@ class ShapeAnalyzer : public QMainWindow, private Ui::ShapeAnalyzer, public Shap
     /// \brief Needed to obtain a ordered sequence of shapes. Result from HashMap is always unsorted. I.e. no statement about the ordering of
     /// the elements can be made.
     struct ShapeComparator {
-        bool operator() (Shape* s1, Shape* s2) { return (s1->getId() < s2->getId()); }
+        bool operator() (shared_ptr<Shape> s1, shared_ptr<Shape> s2) { return (s1->getId() < s2->getId()); }
     };
     
     /// \brief Box widget callback that manages update of correspondences after a shape has been transformed independently from the rest of the scene.
@@ -154,7 +154,8 @@ public:
         SlepcFinalize();
     };
     ///@{
-    virtual shared_ptr<Correspondence> addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type);
+    virtual shared_ptr<PointCorrespondence> addPointCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence);
+    virtual shared_ptr<FaceCorrespondence> addFaceCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence);
     virtual shared_ptr<Shape> addShape(string name, vtkSmartPointer<vtkPolyData> polyData);
     virtual void render();
     ///@}

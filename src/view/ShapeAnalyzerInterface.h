@@ -3,7 +3,9 @@
 
 #include <vector>
 
-#include "../domain/correspondences/Correspondence.h"
+
+#include "../domain/correspondences/FaceCorrespondence.h"
+#include "../domain/correspondences/PointCorrespondence.h"
 #include "../domain/Shape.h"
 
 #include <vtkSmartPointer.h>
@@ -20,14 +22,18 @@ using namespace correspondences;
 ///
 class ShapeAnalyzerInterface {
 public:
-    /// \brief Adds and visualizes correspondence.
-    /// \details Creates a new Correspondence and CorrespondenceData object visualizes it inserts an entry into the internal data structures and returns the created CorrespondenceData object.
-    /// @param const vector<Shape*, vtkIdType>& correspondence. vector of Shape plus face or point ID pairs that are part of the correspondence.
-    /// @param const type_info& type. Can either be PointCorrespondenceData or FaceCorrespondenceData
-    virtual shared_ptr<Correspondence> addCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence, const type_info& type) = 0;
+    /// \brief Creates a PointCorrespondence out of a vector of shape plus vertex ID pairs and adds it to the internal data structures of ShapeAnalyzer.
+    /// @param const vector<Shape*, vtkIdType>& vector of Shape plus point ID pairs that are part of the PointCorrespondence.
+    /// @return shared_ptr<PointCorrespondence> The newly created PointCorrespondence.
+    virtual shared_ptr<PointCorrespondence> addPointCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) = 0;
+
+    /// \brief Creates a FaceCorrespondence out of a vector of shape plus vertex ID pairs and adds it to the internal data structures of ShapeAnalyzer.
+    /// @param const vector<Shape*, vtkIdType>& vector of Shape plus face ID pairs that are part of the FaceCorrespondence.
+    /// @return shared_ptr<PointCorrespondence> The newly created FaceCorrespondence.
+    virtual shared_ptr<FaceCorrespondence> addFaceCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) = 0;
     
     /// \brief Adds and visualizes a new shape.
-    /// \details Creates a new Shape object given a name and the mesh data and returns the created Shape object.
+    /// \details Creates a new Shape object given a name and the mesh data and returns the newly created Shape object.
     /// @param string name. The name of the shape.
     /// @param vtkSmartPointer<vtkPolyData> polyData. The mesh data.
     virtual shared_ptr<Shape> addShape(string name, vtkSmartPointer<vtkPolyData> polyData) = 0;

@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <utility>
 
-
 using namespace std;
 
 template <class KEY, class VALUE>

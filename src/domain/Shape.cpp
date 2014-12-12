@@ -73,12 +73,10 @@ void Shape::removeFromRenderer() {
 void Shape::clearColoring() {
     coloring_.reset();
     mapper_->SetScalarModeToUsePointData();
-    mapper_->SetColorModeToMapScalars();
-    mapper_->SetScalarRange(1.0, 1.0);
-    mapper_->Modified();
+    mapper_->SetColorModeToDefault();
     mapper_->ScalarVisibilityOff();
-    
     mapper_->Modified();
+    
     
     renderer_->GetRenderWindow()->Render();
 }

@@ -144,8 +144,6 @@ void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkI
     vtkIdType referenceId = reference_->getId();
     vtkSmartPointer<vtkUnsignedCharArray> referenceColors = vtkUnsignedCharArray::SafeDownCast(reference_->getColoring()->values);
     
-    cout << referenceColors->GetName() <<referenceColors->GetNumberOfTuples()<<endl;
-    
     faceAttributes_.insert(make_pair(referenceId, referenceColors));
     
     // for evaluating matched points

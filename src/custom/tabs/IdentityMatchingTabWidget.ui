@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>224</width>
+    <width>301</width>
     <height>410</height>
    </rect>
   </property>
@@ -17,34 +17,6 @@
    </sizepolicy>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QLabel" name="labelChoose">
-     <property name="text">
-      <string>Choose two shapes for creation
-of Correspondences</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="labelShape1">
-     <property name="text">
-      <string>Shape 1:</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="comboBoxShape1"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="labelShape2">
-     <property name="text">
-      <string>Shape 2:</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="comboBoxShape2"/>
-   </item>
    <item>
     <widget class="QLabel" name="labelCorrespondences">
      <property name="text">
@@ -64,6 +36,63 @@ of Correspondences</string>
        <string>Face Correspondences</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="radioButtonMultiCorrespondences">
+     <property name="text">
+      <string>Match all (Create Multicorrespondences)</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="radioButtonBinaryCorrespondences">
+     <property name="text">
+      <string>Match two</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelShape1">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Shape 1:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxShape1">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelShape2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Shape 2:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxShape2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
    <item>
@@ -134,4 +163,7 @@ of Correspondences</string>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

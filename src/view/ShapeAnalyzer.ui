@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1176</width>
+    <width>1103</width>
     <height>768</height>
    </rect>
   </property>
@@ -202,7 +202,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1176</width>
+     <width>1103</width>
      <height>22</height>
     </rect>
    </property>
@@ -263,9 +263,21 @@
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menuShapes">
+     <property name="title">
+      <string>Shapes</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuCorrespondences">
+     <property name="title">
+      <string>Correspondences</string>
+     </property>
+    </widget>
     <addaction name="actionDisplayPointCorrespondences"/>
     <addaction name="actionDisplayFaceCorrespondences"/>
     <addaction name="separator"/>
+    <addaction name="menuShapes"/>
+    <addaction name="menuCorrespondences"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -511,6 +523,26 @@
   <action name="actionImportShape">
    <property name="text">
     <string>Import Shape...</string>
+   </property>
+  </action>
+  <action name="actionShapes">
+   <property name="text">
+    <string>Shapes</string>
+   </property>
+  </action>
+  <action name="actionCorrespondences">
+   <property name="text">
+    <string>Correspondences</string>
+   </property>
+  </action>
+  <action name="actionTest_2">
+   <property name="text">
+    <string>test</string>
+   </property>
+  </action>
+  <action name="actionTest_3">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>

@@ -26,14 +26,14 @@
       <number>10</number>
      </property>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="labelMesh">
        <property name="text">
         <string>Mesh to fix:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="comboBoxMesh"/>
      </item>
     </layout>
    </item>
@@ -46,21 +46,21 @@
       <number>10</number>
      </property>
      <item row="0" column="0">
-      <widget class="QCheckBox" name="checkTriangles">
+      <widget class="QCheckBox" name="checkBoxNonTriangles">
        <property name="text">
         <string>Non-Triangles</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QCheckBox" name="checkConnectivity">
+      <widget class="QCheckBox" name="checkBoxConnectivity">
        <property name="text">
         <string>Connectivity</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QCheckBox" name="checkDegenerated">
+      <widget class="QCheckBox" name="checkBoxDegeneratedElements">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -70,14 +70,14 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QCheckBox" name="checkOrientation">
+      <widget class="QCheckBox" name="checkBoxOrientation">
        <property name="text">
         <string>Triangle orientation</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QCheckBox" name="checkBorders">
+      <widget class="QCheckBox" name="checkBoxBorders">
        <property name="text">
         <string>Borders</string>
        </property>
@@ -93,14 +93,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="labelOutput">
      <property name="text">
       <string>Might take some time and memory.</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextBrowser" name="outputField"/>
+    <widget class="QTextBrowser" name="textBrowserOutput"/>
    </item>
   </layout>
  </widget>

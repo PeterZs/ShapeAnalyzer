@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>608</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -21,9 +21,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>VTK Widget:</string>
+      <string>Shape Analyzer - A flexible Tool for the Analysis of 3D Shapes (Version 1.0)</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>User's Manual:</string>
      </property>
     </widget>
    </item>
@@ -38,37 +48,62 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Zoom</string>
+        <string>Zoom:</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>-  right-click and scroll</string>
+        <string>right-click and scroll (Mac)
+hold 'Ctrl' while moving bounding box (Linux)</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Translate Shape</string>
+        <string>Translate Shape:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>-  hold Shift while moving toggle box</string>
+        <string>hold 'Shift' while moving bounding box</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Press 'ESC' while picking correspondences to clear selection.
+Press 'a' to pick and add current correspondence.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Pick correspondences:</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Press 'ESC' while picking correspondences to clear selection. Press 'a' to pick and add current correspondence.</string>
+      <string>Authors:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Zorah Lähner (Computer Vision Group Technical University of Munich)
+Emanuel Laude (Computer Vision Group Technical University of Munich)
+</string>
      </property>
     </widget>
    </item>
@@ -86,50 +121,14 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetFixedSize</enum>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
      </property>
-     <property name="topMargin">
-      <number>10</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pushOk">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="text">
-        <string>Ok</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>pushOk</sender>
-   <signal>clicked()</signal>
-   <receiver>HelpDialog</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>271</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

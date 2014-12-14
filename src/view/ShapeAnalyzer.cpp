@@ -394,9 +394,13 @@ void ShapeAnalyzer::qtCreateMenuCustomTabs() {
         QStringList list = path.split(">>");
         QAction* action;
         if(list.count() < 2) {
-            action = this->menuView->addAction(path);
+            action = this->menuShapes->addAction(path);
         } else {
-            action = this->menuView->addAction(list[1]);
+            if(list[0] == "Correspondences") {
+                action = this->menuCorrespondences->addAction(list[1]);
+            } else {
+                action = this->menuShapes->addAction(list[1]);
+            }
         }
         action->setCheckable(true);
         action->setChecked(false);
@@ -1340,7 +1344,7 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
     cleanPolyData->AddObserver(vtkCommand::WarningEvent, cleanDataObserver);
     
     // filter to triangulate shape
-    if(ui.checkTriangulation->isChecked()) {
+    if(ui.checkBoxTriangulation->isChecked()) {
         //make sure that all faces are triangles
         triangleFilter->SetInputConnection(output);
         triangleFilter->Update();
@@ -1356,7 +1360,7 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
     }
 
     //Remove all isolated points.
-    if(ui.checkDegeneratedElements->isChecked()) {
+    if(ui.checkBoxDegeneratedElements->isChecked()) {
         cleanPolyData->SetInputConnection(output);
         cleanPolyData->Update();
         output = cleanPolyData->GetOutputPort();
@@ -1372,7 +1376,7 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
 
     
     //If shape is not connected (This only happens with bad shape data). Find largest connected region and extract it.
-    if(ui.checkLargestComponent->isChecked()) {
+    if(ui.checkBoxLargestComponent->isChecked()) {
         vtkSmartPointer<vtkPolyDataConnectivityFilter> connectivityFilter =
         vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
         

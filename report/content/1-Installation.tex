@@ -8,17 +8,26 @@
 In order to compile \emph{ShapeAnalyzer} it has be ensured that both, a recent \texttt{C++} compiler that fully supports the \texttt{C++11} standard (e.g. \texttt{gcc} 4.7 or newer) as well as \texttt{cmake} version greater ? is available . Furthermore all the aforementioned libraries and frameworks have to be installed.
 
 
-\paragraph{Installation of Qt5}
+\section{Installation of Qt5}
 Since the most recent version of Qt currently (Dezember 2014) available via apt-get on Ubuntu is less than 5, it is recommended to download the most recent pre-compiled Qt5 package from the homepage of Qt: 
-For installation just launch the installation assistant. (Hint: In case the installation file cannot be opened and executed you may have to make it executable via sudo chmod +x <filename>)
-\paragraph{Installation of VTK}
+For installation just launch the installation assistant.
+
+\begin{mdframed}
+Hint: In case the installation file cannot be opened and executed you may have to make it executable via
+\begin{lstlisting}[language=bash, numbers=none]
+	sudo chmod +x <filename>
+\end{lstlisting}
+\end{mdframed}
+
+\section{Installation of VTK}
 As it is the case for Qt the most recent version of VTK currently (Dezember 2014) available via apt-get on Ubuntu is less than 6.1. Therefore it is recommended to compile and install VTK 6.1 or newer from source.
 
-\paragraph{Installation of Petsc}
+\section{Installation of Petsc}
 
-\begin{paragraph}{Installation of Slepc}
+\section{Installation of Slepc}
 asdf
-\end{paragraph}
 
+
+\section{Compiling the project}
 Finally follow these steps to compile ShapeAnalyzer
 

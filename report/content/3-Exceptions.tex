@@ -1,0 +1,110 @@
+% !TeX encoding=utf8
+% !TeX spellcheck = en-US
+
+\chapter{Exceptions}
+
+There are two types of exceptions you might want to throw: Exceptions (\ref{sec:Exceptions}) and Errors (\ref{sec:Errors}). The first one is kind of optional, it includes all normal exceptions C++ provides, the second one is for non-fatal problems that might occur and that can actually be handled. In both cases do not use the \texttt{throws} keyword in the function signature.
+
+When you are using VTK classes you can use the ErrorObserver (\ref{sec:ErrorObserver}) to handle VTK specific exceptions.
+
+\section{Exceptions}
+\label{sec:Exceptions}
+
+\begin{itemize}
+	\item \textbf{Throw when} you have special cases that are due to previous faulty programming or unexpected errors
+	\item \textbf{Documentation} not necessary
+	\item \textbf{Found in} C++ std library
+\end{itemize}
+
+Any exception will be caught by the main program and shown within an error message. The program will then terminate. In order to make debugging easier a short description of the problem and the function name is useful.
+
+\begin{lstlisting}[style=lstStyleCpp]
+if(s >= points_->size()) {
+        throw invalid_argument("Source point (" + to_string(s) + ") 
+        larger than number of points (" + to_string(points_->size()) + ") 
+        in " + __PRETTY_FUNCTION__);
+}
+\end{lstlisting}
+
+
+\section{Errors}
+\label{sec:Errors}
+
+\begin{itemize}
+	\item \textbf{Throw when} you notice faulty data or the like that can not be processed, but it is not necessary to terminate the whole program
+	\item \textbf{Documentation} use the \texttt{@throws} command and define the Error class 
+	\item \textbf{Found in} util or the namespaces folder
+\end{itemize}
+
+Error is a ShapeAnalyzer specific class that inherits from exception but does not add any functionality. Every namespace has its own Error class that is named \texttt{<namespace>Error}. This allows more specific error handling by catching the different classes. 
+
+If your exception is not due to faulty programming logic or you think it can be solved by a higher level class, use this classes instead of a std exception. This can be for example detecting a mesh with borders but your algorithm does not support borders. Most of the time this means you terminate your algorithm without a result and let the user know about the problem with an pop-up. Again a short description of the problem and the function name is useful. You can use \texttt{QMessageBox::warning} for the pop-up but you must give the QMessageBox the ShapeAnalyzer as the parent widget, so catch the Error in your Tab or ContextMenuItem (see \ref{sec:Custom}) and create the QMessageBox there.  
+\begin{mdframed}
+It is possible to give null as the parent widget but you must not do that. It might cause unwanted behavior like the QMessageBox not appearing in the foreground.
+\end{mdframed}
+
+If your function is throwing an Error use the \texttt{@throws} or \texttt{@exception} keyword in the Doxygen documentation. Give the class of the error and a short description of what might cause this error. 
+
+\begin{lstlisting}[style=lstStyleCpp]
+if(ierr != 0) {
+    throw LaplaceBeltramiError(string(
+        "Error occured in computation of Laplace-Beltrami eigenfunction 
+	(Probably due to corrupted shape)")
+	.append(" in ").append(__PRETTY_FUNCTION__));
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=lstStyleCpp]
+try {
+    PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
+    vtkSmartPointer<vtkDoubleArray> eigenfunction 
+    		= laplacian.getEigenfunction(i);
+} catch(LaplaceBeltramiError& e) {
+    QMessageBox::warning(parent, "Exception", e.what());
+}
+\end{lstlisting}
+
+\begin{mdframed}
+Some namespaces do not have their own Error class yet. If you need it, just create it. You can use \texttt{MetricError} as a template. 
+\end{mdframed}
+
+\section{ErrorObserver}
+\label{sec:ErrorObserver}
+
+\begin{itemize}
+	\item \textbf{Use when} you want to handle VTK specific errors
+	\item \textbf{Found in} util
+\end{itemize}
+
+VTK classes in general do not throw exceptions instead they write error and warning messages to observers. If you want to handle those problems use the ErrorObserver class.
+
+\begin{lstlisting}[style=lstStyleCpp]
+// vtk object that we want to observe
+vtkSmartPointer<vtkTriangleFilter> triangleFilter 
+	= vtkSmartPointer<vtkTriangleFilter>::New();
+// new ErrorObserver object
+vtkSmartPointer<ErrorObserver> triangleObserver 
+	= vtkSmartPointer<ErrorObserver>::New();
+
+// list the observer to the triangle filter
+// if you are not interested in warnings leave the second line out
+triangleFilter->AddObserver(vtkCommand::ErrorEvent, triangleObserver);
+triangleFilter->AddObserver(vtkCommand::WarningEvent, triangleObserver);
+
+// do the things you want to do with your vtk object
+triangleFilter->SetInputConnection(input);
+triangleFilter->Update();
+
+// see if messages were written into the observer and handle that
+if (triangleObserver->GetError()) {
+        showErrorMessage("The file cound not be opended", 
+        				      triangleObserver->GetErrorMessage());
+        return;
+}
+if (triangleObserver->GetWarning()) {
+        showErrorMessage("There was a warning reading the file",
+        				       triangleObserver->GetWarningMessage());
+}
+\end{lstlisting}
+
+Notice that if you use the same ErrorObserver for several objects or call several functions before checking the messages, you will only receive the latest message. 

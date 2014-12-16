@@ -1,0 +1,24 @@
+% !TeX encoding=utf8
+% !TeX spellcheck = en-US
+
+\chapter{Installation}
+% remove text and replace it with your real introduction
+
+\emph{ShapeAnalyzer} is completely written in \texttt{C++} heavily making use of the recent \texttt{C++11} standart in the code. Moreover it builds up on the frameworks \texttt{VTK} version 6.1.0 or greater and \texttt{Qt} version 5.0 or greater for the visualization and rendering of the shapes and the creation of the graphical user interface respectively. For all matrix and vector related computations including the computation of the Laplace-Beltrami eigenvectors the libraries \texttt{Petsc} (basic linear algebra including basic solvers for linear systems) and \texttt{Slepc} (sparse eigensolver) are used. (Petsc and Slepsc - the funny dogs. This sounds like the names of funny cartoon series characters for kids.)\\
+In order to compile \emph{ShapeAnalyzer} it has be ensured that both, a recent \texttt{C++} compiler that fully supports the \texttt{C++11} standard (e.g. \texttt{gcc} 4.7 or newer) as well as \texttt{cmake} version greater ? is available . Furthermore all the aforementioned libraries and frameworks have to be installed.
+
+
+\paragraph{Installation of Qt5}
+Since the most recent version of Qt currently (Dezember 2014) available via apt-get on Ubuntu is less than 5, it is recommended to download the most recent pre-compiled Qt5 package from the homepage of Qt: 
+For installation just launch the installation assistant. (Hint: In case the installation file cannot be opened and executed you may have to make it executable via sudo chmod +x <filename>)
+\paragraph{Installation of VTK}
+As it is the case for Qt the most recent version of VTK currently (Dezember 2014) available via apt-get on Ubuntu is less than 6.1. Therefore it is recommended to compile and install VTK 6.1 or newer from source.
+
+\paragraph{Installation of Petsc}
+
+\begin{paragraph}{Installation of Slepc}
+asdf
+\end{paragraph}
+
+Finally follow these steps to compile ShapeAnalyzer
+

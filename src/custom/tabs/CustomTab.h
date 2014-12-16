@@ -1,7 +1,6 @@
 #ifndef ShapeAnalyzer_CustomTab_h
 #define ShapeAnalyzer_CustomTab_h
 
-
 #include <vtkActor.h>
 
 #include "../../view/ShapeAnalyzerInterface.h"
@@ -12,6 +11,10 @@
 #include "../../domain/correspondences/FaceCorrespondence.h"
 
 #include "../../util/HashMap.h"
+
+namespace custom {
+/// \brief Namespace for all tabs.
+namespace tabs {
 
 ///
 ///  \brief Abstract class for Tabs.
@@ -55,5 +58,8 @@ protected:
     /// \brief Pointer to the ShapeAnalyzer widget parent.
     ShapeAnalyzerInterface* shapeAnalyzer_;
 };
+
+}
+}
 
 #endif

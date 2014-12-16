@@ -1,10 +1,12 @@
 #include "vtkToscaWriter.h"
 
+namespace io {
 vtkStandardNewMacro(vtkToscaWriter);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkToscaWriter::vtkToscaWriter() {
+io::vtkToscaWriter::vtkToscaWriter() {
     std::ofstream fout; // only used to extract the default precision
     this->DecimalPrecision = fout.precision();
     this->FileName = NULL;
@@ -12,11 +14,11 @@ vtkToscaWriter::vtkToscaWriter() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkToscaWriter::~vtkToscaWriter() {}
+io::vtkToscaWriter::~vtkToscaWriter() {}
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkToscaWriter::WriteData() {
+void io::vtkToscaWriter::WriteData() {
     vtkPolyData *input = this->GetInput();
     if (!input)
         return;
@@ -79,26 +81,26 @@ void vtkToscaWriter::WriteData() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkToscaWriter::PrintSelf(ostream& os, vtkIndent indent) {
+void io::vtkToscaWriter::PrintSelf(ostream& os, vtkIndent indent) {
     Superclass::PrintSelf(os, indent);
     os << indent << "DecimalPrecision: " << DecimalPrecision << "\n";
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkToscaWriter::FillInputPortInformation(int, vtkInformation *info) {
+int io::vtkToscaWriter::FillInputPortInformation(int, vtkInformation *info) {
     info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
     return 1;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkToscaWriter::GetInput() {
+vtkPolyData* io::vtkToscaWriter::GetInput() {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkToscaWriter::GetInput(int port) {
+vtkPolyData* io::vtkToscaWriter::GetInput(int port) {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput(port));
 }

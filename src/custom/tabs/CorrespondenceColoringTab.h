@@ -27,6 +27,9 @@
 
 #include "ui_CorrespondenceColoringTabWidget.h"
 
+namespace custom {
+namespace tabs {
+
 ///
 /// \brief Visualizes correspondences with colors on the shapes.
 /// \details One of the shapes in the GUI can be chosen as the reference shape. The reference
@@ -67,5 +70,7 @@ private:
     void clearGrid();
 };
 
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__CorrespondenceColoringTab__) */

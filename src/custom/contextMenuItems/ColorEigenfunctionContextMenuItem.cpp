@@ -1,15 +1,8 @@
-//
-//  ColorEigenfunctionContextMenuItem.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #include "ColorEigenfunctionContextMenuItem.h"
 
-
-void ColorEigenfunctionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+///////////////////////////////////////////////////////////////////////////////
+void custom::contextMenuItems::ColorEigenfunctionContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     bool ok;
     int i = QInputDialog::getInt(
                                  parent,

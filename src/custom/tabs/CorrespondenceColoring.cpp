@@ -2,7 +2,7 @@
 #include <utility>
 
 ///////////////////////////////////////////////////////////////////////////////
-CorrespondenceColoring::CorrespondenceColoring(
+custom::tabs::CorrespondenceColoring::CorrespondenceColoring(
                                                const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
                                                const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
                                                const HashMap<shared_ptr<FaceCorrespondence>, bool>&  faceCorrespondences,
@@ -16,8 +16,10 @@ CorrespondenceColoring::CorrespondenceColoring(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
-                                                      shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple) {
+void custom::tabs::CorrespondenceColoring::showPointCorrespondences(
+                            shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
+                            shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple)
+{
     pointAttributes_.clear();
     
     // completely color reference shape
@@ -134,8 +136,10 @@ void CorrespondenceColoring::showPointCorrespondences(shared_ptr<vector<pair<vtk
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoring::showFaceCorrespondences(shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
-                                                     shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple) {
+void custom::tabs::CorrespondenceColoring::showFaceCorrespondences(
+                                    shared_ptr<vector<pair<vtkIdType, double>>> percentageMatched,
+                                    shared_ptr<vector<pair<vtkIdType, double>>> percentageMultiple)
+{
     faceAttributes_.clear();
     
     // completely color reference shape

@@ -7,6 +7,8 @@
 
 using namespace std;
 
+namespace custom {
+
 ///
 /// \brief Variadic template singleton factory class for creating instances of concrete CustomTab, CustomContextMenuItem and other classes.
 ///
@@ -92,5 +94,7 @@ private:
     /// \details Vector preserves insertion ordering.
     unordered_map<string, int> labelIndex_;
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__Factory__) */

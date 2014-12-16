@@ -14,6 +14,9 @@
 #include <cstdio>
 #include <cstdlib>
 
+namespace io {
+
+/// \brief Vtk class to save shapes into .obj format.
 class vtkOBJWriter : public vtkWriter {
 public:
     static vtkOBJWriter *New();
@@ -43,5 +46,6 @@ private:
     void operator=(const vtkOBJWriter&);  // Not implemented.
 };
 
+}
 
 #endif

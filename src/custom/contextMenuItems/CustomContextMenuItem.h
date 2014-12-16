@@ -6,6 +6,10 @@
 
 #include <QWidget>
 
+namespace custom {
+/// \brief Namespace for all custom context menu items.
+namespace contextMenuItems {
+
 /// \brief Abstract class for displaying a menu item in the right-click context menu of each shape.
 /// \details Concrete menu items have to be registered in RegisterCustomClasses to be connected with the GUI.
 class CustomContextMenuItem {
@@ -26,5 +30,8 @@ protected:
     shared_ptr<Shape> shape_;
     ShapeAnalyzerInterface* shapeAnalyzer_;
 };
+    
+}
+}
 
 #endif

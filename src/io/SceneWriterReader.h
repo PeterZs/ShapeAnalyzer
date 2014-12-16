@@ -24,8 +24,14 @@
 #include <sstream>
 #include <unordered_map>
 
+#include "IOError.h"
+
 using namespace std;
 using namespace correspondences;
+
+/// \brief Namespace including classes for saving and loading shapes, correspondences and scenes in different formats.
+namespace io {
+
 ///
 /// \brief Class for reading and writing whole scenes or lists of correspondences in Binary as well as in ASCII.
 /// \details Provides functionality for both reading/writing of whole scenes including point and face correspondences and reading/writing of face or point correspondences separately.
@@ -192,5 +198,6 @@ public:
                                             );
 };
 
+}
 
 #endif /* defined(__ShapeAnalyzer__SceneWriterReader__) */

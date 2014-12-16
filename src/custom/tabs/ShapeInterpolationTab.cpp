@@ -1,20 +1,22 @@
-//
-//  ShapeInterpolationTab.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 24.08.14.
-//
-//
-
 #include "ShapeInterpolationTab.h"
 
-ShapeInterpolationTab::~ShapeInterpolationTab() {
+///////////////////////////////////////////////////////////////////////////////
+custom::tabs::ShapeInterpolationTab::~ShapeInterpolationTab() {
 }
 
-ShapeInterpolationTab::ShapeInterpolationTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
-                                             const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
-                                             const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
-                                             ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer), source_(nullptr), target_(nullptr), shape_(nullptr) {
+
+///////////////////////////////////////////////////////////////////////////////
+custom::tabs::ShapeInterpolationTab::ShapeInterpolationTab(
+                                const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                                const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                                const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                                ShapeAnalyzerInterface* shapeAnalyzer)
+    :   QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0),
+        CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer),
+        source_(nullptr),
+        target_(nullptr),
+        shape_(nullptr)
+{
     this->setupUi(this);
     
     QStringList labels;
@@ -41,7 +43,9 @@ ShapeInterpolationTab::ShapeInterpolationTab(const HashMap<vtkActor*, shared_ptr
             this,                                   SLOT(slotAddShape()));
 }
 
-void ShapeInterpolationTab::slotChooseShapes() {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
     this->labelChoose->setEnabled(false);
     this->comboBoxSourceShape->setEnabled(false);
     this->comboBoxTargetShape->setEnabled(false);
@@ -83,7 +87,9 @@ void ShapeInterpolationTab::slotChooseShapes() {
     this->buttonInterpolation->setEnabled(true);
 }
 
-void ShapeInterpolationTab::slotAddShape() {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::slotAddShape() {
     this->labelInterpolation->setEnabled(false);
     this->sliderInterpolation->setEnabled(false);
     this->buttonInterpolation->setEnabled(false);
@@ -101,7 +107,9 @@ void ShapeInterpolationTab::slotAddShape() {
     target_ = nullptr;
 }
 
-void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0 and 100.
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0 and 100.
     double lambda = (double) value / 100.0;
 
 
@@ -147,7 +155,9 @@ void ShapeInterpolationTab::slotInterpolate(int value) { // value lies between 0
     shapeAnalyzer_->render();
 }
 
-void ShapeInterpolationTab::onShapeAdd(Shape* shape) {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::onShapeAdd(Shape* shape) {
     this->buttonChoose->setEnabled(true);
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
@@ -155,7 +165,9 @@ void ShapeInterpolationTab::onShapeAdd(Shape* shape) {
     comboBoxTargetShape->insertItem(0, label);
 }
 
-void ShapeInterpolationTab::onShapeDelete(Shape* shape) {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
         if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
             comboBoxSourceShape->removeItem(i);
@@ -191,7 +203,9 @@ void ShapeInterpolationTab::onShapeDelete(Shape* shape) {
     }
 }
 
-void ShapeInterpolationTab::onShapeEdit(Shape* shape) {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -210,7 +224,9 @@ void ShapeInterpolationTab::onShapeEdit(Shape* shape) {
     }
 }
 
-void ShapeInterpolationTab::onClear() {
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::ShapeInterpolationTab::onClear() {
     this->comboBoxSourceShape->clear();
     this->comboBoxTargetShape->clear();
     this->labelInterpolation->setEnabled(false);

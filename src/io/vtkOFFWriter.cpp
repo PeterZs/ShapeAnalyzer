@@ -1,10 +1,11 @@
 #include "vtkOFFWriter.h"
 
+namespace io {
 vtkStandardNewMacro(vtkOFFWriter);
-
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkOFFWriter::vtkOFFWriter() {
+io::vtkOFFWriter::vtkOFFWriter() {
     std::ofstream fout; // only used to extract the default precision
     this->DecimalPrecision = fout.precision();
     this->FileName = NULL;
@@ -12,9 +13,9 @@ vtkOFFWriter::vtkOFFWriter() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkOFFWriter::~vtkOFFWriter() {}
+io::vtkOFFWriter::~vtkOFFWriter() {}
 
-void vtkOFFWriter::WriteData() {
+void io::vtkOFFWriter::WriteData() {
     vtkPolyData *input = this->GetInput();
     if (!input)
         return;
@@ -68,26 +69,26 @@ void vtkOFFWriter::WriteData() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkOFFWriter::PrintSelf(ostream& os, vtkIndent indent) {
+void io::vtkOFFWriter::PrintSelf(ostream& os, vtkIndent indent) {
     Superclass::PrintSelf(os, indent);
     os << indent << "DecimalPrecision: " << DecimalPrecision << "\n";
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkOFFWriter::FillInputPortInformation(int, vtkInformation *info) {
+int io::vtkOFFWriter::FillInputPortInformation(int, vtkInformation *info) {
     info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
     return 1;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkOFFWriter::GetInput() {
+vtkPolyData* io::vtkOFFWriter::GetInput() {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkOFFWriter::GetInput(int port) {
+vtkPolyData* io::vtkOFFWriter::GetInput(int port) {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput(port));
 }

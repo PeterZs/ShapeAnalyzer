@@ -1,10 +1,3 @@
-//
-//  ColorMetricContextMenuItem.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #ifndef __ShapeAnalyzer__ColorMetricContextMenuItem__
 #define __ShapeAnalyzer__ColorMetricContextMenuItem__
@@ -22,6 +15,9 @@
 
 using namespace std;
 using namespace metric;
+
+namespace custom {
+namespace contextMenuItems {
 
 template<class T = Metric>
 class ColorMetricContextMenuItem : public CustomContextMenuItem {
@@ -57,4 +53,7 @@ public:
     }
 };
 
+}
+}
+    
 #endif /* defined(__ShapeAnalyzer__ColorMetricContextMenuItem__) */

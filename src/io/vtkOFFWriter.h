@@ -11,6 +11,9 @@
 #include <cstdio>
 #include <cstdlib>
 
+namespace io {
+
+/// \brief Vtk class to write shapes into .off format.
 class vtkOFFWriter : public vtkWriter {
 public:
     static vtkOFFWriter *New();
@@ -45,6 +48,7 @@ private:
     void operator=(const vtkOFFWriter&);  // Not implemented.
 };
 
+}
 
 
 #endif /* defined(__ShapeAnalyzer__vtkOFFWriter__) */

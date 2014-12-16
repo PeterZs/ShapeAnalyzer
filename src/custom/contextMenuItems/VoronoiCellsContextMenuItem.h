@@ -1,10 +1,3 @@
-//
-//  VoronoiCellsContextMenuItem.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #ifndef __ShapeAnalyzer__VoronoiCellsContextMenuItem__
 #define __ShapeAnalyzer__VoronoiCellsContextMenuItem__
@@ -24,6 +17,9 @@
 
 using namespace std;
 using namespace segmentation;
+
+namespace custom {
+namespace contextMenuItems {
 
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
@@ -73,5 +69,8 @@ public:
         }
     }
 };
+    
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__VoronoiCellsContextMenuItem__) */

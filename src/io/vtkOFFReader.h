@@ -19,6 +19,9 @@
 #include <sstream>
 #include <fstream>
 
+namespace io {
+
+/// \brief Vtk class to load shapes from .off format.
 class vtkOFFReader : public vtkPolyDataAlgorithm {
 public:
     vtkTypeMacro(vtkOFFReader, vtkPolyDataAlgorithm);
@@ -41,6 +44,7 @@ private:
     
     char* FileName;
 };
-    
+   
+}
 
 #endif

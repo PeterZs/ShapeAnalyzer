@@ -14,6 +14,9 @@
 #include <sstream>
 #include <fstream>
 
+namespace io {
+
+/// \brief Vtk class to write shapes into tosca .vert and .tri format.
 class vtkToscaWriter : public vtkWriter {
 public:
     static vtkToscaWriter *New();
@@ -47,5 +50,7 @@ private:
     vtkToscaWriter(const vtkToscaWriter&);  // Not implemented.
     void operator=(const vtkToscaWriter&);  // Not implemented.
 };
+    
+}
 
 #endif /* defined(__ShapeAnalyzer__vtkToscaWriter__) */

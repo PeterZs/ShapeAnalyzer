@@ -6,7 +6,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-CorrespondenceColoringTab::CorrespondenceColoringTab(
+custom::tabs::CorrespondenceColoringTab::CorrespondenceColoringTab(
                                                      const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
                                                      const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
                                                      const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences, ShapeAnalyzerInterface* shapeAnalyzer)
@@ -40,7 +40,7 @@ CorrespondenceColoringTab::CorrespondenceColoringTab(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::slotColorCorrespondences() {
+void custom::tabs::CorrespondenceColoringTab::slotColorCorrespondences() {
     Shape* reference = nullptr;
     
     // get Shape corresponding with the label
@@ -137,7 +137,7 @@ void CorrespondenceColoringTab::slotColorCorrespondences() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::slotClearColoring() {
+void custom::tabs::CorrespondenceColoringTab::slotClearColoring() {
     for (auto entry : shapes_) {
         entry.second->clearColoring();
     }
@@ -151,7 +151,7 @@ void CorrespondenceColoringTab::slotClearColoring() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::onShapeDelete(Shape *shape) {
+void custom::tabs::CorrespondenceColoringTab::onShapeDelete(Shape *shape) {
     for(int i = comboBoxReference->count()-1; i >= 0; i--) {
         // check if items name matches the on in the combo box, if yes delete
         if(comboBoxReference->itemText(i).split(':')[0].toInt() == shape->getId()) {
@@ -167,7 +167,7 @@ void CorrespondenceColoringTab::onShapeDelete(Shape *shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::onShapeAdd(Shape *shape) {
+void custom::tabs::CorrespondenceColoringTab::onShapeAdd(Shape *shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     comboBoxReference->addItem(label);
@@ -175,7 +175,7 @@ void CorrespondenceColoringTab::onShapeAdd(Shape *shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::onShapeEdit(Shape *shape) {
+void custom::tabs::CorrespondenceColoringTab::onShapeEdit(Shape *shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -189,7 +189,7 @@ void CorrespondenceColoringTab::onShapeEdit(Shape *shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::onClear() {
+void custom::tabs::CorrespondenceColoringTab::onClear() {
     comboBoxReference->clear();
     clearGrid();
 }
@@ -201,7 +201,7 @@ void CorrespondenceColoringTab::onClear() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void CorrespondenceColoringTab::clearGrid() {
+void custom::tabs::CorrespondenceColoringTab::clearGrid() {
     for (int i = 1; i < gridLayout->rowCount(); i++) {
         for (int j = 0; j < gridLayout->columnCount(); j++) {
             if(gridLayout->itemAtPosition(i, j) != nullptr)

@@ -42,9 +42,16 @@
 #include "../domain/segmentation/Segmentation.h"
 #include "../domain/segmentation/VoronoiCellSegmentation.h"
 
+using namespace custom;
+using namespace custom::tabs;
+using namespace custom::contextMenuItems;
+
 typedef Factory<CustomTab, const HashMap<vtkActor*, shared_ptr<Shape>>&, const HashMap<shared_ptr<PointCorrespondence>, bool>&, const HashMap<shared_ptr<FaceCorrespondence>, bool>&, ShapeAnalyzerInterface*> CustomTabFactory;
 
 typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;
+
+/// \brief Namespace for all custom classes that have to be registered via a Factory
+namespace custom {
 
 ///\brief Class for registration of concrete CustomTab and CustomContextMenuItem classes.
 ///\details The registered classes and their methods are automatically connected to the respective menu items and widgest in the QT GUI.
@@ -82,5 +89,7 @@ struct CustomClassesRegistry {
         CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract chosen segment as new Shape");
     }
 };
+    
+}
 
 #endif

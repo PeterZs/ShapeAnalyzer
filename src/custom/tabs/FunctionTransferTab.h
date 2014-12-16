@@ -23,6 +23,9 @@
 
 #include "ui_FunctionTransferTabWidget.h"
 
+namespace custom {
+namespace tabs {
+
 class FunctionTransferTab : public QWidget, private Ui::FunctionTransferTabWidget, public CustomTab {
     Q_OBJECT
     
@@ -41,5 +44,8 @@ public:
 private slots:
     virtual void slotTransfer();
 };
+
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__FunctionTransferTab__) */

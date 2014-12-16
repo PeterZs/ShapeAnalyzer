@@ -25,7 +25,10 @@
 
 using namespace correspondences;
 
-//Class responsible for creating a correspondence
+/// \brief Responsible for creating new Correspondence objects.
+/// \details TODO
+/// @tparam Should be PointCorrespondence or FaceCorrespondence
+/// @author Emanuel Laude and Zorah Lähner
 template<class T>
 class CorrespondencePicker {
 public:
@@ -172,12 +175,14 @@ private:
     
     // visualization stuff
     
-    // moving line between last selected point and mouse coordinates
+    /// \brief Moving line between last selected point and mouse coordinates.
     vtkSmartPointer<vtkActor> lineActor_;
+    /// \brief vtkMapper for lineActor_.
     vtkSmartPointer<vtkPolyDataMapper> lineMapper_;
     
-    // actor responsible for visualizing selected vertex or selected face on selected shape
+    /// \brief Actor responsible for visualizing selected vertex or selected face on selected shape.
     vtkSmartPointer<vtkActor> selectionActor_;
+    /// \brief vtkMapper for selectionMapper_.
     vtkSmartPointer<vtkPolyDataMapper> selectionMapper_;
     
     vtkSmartPointer<vtkRenderer> renderer_;

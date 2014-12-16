@@ -1,10 +1,3 @@
-//
-//  ShapeInterpolationTab.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 24.08.14.
-//
-//
 
 #ifndef __ShapeAnalyzer__ShapeInterpolationTab__
 #define __ShapeAnalyzer__ShapeInterpolationTab__
@@ -26,6 +19,8 @@
 
 #include "ui_ShapeInterpolationTabWidget.h"
 
+namespace custom {
+namespace tabs {
 
 class ShapeInterpolationTab : public QWidget, private Ui::ShapeInterpolationTabWidget, public CustomTab {
     Q_OBJECT
@@ -54,5 +49,8 @@ private:
     /// Interpolated shape.
     Shape* shape_;
 };
+    
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__ShapeInterpolationTab__) */

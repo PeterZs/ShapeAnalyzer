@@ -1,15 +1,19 @@
 #include "FunctionTransferTab.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-FunctionTransferTab::~FunctionTransferTab() {
+custom::tabs::FunctionTransferTab::~FunctionTransferTab() {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
-                                         const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
-                                         const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
-                                         ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer) {
+custom::tabs::FunctionTransferTab::FunctionTransferTab(
+                                const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                                const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                                const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                                ShapeAnalyzerInterface* shapeAnalyzer)
+    :   QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0),
+        CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer)
+{
     this->setupUi(this);
 
     QStringList labels;
@@ -34,7 +38,7 @@ FunctionTransferTab::FunctionTransferTab(const HashMap<vtkActor*, shared_ptr<Sha
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FunctionTransferTab::slotTransfer() {
+void custom::tabs::FunctionTransferTab::slotTransfer() {
     vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
     vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
 
@@ -135,7 +139,7 @@ void FunctionTransferTab::slotTransfer() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FunctionTransferTab::onShapeAdd(Shape* shape) {
+void custom::tabs::FunctionTransferTab::onShapeAdd(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     comboBoxSourceShape->insertItem(0, label);
@@ -145,7 +149,7 @@ void FunctionTransferTab::onShapeAdd(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FunctionTransferTab::onShapeDelete(Shape* shape) {
+void custom::tabs::FunctionTransferTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
         if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
             comboBoxSourceShape->removeItem(i);
@@ -166,7 +170,7 @@ void FunctionTransferTab::onShapeDelete(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FunctionTransferTab::onShapeEdit(Shape* shape) {
+void custom::tabs::FunctionTransferTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -187,7 +191,7 @@ void FunctionTransferTab::onShapeEdit(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void FunctionTransferTab::onClear() {
+void custom::tabs::FunctionTransferTab::onClear() {
     this->comboBoxSourceShape->clear();
     this->comboBoxTargetShape->clear();
     this->buttonTransfer->setEnabled(false);

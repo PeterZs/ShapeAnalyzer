@@ -3,10 +3,11 @@
 
 #include "../../util/Error.h"
 
-/// \brief Specific class for errors occurring with the metric calculation.
-/// @author Emanuel Laude and Zorah Lähner
 namespace laplaceBeltrami {
-    class LaplaceBeltramiError : public Error {
+    
+/// \brief Specific class for errors occurring while calculation the Laplace Beltrami operator.
+/// @author Emanuel Laude and Zorah Lähner
+class LaplaceBeltramiError : public Error {
     public:
         LaplaceBeltramiError() : Error() {}
         LaplaceBeltramiError(const std::string& str) : Error(str) {}

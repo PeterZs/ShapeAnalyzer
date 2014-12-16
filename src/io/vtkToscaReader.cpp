@@ -1,12 +1,14 @@
 #include "vtkToscaReader.h"
 
+namespace io {
 vtkStandardNewMacro(vtkToscaReader);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Description:
 // Instantiate object with NULL filename.
-vtkToscaReader::vtkToscaReader() {
+io::vtkToscaReader::vtkToscaReader() {
     this->FileName = NULL;
     this->SetNumberOfInputPorts(0);
     this->SetNumberOfOutputPorts(1);
@@ -14,12 +16,12 @@ vtkToscaReader::vtkToscaReader() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkToscaReader::~vtkToscaReader() {
+io::vtkToscaReader::~vtkToscaReader() {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
+int io::vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
     if (port == 0) {
         info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData");
         return 1;
@@ -30,7 +32,7 @@ int vtkToscaReader::FillOutputPortInformation(int port, vtkInformation* info) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
+int io::vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
                               vtkInformationVector **vtkNotUsed(inputVector),
                               vtkInformationVector *outputVector) {
     // get the info object
@@ -105,7 +107,7 @@ int vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkToscaReader::PrintSelf(ostream& os, vtkIndent indent) {
+void io::vtkToscaReader::PrintSelf(ostream& os, vtkIndent indent) {
     this->Superclass::PrintSelf(os,indent);
     os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";
 }

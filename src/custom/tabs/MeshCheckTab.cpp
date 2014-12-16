@@ -6,11 +6,13 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-MeshCheckTab::MeshCheckTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
-                           const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
-                           const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
-                           ShapeAnalyzerInterface* shapeAnalyzer)
-: QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer)
+custom::tabs::MeshCheckTab::MeshCheckTab(
+                        const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                        const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                        const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                        ShapeAnalyzerInterface* shapeAnalyzer)
+    :   QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0),
+        CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer)
 {
     this->setupUi(this);
     
@@ -29,7 +31,7 @@ MeshCheckTab::MeshCheckTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::slotCheckMesh() {
+void custom::tabs::MeshCheckTab::slotCheckMesh() {
     // clear previous output
     this->textBrowserOutput->clear();
     
@@ -141,7 +143,7 @@ void MeshCheckTab::slotCheckMesh() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::onShapeDelete(Shape* shape) {
+void custom::tabs::MeshCheckTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxMesh->count()-1; i >= 0; i--) {
         // check if items name matches the on in the combo box, if yes delete
         if(comboBoxMesh->itemText(i).split(':')[0].toInt() == shape->getId()) {
@@ -157,7 +159,7 @@ void MeshCheckTab::onShapeDelete(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::onShapeAdd(Shape* shape) {
+void custom::tabs::MeshCheckTab::onShapeAdd(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     comboBoxMesh->addItem(label);
@@ -165,7 +167,7 @@ void MeshCheckTab::onShapeAdd(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::onShapeEdit(Shape* shape) {
+void custom::tabs::MeshCheckTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -179,7 +181,7 @@ void MeshCheckTab::onShapeEdit(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::onClear() {
+void custom::tabs::MeshCheckTab::onClear() {
     this->comboBoxMesh->clear();
     this->textBrowserOutput->clear();
 }
@@ -191,7 +193,7 @@ void MeshCheckTab::onClear() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MeshCheckTab::setUpComboBox() {
+void custom::tabs::MeshCheckTab::setUpComboBox() {
     this->comboBoxMesh->clear();
     
     this->comboBoxMesh->insertItem(0, QString(tr(" ")));

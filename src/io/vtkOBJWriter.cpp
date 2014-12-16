@@ -1,9 +1,11 @@
 #include "vtkOBJWriter.h"
 
+namespace io {
 vtkStandardNewMacro(vtkOBJWriter);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkOBJWriter::vtkOBJWriter() {
+io::vtkOBJWriter::vtkOBJWriter() {
     std::ofstream fout; // only used to extract the default precision
     this->DecimalPrecision = fout.precision();
     this->FileName = NULL;
@@ -11,9 +13,9 @@ vtkOBJWriter::vtkOBJWriter() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkOBJWriter::~vtkOBJWriter(){}
+io::vtkOBJWriter::~vtkOBJWriter(){}
 
-void vtkOBJWriter::WriteData() {
+void io::vtkOBJWriter::WriteData() {
     vtkPolyData *input = this->GetInput();
     if (!input)
         return;
@@ -169,26 +171,26 @@ void vtkOBJWriter::WriteData() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkOBJWriter::PrintSelf(ostream& os, vtkIndent indent) {
+void io::vtkOBJWriter::PrintSelf(ostream& os, vtkIndent indent) {
     Superclass::PrintSelf(os, indent);
     os << indent << "DecimalPrecision: " << DecimalPrecision << "\n";
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkOBJWriter::FillInputPortInformation(int, vtkInformation *info) {
+int io::vtkOBJWriter::FillInputPortInformation(int, vtkInformation *info) {
     info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
     return 1;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkOBJWriter::GetInput() {
+vtkPolyData* io::vtkOBJWriter::GetInput() {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkPolyData* vtkOBJWriter::GetInput(int port) {
+vtkPolyData* io::vtkOBJWriter::GetInput(int port) {
     return vtkPolyData::SafeDownCast(this->Superclass::GetInput(port));
 }

@@ -19,6 +19,9 @@
 
 #include "ui_IdentityMatchingTabWidget.h"
 
+namespace custom {
+namespace tabs {
+
 /// \brief Tab to match same point/face ids on two shapes.
 /// \details If two different shapes have been selected points/faces with the same ids will be matched together.
 /// If a lower density is selected the ids will be selected evenly (e.g. every second id). The shapes do not
@@ -41,5 +44,8 @@ public:
 private slots:
     virtual void slotMatch();
 };
+    
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__IdentityMatchingTab__) */

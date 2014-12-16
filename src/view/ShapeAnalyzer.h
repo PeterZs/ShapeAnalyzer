@@ -86,6 +86,7 @@
 #include "ui_ShapeAnalyzer.h"
 
 using namespace std;
+using namespace io;
 
 ///
 /// \brief Manages the interaction with the GUI.

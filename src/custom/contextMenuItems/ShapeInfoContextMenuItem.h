@@ -1,10 +1,3 @@
-//
-//  ShapeInfoContextMenuItem.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #ifndef __ShapeAnalyzer__ShapeInfoContextMenuItem__
 #define __ShapeAnalyzer__ShapeInfoContextMenuItem__
@@ -20,11 +13,17 @@
 
 using namespace std;
 
+namespace custom {
+namespace contextMenuItems {
+
 class ShapeInfoContextMenuItem : public CustomContextMenuItem {
 public:
     ShapeInfoContextMenuItem(shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer) : CustomContextMenuItem(shape, shapeAnalyzer) {}
     
     virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent);
 };
+    
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__ShapeInfoContextMenuItem__) */

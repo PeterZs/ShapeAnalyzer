@@ -4,17 +4,15 @@
 #include <QString>
 #include <QListWidgetItem>
 
+using namespace std;
+
 ///
-/// General QListWidgetItem that can contain a pointer to an
+/// \brief General QListWidgetItem that can contain a pointer to an
 /// object of class T.
 /// @tparam T The type of reference the list item contains
 ///
 /// @author Emanuel Laude and Zorah Lähner
 ///
-///
-
-using namespace std;
-
 template<class T>
 class CustomListWidgetItem : public QListWidgetItem {
 public:

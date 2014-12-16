@@ -2,7 +2,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-pair<int, int> SceneWriterReader::importSceneBinary(
+pair<int, int> io::SceneWriterReader::importSceneBinary(
                                                 string filename,
                                           vtkSmartPointer<vtkRenderer> renderer,
                                           vector<shared_ptr<Shape>>& shapes,
@@ -12,6 +12,11 @@ pair<int, int> SceneWriterReader::importSceneBinary(
     
     //open input file stream in binary mode
     ifstream is(filename, ios::binary);
+    
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+
+    }
     
     //read number of shapes
     int64_t numberOfShapes;
@@ -29,6 +34,27 @@ pair<int, int> SceneWriterReader::importSceneBinary(
         shapes.push_back(shape);
         shapesById.insert(make_pair(shape->getId(), shape));
     }
+    
+    // read camera attributes
+    double focalPoint[3];
+    is.read(reinterpret_cast<char*>(&focalPoint), 3 * sizeof(double));
+    renderer->GetActiveCamera()->SetFocalPoint(focalPoint);
+    
+    double position[3];
+    is.read(reinterpret_cast<char*>(&position), 3 * sizeof(double));
+    renderer->GetActiveCamera()->SetPosition(position);
+    
+    double viewUp[3];
+    is.read(reinterpret_cast<char*>(&viewUp), 3 * sizeof(double));
+    renderer->GetActiveCamera()->SetViewUp(viewUp);
+    
+    double viewAngle;
+    is.read(reinterpret_cast<char*>(&viewAngle), sizeof(double));
+    renderer->GetActiveCamera()->SetViewAngle(viewAngle);
+    
+    double parallelScale;
+    is.read(reinterpret_cast<char*>(&parallelScale), sizeof(double));
+    renderer->GetActiveCamera()->SetParallelScale(parallelScale);
     
     //read last insert correspondence ID
     is.read(reinterpret_cast<char*>(&lastInsertIds.second), sizeof(int64_t));
@@ -96,12 +122,19 @@ pair<int, int> SceneWriterReader::importSceneBinary(
     }
     is.close();
     
+    // check if stream is empty
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a scene.");
+        
+    }
+    
     return lastInsertIds;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportSceneBinary(string filename,
+void io::SceneWriterReader::exportSceneBinary(string filename,
                                           vtkSmartPointer<vtkRenderer> renderer,
                                           vector<shared_ptr<Shape>>& shapes,
                                           int lastInsertShapeId,
@@ -119,6 +152,25 @@ void SceneWriterReader::exportSceneBinary(string filename,
     for(auto it : shapes) {
         exportShapeBinary(os, it.get());
     }
+    
+    // write camera attributes
+    double focalPoint[3];
+    renderer->GetActiveCamera()->GetFocalPoint(focalPoint);
+    os.write(reinterpret_cast<const char*>(focalPoint), 3 * sizeof(double));
+    
+    double position[3];
+    renderer->GetActiveCamera()->GetPosition(position);
+    os.write(reinterpret_cast<const char*>(position), 3 * sizeof(double));
+    
+    double viewUp[3];
+    renderer->GetActiveCamera()->GetViewUp(viewUp);
+    os.write(reinterpret_cast<const char*>(viewUp), 3 * sizeof(double));
+    
+    double viewAngle = renderer->GetActiveCamera()->GetViewAngle();
+    os.write(reinterpret_cast<const char*>(&viewAngle), sizeof(double));
+    
+    double parallelScale = renderer->GetActiveCamera()->GetParallelScale();
+    os.write(reinterpret_cast<const char*>(&parallelScale), sizeof(double));
     
     // write last insert correspondence id
     int64_t lastInsertCid = (int64_t) lastInsertCorrespondenceId;
@@ -175,13 +227,18 @@ void SceneWriterReader::exportSceneBinary(string filename,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-pair<int, int> SceneWriterReader::importSceneASCII(string filename,
+pair<int, int> io::SceneWriterReader::importSceneASCII(string filename,
                                          vtkSmartPointer<vtkRenderer> renderer,
                                          vector<shared_ptr<Shape>>& shapes,
                                          vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>>& pointCorrespondences,
                                          vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>& faceCorrespondences
                                          ) {
     ifstream is(filename);
+    
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+        
+    }
     
     string line;
     
@@ -357,6 +414,13 @@ pair<int, int> SceneWriterReader::importSceneASCII(string filename,
         faceCorrespondences.push_back(make_pair(correspondence, visualCorrespondence));
     }
     
+    // check if stream is empty
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a scene.");
+        
+    }
+    
     is.close();
     
     return lastInsertIds;
@@ -364,7 +428,7 @@ pair<int, int> SceneWriterReader::importSceneASCII(string filename,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportSceneASCII(string filename,
+void io::SceneWriterReader::exportSceneASCII(string filename,
                                          
                                          vtkSmartPointer<vtkRenderer> renderer,
  vector<shared_ptr<Shape>>& shapes,
@@ -460,7 +524,7 @@ void SceneWriterReader::exportSceneASCII(string filename,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportPointCorrespondencesASCII(
+void io::SceneWriterReader::exportPointCorrespondencesASCII(
                                                         const HashMap<shared_ptr<PointCorrespondence>, bool>&   pointCorrespondences,
                                                         const vector<shared_ptr<Shape>>&                        shapesOrderedById,
                                                         const string                                            filename
@@ -503,7 +567,7 @@ void SceneWriterReader::exportPointCorrespondencesASCII(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportFaceCorrespondencesASCII(
+void io::SceneWriterReader::exportFaceCorrespondencesASCII(
                                                        const HashMap<shared_ptr<FaceCorrespondence>, bool>&    faceCorrespondences,
                                                        const vector<shared_ptr<Shape>>&                        shapesOrderedById,
                                                        const string                                            filename
@@ -547,7 +611,7 @@ void SceneWriterReader::exportFaceCorrespondencesASCII(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::importCorrespondencesASCII(
+void io::SceneWriterReader::importCorrespondencesASCII(
                                                    const string                                    filename,
                                                    function<shared_ptr<PointCorrespondence>()>     pointCorrespondenceFactory,
                                                    function<shared_ptr<FaceCorrespondence>()>      faceCorrespondenceFactory,
@@ -559,6 +623,12 @@ void SceneWriterReader::importCorrespondencesASCII(
 {
 
     ifstream is(filename);
+    
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+        
+    }
+    
     string line;
     
     // read 3 lines, type of correspondences, number of shapes, number of correspondences
@@ -573,8 +643,7 @@ void SceneWriterReader::importCorrespondencesASCII(
 
     // stop if there not enough shapes to match
     if (shapesOrderedById.size() < numberOfShapes) {
-        //TODO throw reader exception here, catch by main program
-        return;
+        throw IOError("The scene does not contain enough shapes or the file is faulty.");
     }
     
     QStringList labels;
@@ -644,11 +713,19 @@ void SceneWriterReader::importCorrespondencesASCII(
             pointCorrespondences.push_back(dynamic_pointer_cast<PointCorrespondence>(correspondence));
         }
     }
+    
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a valid correspondence set.");
+        
+    }
+    
+    is.close();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportPointCorrespondencesBinary(
+void io::SceneWriterReader::exportPointCorrespondencesBinary(
                                                          const HashMap<shared_ptr<PointCorrespondence>, bool>&   pointCorrespondences,
                                                          const vector<shared_ptr<Shape>>&                        shapesOrderedById,
                                                          const string                                            filename
@@ -697,7 +774,7 @@ void SceneWriterReader::exportPointCorrespondencesBinary(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportFaceCorrespondencesBinary(
+void io::SceneWriterReader::exportFaceCorrespondencesBinary(
                                                         const HashMap<shared_ptr<FaceCorrespondence>, bool>&    faceCorrespondences,
                                                         const vector<shared_ptr<Shape>>&                        shapesOrderedById,
                                                         const string                                            filename
@@ -746,7 +823,7 @@ void SceneWriterReader::exportFaceCorrespondencesBinary(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::importCorrespondencesBinary(
+void io::SceneWriterReader::importCorrespondencesBinary(
                                                     const string                                    filename,
                                                     function<shared_ptr<PointCorrespondence>()>     pointCorrespondenceFactory,
                                                     function<shared_ptr<FaceCorrespondence>()>      faceCorrespondenceFactory,
@@ -758,6 +835,11 @@ void SceneWriterReader::importCorrespondencesBinary(
 {
     
     ifstream is(filename, ios::binary);
+    
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+        
+    }
 
     // read 3 lines, type of correspondences, number of shapes, number of correspondences
     char type;
@@ -770,8 +852,7 @@ void SceneWriterReader::importCorrespondencesBinary(
     
     // stop if there not enough shapes to match
     if (shapesOrderedById.size() < numberOfShapes) {
-        //TODO throw reader exception here, catch by main program
-        return;
+        throw IOError("The scene does not contain enough shapes or the file is faulty.");
     }
     
     QStringList labels;
@@ -841,19 +922,29 @@ void SceneWriterReader::importCorrespondencesBinary(
             pointCorrespondences.push_back(dynamic_pointer_cast<PointCorrespondence>(correspondence));
         }
     }
+    
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a valid correspondence set.");
+        
+    }
+    
+    is.close();
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportShapeBinary(string filename, Shape* shape) {
+void io::SceneWriterReader::exportShapeBinary(string filename, Shape* shape) {
     ofstream os(filename, ios::binary);
     
     exportShapeBinary(os, shape);
+    
+    os.close();
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportShapeBinary(ostream& os, Shape* shape) {
+void io::SceneWriterReader::exportShapeBinary(ostream& os, Shape* shape) {
     
     //write shape ID.
     int64_t id = (int64_t) shape->getId();
@@ -910,15 +1001,30 @@ void SceneWriterReader::exportShapeBinary(ostream& os, Shape* shape) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-shared_ptr<Shape> SceneWriterReader::importShapeBinary(string filename, vtkSmartPointer<vtkRenderer> renderer) {
+shared_ptr<Shape> io::SceneWriterReader::importShapeBinary(string filename, vtkSmartPointer<vtkRenderer> renderer) {
     ifstream is(filename, ios::binary);
     
-    return importShapeBinary(is, renderer);
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+        
+    }
+    
+    shared_ptr<Shape> shape = importShapeBinary(is, renderer);
+    
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a valid shape.");
+        
+    }
+    
+    is.close();
+    
+    return shape;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-shared_ptr<Shape> SceneWriterReader::importShapeBinary(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
+shared_ptr<Shape> io::SceneWriterReader::importShapeBinary(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
     
     vtkIdType id_in;
     string name_in;
@@ -986,15 +1092,17 @@ shared_ptr<Shape> SceneWriterReader::importShapeBinary(istream& is, vtkSmartPoin
 
 
 /////////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportShapeASCII(string filename, Shape* shape) {
+void io::SceneWriterReader::exportShapeASCII(string filename, Shape* shape) {
     ofstream os(filename);
     
     exportShapeASCII(os, shape);
+    
+    os.close();
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-void SceneWriterReader::exportShapeASCII(ostream& os, Shape* shape) {
+void io::SceneWriterReader::exportShapeASCII(ostream& os, Shape* shape) {
     
     os << shape->getId() << endl;
     os << shape->getName() << endl;
@@ -1030,15 +1138,30 @@ void SceneWriterReader::exportShapeASCII(ostream& os, Shape* shape) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-shared_ptr<Shape> SceneWriterReader::importShapeASCII(string filename, vtkSmartPointer<vtkRenderer> renderer) {
+shared_ptr<Shape> io::SceneWriterReader::importShapeASCII(string filename, vtkSmartPointer<vtkRenderer> renderer) {
     ifstream is(filename);
     
-    return importShapeASCII(is, renderer);
+    if (!is.good()) {
+        throw IOError("The file is not readable.");
+        
+    }
+    
+    shared_ptr<Shape> shape = importShapeASCII(is, renderer);
+    
+    is.peek();
+    if (!is.eof()) {
+        throw IOError("The file content is not a valid shape.");
+        
+    }
+    
+    is.close();
+    
+    return shape;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-shared_ptr<Shape> SceneWriterReader::importShapeASCII(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
+shared_ptr<Shape> io::SceneWriterReader::importShapeASCII(istream& is, vtkSmartPointer<vtkRenderer> renderer) {
     
     vtkIdType id;
     string name;

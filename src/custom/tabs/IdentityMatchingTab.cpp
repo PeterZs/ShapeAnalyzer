@@ -1,15 +1,19 @@
 #include "IdentityMatchingTab.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-IdentityMatchingTab::~IdentityMatchingTab() {
+custom::tabs::IdentityMatchingTab::~IdentityMatchingTab() {
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-IdentityMatchingTab::IdentityMatchingTab(const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
-                                         const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
-                                         const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
-                                         ShapeAnalyzerInterface* shapeAnalyzer) : QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0), CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer) {
+custom::tabs::IdentityMatchingTab::IdentityMatchingTab(
+                            const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+                            const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+                            const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+                            ShapeAnalyzerInterface* shapeAnalyzer)
+        :   QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0),
+            CustomTab(shapes, pointCorrespondences, faceCorrespondences, shapeAnalyzer)
+{
     this->setupUi(this);
     
     QStringList labels;
@@ -34,7 +38,7 @@ IdentityMatchingTab::IdentityMatchingTab(const HashMap<vtkActor*, shared_ptr<Sha
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void IdentityMatchingTab::slotMatch() {
+void custom::tabs::IdentityMatchingTab::slotMatch() {
     vtkIdType sid1 = comboBoxShape1->currentText().split(':')[0].toInt();
     vtkIdType sid2 = comboBoxShape2->currentText().split(':')[0].toInt();
 
@@ -52,7 +56,13 @@ void IdentityMatchingTab::slotMatch() {
         }
     }
     if(shape1 == shape2) {
-        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The two shapes \"" + QString(shape1->getName().c_str()) + "\" and \"" + QString(shape2->getName().c_str()) + "\" have to be different.");
+        QMessageBox::warning(
+                             dynamic_cast<QWidget*>(shapeAnalyzer_),
+                             "Error", "The two shapes \""
+                                + QString(shape1->getName().c_str())
+                                + "\" and \"" + QString(shape2->getName().c_str())
+                                + "\" have to be different."
+                             );
         return;
     }
 
@@ -61,7 +71,10 @@ void IdentityMatchingTab::slotMatch() {
     
     int type = comboBoxCorrespondenceType->currentIndex();
     if(type == 0) {
-        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i+=step) {
+        for(int i = 0;
+            i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints());
+            i+=step)
+        {
             vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
@@ -69,7 +82,10 @@ void IdentityMatchingTab::slotMatch() {
             shapeAnalyzer_->addPointCorrespondence(correspondence);
         }
     } else {
-        for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
+        for(int i = 0;
+            i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells());
+            i+=step)
+        {
             vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
             correspondence.push_back(make_pair(shape1, i));
             correspondence.push_back(make_pair(shape2, i));
@@ -81,7 +97,7 @@ void IdentityMatchingTab::slotMatch() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void IdentityMatchingTab::onShapeAdd(Shape* shape) {
+void custom::tabs::IdentityMatchingTab::onShapeAdd(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     comboBoxShape1->insertItem(0, label);
@@ -92,7 +108,7 @@ void IdentityMatchingTab::onShapeAdd(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void IdentityMatchingTab::onShapeDelete(Shape* shape) {
+void custom::tabs::IdentityMatchingTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxShape1->count()-1; i >= 0; i--) {
         if(comboBoxShape1->itemText(i).split(':')[0].toInt() == shape->getId()) {
             comboBoxShape1->removeItem(i);
@@ -114,7 +130,7 @@ void IdentityMatchingTab::onShapeDelete(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void IdentityMatchingTab::onShapeEdit(Shape* shape) {
+void custom::tabs::IdentityMatchingTab::onShapeEdit(Shape* shape) {
     QString label = QString::number(shape->getId());
     label.append(QString::fromStdString(":"+shape->getName()));
     
@@ -135,7 +151,7 @@ void IdentityMatchingTab::onShapeEdit(Shape* shape) {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void IdentityMatchingTab::onClear() {
+void custom::tabs::IdentityMatchingTab::onClear() {
     this->comboBoxShape1->clear();
     this->comboBoxShape2->clear();
 

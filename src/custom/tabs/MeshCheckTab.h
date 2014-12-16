@@ -18,6 +18,9 @@
 
 #include "ui_MeshCheckTabWidget.h"
 
+namespace custom {
+namespace tabs {
+
 /// \brief Tab for the MeshChecker class.
 /// \details All functionalities of the MeshChecker can be chosen individually and
 /// the output will be displayed in a text field.
@@ -45,4 +48,6 @@ private:
 };
 
 
+}
+}
 #endif /* defined(__ShapeAnalyzer__MeshCheckTab__) */

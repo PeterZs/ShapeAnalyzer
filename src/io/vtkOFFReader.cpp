@@ -1,12 +1,14 @@
 #include "vtkOFFReader.h"
 
+namespace io {
 vtkStandardNewMacro(vtkOFFReader);
-
+}
+    
 
 ///////////////////////////////////////////////////////////////////////////////
 // Description:
 // Instantiate object with NULL filename.
-vtkOFFReader::vtkOFFReader() {
+io::vtkOFFReader::vtkOFFReader() {
     this->FileName = NULL;
     this->SetNumberOfInputPorts(0);
     this->SetNumberOfOutputPorts(1);
@@ -14,10 +16,10 @@ vtkOFFReader::vtkOFFReader() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-vtkOFFReader::~vtkOFFReader() {
+io::vtkOFFReader::~vtkOFFReader() {
 }
 
-int vtkOFFReader::FillOutputPortInformation(int port, vtkInformation* info) {
+int io::vtkOFFReader::FillOutputPortInformation(int port, vtkInformation* info) {
     if (port == 0) {
         info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData" );
         return 1;
@@ -37,7 +39,7 @@ http://people.sc.fsu.edu/~burkardt/data/off/off.html
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
+int io::vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
                               vtkInformationVector **vtkNotUsed(inputVector),
                               vtkInformationVector *outputVector) {
     // get the info object
@@ -145,7 +147,7 @@ int vtkOFFReader::RequestData(vtkInformation *vtkNotUsed(request),
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void vtkOFFReader::PrintSelf(ostream& os, vtkIndent indent) {
+void io::vtkOFFReader::PrintSelf(ostream& os, vtkIndent indent) {
     this->Superclass::PrintSelf(os,indent);
     os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";
 }

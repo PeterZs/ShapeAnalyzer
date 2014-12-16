@@ -1,15 +1,12 @@
-//
-//  ShapeInfoMenuItem.cpp
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #include "ShapeInfoContextMenuItem.h"
 
-
-void ShapeInfoContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+///////////////////////////////////////////////////////////////////////////////
+void custom::contextMenuItems::ShapeInfoContextMenuItem::onClick(
+                                                vtkIdType pointId,
+                                                vtkIdType faceId,
+                                                QWidget* parent)
+{
 
     QDialog* dialog = new QDialog(parent, 0);
     Ui_ShapeInfoDialog ui;

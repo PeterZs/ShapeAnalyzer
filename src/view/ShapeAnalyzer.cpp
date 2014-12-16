@@ -672,6 +672,8 @@ void ShapeAnalyzer::slotOpenScene() {
     vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>> pointCorrespondences;
     vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>> faceCorrespondences;
     
+    try {
+        
     if(filename.endsWith(tr(".bin"))) {
         pair<int, int> lastInsertIds = SceneWriterReader::importSceneBinary(filename.toStdString(), renderer_, shapes, pointCorrespondences, faceCorrespondences);
         lastInsertShapeId_ = lastInsertIds.first;
@@ -716,6 +718,10 @@ void ShapeAnalyzer::slotOpenScene() {
         } else {
             faceCorrespondences_.insert(entry.first, false);
         }
+    }
+        
+    } catch(IOError& e) {
+        QMessageBox::warning(this, "Exception", e.what());
     }
     
     
@@ -859,6 +865,8 @@ void ShapeAnalyzer::slotImportCorrespondences() {
         return make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
     };
     
+    try {
+        
     if(filename.endsWith(".txt")) {
         SceneWriterReader::importCorrespondencesASCII(filename.toStdString(), pointCorrespondenceFactory, faceCorrespondenceFactory, pointCorrespondences, faceCorrespondences, shapes, this);
     } else {
@@ -874,6 +882,10 @@ void ShapeAnalyzer::slotImportCorrespondences() {
     // insert face correspondences and fire corresponding events if vector not empty
     for(auto c : faceCorrespondences) {
         faceCorrespondences_.insert(c, false);
+    }
+        
+    } catch(IOError& e) {
+        QMessageBox::warning(this, "Exception", e.what());
     }
     
     qtUpdateLabelVisibleCorrespondences();

@@ -20,6 +20,9 @@
 #include <sstream>
 #include <fstream>
 
+namespace io {
+
+/// \brief Vtk class to load shapes from tosca .vert and .tri format.
 class vtkToscaReader : public vtkPolyDataAlgorithm {
 public:
     vtkTypeMacro(vtkToscaReader, vtkPolyDataAlgorithm);
@@ -43,6 +46,8 @@ private:
     char* FileName;
 };
     
+}
+
 
 #endif
 

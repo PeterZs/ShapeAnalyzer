@@ -14,6 +14,9 @@
 using namespace correspondences;
 using namespace std;
 
+namespace custom {
+namespace tabs {
+
 
 ///
 /// \brief Colors the given shapes to visualize the given correspondences.
@@ -83,6 +86,7 @@ protected:
     
 };
 
-
+}
+}
 
 #endif /* defined(__ShapeAnalyzer__CorrespondenceColoring__) */

@@ -1,10 +1,3 @@
-//
-//  ColorSignatureContextMenuItem.h
-//  ShapeAnalyzer
-//
-//  Created by Emanuel Laude on 12.11.14.
-//
-//
 
 #ifndef __ShapeAnalyzer__ColorSignatureContextMenuItem__
 #define __ShapeAnalyzer__ColorSignatureContextMenuItem__
@@ -25,6 +18,9 @@
 #include <vtkDoubleArray.h>
 
 using namespace std;
+
+namespace custom {
+namespace contextMenuItems {
 
 template<class T = PetscLaplaceBeltramiSignature>
 class ColorSignatureContextMenuItem : public CustomContextMenuItem {
@@ -63,4 +59,7 @@ public:
     }
 };
 
+}
+}
+    
 #endif /* defined(__ShapeAnalyzer__ColorSignatureContextMenuItem__) */

@@ -1,0 +1,45 @@
+% !TeX encoding=utf8
+% !TeX spellcheck = en-US
+
+\chapter{Coding Style}
+
+\begin{mdframed}
+\lettrine{A}{} lways code as if the person who ends up maintaining your code is a violent psychopath who knows where you live.
+\end{mdframed}
+
+Of course we don't know where you live but other people might actually want to use your code. The \href{http://google-styleguide.googlecode.com/svn/trunk/cppguide.html}{Google C++ Style Guide} is a good guideline. 
+
+\section{Documentation}
+
+Documentation should be done in \href{http://www.stack.nl/~dimitri/doxygen/}{Doxygen}. You have to use the C++ comment blocks starting with \texttt{///}, JavaDoc and QtDoc are not activated. 
+
+\begin{lstlisting}
+///
+/// \brief HashMap is a wrapper class for unordered_map with some extra features,
+/// e.g. a proper contains function and a random subset of the map can be 
+/// generated.
+/// \details A HashMap<KEY, VALUE> maps objects from type KEY to objects from 
+/// type value. It manages a unordered_map<KEY, VALUE> object and has some 
+/// special features. The first one is that the [] operator does not add keys to 
+/// the hash map when you try to access them although they did not exist. 
+/// Additionally you can get random subsets of the elements, keys or values.
+///
+/// @tparam KEY type used as the key in the hash map
+/// @tparam VALUE type of the mapped values
+/// \author Emanuel Laude and Zorah L\"ahner
+///
+\end{lstlisting}
+
+You can find a list of all possible commands \href{http://www.stack.nl/~dimitri/doxygen/manual/commands.html}{here}.
+
+\subsection{Installing and Using Doxygen}
+
+After \href{http://www.stack.nl/~dimitri/doxygen/download.html}{installing} Doxygen, you can update the documentation with the Doxyfile found in the projects root folder. If you have problem installing Doxygen with the binaries, try to compile it yourself. 
+
+\begin{lstlisting}[language=bash, numbers=none]
+	doxygen Doxyfile
+\end{lstlisting}
+
+\begin{mdframed}
+Do not add all the files produced by Doxygen to the repository.
+\end{mdframed}

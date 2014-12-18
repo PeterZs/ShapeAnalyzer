@@ -1,0 +1,46 @@
+% !TeX encoding=utf8
+% !TeX spellcheck = en-US
+
+\chapter{Customs}
+
+Customs refer to Qt objects that you can add to the GUI without changing the main application. There are CustomContextMenuItems (\ref{sec:CustomContextMenuItem}) and CustomTabs (\ref{sec:CustomTab}). CustomContextMenuItems allow you add menu items to the right click menu on shapes. It is possible to open input dialogs to get certin parameters for the function but if you need more complex inputs or outputs you are better off with a CustomTab. To make your Customs visible in the GUI you have to register them (see \ref{sec:RegisterCustoms}).
+
+\section{CustomContextMenuItem}
+\label{sec:CustomContextMenuItem}
+
+\begin{itemize}
+	\item \textbf{Have to implement} CustomContextMenuItem
+	\item \textbf{Found in} custom/contextMenuItems
+	\item \textbf{Use when} your algorithm works with exactly one shape and has limited input parameters
+\end{itemize}
+
+The abstract CustomContextMenuItem class is very limited and there is only one function to implement. See \ref{subsec:ExampleVoronoiCellsContextMenuItem} for an example. 
+
+\subsection{Abstract Functions}
+
+\begin{itemize}
+	\item \textbf{onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent)} Is triggered when the menu item was clicked. \texttt{pointId} refers to the id of the closest vertex of the shape in the vtkPolyData of the shape to where the click was. \texttt{faceId} refers to the id of the face of the shape in the vtkPolyData of the shape under the click. \texttt{parent} is a reference to the ShapeAnalyzer Widget which is needed to open QInputDialogs.
+\end{itemize}
+
+\subsection{Class attributes}
+\begin{itemize}
+	\item \texttt{shared_ptr<Shape>} \textbf{shape_} Reference to the clicked shape
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer_} Reference to the ShapeAnalyzerInterface see \ref{subsec:ShapeAnalyzerInterface}
+\end{itemize}
+
+\subsection{Example: VoronoiCellsContextMenuItem}
+\label{subsec:ExampleVoronoiCellsContextMenuItem}
+
+\section{CustomTab}
+\label{sec:CustomTab}
+
+\begin{itemize}
+	\item \textbf{Have to implement} CustomTab
+	\item \textbf{Found in} custom/tabs
+	\item \textbf{Use when} your algorithm is too complex for a menu item or when you might want to store information
+\end{itemize}
+
+
+
+\section{Registering Customs}
+\label{sec:RegisterCustoms}

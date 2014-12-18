@@ -359,10 +359,6 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     //create custom menu items out of the list of custom context menu items registered in the CustomContextMenuItemFactory
     HashMap<QAction*, string> customActions;
     qtParseContextMenuItems(&myMenu, customActions);
-
-    shared_ptr<Shape> currentShape;
-    CustomListWidgetItem<Shape> *item = (CustomListWidgetItem<Shape> *) this->listShapes->currentItem();
-    currentShape = item->getItem();
     
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
@@ -372,12 +368,12 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     } else if (selectedItem == renameAction) {
         qtInputDialogRenameShape((CustomListWidgetItem<Shape>*) this->listShapes->currentItem());
     } else if (selectedItem == exportAction) {
-        qtExportShapeDialog(currentShape.get());
+        qtExportShapeDialog(((CustomListWidgetItem<Shape> *) this->listShapes->currentItem())->getItem().get());
     } else if (selectedItem == opacityAction) {
-        qtInputDialogOpacity(currentShape.get());
+        qtInputDialogOpacity(((CustomListWidgetItem<Shape> *) this->listShapes->currentItem())->getItem().get());
     } else {
         if(customActions.containsKey(selectedItem)) {
-            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], currentShape, dynamic_cast<ShapeAnalyzerInterface*>(this)));
+            shared_ptr<CustomContextMenuItem> menuItem = shared_ptr<CustomContextMenuItem>(CustomContextMenuItemFactory::getInstance()->create(customActions[selectedItem], ((CustomListWidgetItem<Shape> *) this->listShapes->currentItem())->getItem(), dynamic_cast<ShapeAnalyzerInterface*>(this)));
             menuItem->onClick(pointId, faceId, this);
         }
     }
@@ -1586,7 +1582,7 @@ void ShapeAnalyzer::clear() {
     }
     
     // fire event for customTabs
-    for(auto entry : customTabs_) {
+    for(auto& entry : customTabs_) {
         entry.second->onClear();
     }
     
@@ -1599,13 +1595,13 @@ void ShapeAnalyzer::clear() {
     
 
     //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-    for(auto entry : visualPointCorrespondences_) {
+    for(auto& entry : visualPointCorrespondences_) {
         
         entry.second->removeFromRenderer();
     }
     visualPointCorrespondences_.clear();
     
-    for(auto entry : visualFaceCorrespondences_) {
+    for(auto& entry : visualFaceCorrespondences_) {
         
         entry.second->removeFromRenderer();
     }
@@ -1618,7 +1614,7 @@ void ShapeAnalyzer::clear() {
     
     
     // delete all shapes
-    for(auto entry : shapes_) {
+    for(auto& entry : shapes_) {
         entry.second->removeFromRenderer();
     }
     shapes_.clear();
@@ -1647,7 +1643,7 @@ void ShapeAnalyzer::clearCorrespondences() {
     
     if(actionDisplayPointCorrespondences->isChecked()) {
         //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-        for(auto entry : visualPointCorrespondences_) {
+        for(auto& entry : visualPointCorrespondences_) {
             entry.second->removeFromRenderer();
         }
         visualPointCorrespondences_.clear();
@@ -1659,7 +1655,7 @@ void ShapeAnalyzer::clearCorrespondences() {
         this->qvtkWidget->GetRenderWindow()->Render();
     } else {
         //delete all correspondences (not neccessarily all correspondences are in the listWidget)
-        for(auto entry : visualFaceCorrespondences_) {
+        for(auto& entry : visualFaceCorrespondences_) {
             entry.second->removeFromRenderer();
         }
         visualFaceCorrespondences_.clear();
@@ -1723,18 +1719,18 @@ void ShapeAnalyzer::hideCorrespondences() {
         }
         
         // Set flag "displayed" to false for each Correspondence object
-        for(auto entry : pointCorrespondences_) {
+        for(auto& entry : pointCorrespondences_) {
             entry.second = false;
         }
         
         visualPointCorrespondences_.clear();
     } else {
-        for(auto entry : visualFaceCorrespondences_) {
+        for(auto& entry : visualFaceCorrespondences_) {
             entry.second->removeFromRenderer();
         }
         
         // Set flag "displayed" to false for each Correspondence object
-        for(auto entry : faceCorrespondences_) {
+        for(auto& entry : faceCorrespondences_) {
             entry.second = false;
         }
         
@@ -1783,34 +1779,34 @@ void ShapeAnalyzer::hideCorrespondence(int i) {
 void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
     hideCorrespondences();
     if (this->actionDisplayPointCorrespondences->isChecked()) { // point correspondence
-        vector<shared_ptr<PointCorrespondence>> correspondences;
-        pointCorrespondences_.getRandomSampleKeys(size, correspondences);
+        vector<shared_ptr<PointCorrespondence>> sample;
+        pointCorrespondences_.getRandomSampleKeys(size, sample);
         
-        for(int i = 0; i < correspondences.size(); i++) {
+        for(int i = 0; i < sample.size(); i++) {
             
-            shared_ptr<VisualCorrespondence<PointCorrespondence>> correspondence = make_shared<VisualCorrespondence<PointCorrespondence>>(renderer_, correspondences[i]);
+            shared_ptr<VisualCorrespondence<PointCorrespondence>> correspondence = make_shared<VisualCorrespondence<PointCorrespondence>>(renderer_, sample[i]);
             
             // create actor and add to vtk
             correspondence->addToRenderer();
             
-            pointCorrespondences_[correspondences[i]] = true;
+            pointCorrespondences_[sample[i]] = true;
             visualPointCorrespondences_.insert(correspondence->getActor(), correspondence);
             
             // add shape to qt list widget
             qtAddListCorrespondencesItem(correspondence);
         }
     } else {
-        vector<shared_ptr<FaceCorrespondence>> correspondences;
-        faceCorrespondences_.getRandomSampleKeys(size, correspondences);
+        vector<shared_ptr<FaceCorrespondence>> sample;
+        faceCorrespondences_.getRandomSampleKeys(size, sample);
         
-        for(int i = 0; i < correspondences.size(); i++) {
+        for(int i = 0; i < sample.size(); i++) {
             
-            shared_ptr<VisualCorrespondence<FaceCorrespondence>> correspondence = make_shared<VisualCorrespondence<FaceCorrespondence>>(renderer_, correspondences[i]);
+            shared_ptr<VisualCorrespondence<FaceCorrespondence>> correspondence = make_shared<VisualCorrespondence<FaceCorrespondence>>(renderer_, sample[i]);
             
             // create actor and add to vtk
             correspondence->addToRenderer();
             
-            faceCorrespondences_[correspondences[i]] = true;
+            faceCorrespondences_[sample[i]] = true;
             visualFaceCorrespondences_.insert(correspondence->getActor(), correspondence);
             
             // add shape to qt list widget
@@ -1826,7 +1822,7 @@ void ShapeAnalyzer::sampleCorrespondences(unsigned int size) {
 ///////////////////////////////////////////////////////////////////////////////
 shared_ptr<PointCorrespondence> ShapeAnalyzer::addPointCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) {
     shared_ptr<PointCorrespondence> c = make_shared<PointCorrespondence>(lastInsertCorrespondenceId_++);
-    for(auto p : correspondence) {
+    for(auto& p : correspondence) {
         c->addShape(p.first, p.second);
     }
     pointCorrespondences_.insert(dynamic_pointer_cast<PointCorrespondence>(c), false);
@@ -1840,7 +1836,7 @@ shared_ptr<PointCorrespondence> ShapeAnalyzer::addPointCorrespondence(const vect
 ///////////////////////////////////////////////////////////////////////////////
 shared_ptr<FaceCorrespondence> ShapeAnalyzer::addFaceCorrespondence(const vector<pair<shared_ptr<Shape>, vtkIdType>>& correspondence) {
     shared_ptr<FaceCorrespondence> c = make_shared<FaceCorrespondence>(lastInsertCorrespondenceId_++);
-    for(auto p : correspondence) {
+    for(auto& p : correspondence) {
         c->addShape(p.first, p.second);
     }
     faceCorrespondences_.insert(dynamic_pointer_cast<FaceCorrespondence>(c), false);
@@ -1899,7 +1895,7 @@ void ShapeAnalyzer::deleteShape(int i) {
     
 
     // fire event for shapesTabs
-    for(auto entry : customTabs_) {
+    for(auto& entry : customTabs_) {
         entry.second->onShapeDelete(shape.get());
     }
     
@@ -2010,6 +2006,7 @@ shared_ptr<Shape> ShapeAnalyzer::addShape(string name, vtkSmartPointer<vtkPolyDa
     
     return shape;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {

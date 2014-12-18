@@ -46,12 +46,12 @@ custom::tabs::CorrespondenceColoringTab::CorrespondenceColoringTab(
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::CorrespondenceColoringTab::slotColorCorrespondences() {
-    Shape* reference = nullptr;
+    shared_ptr<Shape> reference = nullptr;
     
     // get Shape corresponding with the label
     for (auto entry : shapes_) {
         if(entry.second->getId() == comboBoxReference->currentText().split(':')[0].toInt()) {
-            reference = entry.second.get();
+            reference = entry.second;
             break;
         }
     }
@@ -74,7 +74,7 @@ void custom::tabs::CorrespondenceColoringTab::slotColorCorrespondences() {
             // fill in percentage of matched points
             int index = 1;
             for (auto entry : shapes_) {
-                if (entry.second.get() != reference) {
+                if (entry.second != reference) {
                     // shape name
                     QString label = QString::fromStdString(entry.second->getName());
                     gridLayout->addWidget(new QLabel(label), index, 0);
@@ -109,7 +109,7 @@ void custom::tabs::CorrespondenceColoringTab::slotColorCorrespondences() {
             // fill in percentage of matched points
             int index = 1;
             for (auto entry : shapes_) {
-                if (entry.second.get() != reference) {
+                if (entry.second != reference) {
                     // shape name
                     QString label = QString::fromStdString(entry.second->getName());
                     gridLayout->addWidget(new QLabel(label), index, 0);

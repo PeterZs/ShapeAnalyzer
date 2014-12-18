@@ -37,9 +37,11 @@ int main( int argc, char** argv ) {
         ShapeAnalyzer shapeAnalyzer;
         shapeAnalyzer.show();
         return app.exec();
+    } catch (std::exception &e) {
+        //qFatal(qPrintable(QString("An exception of type \"") + typeid(e).name() + QString("\" has been thrown: ") + e.what()));
+        exit(EXIT_FAILURE);
     } catch(...) {
-        QMessageBox::critical(nullptr, "Exception",
-                              "Error <unknown> has occured\n");
+        qFatal("Error <unknown> has occured\n");
         exit(EXIT_FAILURE);
     }
 }

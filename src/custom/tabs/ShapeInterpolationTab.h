@@ -43,11 +43,11 @@ private slots:
     virtual void slotAddShape();
     
 private:
-    Shape* source_;
-    Shape* target_;
+    shared_ptr<Shape> source_;
+    shared_ptr<Shape> target_;
     
     /// Interpolated shape.
-    Shape* shape_;
+    shared_ptr<Shape> shape_;
 };
     
 }

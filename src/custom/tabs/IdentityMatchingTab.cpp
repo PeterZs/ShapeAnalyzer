@@ -22,7 +22,6 @@ custom::tabs::IdentityMatchingTab::IdentityMatchingTab(
         QString label = QString::number(entry.second->getId());
         label.append(QString::fromStdString(":"+entry.second->getName()));
         labels << label;
-
     }
     
     if(shapes_.size() < 2) {
@@ -32,65 +31,105 @@ custom::tabs::IdentityMatchingTab::IdentityMatchingTab(
     comboBoxShape1->insertItems(0, labels);
     comboBoxShape2->insertItems(0, labels);
     
-    connect(this->buttonMatch,                     SIGNAL(released()),
-            this,                                  SLOT(slotMatch()));
+    connect(this->buttonMatch,                      SIGNAL(released()),
+            this,                                   SLOT(slotMatch()));
+    
+    connect(this->buttonGroupMatch,                 SIGNAL(buttonClicked(int)),
+            this,                                   SLOT(slotToggleMode()));
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void custom::tabs::IdentityMatchingTab::slotMatch() {
-    vtkIdType sid1 = comboBoxShape1->currentText().split(':')[0].toInt();
-    vtkIdType sid2 = comboBoxShape2->currentText().split(':')[0].toInt();
+void custom::tabs::IdentityMatchingTab::slotToggleMode() {
+    if(radioButtonBinaryCorrespondences->isChecked()) {
+        labelShape1->setEnabled(true);
+        comboBoxShape1->setEnabled(true);
+        labelShape2->setEnabled(true);
+        comboBoxShape2->setEnabled(true);
+    } else {
+        labelShape1->setEnabled(false);
+        comboBoxShape1->setEnabled(false);
+        labelShape2->setEnabled(false);
+        comboBoxShape2->setEnabled(false);
+        if(comboBoxShape1->count() >= 2) {
+            this->buttonMatch->setEnabled(true);
+        }
+    }
+}
 
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::IdentityMatchingTab::slotMatch() {
+    int step = ceil(100.0 / spinBoxPercentage->value());
+    int type = comboBoxCorrespondenceType->currentIndex();
     
-    shared_ptr<Shape> shape1 = nullptr;
-    shared_ptr<Shape> shape2 = nullptr;
-    
-    for(auto entry : shapes_) {
-        if(sid1 == entry.second->getId()) {
-            shape1 = entry.second;
+    if(radioButtonBinaryCorrespondences->isChecked()) {
+        vtkIdType sid1 = comboBoxShape1->currentText().split(':')[0].toInt();
+        vtkIdType sid2 = comboBoxShape2->currentText().split(':')[0].toInt();
+        
+        
+        shared_ptr<Shape> shape1 = nullptr;
+        shared_ptr<Shape> shape2 = nullptr;
+        
+        for(auto entry : shapes_) {
+            if(sid1 == entry.second->getId()) {
+                shape1 = entry.second;
+            }
+            
+            if(sid2 == entry.second->getId()) {
+                shape2 = entry.second;
+            }
+        }
+        if(shape1 == shape2) {
+            QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The two shapes \"" + QString(shape1->getName().c_str()) + "\" and \"" + QString(shape2->getName().c_str()) + "\" have to be different.");
+            return;
         }
         
-        if(sid2 == entry.second->getId()) {
-            shape2 = entry.second;
-        }
-    }
-    if(shape1 == shape2) {
-        QMessageBox::warning(
-                             dynamic_cast<QWidget*>(shapeAnalyzer_),
-                             "Error", "The two shapes \""
-                                + QString(shape1->getName().c_str())
-                                + "\" and \"" + QString(shape2->getName().c_str())
-                                + "\" have to be different."
-                             );
-        return;
-    }
-
-    
-    int step = ceil(100.0 / spinBoxPercentage->value());
-    
-    int type = comboBoxCorrespondenceType->currentIndex();
-    if(type == 0) {
-        for(int i = 0;
-            i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints());
-            i+=step)
-        {
-            vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
-            correspondence.push_back(make_pair(shape1, i));
-            correspondence.push_back(make_pair(shape2, i));
-            
-            shapeAnalyzer_->addPointCorrespondence(correspondence);
+        if(type == 0) {
+            for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfPoints(), shape2->getPolyData()->GetNumberOfPoints()); i+=step) {
+                vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
+                correspondence.push_back(make_pair(shape1, i));
+                correspondence.push_back(make_pair(shape2, i));
+                
+                shapeAnalyzer_->addPointCorrespondence(correspondence);
+            }
+        } else {
+            for(int i = 0; i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells()); i+=step) {
+                vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
+                correspondence.push_back(make_pair(shape1, i));
+                correspondence.push_back(make_pair(shape2, i));
+                
+                shapeAnalyzer_->addFaceCorrespondence(correspondence);
+            }
         }
     } else {
-        for(int i = 0;
-            i < min(shape1->getPolyData()->GetNumberOfCells(), shape2->getPolyData()->GetNumberOfCells());
-            i+=step)
-        {
+        int limit;
+        if(type == 0) {
+            limit = shapes_.begin()->second->getPolyData()->GetNumberOfPoints();
+            for(auto s : shapes_) {
+                if(s.second->getPolyData()->GetNumberOfPoints() < limit) {
+                    limit = s.second->getPolyData()->GetNumberOfPoints();
+                }
+            }
+        } else {
+            limit = shapes_.begin()->second->getPolyData()->GetNumberOfCells();
+            for(auto s : shapes_) {
+                if(s.second->getPolyData()->GetNumberOfCells() < limit) {
+                    limit = s.second->getPolyData()->GetNumberOfCells();
+                }
+            }
+        }
+        
+        for(int i = 0; i < limit; i+=step) {
             vector<pair<shared_ptr<Shape>, vtkIdType>> correspondence;
-            correspondence.push_back(make_pair(shape1, i));
-            correspondence.push_back(make_pair(shape2, i));
+            for(auto s : shapes_) {
+                correspondence.push_back(make_pair(s.second, i));
+            }
             
-            shapeAnalyzer_->addFaceCorrespondence(correspondence);
+            if(type == 0) {
+                shapeAnalyzer_->addPointCorrespondence(correspondence);
+            } else {
+                shapeAnalyzer_->addFaceCorrespondence(correspondence);
+            }
         }
     }
 }
@@ -103,7 +142,9 @@ void custom::tabs::IdentityMatchingTab::onShapeAdd(Shape* shape) {
     comboBoxShape1->insertItem(0, label);
     comboBoxShape2->insertItem(0, label);
     
-    this->buttonMatch->setEnabled(true);
+    if(shapes_.size() >= 2) {
+        this->buttonMatch->setEnabled(true);
+    }
 }
 
 

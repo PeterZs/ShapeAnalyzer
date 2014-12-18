@@ -57,11 +57,11 @@ void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
     
     for(auto entry : shapes_) {
         if(sid == entry.second->getId()) {
-            source_ = entry.second.get();
+            source_ = entry.second;
         }
         
         if(tid == entry.second->getId()) {
-            target_ = entry.second.get();
+            target_ = entry.second;
         }
     }
     string name = source_->getName();
@@ -78,7 +78,7 @@ void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
     polyData->SetPoints(points);
     polyData->SetPolys(polys);
     
-    shape_ = shapeAnalyzer_->addShape(name, polyData).get();
+    shape_ = shapeAnalyzer_->addShape(name, polyData);
 
     
     this->labelInterpolation->setEnabled(true);
@@ -124,12 +124,12 @@ void custom::tabs::ShapeInterpolationTab::slotInterpolate(int value) { // value 
         bool foundSource = false;
         bool foundTarget = false;
         for(int i = 0; i < entry.first->getShapes().size(); i++) {
-            if(source_ == entry.first->getShapes().at(i).get()) {
+            if(source_ == entry.first->getShapes().at(i)) {
                 foundSource = true;
                 pointId = entry.first->getCorrespondingIds().at(i);
                 source_->getPolyData()->GetPoint(pointId, a);
             }
-            if(target_ == entry.first->getShapes().at(i).get()) {
+            if(target_ == entry.first->getShapes().at(i)) {
                 foundTarget = true;
                 target_->getPolyData()->GetPoint(entry.first->getCorrespondingIds().at(i), b);
             }

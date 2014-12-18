@@ -66,56 +66,90 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         return;
     }
     
-    
-    // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
-    vector<vtkSmartPointer<vtkDoubleArray>> cs; // corresponds to contraints on shape1
-    vector<vtkSmartPointer<vtkDoubleArray>> ct;
-    
-    
-    // compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
-    metric::GeodesicMetric ms(source);
-    metric::GeodesicMetric mt(target);
-
-    
-    for(auto entry : pointCorrespondences_) {
-        shared_ptr<PointCorrespondence> corr = entry.first;
-        
-        for(int i = 0; i < corr->getShapes().size(); i++) {
-            if(corr->getShapes().at(i) == source) {
-                vtkSmartPointer<vtkDoubleArray> distances = ms.getAllDistances(corr->getCorrespondingIds().at(i));
-                cs.push_back(distances);
-                
-            }
-            
-            if(corr->getShapes().at(i) == target) {
-                vtkSmartPointer<vtkDoubleArray> distances = mt.getAllDistances(corr->getCorrespondingIds()[i]);
-                ct.push_back(distances);
-            }
-        }
-    }
-    
     try {
+        
+        // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
+        // corresponds to contraints on shape1
+        vector<vtkSmartPointer<vtkDoubleArray>> constraintsSource;
+        
+        // corresponds to contraints on shape2
+        vector<vtkSmartPointer<vtkDoubleArray>> constraintsTarget;
+        
+        
+        metric::GeodesicMetric metricSource(source);
+        metric::GeodesicMetric metricTarget(target);
+        
         auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, 100);
         auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, 100);
         
         
+        // Compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
+        // Compute heat diffusion snapshots using the corresponding points.
+        for(auto entry : pointCorrespondences_) {
+            shared_ptr<PointCorrespondence> corr = entry.first;
+            
+            for(int i = 0; i < corr->getShapes().size(); i++) {
+                if(corr->getShapes().at(i) == source) {
+                    // Landmark match
+                    vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
+                    constraintsSource.push_back(distances);
+                    
+                    // Heat diffusion
+                    vtkSmartPointer<vtkDoubleArray> u0s = vtkSmartPointer<vtkDoubleArray>::New();
+                    u0s->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
+                    
+                    for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
+                        if(j == corr->getCorrespondingIds().at(i)) {
+                            u0s->SetValue(j, 1.0);
+                        } else {
+                            u0s->SetValue(j, 0.0);
+                        }
+                    }
+                    for(double t = 25.0; t <= 200.0; t+=25.0) {
+                        PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
+                        constraintsSource.push_back(hdSource.getHeat(t));
+                    }
+                }
+                
+                if(corr->getShapes().at(i) == target) {
+                    // Landmark match
+                    vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
+                    constraintsTarget.push_back(distances);
+
+                    // Heat diffusion
+                    vtkSmartPointer<vtkDoubleArray> u0t = vtkSmartPointer<vtkDoubleArray>::New();
+                    u0t->SetNumberOfValues(target->getPolyData()->GetNumberOfPoints());
+                    
+                    for(vtkIdType j = 0; j < target->getPolyData()->GetNumberOfPoints(); j++) {
+                        if(j == corr->getCorrespondingIds().at(i)) {
+                            u0t->SetValue(j, 1.0);
+                        } else {
+                            u0t->SetValue(j, 0.0);
+                        }
+                    }
+                    for(double t = 25.0; t <= 200.0; t+=25.0) {
+                        PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
+                        constraintsTarget.push_back(hdTarget.getHeat(t));
+                    }
+                }
+            }
+        }
+        
         // compute 200-dimensional wave kernel discriptor on both shapes
         PetscWaveKernelSignature wksSource(source, 100, laplacianSource);
-        
-        
         PetscWaveKernelSignature wksTarget(target, 100, laplacianTarget);
         
         // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
         for(int i = 0; i < 10; i++) {
             vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-            cs.push_back(wksiSource);
+            constraintsSource.push_back(wksiSource);
             
             vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-            ct.push_back(wksiTarget);
+            constraintsTarget.push_back(wksiTarget);
         }
         
         // compute correspondence matrix C
-        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, cs, ct, 100);
+        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, 100);
         
         
         // transfer the coordinate function
@@ -144,7 +178,10 @@ void custom::tabs::FunctionTransferTab::onShapeAdd(Shape* shape) {
     label.append(QString::fromStdString(":"+shape->getName()));
     comboBoxSourceShape->insertItem(0, label);
     comboBoxTargetShape->insertItem(0, label);
-    this->buttonTransfer->setEnabled(true);
+    
+    if(shapes_.size() >= 2) {
+        this->buttonTransfer->setEnabled(true);
+    }
 }
 
 

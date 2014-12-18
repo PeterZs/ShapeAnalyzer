@@ -41,7 +41,6 @@
 #include <QActionGroup>
 #include <QCheckBox>
 #include <QColorDialog>
-#include <QErrorMessage>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QKeySequence>

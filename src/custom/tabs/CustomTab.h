@@ -52,9 +52,9 @@ public:
 protected:
     /// \brief Read-only reference to HashMap containing all Shape objects
     const HashMap<vtkActor*, shared_ptr<Shape>>& shapes_;
-    /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
+    /// \brief Read-only reference to HashMap containing all PointCorrespondence objects
     const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences_;
-    /// \brief Read-only reference to HashMap containing all PointCorrespondenceData objects
+    /// \brief Read-only reference to HashMap containing all FaceCorrespondence objects
     const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences_;
 
     /// \brief Pointer to the ShapeAnalyzer widget parent.

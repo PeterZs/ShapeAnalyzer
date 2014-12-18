@@ -312,12 +312,12 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
             throw invalid_argument(string("The Coloring of type PointScalar or FaceScalar was not a vtkDoubleArray in ").append(__PRETTY_FUNCTION__));
         }
     } else if(coloring_->type == Coloring::Type::FaceSegmentation || coloring_->type == Coloring::Type::PointSegmentation) {
-        if(vtkCharArray::SafeDownCast (coloring_->values) == nullptr) {
-            throw invalid_argument(string("The Coloring of type PointSegmentation or FaceSegmentation was not a vtkCharArray in ").append(__PRETTY_FUNCTION__));
+        if(vtkIntArray::SafeDownCast (coloring_->values) == nullptr) {
+            throw invalid_argument(string("The Coloring of type PointSegmentation or FaceSegmentation was not a vtkIntArray in ").append(__PRETTY_FUNCTION__));
         }
     } else if(coloring_->type == Coloring::Type::FaceRgb || coloring_->type == Coloring::Type::PointRgb) {
         if(vtkUnsignedCharArray::SafeDownCast (coloring_->values) == nullptr) {
-            throw invalid_argument(string("The Coloring of type PointRgb or FaceRgb was not a vtkUnsignedCharArray in ").append(__PRETTY_FUNCTION__));
+            throw invalid_argument(string("The Coloring of type PointRgb or FaceRgb was not a vtkUnsignedCharArray in ").append(__PRETTY_FUNCTION__).append(". Be aware that for RGB colorings only values between 0 and 255 are valid."));
         }
     }
     

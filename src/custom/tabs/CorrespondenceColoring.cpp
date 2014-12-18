@@ -6,11 +6,11 @@ custom::tabs::CorrespondenceColoring::CorrespondenceColoring(
                                                const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
                                                const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
                                                const HashMap<shared_ptr<FaceCorrespondence>, bool>&  faceCorrespondences,
-                                               Shape* reference)
+                                               shared_ptr<Shape> reference)
 : shapes_(shapes), pointCorrespondences_(pointCorrespondences), faceCorrespondences_(faceCorrespondences), reference_(reference)
 {
     if(reference_ == nullptr) {
-        reference_ = shapes_.begin()->second.get();
+        reference_ = shapes_.begin()->second;
     }
 }
 
@@ -34,7 +34,7 @@ void custom::tabs::CorrespondenceColoring::showPointCorrespondences(
     
     // initialize color arrays for all shapes
     for (auto entry : shapes_) {
-        if(entry.second.get() != reference_) {
+        if(entry.second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> array = vtkSmartPointer<vtkUnsignedCharArray>::New();
             array->SetNumberOfComponents(3);
             array->SetNumberOfTuples(entry.second->getPolyData()->GetPoints()->GetNumberOfPoints());
@@ -97,7 +97,7 @@ void custom::tabs::CorrespondenceColoring::showPointCorrespondences(
     
     // color all shapes
     for (auto entry : shapes_) {
-        if (entry.second.get() != reference_) {
+        if (entry.second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(entry.second->getId())->second;
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::PointRgb;
@@ -155,7 +155,7 @@ void custom::tabs::CorrespondenceColoring::showFaceCorrespondences(
     
     // initialize color arrays for all shapes
     for (auto entry : shapes_) {
-        if(entry.second.get() != reference_) {
+        if(entry.second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> array = vtkSmartPointer<vtkUnsignedCharArray>::New();
             array->SetNumberOfComponents(3);
             array->SetNumberOfTuples(entry.second->getPolyData()->GetNumberOfCells());
@@ -216,7 +216,7 @@ void custom::tabs::CorrespondenceColoring::showFaceCorrespondences(
     
     // color all shapes
     for (auto entry : shapes_) {
-        if(entry.second.get() != reference_) {
+        if(entry.second != reference_) {
             vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(entry.second->getId())->second;
             shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
             coloring->type = Shape::Coloring::Type::FaceRgb;

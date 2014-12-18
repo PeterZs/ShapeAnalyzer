@@ -43,6 +43,7 @@ public:
     virtual void onClear();
 private slots:
     virtual void slotMatch();
+    virtual void slotToggleMode();
 };
     
 }

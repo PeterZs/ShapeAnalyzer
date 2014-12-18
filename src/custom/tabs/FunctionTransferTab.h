@@ -14,6 +14,7 @@
 #include "../../domain/metric/GeodesicMetric.h"
 #include "../../domain/laplaceBeltrami/PetscFEMLaplaceBeltramiOperator.h"
 #include "../../domain/signatures/PetscWaveKernelSignature.h"
+#include "../../domain/PetscHeatDiffusion.h"
 #include "../../domain/PetscFunctionalMaps.h"
 #include "../../util/HashMap.h"
 

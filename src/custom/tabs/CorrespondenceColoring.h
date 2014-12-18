@@ -42,7 +42,7 @@ public:
     CorrespondenceColoring(const HashMap<vtkActor*, shared_ptr<Shape>>&              shapes,
                            const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
                            const HashMap<shared_ptr<FaceCorrespondence>, bool>&  faceCorrespondences,
-                           Shape* reference = nullptr);
+                           shared_ptr<Shape> reference = nullptr);
     
     /// \brief Visualizes the point correspondences going out from the reference shape.
     /// \details The reference shape will be colored by coordinates using the CoordinateColoring class and
@@ -80,7 +80,7 @@ protected:
     const HashMap<shared_ptr<PointCorrespondence>, bool>&    pointCorrespondences_;
     const HashMap<shared_ptr<FaceCorrespondence>, bool>&     faceCorrespondences_;
     
-    Shape* reference_;
+    shared_ptr<Shape> reference_;
     
     unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> pointAttributes_;
     unordered_map<vtkIdType, vtkSmartPointer<vtkUnsignedCharArray>> faceAttributes_;

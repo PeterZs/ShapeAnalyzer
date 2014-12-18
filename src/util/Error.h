@@ -1,9 +1,11 @@
 #ifndef ShapeAnalyzer_Exception_h
 #define ShapeAnalyzer_Exception_h
 
+#include <cstdlib>
+
 using namespace std;
 
-#include <cstdlib>
+namespace util {
 
 ///
 /// \brief Used to throw and catch exceptions within the ShapeAnalyzer.
@@ -30,5 +32,7 @@ public:
 private:
     const char* what_;
 };
+    
+}
 
 #endif

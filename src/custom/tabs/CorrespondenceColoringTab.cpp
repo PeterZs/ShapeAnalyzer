@@ -31,6 +31,11 @@ custom::tabs::CorrespondenceColoringTab::CorrespondenceColoringTab(
     
     connect(this->buttonClearColoring, SIGNAL(released()),
             this,                      SLOT(slotClearColoring()));
+    
+    connect(this->radioButtonFaceCorrespondences,   SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotCorrespondencesToggled(bool)));
+    connect(this->radioButtonPointCorrespondences,  SIGNAL(toggled(bool)),
+            this,                                   SLOT(slotCorrespondencesToggled(bool)));
 }
 
 
@@ -142,6 +147,12 @@ void custom::tabs::CorrespondenceColoringTab::slotClearColoring() {
         entry.second->clearColoring();
     }
     clearGrid();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::CorrespondenceColoringTab::slotCorrespondencesToggled(bool b) {
+    if(b) slotClearColoring();
 }
 
 

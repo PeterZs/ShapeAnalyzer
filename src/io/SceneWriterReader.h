@@ -28,6 +28,7 @@
 
 using namespace std;
 using namespace correspondences;
+using namespace util;
 
 /// \brief Namespace including classes for saving and loading shapes, correspondences and scenes in different formats.
 namespace io {

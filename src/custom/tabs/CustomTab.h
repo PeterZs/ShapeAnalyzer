@@ -12,6 +12,8 @@
 
 #include "../../util/HashMap.h"
 
+using namespace util;
+
 namespace custom {
 /// \brief Namespace for all tabs.
 namespace tabs {

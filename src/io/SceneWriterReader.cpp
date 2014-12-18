@@ -3,13 +3,16 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 pair<int, int> io::SceneWriterReader::importSceneBinary(
-                                                string filename,
-                                          vtkSmartPointer<vtkRenderer> renderer,
-                                          vector<shared_ptr<Shape>>& shapes,
-                                          vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>>& pointCorrespondences,
-                                          vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>& faceCorrespondences) {
-
-    
+                                string filename,
+                                vtkSmartPointer<vtkRenderer> renderer,
+                                vector<shared_ptr<Shape>>& shapes,
+                                vector<pair<shared_ptr<PointCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<PointCorrespondence>>>>&
+                                        pointCorrespondences,
+                                vector<pair<shared_ptr<FaceCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>&
+                                        faceCorrespondences)
+{
     //open input file stream in binary mode
     ifstream is(filename, ios::binary);
     
@@ -134,13 +137,19 @@ pair<int, int> io::SceneWriterReader::importSceneBinary(
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void io::SceneWriterReader::exportSceneBinary(string filename,
-                                          vtkSmartPointer<vtkRenderer> renderer,
-                                          vector<shared_ptr<Shape>>& shapes,
-                                          int lastInsertShapeId,
-                                          vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>>& pointCorrespondences,
-                                          vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>& faceCorrespondences,
-                                          int lastInsertCorrespondenceId) {
+void io::SceneWriterReader::exportSceneBinary(
+                    string filename,
+                    vtkSmartPointer<vtkRenderer> renderer,
+                    vector<shared_ptr<Shape>>& shapes,
+                    int lastInsertShapeId,
+                    vector<pair<shared_ptr<PointCorrespondence>,
+                                shared_ptr<VisualCorrespondence<PointCorrespondence>>>>&
+                                pointCorrespondences,
+                    vector<pair<shared_ptr<FaceCorrespondence>,
+                                shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>&
+                                faceCorrespondences,
+                    int lastInsertCorrespondenceId)
+{
     ofstream os(filename, ios::binary);
     int64_t numberOfShapes = (int64_t) shapes.size();
     os.write(reinterpret_cast<char*>(&numberOfShapes), sizeof(int64_t));
@@ -228,11 +237,15 @@ void io::SceneWriterReader::exportSceneBinary(string filename,
 
 ///////////////////////////////////////////////////////////////////////////////
 pair<int, int> io::SceneWriterReader::importSceneASCII(string filename,
-                                         vtkSmartPointer<vtkRenderer> renderer,
-                                         vector<shared_ptr<Shape>>& shapes,
-                                         vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>>& pointCorrespondences,
-                                         vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>& faceCorrespondences
-                                         ) {
+                            vtkSmartPointer<vtkRenderer> renderer,
+                            vector<shared_ptr<Shape>>& shapes,
+                            vector<pair<shared_ptr<PointCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<PointCorrespondence>>>>&
+                                        pointCorrespondences,
+                            vector<pair<shared_ptr<FaceCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>&
+                                        faceCorrespondences)
+{
     ifstream is(filename);
     
     if (!is.good()) {
@@ -428,14 +441,18 @@ pair<int, int> io::SceneWriterReader::importSceneASCII(string filename,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void io::SceneWriterReader::exportSceneASCII(string filename,
-                                         
-                                         vtkSmartPointer<vtkRenderer> renderer,
- vector<shared_ptr<Shape>>& shapes,
- int lastInsertShapeId,
- vector<pair<shared_ptr<PointCorrespondence>, shared_ptr<VisualCorrespondence<PointCorrespondence>>>>& pointCorrespondences,
- vector<pair<shared_ptr<FaceCorrespondence>, shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>& faceCorrespondences,
- int lastInsertCorrespondenceId)
+void io::SceneWriterReader::exportSceneASCII(
+                            string                          filename,
+                            vtkSmartPointer<vtkRenderer>    renderer,
+                            vector<shared_ptr<Shape>>&      shapes,
+                            int lastInsertShapeId,
+                            vector<pair<shared_ptr<PointCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<PointCorrespondence>>>>&
+                                        pointCorrespondences,
+                            vector<pair<shared_ptr<FaceCorrespondence>,
+                                        shared_ptr<VisualCorrespondence<FaceCorrespondence>>>>&
+                                        faceCorrespondences,
+                                        int lastInsertCorrespondenceId)
 {
     ofstream os(filename);
     
@@ -525,10 +542,9 @@ void io::SceneWriterReader::exportSceneASCII(string filename,
 
 ///////////////////////////////////////////////////////////////////////////////
 void io::SceneWriterReader::exportPointCorrespondencesASCII(
-                                                        const HashMap<shared_ptr<PointCorrespondence>, bool>&   pointCorrespondences,
-                                                        const vector<shared_ptr<Shape>>&                        shapesOrderedById,
-                                                        const string                                            filename
-                                                        )
+                            const HashMap<shared_ptr<PointCorrespondence>, bool>&   pointCorrespondences,
+                            const vector<shared_ptr<Shape>>&                        shapesOrderedById,
+                            const string                                            filename)
 {
     ofstream os(filename);
     

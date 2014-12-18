@@ -87,6 +87,7 @@
 
 using namespace std;
 using namespace io;
+using namespace util;
 
 ///
 /// \brief Manages the interaction with the GUI.

@@ -9,7 +9,8 @@
 using namespace laplaceBeltrami;
 
 /// \brief Abstract class for implementation of the heat diffusion process on a shape.
-/// \details Implementing classes provide functionality for the computation of a distribution of heat after time t given an initial distribution of heat at time t=0.
+/// \details Implementing classes provide functionality for the computation of a distribution
+/// of heat after time t given an initial distribution of heat at time t=0.
 class HeatDiffusion {
 public:
     /// \brief Constructor

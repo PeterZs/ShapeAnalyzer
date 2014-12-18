@@ -7,7 +7,7 @@ namespace metric {
     
     /// \brief Specific class for errors occurring with the metric calculation.
     /// @author Emanuel Laude and Zorah Lähner
-    class MetricError : public Error {
+    class MetricError : public util::Error {
     public:
         MetricError() : Error() {}
         MetricError(const std::string& str) : Error(str) {}

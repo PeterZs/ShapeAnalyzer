@@ -721,7 +721,7 @@ void ShapeAnalyzer::slotOpenScene() {
     }
         
     } catch(IOError& e) {
-        QMessageBox::warning(this, "Exception", e.what());
+        showErrorMessage("The Scene could not be opened", e.what());
     }
     
     
@@ -885,7 +885,7 @@ void ShapeAnalyzer::slotImportCorrespondences() {
     }
         
     } catch(IOError& e) {
-        QMessageBox::warning(this, "Exception", e.what());
+        showErrorMessage("The Correspondences could not be imported", e.what());
     }
     
     qtUpdateLabelVisibleCorrespondences();

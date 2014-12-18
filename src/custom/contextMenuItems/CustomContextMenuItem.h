@@ -28,6 +28,7 @@ public:
 protected:
     /// \brief Shape* The shape for which the context menu item has been clicked.
     shared_ptr<Shape> shape_;
+    /// \brief Reference to the ShapeAnalyzerInterface.
     ShapeAnalyzerInterface* shapeAnalyzer_;
 };
     

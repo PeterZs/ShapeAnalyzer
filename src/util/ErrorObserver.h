@@ -4,6 +4,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkCommand.h>
 
+namespace util {
+
 /// \brief Can detect errors and warnings in vtk objects.
 /// \details Add an instance of this class to an vtk object as
 /// an observer and errors and warnings will be written into it.
@@ -71,5 +73,7 @@ private:
     std::string ErrorMessage;
     std::string WarningMessage;
 };
+    
+}
 
 #endif

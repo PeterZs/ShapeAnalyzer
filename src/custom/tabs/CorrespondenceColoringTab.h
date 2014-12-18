@@ -64,6 +64,7 @@ public:
 private slots:
     virtual void slotColorCorrespondences();
     virtual void slotClearColoring();
+    virtual void slotCorrespondencesToggled(bool);
     
 private:
     /// Clears the correspondence density grid.

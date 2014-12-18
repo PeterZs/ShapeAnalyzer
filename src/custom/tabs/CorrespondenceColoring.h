@@ -13,6 +13,7 @@
 
 using namespace correspondences;
 using namespace std;
+using namespace util;
 
 namespace custom {
 namespace tabs {

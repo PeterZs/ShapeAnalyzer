@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace util {
+
 template <class KEY, class VALUE>
 
 ///
@@ -409,5 +411,6 @@ void HashMap<KEY, VALUE>::getRandomSampleValues(unsigned size, vector<VALUE>& sa
     }
 }
 
+}
 
 #endif

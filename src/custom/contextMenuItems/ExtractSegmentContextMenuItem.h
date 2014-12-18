@@ -17,6 +17,7 @@
 #include <QMessageBox>
 
 using namespace std;
+using namespace util;
 
 namespace custom {
 namespace contextMenuItems {

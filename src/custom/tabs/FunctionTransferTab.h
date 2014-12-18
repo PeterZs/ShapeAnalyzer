@@ -23,6 +23,8 @@
 
 #include "ui_FunctionTransferTabWidget.h"
 
+using namespace util;
+
 namespace custom {
 namespace tabs {
 

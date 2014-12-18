@@ -88,7 +88,9 @@ void Shape::modified() {
     actor_->Modified();
     
     static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->PlaceWidget(polyData_->GetBounds());
-    static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform((vtkTransform*) actor_->GetUserTransform());
+    if(actor_->GetUserTransform() != nullptr) {
+        static_cast<vtkBoxRepresentation*>(boxWidget_->GetRepresentation())->SetTransform((vtkTransform*) actor_->GetUserTransform());
+    }
 }
 
 

@@ -105,7 +105,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                             u0s->SetValue(j, 0.0);
                         }
                     }
-                    for(double t = 25.0; t <= 200.0; t+=25.0) {
+                    for(double t = 100.0; t <= 200.0; t+=25.0) {
                         PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
                         constraintsSource.push_back(hdSource.getHeat(t));
                     }
@@ -127,7 +127,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                             u0t->SetValue(j, 0.0);
                         }
                     }
-                    for(double t = 25.0; t <= 200.0; t+=25.0) {
+                    for(double t = 100.0; t <= 200.0; t+=25.0) {
                         PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
                         constraintsTarget.push_back(hdTarget.getHeat(t));
                     }

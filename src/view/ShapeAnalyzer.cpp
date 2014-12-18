@@ -2032,14 +2032,14 @@ void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {
     shapes_.insert(shape->getActor(), shape);
     
     // fire event for shapesTabs
-    for(auto entry : customTabs_) {
+    for(auto& entry : customTabs_) {
         entry.second->onShapeAdd(shape.get());
     }
     
     // add shape to qt list widget
     lastInsertShapeId_++;
     
-    CustomListWidgetItem<Shape> *item = new CustomListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
+    CustomListWidgetItem<Shape>* item = new CustomListWidgetItem<Shape>(QString(shape->getName().c_str()), shape);
     listShapes->addItem(item);
     
     //make sure that there always is exactly one item selected if there exists at least one item

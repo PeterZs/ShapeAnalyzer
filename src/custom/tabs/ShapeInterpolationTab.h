@@ -19,6 +19,8 @@
 
 #include "ui_ShapeInterpolationTabWidget.h"
 
+#include <QMessageBox>
+
 namespace custom {
 namespace tabs {
 

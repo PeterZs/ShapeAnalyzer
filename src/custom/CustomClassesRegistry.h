@@ -74,7 +74,9 @@ struct CustomClassesRegistry {
         CustomContextMenuItemFactory::getInstance()->Register<ShapeInfoContextMenuItem>("shape_info", "Shape Info");
 
         CustomContextMenuItemFactory::getInstance()->Register<ColorEigenfunctionContextMenuItem>("color_eigenfunction", "Coloring>>i-th Eigenfunction");
-        CustomContextMenuItemFactory::getInstance()->Register<HeatDiffusionContextMenuItem>("color_heatdiffusion", "Coloring>>Heat diffusion");
+
+        CustomContextMenuItemFactory::getInstance()->Register<HeatDiffusionContextMenuItem<false>>("color_heatdiffusion_not_anim", "Coloring>>Heat diffusion");
+        CustomContextMenuItemFactory::getInstance()->Register<HeatDiffusionContextMenuItem<true>>("color_heatdiffusion_anim", "Coloring>>Heat diffusion (Animated)");
         
         CustomContextMenuItemFactory::getInstance()->Register<ColorMetricContextMenuItem<GeodesicMetric>>("color_metric_geodesic", "Coloring>>Metric>>Geodesic");
         

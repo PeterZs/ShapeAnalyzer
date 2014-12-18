@@ -46,11 +46,6 @@ custom::tabs::ShapeInterpolationTab::ShapeInterpolationTab(
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
-    this->labelChoose->setEnabled(false);
-    this->comboBoxSourceShape->setEnabled(false);
-    this->comboBoxTargetShape->setEnabled(false);
-    this->buttonChoose->setEnabled(false);
-    
     vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
     vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
 
@@ -64,6 +59,72 @@ void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
             target_ = entry.second;
         }
     }
+    
+    if(source_->getPolyData()->GetNumberOfPoints() != target_->getPolyData()->GetNumberOfPoints()) {
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Number of vertices on both shapes does not coincide.");
+        return;
+    }
+    
+    // make sure all points are matched on both shapes via correspondences that connect both shapes
+    vector<char> s(source_->getPolyData()->GetNumberOfPoints(), 0);
+    vector<char> t(target_->getPolyData()->GetNumberOfPoints(), 0);
+    
+    for(auto& c : pointCorrespondences_) {
+        shared_ptr<PointCorrespondence> pointCorrespondence = c.first;
+        
+        // make sure that correspondence contains both source and target at the same time (dealing with multicorrespondences)
+        // if yes do nothing. if no jump to next correspondence
+        int count = 0;
+        for(int i = 0; i < pointCorrespondence->size(); i++) {
+            shared_ptr<Shape> shape = pointCorrespondence->getShapes().at(i);
+            if(shape == source_ ) {
+                count++;
+            }
+            if(shape == target_) {
+                count++;
+            }
+            
+        }
+        if(count != 2) {
+            continue;
+        }
+        
+        
+        for(int i = 0; i < pointCorrespondence->size(); i++) {
+            shared_ptr<Shape> shape = pointCorrespondence->getShapes().at(i);
+            if(shape == source_) {
+                s.at(pointCorrespondence->getCorrespondingIds().at(i)) = 1;
+            }
+            
+            if(shape == target_) {
+                t.at(pointCorrespondence->getCorrespondingIds().at(i)) = 1;
+            }
+        }
+    }
+    
+    int sums = 0;
+    for(int i = 0; i < s.size(); i++) {
+        sums+= s.at(i);
+    }
+    if(sums != source_->getPolyData()->GetNumberOfPoints()) {
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Not every vertex on shape \"" + QString(source_->getName().c_str()) + "\" is matched by a correspondence\nCannot interpolate.");
+        return;
+    }
+    
+    int sumt = 0;
+    for(int i = 0; i < t.size(); i++) {
+        sumt+= t.at(i);
+    }
+    if(sumt != target_->getPolyData()->GetNumberOfPoints()) {
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Not every vertex on shape \"" + QString(target_->getName().c_str()) + "\" is matched by a correspondence\nCannot interpolate.");
+        return;
+    }
+    
+    this->labelChoose->setEnabled(false);
+    this->comboBoxSourceShape->setEnabled(false);
+    this->comboBoxTargetShape->setEnabled(false);
+    this->buttonChoose->setEnabled(false);
+    
     string name = source_->getName();
     name.append(":");
     name.append(target_->getName());

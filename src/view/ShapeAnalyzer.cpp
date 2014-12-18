@@ -14,8 +14,8 @@ ShapeAnalyzer::ShapeAnalyzer() : visualFaceCorrespondences_(1000), visualPointCo
     actionGroupMode_ = new QActionGroup(this);
     actionGroupMode_->addAction(this->actionTransformScene);
     actionGroupMode_->addAction(this->actionTransformShapes);
-    actionGroupMode_->addAction(this->actionAddPointCorrespondences);
-    actionGroupMode_->addAction(this->actionAddFaceCorrespondences);
+    actionGroupMode_->addAction(this->actionPickPointCorrespondences);
+    actionGroupMode_->addAction(this->actionPickFaceCorrespondences);
     
     
     actionGroupVisualRepresentation_ = new QActionGroup(this);
@@ -515,9 +515,9 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
     // then add visible point/face correspondences to renderer
     if(this->actionDisplayFaceCorrespondences->isChecked()) {
         this->labelTypeCorrespondences->setText("Type: Face Correspondences");
-        if(!actionAddFaceCorrespondences->isChecked() && actionAddPointCorrespondences->isChecked()) {
-            actionAddFaceCorrespondences->setChecked(true);
-            actionAddFaceCorrespondences->trigger();
+        if(!actionPickFaceCorrespondences->isChecked() && actionPickPointCorrespondences->isChecked()) {
+            actionPickFaceCorrespondences->setChecked(true);
+            actionPickFaceCorrespondences->trigger();
         }
 
         
@@ -548,9 +548,9 @@ void ShapeAnalyzer::slotSetCorrespondenceType() {
         
     } else {
         this->labelTypeCorrespondences->setText("Type: Point Correspondences");
-        if(!actionAddPointCorrespondences->isChecked() && actionAddFaceCorrespondences->isChecked()) {
-            actionAddPointCorrespondences->setChecked(true);
-            actionAddPointCorrespondences->trigger();
+        if(!actionPickPointCorrespondences->isChecked() && actionPickFaceCorrespondences->isChecked()) {
+            actionPickPointCorrespondences->setChecked(true);
+            actionPickPointCorrespondences->trigger();
         }
         
         if(tabWidgetCorrespondences->tabText(tabWidgetCorrespondences->currentIndex()) != "All Point Correspondences") {
@@ -1155,7 +1155,7 @@ void ShapeAnalyzer::slotToggleBoxWidget() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::slotModeAddCorrespondences() {
-    if(this->actionAddPointCorrespondences->isChecked()) {
+    if(this->actionPickPointCorrespondences->isChecked()) {
         if(!this->actionDisplayPointCorrespondences->isChecked()) {
             this->actionDisplayPointCorrespondences->setChecked(true);
             this->actionDisplayPointCorrespondences->trigger();
@@ -1169,7 +1169,7 @@ void ShapeAnalyzer::slotModeAddCorrespondences() {
         this->actionShowSurfaceNormals->setEnabled(false);
         this->actionShowPointCloud->setEnabled(actionDisplayPointCorrespondences->isChecked());
         this->actionShowTriangulatedMesh->setEnabled(actionDisplayFaceCorrespondences->isChecked());
-    } else if(this->actionAddFaceCorrespondences->isChecked()) {
+    } else if(this->actionPickFaceCorrespondences->isChecked()) {
         if(!this->actionDisplayFaceCorrespondences->isChecked()) {
             this->actionDisplayFaceCorrespondences->setChecked(true);
             this->actionDisplayFaceCorrespondences->trigger();
@@ -1499,7 +1499,7 @@ void ShapeAnalyzer::vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent
     
     std::string key = interactor->GetKeySym();
     
-    if(this->actionAddPointCorrespondences->isChecked()) {
+    if(this->actionPickPointCorrespondences->isChecked()) {
         if(key == "a") {
             // add current seleceted correspondence if more than one shape
             // is involved
@@ -1509,7 +1509,7 @@ void ShapeAnalyzer::vtkKeyPressHandler(vtkObject *caller, unsigned long vtkEvent
         } else if(key == "Escape") {
             pointCorrespondencePicker_->clearSelection();
         }
-    } else if(this->actionAddFaceCorrespondences->isChecked()) {
+    } else if(this->actionPickFaceCorrespondences->isChecked()) {
         if(key == "a") {
             // add current seleceted correspondence if more than one shape
             // is involved
@@ -1529,9 +1529,9 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
     // Get the location of the click (in window coordinates)
     int* pos =interactor->GetEventPosition();
     
-    if(this->actionAddPointCorrespondences->isChecked()) {
+    if(this->actionPickPointCorrespondences->isChecked()) {
         pointCorrespondencePicker_->onMouseMove(pos[0], pos[1]);
-    } else if(this->actionAddFaceCorrespondences->isChecked()) {
+    } else if(this->actionPickFaceCorrespondences->isChecked()) {
         faceCorrespondencePicker_->onMouseMove(pos[0], pos[1]);
     } else {}
 }
@@ -1539,7 +1539,7 @@ void ShapeAnalyzer::vtkMouseMoveHandler(vtkObject *caller, unsigned long vtkEven
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::vtkShapeClicked(shared_ptr<Shape> shape, vtkIdType pointId, vtkIdType faceId, QPoint &pos, unsigned long vtkEvent, vtkCommand *command) {
-    if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionAddPointCorrespondences->isChecked()) {
+    if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionPickPointCorrespondences->isChecked()) {
         pointCorrespondencePicker_->addShape(shape, pointId);
         
         
@@ -1547,7 +1547,7 @@ void ShapeAnalyzer::vtkShapeClicked(shared_ptr<Shape> shape, vtkIdType pointId, 
         if(shapes_.size() > 1 && pointCorrespondencePicker_->getCounter() == shapes_.size()) {
             pickCorrespondence();
         }
-    } else if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionAddFaceCorrespondences->isChecked()) {
+    } else if(vtkEvent == vtkCommand::LeftButtonPressEvent && this->actionPickFaceCorrespondences->isChecked()) {
         faceCorrespondencePicker_->addShape(shape, faceId);
         
         // all shapes are in the current correspondence
@@ -1849,7 +1849,7 @@ shared_ptr<FaceCorrespondence> ShapeAnalyzer::addFaceCorrespondence(const vector
 
 ///////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::pickCorrespondence() {
-    if(actionAddPointCorrespondences->isChecked()) {
+    if(actionPickPointCorrespondences->isChecked()) {
         shared_ptr<VisualCorrespondence<PointCorrespondence>> pointCorrespondence;
         if(pointCorrespondencePicker_->pick(pointCorrespondence)) {
             pointCorrespondences_.insert(pointCorrespondence->getCorrespondence(), true);

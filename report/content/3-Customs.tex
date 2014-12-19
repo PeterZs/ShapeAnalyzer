@@ -12,6 +12,7 @@ Customs refer to Qt objects that you can add to the GUI without changing the mai
 	\item \textbf{Have to implement} CustomContextMenuItem
 	\item \textbf{Found in} custom/contextMenuItems
 	\item \textbf{Use when} your algorithm works with exactly one shape and has limited input parameters
+	\item\textbf{Naming convention} <MeaningfulName>ContextMenuItem
 \end{itemize}
 
 The abstract CustomContextMenuItem class is very limited and there is only one function to implement. See \ref{subsec:ExampleVoronoiCellsContextMenuItem} for an example. 
@@ -36,7 +37,7 @@ The abstract CustomContextMenuItem class is very limited and there is only one f
 \subsection{Example: VoronoiCellsContextMenuItem}
 \label{subsec:ExampleVoronoiCellsContextMenuItem}
 
-\begin{lstlisting}[style=lstStyleCpp]
+\begin{lstlisting}[style=lstStyleCpp, caption={VoronoiCellsContextMenuItem.h}]
 template<class T = Metric>
 class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 public:
@@ -68,8 +69,7 @@ public:
             try {
                 auto m = make_shared<T>(shape_);
                 auto fps = make_shared<FarthestPointSampling>(
-                                                   shape_, m, source, 
-                                                   numberOfSegments);
+                                   shape_, m, source, numberOfSegments);
                 VoronoiCellSegmentation segmentation(shape_, m, fps);
                 
                 // save current segmentation for being able to create 
@@ -92,11 +92,11 @@ In \texttt{line 2} we of course inherit from CustomContextMenuItem.
 
 The constructor (\texttt{line 4 to 7}) is mandatory like this (not really, for more information look up \ref{sec:RegisterCustoms}). Every normal CustomContextMenuItem should be constructed with those two parameters and should call the super constructor. 
 
-The \texttt{onClick} function (\texttt{line 9 to 48}) is the important one. There are two QInputDialogs that get the source point and the number of segments. There are 4 different types of \href{http://qt-project.org/doc/qt-4.8/qinputdialog.html}{QInputDialogs} (see the static public member functions for details) that restrict the type of inputs you can get for your functions via context menu items. It is important to use the ShapeAnalyzer as the parent widget here. 
-Then you can call any code you want using the Shape and the ShapeAnalyzerInterface as well as the results from the dialogs as input. In \texttt{line 31} we make a new Metric object of type T (thats the template parameter) and use the shape as an input. We use that to construct a new FarthestPointSampling and finally a VoronoiSegmentation. With the result we construct a new Coloring (see \ref{sec:Coloring}) and color the given shape with it. Notice that all the objects we constructed here (except the Coloring) will be destroyed afterwards. If you want to reuse a computationally intense object later in an algorithm, use a CustomTab instead.
+The \texttt{onClick} function (\texttt{line 9 to 48}) is the important one. There are two QInputDialogs that get the source point and the number of segments. There are 4 different types of \href{http://qt-project.org/doc/qt-4.8/qinputdialog.html}{QInputDialogs} (see the static public member functions for details) that restrict the type of inputs you can get for your functions via context menu items. It is important to use the \texttt{parent} input as the parent widget here. 
+Then you can call any code you want using the Shape and the ShapeAnalyzerInterface as well as the results from the dialogs as inputs. Notice that all the objects we constructed here (except the Coloring) will be destroyed afterwards. If you want to reuse a computationally intense object later in an algorithm, use a CustomTab instead.
 The Metric object might throw MetricError which is catched here. All error messages should be created on this level (see \ref{sec:Errors}).
 
-This one is special because it is a template. The template parameter is the Metric that should be used for calculating the Voronoi cells. If you have a template menu item you have to register every possible parameter individually (\ref{sec:RegisterCustoms}). 
+This one is special because it is a template. The template parameter is the Metric that should be used for calculating the Voronoi cells. If you have a template menu item you have to register every possible parameter individually for them to appear in the GUI (\ref{sec:RegisterCustoms}). 
 
 \section{CustomTab}
 \label{sec:CustomTab}
@@ -105,9 +105,129 @@ This one is special because it is a template. The template parameter is the Metr
 	\item \textbf{Have to implement} CustomTab
 	\item \textbf{Found in} custom/tabs
 	\item \textbf{Use when} your algorithm is too complex for a menu item or when you might want to store information
+	\item \textbf{Naming convention} <MeaningfulName>Tab
 \end{itemize}
 
+CustomTabs can be loaded into the left menu of the ShapeAnalyzer. Every CustomTab is its own QWidget and can be freely designed in the QtCreator (or by hand if you like that). 
 
+\subsection{Abstract Functions}
+
+\begin{itemize}
+	\item \textbf{onShapeAdd(Shape* shape)} Is triggered when a new shape was added to the ShapeAnalyzer. 
+	\begin{itemize}
+		\item \texttt{shape} Reference to Shape that was added. 
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{onShapeEdit(Shape* shape)} Is triggered when an attribute of a shape was changed (for example the name).
+	\begin{itemize}
+		\item \texttt{shape} Reference to Shape that was edited. 
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{onShapeDelete(Shape* shape)} Is triggered when a shape was deleted.
+	\begin{itemize}
+		\item \texttt{shape} Reference to Shape that was deleted. 
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{onClear()} Is triggered when the GUI is cleared, this means all shapes and correspondences will be deleted.
+\end{itemize}
+
+\subsection{Class attributes}
+\begin{itemize}
+	\item \texttt{const HashMap<vtkActor*, shared\_ptr<Shape>>\&} \textbf{shapes\_} Read-only reference to all shapes
+	\item \texttt{const HashMap<shared\_ptr<PointCorrespondence>, bool>\&} \textbf{pointCorrespondences\_} Read-only reference to all point correspondences
+	\item \texttt{const HashMap<shared\_ptr<FaceCorrespondence>, bool>\&} \textbf{faceCorrespondences\_} Read-only reference to all face correspondences
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{subsec:ShapeAnalyzerInterface}
+\end{itemize}
+
+\subsection{Qt User Interface}
+\label{subsec:QtUI}
+
+You probably want to create the layout for your tab with the QtCreator. Put your .ui file in the custom/tabs folder and name it correspondingly to your tab: <MeaningfulName>TabWidget. During the creation make sure that you named the Widget accordinglly, too. If you didn't do that or you are not sure, the beginning of the .ui should look like this: 
+
+\begin{lstlisting}[style=lstStyleCpp, caption={IdentityMatchingTabWidget.ui}]
+...
+<class>IdentityMatchingTabWidget</class>
+<widget class="QWidget" name="IdentityMatchingTabWidget">
+...
+\end{lstlisting}
+
+Then you can inherit from UI::<YourUIClassName> and your widget will be layouted appropriately. You have to include ui\_<YourUIClassName>.h for the class to be found. This file will be automatically created so don't worry if you can't find it before compiling. 
+
+
+\subsection{Example: IdentityMatchingTab}
+\label{subsec:ExampleIdentityMatchingTab}
+
+\begin{lstlisting}[style=lstStyleCpp, caption={IdentityMatchingTab.h}]
+#include "ui_IdentityMatchingTabWidget.h"
+
+class IdentityMatchingTab : 
+                            public QWidget, 
+                            private Ui::IdentityMatchingTabWidget, 
+                            public CustomTab 
+{
+    Q_OBJECT
+    
+public:
+    IdentityMatchingTab(
+      const HashMap<vtkActor*, shared_ptr<Shape>>& shapes,
+      const HashMap<shared_ptr<PointCorrespondence>, bool>& pointCorrespondences,
+      const HashMap<shared_ptr<FaceCorrespondence>, bool>& faceCorrespondences,
+      ShapeAnalyzerInterface* shapeAnalyzer);
+    
+    virtual ~IdentityMatchingTab();
+    
+    virtual void onShapeDelete(Shape* shape);
+    virtual void onShapeAdd(Shape* shape);
+    virtual void onShapeEdit(Shape* shape);
+    virtual void onClear();
+private slots:
+    virtual void slotMatch();
+    virtual void slotToggleMode();
+};
+\end{lstlisting}
+
+Every CustomTab implementation has to inherit from \texttt{QWidget} and \texttt{CustomTab}. Additionally, if you created a .ui file for the layout, it has to inherit from \texttt{Ui::<YourUIClassName>}. See \ref{subsec:QtUI} for more details about that.
+
+Put the \texttt{Q\_OBJECT} keyword as in \texttt{line 8} if your widget is interactive i.e. you want to send signals for example from buttons. 
+
+Different from the context menu items, the constructor has to be implemented to setup the widget as well as all abstract functions. For those who have no experience with Qt take a look at the .cpp files for some impressions especially of the signal and slot system.
+
+\begin{lstlisting}[style=lstStyleCpp, caption={IdentityMatchingTab.cpp, Constructor}]
+custom::tabs::IdentityMatchingTab::IdentityMatchingTab(...)
+        :   QWidget(dynamic_cast<QWidget*>(shapeAnalyzer), 0),
+            CustomTab(...)
+{
+    this->setupUi(this);
+    
+    QStringList labels;
+    for(auto entry : shapes_) {
+
+        QString label = QString::number(entry.second->getId());
+        label.append(QString::fromStdString(":"+entry.second->getName()));
+        labels << label;
+    }
+    
+    if(shapes_.size() < 2) {
+        buttonMatch->setEnabled(false);
+    }
+    
+    comboBoxShape1->insertItems(0, labels);
+    comboBoxShape2->insertItems(0, labels);
+    
+    connect(this->buttonMatch,    SIGNAL(released()),
+                  this,                           SLOT(slotMatch()));
+    connect(this->buttonGroupMatch, SIGNAL(buttonClicked(int)),
+                  this,                                  SLOT(slotToggleMode()));
+}
+\end{lstlisting}
+
+In the constructor you have to set up the widget and connect all signals and slots. If you have a list of all shapes 
 
 \section{Registering Customs}
 \label{sec:RegisterCustoms}

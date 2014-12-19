@@ -19,17 +19,84 @@ The abstract CustomContextMenuItem class is very limited and there is only one f
 \subsection{Abstract Functions}
 
 \begin{itemize}
-	\item \textbf{onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent)} Is triggered when the menu item was clicked. \texttt{pointId} refers to the id of the closest vertex of the shape in the vtkPolyData of the shape to where the click was. \texttt{faceId} refers to the id of the face of the shape in the vtkPolyData of the shape under the click. \texttt{parent} is a reference to the ShapeAnalyzer Widget which is needed to open QInputDialogs.
+	\item \textbf{onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent)} Is triggered when the menu item was clicked. 
+	\begin{itemize}
+		\item \texttt{pointId} refers to the id of the closest vertex of the shape in the vtkPolyData of the shape to where the click was. 
+		\item \texttt{faceId} refers to the id of the face of the shape in the vtkPolyData of the shape under the click. 
+		\item \texttt{parent} is a reference to the ShapeAnalyzer Widget which is needed to open QInputDialogs.
+	\end{itemize}
 \end{itemize}
 
 \subsection{Class attributes}
-%\begin{itemize}
-	%\item \texttt{shared_ptr<Shape>} \textbf{shape_} Reference to the clicked shape
-	%\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer_} Reference to the ShapeAnalyzerInterface see \ref{subsec:ShapeAnalyzerInterface}
-%\end{itemize}
+\begin{itemize}
+	\item \texttt{shared\_ptr<Shape>} \textbf{shape\_} Reference to the clicked shape
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{subsec:ShapeAnalyzerInterface}
+\end{itemize}
 
 \subsection{Example: VoronoiCellsContextMenuItem}
 \label{subsec:ExampleVoronoiCellsContextMenuItem}
+
+\begin{lstlisting}[style=lstStyleCpp]
+template<class T = Metric>
+class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
+public:
+    VoronoiCellsContextMenuItem<T>(
+         shared_ptr<Shape> shape, 
+         ShapeAnalyzerInterface* shapeAnalyzer) 
+    : CustomContextMenuItem(shape, shapeAnalyzer) {}
+    
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+        bool ok;
+        vtkIdType source = QInputDialog::getInt(
+                         parent,
+                         "Source vertex",
+                         "Choose ID of source vertex.",
+                         0, 0,
+                         shape_->getPolyData()->GetNumberOfPoints()-1,
+                         1, &ok);
+        if (!ok) {
+            return;
+        }
+        vtkIdType numberOfSegments = QInputDialog::getInt(
+                           parent,
+                           "Number of segments",
+                           "Choose number of segments",
+                           0, 0,
+                           shape_->getPolyData()->GetNumberOfPoints()-1,
+                           1, &ok);
+        if(ok) {
+            try {
+                auto m = make_shared<T>(shape_);
+                auto fps = make_shared<FarthestPointSampling>(
+                                                   shape_, m, source, 
+                                                   numberOfSegments);
+                VoronoiCellSegmentation segmentation(shape_, m, fps);
+                
+                // save current segmentation for being able to create 
+                // new shapes out of the segments
+                shared_ptr<Shape::Coloring> coloring 
+                             = make_shared<Shape::Coloring>();
+                coloring->type = Shape::Coloring::Type::PointSegmentation;
+                coloring->values = segmentation.getSegments();
+                shape_->setColoring(coloring);
+            } catch(metric::MetricError& e) {
+                QMessageBox::warning(parent, "Exception", e.what());
+            }
+        }
+    }
+};
+
+\end{lstlisting}
+
+In \texttt{line 2} we of course inherit from CustomContextMenuItem. 
+
+The constructor (\texttt{line 4 to 7}) is mandatory like this (not really, for more information look up \ref{sec:RegisterCustoms}). Every normal CustomContextMenuItem should be constructed with those two parameters and should call the super constructor. 
+
+The \texttt{onClick} function (\texttt{line 9 to 48}) is the important one. There are two QInputDialogs that get the source point and the number of segments. There are 4 different types of \href{http://qt-project.org/doc/qt-4.8/qinputdialog.html}{QInputDialogs} (see the static public member functions for details) that restrict the type of inputs you can get for your functions via context menu items. It is important to use the ShapeAnalyzer as the parent widget here. 
+Then you can call any code you want using the Shape and the ShapeAnalyzerInterface as well as the results from the dialogs as input. In \texttt{line 31} we make a new Metric object of type T (thats the template parameter) and use the shape as an input. We use that to construct a new FarthestPointSampling and finally a VoronoiSegmentation. With the result we construct a new Coloring (see \ref{sec:Coloring}) and color the given shape with it. Notice that all the objects we constructed here (except the Coloring) will be destroyed afterwards. If you want to reuse a computationally intense object later in an algorithm, use a CustomTab instead.
+The Metric object might throw MetricError which is catched here. All error messages should be created on this level (see \ref{sec:Errors}).
+
+This one is special because it is a template. The template parameter is the Metric that should be used for calculating the Voronoi cells. If you have a template menu item you have to register every possible parameter individually (\ref{sec:RegisterCustoms}). 
 
 \section{CustomTab}
 \label{sec:CustomTab}

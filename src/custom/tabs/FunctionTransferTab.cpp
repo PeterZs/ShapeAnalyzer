@@ -79,8 +79,8 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         metric::GeodesicMetric metricSource(source);
         metric::GeodesicMetric metricTarget(target);
         
-        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, 100);
-        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, 100);
+        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, 20);
+        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, 20);
         
         
         // Compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
@@ -105,10 +105,10 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                             u0s->SetValue(j, 0.0);
                         }
                     }
-                    for(double t = 100.0; t <= 200.0; t+=25.0) {
-                        PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
-                        constraintsSource.push_back(hdSource.getHeat(t));
-                    }
+//                    for(double t = 100.0; t <= 200.0; t+=25.0) {
+//                        PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
+//                        constraintsSource.push_back(hdSource.getHeat(t));
+//                    }
                 }
                 
                 if(corr->getShapes().at(i) == target) {
@@ -127,29 +127,29 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                             u0t->SetValue(j, 0.0);
                         }
                     }
-                    for(double t = 100.0; t <= 200.0; t+=25.0) {
-                        PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
-                        constraintsTarget.push_back(hdTarget.getHeat(t));
-                    }
+//                    for(double t = 100.0; t <= 200.0; t+=25.0) {
+//                        PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
+//                        constraintsTarget.push_back(hdTarget.getHeat(t));
+//                    }
                 }
             }
         }
         
-        // compute 200-dimensional wave kernel discriptor on both shapes
-        PetscWaveKernelSignature wksSource(source, 100, laplacianSource);
-        PetscWaveKernelSignature wksTarget(target, 100, laplacianTarget);
-        
-        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-        for(int i = 0; i < 10; i++) {
-            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-            constraintsSource.push_back(wksiSource);
-            
-            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-            constraintsTarget.push_back(wksiTarget);
-        }
+//        // compute 200-dimensional wave kernel discriptor on both shapes
+//        PetscWaveKernelSignature wksSource(source, 47, laplacianSource);
+//        PetscWaveKernelSignature wksTarget(target, 47, laplacianTarget);
+//        
+//        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
+//        for(int i = 0; i < 20; i++) {
+//            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
+//            constraintsSource.push_back(wksiSource);
+//            
+//            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+//            constraintsTarget.push_back(wksiTarget);
+//        }
         
         // compute correspondence matrix C
-        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, 100);
+        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, 20);
         
         
         // transfer the coordinate function

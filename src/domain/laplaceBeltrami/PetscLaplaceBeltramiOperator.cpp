@@ -1,8 +1,12 @@
 #include "PetscLaplaceBeltramiOperator.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-void laplaceBeltrami::PetscLaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi) {
-    for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
+void laplaceBeltrami::PetscLaplaceBeltramiOperator::getEigenfunctionMatrix(Mat *Phi, int numberOfEigenfunctions) {
+    if(numberOfEigenfunctions > numberOfEigenfunctions_) {
+        throw invalid_argument(string("Cannot create more eigenfunctions than computed before in ").append(__PRETTY_FUNCTION__));
+    }
+    
+    for(PetscInt i = 0; i < numberOfEigenfunctions; i++) {
         Vec phi;
         getEigenfunction(i, &phi);
         

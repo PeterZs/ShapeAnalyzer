@@ -21,7 +21,7 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
 ///////////////////////////////////////////////////////////////////////////////
 void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
     PetscInt m;
-    MatGetSize(A, &m, NULL);
+    MatGetSize(A, NULL, &m);
 
     
     const PetscScalar* row;

@@ -27,7 +27,9 @@ signature::PetscWaveKernelSignature::PetscWaveKernelSignature(shared_ptr<Shape> 
     PetscScalar sigma = (e[1] - e[0]) * wksVariance_;
 
     for(PetscInt i = 0; i < dimension_; i++) {
-        Vec wksi; //i-th component of wks
+        //i-th component of wks
+        Vec wksi;
+        
         VecCreateSeq(MPI_COMM_SELF, shape_->getPolyData()->GetNumberOfPoints(), &wksi);
         VecSet(wksi, 0.0);
         PetscScalar C = 0;

@@ -14,7 +14,7 @@ PetscHeatDiffusion::PetscHeatDiffusion(shared_ptr<Shape> shape, shared_ptr<Petsc
     Mat Phi;
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, laplacian_->getNumberOfEigenfunctions(), NULL, &Phi);
-    laplacian_->getEigenfunctionMatrix(&Phi);
+    laplacian_->getEigenfunctionMatrix(&Phi, laplacian_->getNumberOfEigenfunctions());
     
     Mat PhiT;
     MatTranspose(Phi, MAT_INITIAL_MATRIX, &PhiT);

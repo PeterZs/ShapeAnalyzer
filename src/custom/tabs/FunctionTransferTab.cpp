@@ -62,7 +62,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
 
     
     if(source->getColoring() == nullptr || (source->getColoring()->type != Shape::Coloring::Type::PointScalar && source->getColoring()->type != Shape::Coloring::Type::PointSegmentation)) {
-        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Shape \"" + QString(source->getName().c_str()) + "\" does neither have a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Shape \"" + QString(source->getName().c_str()) + "\" is neither colored with a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
         return;
     }
     
@@ -85,81 +85,129 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         
         // Compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
         // Compute heat diffusion snapshots using the corresponding points.
+
         for(auto entry : pointCorrespondences_) {
             shared_ptr<PointCorrespondence> corr = entry.first;
             
             for(int i = 0; i < corr->getShapes().size(); i++) {
                 if(corr->getShapes().at(i) == source) {
                     // Landmark match
-                    vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
-                    constraintsSource.push_back(distances);
+                    //vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
+                    //constraintsSource.push_back(distances);
                     
                     // Heat diffusion
                     vtkSmartPointer<vtkDoubleArray> u0s = vtkSmartPointer<vtkDoubleArray>::New();
                     u0s->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
-                    
                     for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
-                        if(j == corr->getCorrespondingIds().at(i)) {
-                            u0s->SetValue(j, 1.0);
-                        } else {
-                            u0s->SetValue(j, 0.0);
-                        }
+                        u0s->SetValue(j, 0.0);
                     }
-//                    for(double t = 100.0; t <= 200.0; t+=25.0) {
-//                        PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
-//                        constraintsSource.push_back(hdSource.getHeat(t));
-//                    }
+                    u0s->SetValue(corr->getCorrespondingIds().at(i), 5.0);
+                    
+                    PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
+                    for(double t = 0.55; t <= 200.0; t+=25.0) {
+                        constraintsSource.push_back(hdSource.getHeat(t));
+                    }
                 }
                 
                 if(corr->getShapes().at(i) == target) {
                     // Landmark match
-                    vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
-                    constraintsTarget.push_back(distances);
+                    //vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
+                    //constraintsTarget.push_back(distances);
 
                     // Heat diffusion
                     vtkSmartPointer<vtkDoubleArray> u0t = vtkSmartPointer<vtkDoubleArray>::New();
                     u0t->SetNumberOfValues(target->getPolyData()->GetNumberOfPoints());
                     
                     for(vtkIdType j = 0; j < target->getPolyData()->GetNumberOfPoints(); j++) {
-                        if(j == corr->getCorrespondingIds().at(i)) {
-                            u0t->SetValue(j, 1.0);
-                        } else {
-                            u0t->SetValue(j, 0.0);
-                        }
+                        u0t->SetValue(j, 0.0);
                     }
-//                    for(double t = 100.0; t <= 200.0; t+=25.0) {
-//                        PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
-//                        constraintsTarget.push_back(hdTarget.getHeat(t));
-//                    }
+                    u0t->SetValue(corr->getCorrespondingIds().at(i), 5.0);
+                    
+                    
+                    PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
+                    for(double t = 0.55; t <= 200.0; t+=25.0) {
+                        constraintsTarget.push_back(hdTarget.getHeat(t));
+                    }
                 }
             }
         }
         
-//        // compute 200-dimensional wave kernel discriptor on both shapes
-//        PetscWaveKernelSignature wksSource(source, 47, laplacianSource);
-//        PetscWaveKernelSignature wksTarget(target, 47, laplacianTarget);
-//        
-//        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-//        for(int i = 0; i < 20; i++) {
-//            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-//            constraintsSource.push_back(wksiSource);
-//            
-//            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-//            constraintsTarget.push_back(wksiTarget);
-//        }
+
+        
+        // compute 200-dimensional wave kernel discriptor on both shapes
+        PetscWaveKernelSignature wksSource(source, 197, laplacianSource, 20);
+        PetscWaveKernelSignature wksTarget(target, 197, laplacianTarget, 20);
+        
+        
+        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
+        for(int i = 0; i < 197; i++) {
+            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
+            constraintsSource.push_back(wksiSource);
+            
+            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+            constraintsTarget.push_back(wksiTarget);
+        }
         
         // compute correspondence matrix C
         PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, 20);
         
         
-        // transfer the coordinate function
-        vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(source->getColoring()->values);
         
-        // color 2nd shape
-        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-        coloring->type = Shape::Coloring::Type::PointScalar;
-        coloring->values = Tf;
-        target->setColoring(coloring);
+        if(source->getColoring()->type == Shape::Coloring::Type::PointSegmentation) {
+            // find out the number of segments
+            int numberOfSegments = 0;
+            for(vtkIdType i = 0; i < source->getColoring()->values->GetNumberOfTuples(); i++) {
+                if(source->getColoring()->values->GetComponent(i, 0) > numberOfSegments) {
+                    numberOfSegments = source->getColoring()->values->GetComponent(i, 0);
+                }
+            }
+            numberOfSegments++;
+            
+            // transfer each segment seperately as an segment indicator function
+            vector<vtkSmartPointer<vtkDoubleArray>> components(numberOfSegments);
+            for(int i = 0; i < numberOfSegments; i++) {
+                vtkSmartPointer<vtkDoubleArray> indicatorFunction = vtkSmartPointer<vtkDoubleArray>::New();
+                indicatorFunction->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
+                // color 2nd shape
+                for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
+                    if(source->getColoring()->values->GetComponent(j, 0) == i) {
+                        indicatorFunction->SetValue(j, 1.0);
+                    } else {
+                        indicatorFunction->SetValue(j, 0.0);
+                    }
+                }
+                vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(indicatorFunction);
+                target->setColoring(Tf, Shape::Coloring::Type::PointScalar);
+                shapeAnalyzer_->render();
+                this_thread::sleep_for(chrono::milliseconds(2000));
+                components.at(i) = Tf;
+            }
+            
+            vtkSmartPointer<vtkIntArray> Tf = vtkSmartPointer<vtkIntArray>::New();
+            Tf->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
+            
+            for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
+                int segment = 0;
+                double score = components.at(0)->GetValue(j);
+                for(int i = 1; i < numberOfSegments; i++) {
+                    if(components.at(i)->GetValue(j) > score) {
+                        score = components.at(i)->GetValue(j);
+                        segment = i;
+                    }
+                }
+                
+                Tf->SetValue(j, segment);
+            }
+            
+            target->setColoring(Tf, Shape::Coloring::Type::PointSegmentation);
+        } else {
+            // transfer function 
+            vtkSmartPointer<vtkDoubleArray> Tf = functionalMaps.transferFunction(source->getColoring()->values);
+            // color 2nd shape
+            target->setColoring(Tf, Shape::Coloring::Type::PointScalar);
+        }
+        
+
     } catch(metric::MetricError& me) {
         QErrorMessage msgBox;
         msgBox.showMessage(QString::fromStdString(me.what()));

@@ -6,6 +6,9 @@
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
 
+#include <chrono>
+#include <thread>
+
 #include <QMessageBox>
 #include <QErrorMessage>
 

@@ -194,11 +194,11 @@ public:
 
     /// \brief Colors points or faces with any kind of Coloring.
     /// \details Depending on the type of the coloring different coloring schemas are applied.
-    /// @param shared_ptr<Coloring>. Contains the color data for the points or faces and the type of the coloring.
-    void setColoring(shared_ptr<Coloring> coloring);
+    /// @param . Contains the color data for the points or faces and the type of the coloring.
+    void setColoring(vtkSmartPointer<vtkDataArray> values, Coloring::Type type);
 
-    shared_ptr<const Coloring> getColoring() const {
-        return coloring_;
+    Coloring const* getColoring() const {
+        return coloring_.get();
     }
 
     /// \brief Colors the shape using the coordinates of the vertices as indicators for the rgb value.
@@ -231,7 +231,7 @@ private:
     ///@}
     
     /// \brief Current Coloring of the shape, if there is any
-    shared_ptr<Coloring> coloring_;
+    unique_ptr<Coloring> coloring_;
 };
 
 #endif

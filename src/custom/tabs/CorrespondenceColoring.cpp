@@ -98,11 +98,7 @@ void custom::tabs::CorrespondenceColoring::showPointCorrespondences(
     // color all shapes
     for (auto entry : shapes_) {
         if (entry.second != reference_) {
-            vtkSmartPointer<vtkUnsignedCharArray> colors = pointAttributes_.find(entry.second->getId())->second;
-            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-            coloring->type = Shape::Coloring::Type::PointRgb;
-            coloring->values = colors;
-            entry.second->setColoring(coloring);
+            entry.second->setColoring(pointAttributes_.find(entry.second->getId())->second, Shape::Coloring::Type::PointRgb);
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {
@@ -217,11 +213,7 @@ void custom::tabs::CorrespondenceColoring::showFaceCorrespondences(
     // color all shapes
     for (auto entry : shapes_) {
         if(entry.second != reference_) {
-            vtkSmartPointer<vtkUnsignedCharArray> colors = faceAttributes_.find(entry.second->getId())->second;
-            shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-            coloring->type = Shape::Coloring::Type::FaceRgb;
-            coloring->values = colors;
-            entry.second->setColoring(coloring);
+            entry.second->setColoring(faceAttributes_.find(entry.second->getId())->second, Shape::Coloring::Type::FaceRgb);
             
             // if requested, evaluate matched points
             if (percentageMatched != 0 || percentageMultiple != 0) {

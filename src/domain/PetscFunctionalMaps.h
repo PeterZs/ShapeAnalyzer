@@ -22,7 +22,7 @@ public:
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the source shape.
     /// @param vector<vtkSmartPointer<vtkDoubleArray>>& Vector of constraints (Vertex-to-Double maps) defined on the target shape.
     /// @param int Number of eigenfunctions that are used for the representation of the functions.
-    PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha = 900000, double lambda = 0.7, double mu = 10.0);
+    PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha = 1e2, double lambda = 0.019, double mu = 0.07, int iterations = 200);
     
     vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f);
     
@@ -33,6 +33,7 @@ private:
     PetscScalar lambda_;
     PetscScalar alpha_;
     
+    int iterations_;
     
     void proxOperator1(Mat* C);
     

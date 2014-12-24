@@ -1,9 +1,9 @@
 #include "PetscFunctionalMaps.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha, double lambda, double mu) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), mu_(mu), lambda_(lambda), alpha_(alpha), laplacian1_(laplacian1), laplacian2_(laplacian2) {
+PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha, double lambda, double mu, int iterations) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), mu_(mu), lambda_(lambda), alpha_(alpha), iterations_(iterations), laplacian1_(laplacian1), laplacian2_(laplacian2) {
     
-    cout << "Initializing..."<<flush;
+    cout << "Initializing Functional Maps..."<<flush;
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
     setupPhiTM(shape1_.get(), laplacian1_.get(), &Phi1_, &PhiTM1_);
@@ -25,7 +25,7 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
         MatGetVecs(PhiTM1_, &ci1, &ai);
         
         //copy contraint c1_ which is of type scalar point attribute into Petsc vector
-        PetscHelper::vtkDataArrayToPetscVec(c1_[i], ci1);
+        PetscHelper::vtkDataArrayToPetscVec(c1_.at(i), ci1);
         
         
         //compute i-th row (ai) of A^T
@@ -34,11 +34,10 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
         PetscHelper::setRow(A_, ai, i);
         
         
-        //set b_i which is an array of Vecs (corresponds to i-th column of B)
         Vec ci2;
         Vec bi;
         MatGetVecs(PhiTM2_, &ci2, &bi);
-        PetscHelper::vtkDataArrayToPetscVec(c2_[i], ci2);
+        PetscHelper::vtkDataArrayToPetscVec(c2_.at(i), ci2);
         
         MatMult(PhiTM2_, ci2, bi);
         
@@ -62,73 +61,88 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
     MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C_);
     MatZeroEntries(C_);
 
-    // create and matrices T, C and O
-    Mat T;
-    Mat O;
+    // create and matrices C and O
     Mat C;
+    Mat O;
+    Mat AtO;
     MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C);
-    MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &T);
     MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &O);
-
+    MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &AtO);
+    
     cout << " done."<<endl;
+    
+    Mat IAtA;
+    MatTransposeMatMult(A_, A_, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &IAtA);
+    MatScale(IAtA, -1.0 / alpha_);
+    MatShift(IAtA, 1.0);
+    Mat AtB;
+    MatTransposeMatMult(A_, B_, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &AtB);
     cout << "Computing C..."<<endl;
-    for(int i = 0; i < 2700; i++) {
-        cout << "    > Iteration "<<i<<"..."<<flush;
-        // compute grad_C
-        // C = A*C_k, O = A*C_k
-        MatMatMult(A_, C_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &T);
-        //MatCopy(T, O, SAME_NONZERO_PATTERN);
-        // T = 1.0 * O_ + T
-        //MatAXPY(T, 1.0, O_, SAME_NONZERO_PATTERN);
-        // T = -1.0 * B_ + T
-        MatAXPY(T, -1.0, B_, SAME_NONZERO_PATTERN);
-        // C = A^T*T
-        MatTransposeMatMult(A_, T, MAT_REUSE_MATRIX, PETSC_DEFAULT, &C);
+    for(int i = 0; i < iterations_; i++) {
+        if(i % 50 == 0)
+            cout << "    > Iteration "<<i<<"..."<<flush;
         
-        //update C
-        //C = -1/alpha * C + C_k
-        MatAYPX(C, -1.0 / alpha_, C_, SAME_NONZERO_PATTERN);
-
+        MatMatMult(IAtA, C_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &C);
+        MatAXPY(C, 1.0 / alpha_, AtB, SAME_NONZERO_PATTERN);
+        MatTransposeMatMult(A_, O_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &AtO);
+        MatAXPY(C, -1.0 / alpha_, AtO, SAME_NONZERO_PATTERN);
+    
+        
         // compute grad_O
-        // O = 1.0 * O_k + O
-        //MatAXPY(O, 1.0, O_, SAME_NONZERO_PATTERN);
-        // O = -1.0 * B_ + O
-        //MatAXPY(O, -1.0, B_, SAME_NONZERO_PATTERN);
-
-        //update O
-        //O = -1/alpha * O + O_k
-        //MatAYPX(O, -1.0 / alpha_, O_, SAME_NONZERO_PATTERN);
+        // O = - 1 / alpha * A*C_k
+        MatMatMult(A_, C_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &O);
+        MatScale(O, -1.0 / alpha_);
         
-        // apply proximity operators
+        // O = 1 / alpha * B + O
+        MatAXPY(O, 1.0 / alpha_, B_, SAME_NONZERO_PATTERN);
+        // O = (1 - 1 / alpha) * O_k + O
+        MatAXPY(O, 1.0 - (1.0 / alpha_), O_, SAME_NONZERO_PATTERN);
+        
         proxOperator1(&C);
-        //proxOperator2(&O);
+        proxOperator2(&O);
         
-        cout << " done."<<endl;
+        if(i % 50 == 0)
+            cout << " done."<<endl;
     }
+    MatDestroy(&C);
+    MatDestroy(&O);
+    MatDestroy(&AtO);
+    MatDestroy(&IAtA);
+    MatDestroy(&AtB);
     
     MatView(C_, PETSC_VIEWER_STDOUT_SELF);
     
     MatView(O_, PETSC_VIEWER_STDOUT_SELF);
+    for(int i = 0; i < numberOfConstraints_; i++) {
+        Vec oi;
+        VecCreateSeq(MPI_COMM_SELF, numberOfEigenfunctions, &oi);
+        PetscHelper::getRow(oi, O_, i);
+        PetscScalar sum;
+        VecSum(oi, &sum);
+        cout << i<<"-th row "<<sum<<endl;
+    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void PetscFunctionalMaps::proxOperator1(Mat* C) {
+ 
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         for(PetscInt j = 0; j < numberOfEigenfunctions_; j++) {
-            PetscScalar w = pow((double) (i - j), 2.0);
-            PetscScalar c;
+
+            PetscReal w = pow((double) (i - j), 4.0);
+            PetscReal c;
             MatGetValue(*C, i, j, &c);
-            PetscScalar z = ( lambda_ / alpha_ ) * w;
-            if(c < - z) {
-                MatSetValue(C_, i, j, c + z, INSERT_VALUES);
-            } else if(c > z) {
-                MatSetValue(C_, i, j, c - z, INSERT_VALUES);
-            } else {
-                MatSetValue(C_, i, j, 0.0, INSERT_VALUES);
+            PetscReal t = ( lambda_ * w ) / alpha_;
+            PetscReal value = 0.0;
+            if(c < -t) {
+                value = c + t;
+            } else if(c > t) {
+                value = c - t;
             }
             
-            
+            MatSetValue(C_, i, j, value, INSERT_VALUES);
+
         }
     }
     MatAssemblyBegin(C_, MAT_FINAL_ASSEMBLY);
@@ -140,9 +154,9 @@ void PetscFunctionalMaps::proxOperator1(Mat* C) {
 void PetscFunctionalMaps::proxOperator2(Mat* O) {
     PetscInt a, b;
     MatGetSize(*O, &a, &b);
+    Vec oi;
+    VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_, &oi);
     for(PetscInt i = 0; i < numberOfConstraints_; i++) {
-        Vec oi;
-        VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_, &oi);
         PetscHelper::getRow(oi, *O, i);
         PetscScalar norm;
         VecNorm(oi, NORM_2, &norm);
@@ -152,6 +166,7 @@ void PetscFunctionalMaps::proxOperator2(Mat* O) {
     }
     MatAssemblyBegin(O_, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(O_, MAT_FINAL_ASSEMBLY);
+    VecDestroy(&oi);
 }
 
 
@@ -215,7 +230,7 @@ void PetscFunctionalMaps::setupPhiTM(Shape* shape, PetscLaplaceBeltramiOperator*
     PetscInt numberOfPoints = shape->getPolyData()->GetNumberOfPoints();
     
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, numberOfEigenfunctions_, NULL, Phi);
-    laplacian->getEigenfunctionMatrix(Phi, numberOfEigenfunctions_);
+    laplacian->getEigenfunctionMatrix(Phi);
     
     Mat PhiT;
     MatTranspose(*Phi, MAT_INITIAL_MATRIX, &PhiT);

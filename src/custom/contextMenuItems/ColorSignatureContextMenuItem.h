@@ -44,14 +44,11 @@ public:
             try {
                 shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 100);
                 
-                shared_ptr<T> s = make_shared<T>(shape_, 100, laplacian);
+                shared_ptr<T> s = make_shared<T>(shape_, 100, laplacian, 20);
                 
                 vtkSmartPointer<vtkDoubleArray> component = s->getComponent(i);
                 
-                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-                coloring->type = Shape::Coloring::Type::PointScalar;
-                coloring->values = component;
-                shape_->setColoring(coloring);
+                shape_->setColoring(component, Shape::Coloring::Type::PointScalar);
             } catch(LaplaceBeltramiError& e) {
                 QMessageBox::warning(parent, "Exception", e.what());
             }

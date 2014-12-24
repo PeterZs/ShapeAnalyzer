@@ -66,18 +66,15 @@ public:
                         u0->SetValue(i, 0.0);
                     }
                 }
-                shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 100);
+                shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 20);
                 
                 PetscHeatDiffusion heatDiffusion(shape_, laplacian, u0);
                 
                 if(ANIMATED) {
                     for(double t = 0.0; t <= tFinal; t+=5.0) {
                         vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(t);
-                        
-                        shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-                        coloring->type = Shape::Coloring::Type::PointScalar;
-                        coloring->values = ut;
-                        shape_->setColoring(coloring);
+
+                        shape_->setColoring(ut, Shape::Coloring::Type::PointScalar);
                         
                         shapeAnalyzer_->render();
                         
@@ -85,11 +82,8 @@ public:
                     }
                 } else {
                     vtkSmartPointer<vtkDoubleArray> ut = heatDiffusion.getHeat(tFinal);
-                    
-                    shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-                    coloring->type = Shape::Coloring::Type::PointScalar;
-                    coloring->values = ut;
-                    shape_->setColoring(coloring);
+
+                    shape_->setColoring(ut, Shape::Coloring::Type::PointScalar);
                     
                     shapeAnalyzer_->render();
                 }

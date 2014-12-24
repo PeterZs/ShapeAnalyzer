@@ -59,10 +59,7 @@ public:
                 VoronoiCellSegmentation segmentation(shape_, m, fps);
                 
                 // save current segmentation for being able to create new shapes out of the segments
-                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-                coloring->type = Shape::Coloring::Type::PointSegmentation;
-                coloring->values = segmentation.getSegments();
-                shape_->setColoring(coloring);
+                shape_->setColoring(segmentation.getSegments(), Shape::Coloring::Type::PointSegmentation);
             } catch(metric::MetricError& e) {
                 QMessageBox::warning(parent, "Exception", e.what());
             }

@@ -41,11 +41,8 @@ public:
             try {
                 T m(shape_);
                 vtkSmartPointer<vtkDoubleArray> distances = m.getAllDistances(source);
-                
-                shared_ptr<Shape::Coloring> coloring = make_shared<Shape::Coloring>();
-                coloring->type = Shape::Coloring::Type::PointScalar;
-                coloring->values = distances;
-                shape_->setColoring(coloring);
+
+                shape_->setColoring(distances, Shape::Coloring::Type::PointScalar);
             } catch(MetricError& e) {
                 QMessageBox::warning(parent, "Exception", e.what());
             }

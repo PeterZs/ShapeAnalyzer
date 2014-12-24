@@ -15,7 +15,7 @@ namespace signature {
         /// @param Shape* The shape on which the signature is computed.
         /// @param int Number of components that the signature should have.
         /// @param PetscLaplaceBeltramiOperator* A reference to an instance of a PETSC based Laplace-Beltrami operator
-        PetscLaplaceBeltramiSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian);
+        PetscLaplaceBeltramiSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, int numberOfEigenfunctions);
         
         /// \brief Virtual destructor
         virtual ~PetscLaplaceBeltramiSignature();
@@ -27,6 +27,8 @@ namespace signature {
         Mat signature_;
         /// Reference to the LPO of the shape.
         shared_ptr<PetscLaplaceBeltramiOperator> laplacian_;
+        
+        int numberOfEigenfunctions_;
     };
     
 }

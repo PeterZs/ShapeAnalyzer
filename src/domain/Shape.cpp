@@ -188,11 +188,8 @@ void Shape::colorPointsCoordinates() {
         
         colors->SetTuple(i, point);
     }
-    
-    shared_ptr<Coloring> coloring = make_shared<Coloring>();
-    coloring->type = Coloring::Type::PointRgb;
-    coloring->values = colors;
-    setColoring(coloring);
+
+    setColoring(colors, Coloring::Type::PointRgb);
 }
 
 
@@ -263,10 +260,7 @@ void Shape::colorFacesCoordinates() {
         colors->SetTuple(i, color);
     }
     
-    shared_ptr<Coloring> coloring = make_shared<Coloring>();
-    coloring->type = Coloring::Type::FaceRgb;
-    coloring->values = colors;
-    setColoring(coloring);
+    setColoring(colors, Coloring::Type::FaceRgb);
 }
 
 
@@ -303,10 +297,12 @@ vtkIdType Shape::getRandomPoint() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
+void Shape::setColoring(vtkSmartPointer<vtkDataArray> values, Coloring::Type type) {
     // release old shared_ptr. Decrements ref count and if there is no other object referencing the coloring it will be destroyed.
     coloring_.reset();
-    coloring_ = coloring;
+    coloring_ = unique_ptr<Coloring>(new Coloring);
+    coloring_->values = values;
+    coloring_->type = type;
     
     // check if input array matches coloring type
     if(coloring_->type == Coloring::Type::PointScalar || coloring_->type == Coloring::Type::FaceScalar) {
@@ -330,12 +326,12 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         // argument check
         
         // wrong number of components
-        if(coloring->values->GetNumberOfComponents() != 1) {
+        if(coloring_->values->GetNumberOfComponents() != 1) {
             throw invalid_argument(string("The Coloring is of type PointScalar or PointSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
         }
         
         // wrong number of values
-        if(coloring->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
+        if(coloring_->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
             throw invalid_argument(string("The number of coloring values does not match the number of vertices in").append(__PRETTY_FUNCTION__));
         }
         
@@ -353,12 +349,12 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
         // argument check
         
         // wrong number of components
-        if(coloring->values->GetNumberOfComponents() != 1) {
+        if(coloring_->values->GetNumberOfComponents() != 1) {
             throw invalid_argument(string("The Coloring is of type FaceScalar or FaceSegmentation but does not have 1 component in").append(__PRETTY_FUNCTION__));
         }
         
         // wrong number of values
-        if(coloring->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
+        if(coloring_->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
             throw invalid_argument(string("The number of coloring values does not match the number of faces in").append(__PRETTY_FUNCTION__));
         }
         
@@ -375,10 +371,10 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     } else if(coloring_->type == Coloring::Type::PointRgb) {
         // argument check
         
-        if(coloring->values->GetNumberOfComponents() != 3) {
+        if(coloring_->values->GetNumberOfComponents() != 3) {
             throw invalid_argument(string("The Coloring is of type PointRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
         }
-        if(coloring->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
+        if(coloring_->values->GetNumberOfTuples() != polyData_->GetPoints()->GetNumberOfPoints()) {
             throw invalid_argument(string("The number of coloring values does not match the number of vertices in").append(__PRETTY_FUNCTION__));
         }
         
@@ -391,10 +387,10 @@ void Shape::setColoring(shared_ptr<Shape::Coloring> coloring) {
     } else if(coloring_->type == Coloring::Type::FaceRgb) {
         // argument check
 
-        if(coloring->values->GetNumberOfComponents() != 3) {
+        if(coloring_->values->GetNumberOfComponents() != 3) {
             throw invalid_argument(string("The Coloring is of type FaceRgb but does not have 3 components in").append(__PRETTY_FUNCTION__));
         }
-        if(coloring->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
+        if(coloring_->values->GetNumberOfTuples() != polyData_->GetNumberOfCells()) {
             throw invalid_argument(string("The number of coloring values does not match the number of faces in").append(__PRETTY_FUNCTION__));
         }
         

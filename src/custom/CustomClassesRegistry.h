@@ -24,6 +24,7 @@
 #include "contextMenuItems/VoronoiCellsContextMenuItem.h"
 #include "contextMenuItems/ExtractSegmentContextMenuItem.h"
 #include "contextMenuItems/ShapeInfoContextMenuItem.h"
+#include "contextMenuItems/SegmentIndicatorContextMenuItem.h"
 
 #include "../util/HashMap.h"
 
@@ -88,7 +89,9 @@ struct CustomClassesRegistry {
         
         CustomContextMenuItemFactory::getInstance()->Register<VoronoiCellsContextMenuItem<EuclideanMetric>>("voronoicells_euclidean", "Segmentation>>Voronoi Cells>>Euclidean");
         
-        CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Extract chosen segment as new Shape");
+        CustomContextMenuItemFactory::getInstance()->Register<SegmentIndicatorContextMenuItem>("segment_to_indicator", "Segmentation>>Segment to Indicator Function");
+        
+        CustomContextMenuItemFactory::getInstance()->Register<ExtractSegmentContextMenuItem>("extract_segment", "Segmentation>>Extract Segment (Create new Shape)");
     }
 };
     

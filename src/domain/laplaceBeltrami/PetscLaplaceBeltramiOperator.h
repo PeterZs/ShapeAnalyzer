@@ -36,7 +36,7 @@ namespace laplaceBeltrami {
         
         /// \brief Returns matrix Phi of dimension 'numberOfEigenfunctions x numberOfPoints' containing the eigenfunctions as columns.
         /// @param Mat* Return parameter of type PETSC matrix that contains the eigenfunctions.
-        virtual void getEigenfunctionMatrix(Mat* Phi, int numberOfEigenfunctions);
+        virtual void getEigenfunctionMatrix(Mat* Phi);
         
         /// \brief Returns a reference to the mass matrix used internally.
         /// \details Laplace-Beltrami operator object itself is responsible for deleting the Mat object.

@@ -50,6 +50,42 @@ public:
     virtual void onClear() = 0;
     
 protected:
+    /// \brief Creates an string identifier of the shape consisting of the id and the name.
+    /// \details Should be used when identifing the shapes with a string because the
+    /// pure name may not be unique.
+    /// \return <id>:<name>
+    QString getShapeIdentifier(Shape* shape) {
+        QString label = QString::number(shape->getId());
+        return label.append(QString::fromStdString(":"+shape->getName()));
+    }
+    
+    /// \brief Extracts the id from a string produced by getShapeIdentifier.
+    /// \details There is no further checking if the given string is valid.
+    /// \return Id of the shape described by getShapeIdentfier
+    vtkIdType getIdFromIdentifier(QString identifier) {
+        return identifier.split(':')[0].toInt();
+    }
+    
+    /// \brief Returns the shape with given id if it exists.
+    /// \return Pointer to the shape with id i, nullptr if it does not exist
+    shared_ptr<Shape> getShapeFromId(vtkIdType i) {
+        shared_ptr<Shape> shape = nullptr;
+        
+        for(auto entry : shapes_) {
+            if(i == entry.second->getId()) {
+                shape = entry.second;
+            }
+        }
+        
+        return shape;
+    }
+    
+    /// \brief Returns the shape corresponding to the identifier if it exists.
+    /// \return Pointer to the shape with the identifier, nullptr if it does not exist
+    shared_ptr<Shape> getShapeFromIdentifier(QString identifier) {
+        return getShapeFromId(getIdFromIdentifier(identifier));
+    }
+    
     /// \brief Read-only reference to HashMap containing all Shape objects
     const HashMap<vtkActor*, shared_ptr<Shape>>& shapes_;
     /// \brief Read-only reference to HashMap containing all PointCorrespondence objects

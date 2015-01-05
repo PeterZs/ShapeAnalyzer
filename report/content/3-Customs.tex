@@ -96,7 +96,7 @@ The \texttt{onClick} function (\texttt{line 9 to 48}) is the important one. Ther
 Then you can call any code you want using the Shape and the ShapeAnalyzerInterface as well as the results from the dialogs as inputs. Notice that all the objects we constructed here (except the Coloring) will be destroyed afterwards. If you want to reuse a computationally intense object later in an algorithm, use a CustomTab instead.
 The Metric object might throw MetricError which is catched here. All error messages should be created on this level (see \ref{sec:Errors}).
 
-This one is special because it is a template. The template parameter is the Metric that should be used for calculating the Voronoi cells. If you have a template menu item you have to register every possible parameter individually for them to appear in the GUI (\ref{sec:RegisterCustoms}). 
+This class is special because it is a template. The template parameter is the Metric that should be used for calculating the Voronoi cells. If you have a template menu item you have to register every possible parameter individually for them to appear in the GUI (\ref{sec:RegisterCustoms}). 
 
 \section{CustomTab}
 \label{sec:CustomTab}
@@ -108,7 +108,11 @@ This one is special because it is a template. The template parameter is the Metr
 	\item \textbf{Naming convention} <MeaningfulName>Tab
 \end{itemize}
 
-CustomTabs can be loaded into the left menu of the ShapeAnalyzer. Every CustomTab is its own QWidget and can be freely designed in the QtCreator (or by hand if you like that). 
+CustomTabs can be loaded into the menu on the right side of the ShapeAnalyzer. Every CustomTab is its own QWidget and can be freely designed (but maybe think about the space restrictions in the menu) in the QtCreator (or by hand if you like that). 
+
+\begin{mdframed}
+	The actual use of the abstract functions is to keep your GUI updated about which objects (mainly shapes) exist. This is not done automatically, but you can find a pattern in the example (\ref{subsec:ExampleIdentityMatchingTab}). Of course you only need to do that if you have a list of shapes or something similar in your tab.
+\end{mdframed}
 
 \subsection{Abstract Functions}
 
@@ -148,7 +152,7 @@ CustomTabs can be loaded into the left menu of the ShapeAnalyzer. Every CustomTa
 \subsection{Qt User Interface}
 \label{subsec:QtUI}
 
-You probably want to create the layout for your tab with the QtCreator. Put your .ui file in the custom/tabs folder and name it correspondingly to your tab: <MeaningfulName>TabWidget. During the creation make sure that you named the Widget accordinglly, too. If you didn't do that or you are not sure, the beginning of the .ui should look like this: 
+You probably want to create the layout for your tab with the QtCreator. Put your .ui file in the custom/tabs folder and name it correspondingly to your tab: <MeaningfulName>TabWidget.ui. During the creation make sure that you named the Widget accordinglly, too. If you didn't do that or you are not sure, the beginning of the .ui should look like this: 
 
 \begin{lstlisting}[style=lstStyleCpp, caption={IdentityMatchingTabWidget.ui}]
 ...
@@ -205,13 +209,7 @@ custom::tabs::IdentityMatchingTab::IdentityMatchingTab(...)
 {
     this->setupUi(this);
     
-    QStringList labels;
-    for(auto entry : shapes_) {
-
-        QString label = QString::number(entry.second->getId());
-        label.append(QString::fromStdString(":"+entry.second->getName()));
-        labels << label;
-    }
+    QStringList labels  = getShapeIdentifierList();
     
     if(shapes_.size() < 2) {
         buttonMatch->setEnabled(false);
@@ -221,13 +219,43 @@ custom::tabs::IdentityMatchingTab::IdentityMatchingTab(...)
     comboBoxShape2->insertItems(0, labels);
     
     connect(this->buttonMatch,    SIGNAL(released()),
-                  this,                           SLOT(slotMatch()));
+                  this,    SLOT(slotMatch()));
     connect(this->buttonGroupMatch, SIGNAL(buttonClicked(int)),
-                  this,                                  SLOT(slotToggleMode()));
+                  this,    SLOT(slotToggleMode()));
 }
 \end{lstlisting}
 
-In the constructor you have to set up the widget and connect all signals and slots. If you have a list of all shapes 
+In the constructor you have to set up the widget and connect all signals and slots (\href{http://qt-project.org/doc/qt-4.8/signalsandslots.html}{Signals \& Slots}) as well as other variable output, here two combo boxes that contain lists of all shapes. 
+
+In several GUI elements only a string (a QString actually) is stored and then we need to get the right shape using only this string when interaction with this element takes place. The identifier string looks like this: <shapeId>:<shapeName>. Because this is tedious work, the CustomTab class has functions to deal with that: 
+
+\begin{itemize}
+	\item \textbf{QString getShapeIdentifier(Shape*)} returns the identifier in the right form
+	\item \textbf{vtkIdType getIdFromIdentifier(QString)} returns the id from a valid identifier
+	\item \textbf{shared\_ptr<Shape> getShapeFromId(vtkIdType)} returns the shape from an id
+	\item \textbf{QStringList getShapeIdentifierList()} returns a QStringList with all shape identifiers
+	\item \textbf{shared\_ptr<Shape> getShapeFromIdentifier(QString)} returns shape from an identfier
+\end{itemize}
+
+In the example we get all shape identifiers (\texttt{line 7}) and fill both combo boxes with them (\texttt{line 13 + 14}). The combo boxes are not updated automatically though, that's what done in the abstract functions. 
+
+\begin{mdframed}
+\textbf{But why don't we use just the names for the shape identifier?} Because it is possible that two shapes have the same name and then they can't be distinguished. The id is unique but it's not userfriendly.
+\end{mdframed}
+
+\begin{lstlisting}[style=lstStyleCpp, caption={IdentityMatchingTab.cpp, onShapeAdd}]
+void custom::tabs::IdentityMatchingTab::onShapeAdd(Shape* shape) {
+    QString label = getShapeIdentifier(shape);
+    comboBoxShape1->insertItem(0, label);
+    comboBoxShape2->insertItem(0, label);
+    
+    if(shapes_.size() >= 2) {
+        this->buttonMatch->setEnabled(true);
+    }
+}
+\end{lstlisting}
+
+This function is called everytime a shape is added to the main application and this tab was added to the menu before. It creates an identifier for the new shape and adds it both combo boxes. Additionally, the match button is activated if more than two shapes exist. The source code of the other abstract functions is not listed here, but you can basically just go and copy it if you update shape lists. 
 
 \section{Registering Customs}
 \label{sec:RegisterCustoms}

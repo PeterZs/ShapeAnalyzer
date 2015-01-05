@@ -15,14 +15,7 @@ custom::tabs::CorrespondenceColoringTab::CorrespondenceColoringTab(
     this->setupUi(this);
     
 
-    QStringList labels;
-    for(auto entry : shapes_) {
-        
-        QString label = QString::number(entry.second->getId());
-        label.append(QString::fromStdString(":"+entry.second->getName()));
-        labels << label;
-        
-    }
+    QStringList labels = getShapeIdentifierList();
     labels.sort();
     this->comboBoxReference->insertItems(0, labels);
     
@@ -49,12 +42,7 @@ void custom::tabs::CorrespondenceColoringTab::slotColorCorrespondences() {
     shared_ptr<Shape> reference = nullptr;
     
     // get Shape corresponding with the label
-    for (auto entry : shapes_) {
-        if(entry.second->getId() == comboBoxReference->currentText().split(':')[0].toInt()) {
-            reference = entry.second;
-            break;
-        }
-    }
+    reference = getShapeFromIdentifier(comboBoxReference->currentText());
     
     // proceed if shape was found
     if (reference != nullptr) {
@@ -165,7 +153,7 @@ void custom::tabs::CorrespondenceColoringTab::slotCorrespondencesToggled(bool b)
 void custom::tabs::CorrespondenceColoringTab::onShapeDelete(Shape *shape) {
     for(int i = comboBoxReference->count()-1; i >= 0; i--) {
         // check if items name matches the on in the combo box, if yes delete
-        if(comboBoxReference->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxReference->itemText(i)) == shape->getId()) {
             comboBoxReference->removeItem(i);
             // clear grid, if the deleted shape was the reference shape
             if (i == comboBoxReference->currentIndex()) {
@@ -179,19 +167,17 @@ void custom::tabs::CorrespondenceColoringTab::onShapeDelete(Shape *shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::CorrespondenceColoringTab::onShapeAdd(Shape *shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     comboBoxReference->addItem(label);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::CorrespondenceColoringTab::onShapeEdit(Shape *shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     
     for(int i = comboBoxReference->count()-1; i >= 0; i--) {
-        if(comboBoxReference->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxReference->itemText(i)) == shape->getId()) {
             comboBoxReference->setItemText(i, label);
             break;
         }

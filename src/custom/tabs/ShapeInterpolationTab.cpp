@@ -19,14 +19,7 @@ custom::tabs::ShapeInterpolationTab::ShapeInterpolationTab(
 {
     this->setupUi(this);
     
-    QStringList labels;
-    for(auto entry : shapes_) {
-
-        QString label = QString::number(entry.second->getId());
-        label.append(QString::fromStdString(":"+entry.second->getName()));
-        labels << label;
-
-    }
+    QStringList labels = getShapeIdentifierList();
     
     if(shapes_.size() < 1) {
         buttonChoose->setEnabled(false);
@@ -46,8 +39,8 @@ custom::tabs::ShapeInterpolationTab::ShapeInterpolationTab(
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::ShapeInterpolationTab::slotChooseShapes() {
-    vtkIdType sid = comboBoxSourceShape->currentText().split(':')[0].toInt();
-    vtkIdType tid = comboBoxTargetShape->currentText().split(':')[0].toInt();
+    vtkIdType sid = getIdFromIdentifier(comboBoxSourceShape->currentText());
+    vtkIdType tid = getIdFromIdentifier(comboBoxTargetShape->currentText());
 
     
     for(auto entry : shapes_) {
@@ -220,8 +213,7 @@ void custom::tabs::ShapeInterpolationTab::slotInterpolate(int value) { // value 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::ShapeInterpolationTab::onShapeAdd(Shape* shape) {
     this->buttonChoose->setEnabled(true);
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     comboBoxSourceShape->insertItem(0, label);
     comboBoxTargetShape->insertItem(0, label);
 }
@@ -230,14 +222,14 @@ void custom::tabs::ShapeInterpolationTab::onShapeAdd(Shape* shape) {
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::ShapeInterpolationTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
-        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxSourceShape->itemText(i)) == shape->getId()) {
             comboBoxSourceShape->removeItem(i);
             break;
         }
     }
     
     for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
-        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxTargetShape->itemText(i)) == shape->getId()) {
             comboBoxTargetShape->removeItem(i);
             break;
         }
@@ -267,18 +259,17 @@ void custom::tabs::ShapeInterpolationTab::onShapeDelete(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::ShapeInterpolationTab::onShapeEdit(Shape* shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     
     for(int i = comboBoxSourceShape->count()-1; i >= 0; i--) {
-        if(comboBoxSourceShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxSourceShape->itemText(i)) == shape->getId()) {
             comboBoxSourceShape->setItemText(i, label);
             break;
         }
     }
     
     for(int i = comboBoxTargetShape->count()-1; i >= 0; i--) {
-        if(comboBoxTargetShape->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxTargetShape->itemText(i)) == shape->getId()) {
             comboBoxTargetShape->setItemText(i, label);
             break;
         }

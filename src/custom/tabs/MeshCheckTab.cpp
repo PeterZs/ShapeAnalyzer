@@ -146,7 +146,7 @@ void custom::tabs::MeshCheckTab::slotCheckMesh() {
 void custom::tabs::MeshCheckTab::onShapeDelete(Shape* shape) {
     for(int i = comboBoxMesh->count()-1; i >= 0; i--) {
         // check if items name matches the on in the combo box, if yes delete
-        if(comboBoxMesh->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxMesh->itemText(i)) == shape->getId()) {
             // clear grid, if the deleted shape was the reference shape
             if (i == comboBoxMesh->currentIndex()) {
                 textBrowserOutput->clear();
@@ -160,19 +160,17 @@ void custom::tabs::MeshCheckTab::onShapeDelete(Shape* shape) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::MeshCheckTab::onShapeAdd(Shape* shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     comboBoxMesh->addItem(label);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::MeshCheckTab::onShapeEdit(Shape* shape) {
-    QString label = QString::number(shape->getId());
-    label.append(QString::fromStdString(":"+shape->getName()));
+    QString label = getShapeIdentifier(shape);
     
     for(int i = comboBoxMesh->count()-1; i >= 0; i--) {
-        if(comboBoxMesh->itemText(i).split(':')[0].toInt() == shape->getId()) {
+        if(getIdFromIdentifier(comboBoxMesh->itemText(i)) == shape->getId()) {
             comboBoxMesh->setItemText(i, label);
             break;
         }
@@ -198,14 +196,7 @@ void custom::tabs::MeshCheckTab::setUpComboBox() {
     
     this->comboBoxMesh->insertItem(0, QString(tr(" ")));
     
-    QStringList labels;
-    for(auto entry : shapes_) {
-        
-        QString label = QString::number(entry.second->getId());
-        label.append(QString::fromStdString(":"+entry.second->getName()));
-        labels << label;
-        
-    }
+    QStringList labels = getShapeIdentifierList();
     labels.sort();
     this->comboBoxMesh->insertItems(1, labels);
 

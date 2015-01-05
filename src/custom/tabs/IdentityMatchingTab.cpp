@@ -16,10 +16,7 @@ custom::tabs::IdentityMatchingTab::IdentityMatchingTab(
 {
     this->setupUi(this);
     
-    QStringList labels;
-    for(auto entry : shapes_) {
-        labels << getShapeIdentifier(entry.second.get());
-    }
+    QStringList labels = getShapeIdentifierList();
     
     if(shapes_.size() < 2) {
         buttonMatch->setEnabled(false);

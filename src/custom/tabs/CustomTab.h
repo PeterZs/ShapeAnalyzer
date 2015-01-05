@@ -80,6 +80,16 @@ protected:
         return shape;
     }
     
+    /// \brief Returns a list of all shape identifiers in shapes_.
+    /// \return QStringList of all shape identfiers in shapes_.
+    QStringList getShapeIdentifierList() {
+        QStringList labels;
+        for(auto entry : shapes_) {
+            labels << getShapeIdentifier(entry.second.get());
+        }
+        return labels;
+    }
+    
     /// \brief Returns the shape corresponding to the identifier if it exists.
     /// \return Pointer to the shape with the identifier, nullptr if it does not exist
     shared_ptr<Shape> getShapeFromIdentifier(QString identifier) {

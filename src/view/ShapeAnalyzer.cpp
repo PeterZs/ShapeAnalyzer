@@ -394,8 +394,11 @@ void ShapeAnalyzer::qtCreateMenuCustomTabs() {
         } else {
             if(list[0] == "Correspondences") {
                 action = this->menuCorrespondences->addAction(list[1]);
-            } else {
+            } else if (list[0] == "Shapes")  {
                 action = this->menuShapes->addAction(list[1]);
+            } else {
+                // only correspondence and shape are allowed as sections
+                break;
             }
         }
         action->setCheckable(true);

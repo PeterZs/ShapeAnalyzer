@@ -2,6 +2,7 @@
 % !TeX spellcheck = en-US
 
 \chapter{Customs}
+\label{chap:Customs}
 
 Customs refer to Qt objects that you can add to the GUI without changing the main application. There are CustomContextMenuItems (\ref{sec:CustomContextMenuItem}) and CustomTabs (\ref{sec:CustomTab}). CustomContextMenuItems allow you add menu items to the right click menu on shapes. It is possible to open input dialogs to get certin parameters for the function but if you need more complex inputs or outputs you are better off with a CustomTab. To make your Customs visible in the GUI you have to register them (see \ref{sec:RegisterCustoms}).
 
@@ -31,7 +32,7 @@ The abstract CustomContextMenuItem class is very limited and there is only one f
 \subsection{Class attributes}
 \begin{itemize}
 	\item \texttt{shared\_ptr<Shape>} \textbf{shape\_} Reference to the clicked shape
-	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{subsec:ShapeAnalyzerInterface}
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
 \end{itemize}
 
 \subsection{Example: VoronoiCellsContextMenuItem}
@@ -146,7 +147,7 @@ CustomTabs can be loaded into the menu on the right side of the ShapeAnalyzer. E
 	\item \texttt{const HashMap<vtkActor*, shared\_ptr<Shape>>\&} \textbf{shapes\_} Read-only reference to all shapes
 	\item \texttt{const HashMap<shared\_ptr<PointCorrespondence>, bool>\&} \textbf{pointCorrespondences\_} Read-only reference to all point correspondences
 	\item \texttt{const HashMap<shared\_ptr<FaceCorrespondence>, bool>\&} \textbf{faceCorrespondences\_} Read-only reference to all face correspondences
-	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{subsec:ShapeAnalyzerInterface}
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
 \end{itemize}
 
 \subsection{Qt User Interface}
@@ -259,3 +260,25 @@ This function is called everytime a shape is added to the main application and t
 
 \section{Registering Customs}
 \label{sec:RegisterCustoms}
+
+Besides from implementing a concrete menu item or tab, the custom has to be registered in order to be shown in the GUI. This can be done in the class \texttt{CustomClassesRegistry} in the folder \texttt{custom}. There is a standard way to do it explained below but if it does not suffice for your purpose take a look at the Factory section (\ref{sec:Factory}).
+
+\subsection{Register a CustomContextMenuItem}
+\label{subsec:RegisterMenuItem}
+
+In \texttt{CustomClassesRegistry.h} add your menu item to the \texttt{registerContextMenuItems()} function. Your registration must have the form 
+
+\texttt{CustomContextMenuItemFactory::getInstance()->Register< <NameOfYourClass> > \linebreak
+	\hspace*{2ex}(<UniqueStringIdentifier>, <LabelPath>)}
+	
+where \texttt{<NameOfYourClass>} is the specific class you want to create, for example ColorMetricContextMenuItem<GeodesicMetric>. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes how the menu item should be labeled as well as its path, for example "Coloring>>Metric>>Geodesic" will produce a 3-layered menu (take a look in the application if you can not imagine it). If several menu items have the same path (up to some layer), these will of course be merged.
+
+\subsection{Register a CustomTab}
+\label{subsec:RegisterTab}
+
+In \texttt{CustomClassesRegistry.h} add your menu item to the \texttt{registerTabs()} function. Your registration must have the form
+ 
+\texttt{CustomTabFactory::getInstance()->Register< <NameOfYourClass> > \linebreak
+	\hspace*{2ex}(<UniqueStringIdentifier>, <LabelPath>)}
+
+where \texttt{<NameOfYourClass>} is the specific class you want to create, for example CorrespondenceColoringTab. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes the label of the tab and whether it is a correspondence or shape tab, for example "Correspondences>>Correspondence Coloring" or "Shapes>>Mesh Checker". Different from menu items not arbitrary many layers are possible and only Shapes and Correspondences are possible groups. The groups just loosely describe whether the tab deals more with shapes or more with correspondences.

@@ -12,7 +12,7 @@
 
 namespace laplaceBeltrami {
     
-    /// \brief Abstract class for all Laplace-Beltrami operators that are based on the PETSC and SLEPC framework.
+    /// \brief Abstract class for all Laplace-Beltrami operators that are based on the PETSc and SLEPc framework.
     class PetscLaplaceBeltramiOperator : public LaplaceBeltramiOperator {
     public:
         /// \brief Constructor
@@ -23,7 +23,7 @@ namespace laplaceBeltrami {
         // Tell the compiler that both getEigenfunction methods (the one from the Base class and the one declared here) are used since they are different
         using LaplaceBeltramiOperator::getEigenfunction;
         
-        /// \brief Returns i-th eigenfunction as PETSC vector.
+        /// \brief Returns i-th eigenfunction as PETSc vector.
         /// @param PetscInt index of the eigenfunction that should be returned
         /// @param Vec* return parameter.
         virtual void getEigenfunction(PetscInt i, Vec* phi) = 0;
@@ -35,12 +35,12 @@ namespace laplaceBeltrami {
         virtual void getEigenpair(PetscInt i, Vec* phi, PetscScalar* lambda) = 0;
         
         /// \brief Returns matrix Phi of dimension 'numberOfEigenfunctions x numberOfPoints' containing the eigenfunctions as columns.
-        /// @param Mat* Return parameter of type PETSC matrix that contains the eigenfunctions.
+        /// @param Mat* Return parameter of type Petscmatrix that contains the eigenfunctions.
         virtual void getEigenfunctionMatrix(Mat* Phi);
         
         /// \brief Returns a reference to the mass matrix used internally.
         /// \details Laplace-Beltrami operator object itself is responsible for deleting the Mat object.
-        /// @return Mat* Mass matrix as PETSC matrix.
+        /// @return Mat* Mass matrix as Petscmatrix.
         virtual Mat* getMassMatrix() = 0;
     };
     

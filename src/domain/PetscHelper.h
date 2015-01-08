@@ -9,7 +9,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkDoubleArray.h>
 
-/// \brief A Helper class containing a set of static functions for the creation and manipulation of PETSC vectors and matrices.
+/// \brief A Helper class containing a set of static functions for the creation and manipulation of PETSc vectors and matrices.
 class PetscHelper {
 public:
     /// \brief Sets block B in matrix A. Element A(i, j) will be set to B(0,0) and so on...
@@ -30,7 +30,7 @@ public:
     /// \brief Converts a vtkDataArray to a Petsc vector
     static void vtkDataArrayToPetscVec(vtkSmartPointer<vtkDataArray> arr, Vec &vec);
     
-    /// \brief Converts a PETSC vector to a vtkDoubleArray
+    /// \brief Converts a PETSc vector to a vtkDoubleArray
     static vtkSmartPointer<vtkDoubleArray> petscVecToVtkDoubleArray(Vec& vec);
     
     /// \brief Converts a C++ array of type PetscScalar* to a vtkDoubleArray

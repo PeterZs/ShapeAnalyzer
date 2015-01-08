@@ -12,7 +12,7 @@
 namespace laplaceBeltrami {
 
     /// \brief Abstract class for the implementation of different discretizations of the Laplace-Beltrami operator.
-    /// \details Implementing classes provide functionality for the computation of eigenvectors and eigenvalues for a given shape. This abstract class is independent of the underlying framework. Laplace-Beltrami discretizations that utilize the PETSC and SLEPC framework should be derived from the subclass PetscLaplaceBeltramiOperator
+    /// \details Implementing classes provide functionality for the computation of eigenvectors and eigenvalues for a given shape. This abstract class is independent of the underlying framework. Laplace-Beltrami discretizations that utilize the PETSc and SLEPc framework should be derived from the subclass PetscLaplaceBeltramiOperator
     class LaplaceBeltramiOperator {
     public:
         /// \brief Constructor

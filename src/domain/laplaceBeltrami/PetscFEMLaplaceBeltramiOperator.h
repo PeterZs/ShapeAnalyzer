@@ -16,7 +16,7 @@ using namespace std;
 namespace laplaceBeltrami {
 
     /// \brief Concrete finite element based Laplace-Beltrami operator implementation.
-    /// \details Implementation is based on PETSC and SLEPC framework.
+    /// \details Implementation is based on PETSc and SLEPc framework.
     class PetscFEMLaplaceBeltramiOperator : public PetscLaplaceBeltramiOperator {
     public:
         /// \brief Constructor

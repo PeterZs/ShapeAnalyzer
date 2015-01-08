@@ -8,13 +8,13 @@
 using namespace laplaceBeltrami;
 
 namespace signature {
-    /// \brief Abstract class for Laplace-Beltrami based signatures that use the PETSC framework.
+    /// \brief Abstract class for Laplace-Beltrami based signatures that use the PETSc framework.
     class PetscLaplaceBeltramiSignature : public Signature {
     public:
         /// \brief Constructor.
         /// @param Shape* The shape on which the signature is computed.
         /// @param int Number of components that the signature should have.
-        /// @param PetscLaplaceBeltramiOperator* A reference to an instance of a PETSC based Laplace-Beltrami operator
+        /// @param PetscLaplaceBeltramiOperator* A reference to an instance of a PETSc based Laplace-Beltrami operator
         PetscLaplaceBeltramiSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, int numberOfEigenfunctions);
         
         /// \brief Virtual destructor

@@ -1,0 +1,60 @@
+\ProvidesPackage{beamerthemeLEA2}
+
+\xdefinecolor{tumblue}     {RGB}{  0,101,189}
+\xdefinecolor{tumgreen}    {RGB}{162,173,  0}
+\xdefinecolor{tumred}      {RGB}{229, 52, 24}
+\xdefinecolor{tumivory}    {RGB}{218,215,203}
+\xdefinecolor{tumorange}   {RGB}{227,114, 34}
+\xdefinecolor{tumlightblue}{RGB}{152,198,234}
+
+%% shadow, font, color, outer, inner
+%% normal text, alerted text, example text, structure
+
+\useoutertheme{split}
+
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{alerted text}{fg=tumred,bg=white}
+\setbeamercolor{example text}{fg=tumgreen,bg=white}
+\setbeamercolor{structure}{fg=tumblue,bg=white}
+\setbeamercolor{titlelike}{fg=tumblue}
+\setbeamercolor{subtitle}{fg=black}
+\setbeamerfont{title}{series=\bfseries}
+
+\setbeamertemplate{sections/subsections in toc}[square]
+\setbeamertemplate{items}[square]
+\setbeamertemplate{navigation symbols}[only frame symbol]
+
+\setbeamertemplate{blocks}[default]
+
+\setbeamercolor{block title}        {use=normal text, fg=black,bg=tumlightblue}
+\setbeamercolor{block title alerted}{use=alerted text,fg=white,bg=alerted text.fg}
+\setbeamercolor{block title example}{use=example text,fg=white,bg=example text.fg}
+
+\setbeamercolor{block body}        {parent=normal text,use=block title,        bg=block title.bg!25!bg}
+\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title.bg!25!bg}
+\setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!15!bg}
+
+\pgfdeclareimage[height=5mm]{uni}{TU_Muenchen_Logo_Breit}
+\pgfdeclareimage[height=5mm]{cv}{auge.png}
+\logo{\pgfuseimage{cv}\pgfuseimage{uni}}
+
+\defbeamertemplate*{footline}{infolines theme}{%
+	\hspace*{2ex}\raisebox{1.5ex}[-1.5ex]{%
+	\tiny\insertframenumber{}/\inserttotalframenumber \hspace{5mm} \insertnavigation{0.8\paperwidth}}%
+}
+
+\setbeamertemplate{frametitle}{
+	\begin{beamercolorbox}[wd=80mm,leftskip=0mm]{frametitle}
+		\usebeamerfont*{frametitle}
+		\insertframetitle\hfill\parbox{10mm}{\vspace{-2mm}\insertlogo}\hspace{-2mm}
+	\end{beamercolorbox}
+	\vspace{-3mm}\textcolor{tumblue}{\noindent\rule{\textwidth}{0.4px}}
+}
+% hier kein Logo
+\setbeamertemplate{sidebar right}{\vfill\vskip2pt\llap{\usebeamertemplate***{navigation symbols}\hskip1mm}\vskip2pt}
+
+\setbeamertemplate{headline}{}
+
+\setbeamercovered{transparent}
+
+\lstset{escapeinside=`´, numbers=left, numberstyle=\tiny, numbersep=5pt, basicstyle=\small, backgroundcolor=\color{tumlightblue}}

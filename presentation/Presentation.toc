@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.33pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Motivation}{2}{0}{1}
+\beamer@sectionintoc {2}{Algorithm}{4}{0}{2}
+\beamer@sectionintoc {3}{Discussion}{6}{0}{3}

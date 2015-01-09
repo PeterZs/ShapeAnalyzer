@@ -72,11 +72,12 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         metric::GeodesicMetric metricSource(source);
         metric::GeodesicMetric metricTarget(target);
         
-        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, 20);
-        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, 20);
+        int numberOfEigenfunctions = max(spinBoxNumberOfEigenfunctions->value(), max(spinBoxWaveKernelSignatureNumberOfEigenfunctions->value(), spinBoxHeatBumpsNumberOfEigenfunctions->value()));
+        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, numberOfEigenfunctions);
+        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, numberOfEigenfunctions);
         
         
-        // Compute landmark matches using all available correspondences between shape1 and shape2 and geodesic metric
+        // Compute landmark correspondences using all available correspondences between shape1 and shape2 and geodesic metric
         // Compute heat diffusion snapshots using the corresponding points.
 
         for(auto entry : pointCorrespondences_) {
@@ -84,42 +85,51 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             
             for(int i = 0; i < corr->getShapes().size(); i++) {
                 if(corr->getShapes().at(i) == source) {
-                    // Landmark match
-                    //vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
-                    //constraintsSource.push_back(distances);
-                    
                     // Heat diffusion
-                    vtkSmartPointer<vtkDoubleArray> u0s = vtkSmartPointer<vtkDoubleArray>::New();
-                    u0s->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
-                    for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
-                        u0s->SetValue(j, 0.0);
+                    if(groupBoxHeatBumps->isChecked()) {
+                        vtkSmartPointer<vtkDoubleArray> u0s = vtkSmartPointer<vtkDoubleArray>::New();
+                        u0s->SetNumberOfValues(source->getPolyData()->GetNumberOfPoints());
+                        for(vtkIdType j = 0; j < source->getPolyData()->GetNumberOfPoints(); j++) {
+                            u0s->SetValue(j, 0.0);
+                        }
+                        u0s->SetValue(corr->getCorrespondingIds().at(i), doubleSpinBoxHeatBumpsInitialValue->value());
+                        
+                        PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
+                        for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
+                            constraintsSource.push_back(hdSource.getHeat(t));
+                        }
                     }
-                    u0s->SetValue(corr->getCorrespondingIds().at(i), 5.0);
-                    
-                    PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
-                    for(double t = 0.55; t <= 200.0; t+=25.0) {
-                        constraintsSource.push_back(hdSource.getHeat(t));
+                        
+                    // distance functions
+                    if(checkBoxGeodesicDistanceFunctions->isChecked()) {
+                        vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
+                        constraintsSource.push_back(distances);
                     }
                 }
                 
                 if(corr->getShapes().at(i) == target) {
-                    // Landmark match
-                    //vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
-                    //constraintsTarget.push_back(distances);
-
                     // Heat diffusion
-                    vtkSmartPointer<vtkDoubleArray> u0t = vtkSmartPointer<vtkDoubleArray>::New();
-                    u0t->SetNumberOfValues(target->getPolyData()->GetNumberOfPoints());
-                    
-                    for(vtkIdType j = 0; j < target->getPolyData()->GetNumberOfPoints(); j++) {
-                        u0t->SetValue(j, 0.0);
+                    if(groupBoxHeatBumps->isChecked()) {
+                        vtkSmartPointer<vtkDoubleArray> u0t = vtkSmartPointer<vtkDoubleArray>::New();
+                        u0t->SetNumberOfValues(target->getPolyData()->GetNumberOfPoints());
+                        
+                        for(vtkIdType j = 0; j < target->getPolyData()->GetNumberOfPoints(); j++) {
+                            u0t->SetValue(j, 0.0);
+                        }
+                        u0t->SetValue(corr->getCorrespondingIds().at(i), doubleSpinBoxHeatBumpsInitialValue->value());
+                        
+                        
+                        PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
+                        for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
+                            constraintsTarget.push_back(hdTarget.getHeat(t));
+                        }
                     }
-                    u0t->SetValue(corr->getCorrespondingIds().at(i), 5.0);
                     
-                    
-                    PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
-                    for(double t = 0.55; t <= 200.0; t+=25.0) {
-                        constraintsTarget.push_back(hdTarget.getHeat(t));
+                    // distance functions
+                    if(checkBoxGeodesicDistanceFunctions->isChecked()) {
+                        vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
+                        constraintsTarget.push_back(distances);
+                        
                     }
                 }
             }
@@ -127,22 +137,35 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         
 
         
-        // compute 200-dimensional wave kernel discriptor on both shapes
-        PetscWaveKernelSignature wksSource(source, 197, laplacianSource, 20);
-        PetscWaveKernelSignature wksTarget(target, 197, laplacianTarget, 20);
+        // compute wave kernel discriptor on both shapes
+        PetscWaveKernelSignature wksSource(source, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianSource, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
+        PetscWaveKernelSignature wksTarget(target, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianTarget, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
         
         
-        // use first 125 components of wave kernel signature as additional constraints. Truncate rest because wave kernel seems to be inaccurate in higher dimensions
-        for(int i = 0; i < 197; i++) {
-            vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-            constraintsSource.push_back(wksiSource);
-            
-            vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-            constraintsTarget.push_back(wksiTarget);
+        // add wave kernel compontents to contraint vectors
+        if(groupBoxWaveKernelSignature->isChecked()) {
+            for(int i = spinBoxWaveKernelSignatureComponentsFrom->value(); i < spinBoxWaveKernelSignatureComponentsTo->value(); i+=spinBoxWaveKernelSignatureComponentsStep->value()) {
+                vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
+                constraintsSource.push_back(wksiSource);
+                
+                vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+                constraintsTarget.push_back(wksiTarget);
+            }
         }
-        
         // compute correspondence matrix C
-        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, 20);
+
+
+        function<void(int, double)> iterationCallback = [this](int iteration, double residual)->void {
+            lcdNumberCurrentIteration->display(iteration);
+            lcdNumberResidual->display(residual);
+            
+            QCoreApplication::processEvents();
+        };
+        
+        stringstream ss;
+        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, spinBoxNumberOfEigenfunctions->value(), spinBoxStepSize->value(), doubleSpinBoxSparsityPriorWeight->value(), spinBoxNumberOfIterations->value(), groupBoxOutlierAbsorbtion->isChecked(), doubleSpinBoxOutlierAbsorbtionWeight->value(), iterationCallback, ss);
+
+        
         
         
         

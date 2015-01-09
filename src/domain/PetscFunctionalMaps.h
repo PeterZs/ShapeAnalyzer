@@ -1,6 +1,8 @@
 #ifndef __ShapeAnalyzer__PetscFunctionalMaps__
 #define __ShapeAnalyzer__PetscFunctionalMaps__
 
+#include <iostream>
+
 #include "FunctionalMaps.h"
 
 #include "laplaceBeltrami/PetscLaplaceBeltramiOperator.h"
@@ -9,9 +11,11 @@
 
 #include <slepceps.h>
 
+using namespace std;
 using namespace laplaceBeltrami;
 
 /// \brief Concrete implementation of the FunctionalMaps class using the PETSc framework.
+/// \details Functional maps correspondence is computed using a sparsity prior optimized via a forward-backward splitting algorithm as proposed by Pokrass et al. in "Sparse Modeling of Intrinsic Correspondences" which appeared in 2013.
 class PetscFunctionalMaps : public FunctionalMaps {
 public:
     /// \brief Constructor
@@ -27,7 +31,23 @@ public:
     /// @param int optional number of iterations
     /// @param bool optional argument controlling whether outlier constraints should be absorbed
     /// @param double mu optional argument controlling the weight of the outlier absorbtion
-    PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha = 1e2, double lambda = 0.019, int iterations = 200, bool outliers = false, double mu = 0.07);
+    /// @param function<void(int, double)> optional argument. Lambda expression that is executed on every iteration. The current iteration and the current residual are handed over as parameters.
+    /// @param ostream& optional argument a log output stream to which all the log messages are written. Default is std::cout.
+    PetscFunctionalMaps(shared_ptr<Shape> shape1,
+                        shared_ptr<Shape> shape2,
+                        shared_ptr<PetscLaplaceBeltramiOperator> laplacian1,
+                        shared_ptr<PetscLaplaceBeltramiOperator> laplacian2,
+                        vector<vtkSmartPointer<vtkDoubleArray>>& c1,
+                        vector<vtkSmartPointer<vtkDoubleArray>>& c2,
+                        int numberOfEigenfunctions,
+                        double alpha = 1e2,
+                        double lambda = 0.019,
+                        int iterations = 300,
+                        bool outliers = false,
+                        double mu = 0.07,
+                        function<void(int, double)> iterationCallback = [](int, double)->void {},
+                        ostream& log = cout
+                        );
     
     vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f);
     
@@ -75,6 +95,8 @@ private:
     /// \brief Constraints of shape N projected onto eigenfunction basis as rows
     Mat B_;
     
+    Mat W_;
+    
     /// \brief Eigenfunctions of source shape stacked as columns into a matrix
     Mat Phi1_;
     
@@ -92,6 +114,12 @@ private:
     
     /// \brief Laplacian of source shape.
     shared_ptr<PetscLaplaceBeltramiOperator> laplacian2_;
+    
+    /// \brief Lambda expression that is executed on every iteration. The current iteration and the current residual are handed over as parameters.
+    function<void(int, double)> iterationCallback_;
+    
+    /// \brief A log output stream to which all the log messages are written.
+    ostream& log_;
 };
 
 

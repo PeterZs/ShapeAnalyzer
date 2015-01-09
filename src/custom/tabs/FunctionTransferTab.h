@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #include <QMessageBox>
 #include <QErrorMessage>

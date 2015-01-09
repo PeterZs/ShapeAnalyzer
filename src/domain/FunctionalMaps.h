@@ -30,6 +30,8 @@ public:
                         numberOfEigenfunctions_(numberOfEigenfunctions)
     {
         
+        ;
+        
         if (shape1_ == nullptr) {
             throw invalid_argument(string("Null pointer input 'shape1' in ").append(__PRETTY_FUNCTION__));
         }

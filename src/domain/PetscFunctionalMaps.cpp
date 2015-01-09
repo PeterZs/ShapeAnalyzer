@@ -1,9 +1,31 @@
 #include "PetscFunctionalMaps.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Shape> shape2, shared_ptr<PetscLaplaceBeltramiOperator> laplacian1, shared_ptr<PetscLaplaceBeltramiOperator> laplacian2, vector<vtkSmartPointer<vtkDoubleArray>>& c1, vector<vtkSmartPointer<vtkDoubleArray>>& c2, int numberOfEigenfunctions, double alpha, double lambda, int iterations, bool outliers, double mu) : FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions), lambda_(lambda), alpha_(alpha), iterations_(iterations), outliers_(outliers), mu_(mu), laplacian1_(laplacian1), laplacian2_(laplacian2) {
+PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1,
+                                         shared_ptr<Shape> shape2,
+                                         shared_ptr<PetscLaplaceBeltramiOperator> laplacian1,
+                                         shared_ptr<PetscLaplaceBeltramiOperator> laplacian2,
+                                         vector<vtkSmartPointer<vtkDoubleArray>>& c1,
+                                         vector<vtkSmartPointer<vtkDoubleArray>>& c2,
+                                         int numberOfEigenfunctions,
+                                         double alpha,
+                                         double lambda,
+                                         int iterations,
+                                         bool outliers,
+                                         double mu,
+                                         function<void(int, double)> iterationCallback,
+                                         ostream& log
+                                         ) :
+FunctionalMaps(shape1, shape2, c1, c2, numberOfEigenfunctions),
+lambda_(lambda), alpha_(alpha),
+iterations_(iterations),
+outliers_(outliers), mu_(mu),
+laplacian1_(laplacian1),
+laplacian2_(laplacian2),
+iterationCallback_(iterationCallback),
+log_(log) {
     
-    cout << "Initializing Functional Maps..."<<flush;
+    log << "Initializing Functional Maps..."<<flush;
     
     //compute Phi_M^T * M_M and Phi_N^T * M_N
     setupPhiTM(shape1_.get(), laplacian1_.get(), &Phi1_, &PhiTM1_);
@@ -11,8 +33,8 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
     
     
     // compute A which corresponds to all the constraits ci1 on shape M (shape1) and B which corresponds to contraints ci2 on shape N (shape2)
-    MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &A_);
-    MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &B_);
+    MatCreateSeqDense(PETSC_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &A_);
+    MatCreateSeqDense(PETSC_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &B_);
     
     for(PetscInt i = 0; i < numberOfConstraints_; i++) {
         // Vector representing the function ci_1 defined on the vertices of shape1
@@ -56,40 +78,69 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
     MatAssemblyBegin(B_, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(B_, MAT_FINAL_ASSEMBLY);
     
+    // init O
     MatDuplicate(B_, MAT_COPY_VALUES, &O_);
     
-    MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C_);
+    // init C
+    MatCreateSeqDense(PETSC_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C_);
     MatZeroEntries(C_);
 
+    // init W
+    MatCreateSeqDense(PETSC_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &W_);
+    for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
+        for(PetscInt j = 0; j < numberOfEigenfunctions_; j++) {
+            PetscReal w = pow((double) (i - j), 4.0);
+            
+            MatSetValue(W_, i, j, w, INSERT_VALUES);
+        }
+    }
+    MatAssemblyBegin(W_, MAT_FINAL_ASSEMBLY);
+    MatAssemblyEnd(W_, MAT_FINAL_ASSEMBLY);
+    
     // create and matrices C and O
     Mat C;
     MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &C);
 
     Mat O;
+    MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &O);
     Mat AtO;
     if(outliers_) {
-        MatCreateSeqDense(MPI_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &O);
         MatCreateSeqDense(MPI_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &AtO);
     }
     
-    cout << " done."<<endl;
+    log << " done."<<endl;
     
     Mat IAtA;
+    // IAtA = I - A^T * A
     MatTransposeMatMult(A_, A_, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &IAtA);
     MatScale(IAtA, -1.0 / alpha_);
     MatShift(IAtA, 1.0);
     Mat AtB;
     MatTransposeMatMult(A_, B_, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &AtB);
-    cout << "Computing C..."<<endl;
+    log << "Computing C..."<<endl;
+    
+    Vec wi;
+    Vec ci;
+    Vec oi;
+    VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_, &wi);
+    VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_, &ci);
+    VecCreateSeq(PETSC_COMM_SELF, numberOfEigenfunctions_, &oi);
     for(int i = 0; i < iterations_; i++) {
-        if(i % 50 == 0)
-            cout << "    > Iteration "<<i<<"..."<<flush;
         
+        if(i % 50 == 0)
+            log << "    > Iteration "<<i<<"..."<<flush;
+        
+        // C = (I - (1 /alpha) * A^T * A) * C_k
         MatMatMult(IAtA, C_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &C);
+        
+        // C = C + (1 / alpha) * A^T * B
         MatAXPY(C, 1.0 / alpha_, AtB, SAME_NONZERO_PATTERN);
         
         if(outliers_) {
+            // AtO = A^T * O
             MatTransposeMatMult(A_, O_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &AtO);
+            
+            // C = C - (1 / alpha) * (A^T * O)
             MatAXPY(C, -1.0 / alpha_, AtO, SAME_NONZERO_PATTERN);
             
             // compute grad_O
@@ -107,13 +158,62 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
         
         proxOperator1(&C);
     
+        
+
+        
+        // compute residual
+        
+        double residual;
+        // O = - A * C
+        MatMatMult(A_, C_, MAT_REUSE_MATRIX, PETSC_DEFAULT, &O);
+        MatScale(O, -1.0);
+        
+        // O = O + B
+        MatAXPY(O, 1.0, B_, SAME_NONZERO_PATTERN);
+        if(outliers_) {
+            // O = O - O_k
+            MatAXPY(O, -1.0, O_, SAME_NONZERO_PATTERN);
+        }
+        
+        // residual = (1/2)*|| O ||_F^2
+        MatNorm(O, NORM_FROBENIUS, &residual);
+        residual *= residual;
+        residual *= 0.5;
+        
+        // residual = residual + lambda * || W .* C_k ||_1
+        PetscScalar sum;
+        for(int i = 0; i < numberOfEigenfunctions_; i++) {
+            PetscHelper::getRow(wi, W_, i);
+            PetscHelper::getRow(ci, C_, i);
+            VecPointwiseMult(ci, wi, ci);
+            
+            VecSum(ci, &sum);
+            residual += lambda_ * sum;
+        }
+        if(outliers_) {
+            // residual = residual + mu * || O_k ||_{2,1}
+            PetscScalar norm;
+            for(int i = 0; i < numberOfConstraints_; i++) {
+                PetscHelper::getRow(oi, O_, i);
+                
+                VecNorm(oi, NORM_2, &norm);
+                residual += mu_ * norm;
+            }
+        }
+        
         if(i % 50 == 0)
-            cout << " done."<<endl;
+            log << " done. (Residual= "<< residual <<")"<<endl;
+        
+        iterationCallback_(i, residual);
     }
+    VecDestroy(&wi);
+    VecDestroy(&ci);
+    VecDestroy(&oi);
+    
     MatDestroy(&C);
     
+    MatDestroy(&O);
     if(outliers_) {
-        MatDestroy(&O);
         MatDestroy(&AtO);
     }
     
@@ -129,7 +229,7 @@ PetscFunctionalMaps::PetscFunctionalMaps(shared_ptr<Shape> shape1, shared_ptr<Sh
         PetscHelper::getRow(oi, O_, i);
         PetscScalar sum;
         VecSum(oi, &sum);
-        cout << i<<"-th row "<<sum<<endl;
+        log << i<<"-th row "<<sum<<endl;
     }
 }
 
@@ -139,7 +239,8 @@ void PetscFunctionalMaps::proxOperator1(Mat* C) {
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         for(PetscInt j = 0; j < numberOfEigenfunctions_; j++) {
 
-            PetscReal w = pow((double) (i - j), 4.0);
+            PetscReal w;
+            MatGetValue(W_, i, j, &w);
             PetscReal c;
             MatGetValue(*C, i, j, &c);
             PetscReal t = ( lambda_ * w ) / alpha_;
@@ -185,6 +286,8 @@ PetscFunctionalMaps::~PetscFunctionalMaps() {
     MatDestroy(&O_);
     MatDestroy(&A_);
     MatDestroy(&B_);
+    
+    MatDestroy(&W_);
     
     MatDestroy(&PhiTM1_);
     MatDestroy(&PhiTM2_);

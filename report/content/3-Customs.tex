@@ -21,7 +21,7 @@ The abstract CustomContextMenuItem class is very limited and there is only one f
 \subsection{Abstract Functions}
 
 \begin{itemize}
-	\item \textbf{onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent)} Is triggered when the menu item was clicked. 
+	\item \textbf{\texttt{onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent)}} Is triggered when the menu item was clicked. 
 	\begin{itemize}
 		\item \texttt{pointId} refers to the id of the closest vertex of the shape in the vtkPolyData of the shape to where the click was. 
 		\item \texttt{faceId} refers to the id of the face of the shape in the vtkPolyData of the shape under the click. 
@@ -31,8 +31,8 @@ The abstract CustomContextMenuItem class is very limited and there is only one f
 
 \subsection{Class attributes}
 \begin{itemize}
-	\item \texttt{shared\_ptr<Shape>} \textbf{shape\_} Reference to the clicked shape
-	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
+	\item \texttt{shared\_ptr<Shape>} \textbf{\texttt{shape\_}} Reference to the clicked shape
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{\texttt{shapeAnalyzer\_}} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
 \end{itemize}
 
 \subsection{Example: VoronoiCellsContextMenuItem}
@@ -118,36 +118,36 @@ CustomTabs can be loaded into the menu on the right side of the ShapeAnalyzer. E
 \subsection{Abstract Functions}
 
 \begin{itemize}
-	\item \textbf{onShapeAdd(Shape* shape)} Is triggered when a new shape was added to the ShapeAnalyzer. 
+	\item \textbf{\texttt{onShapeAdd(Shape* shape)}} Is triggered when a new shape was added to the ShapeAnalyzer. 
 	\begin{itemize}
 		\item \texttt{shape} Reference to Shape that was added. 
 	\end{itemize}
 \end{itemize}
 
 \begin{itemize}
-	\item \textbf{onShapeEdit(Shape* shape)} Is triggered when an attribute of a shape was changed (for example the name).
+	\item \textbf{\texttt{onShapeEdit(Shape* shape)}} Is triggered when an attribute of a shape was changed (for example the name).
 	\begin{itemize}
 		\item \texttt{shape} Reference to Shape that was edited. 
 	\end{itemize}
 \end{itemize}
 
 \begin{itemize}
-	\item \textbf{onShapeDelete(Shape* shape)} Is triggered when a shape was deleted.
+	\item \textbf{\texttt{onShapeDelete(Shape* shape)}} Is triggered when a shape was deleted.
 	\begin{itemize}
 		\item \texttt{shape} Reference to Shape that was deleted. 
 	\end{itemize}
 \end{itemize}
 
 \begin{itemize}
-	\item \textbf{onClear()} Is triggered when the GUI is cleared, this means all shapes and correspondences will be deleted.
+	\item \textbf{\texttt{onClear()}} Is triggered when the GUI is cleared, this means all shapes and correspondences will be deleted.
 \end{itemize}
 
 \subsection{Class attributes}
 \begin{itemize}
-	\item \texttt{const HashMap<vtkActor*, shared\_ptr<Shape>>\&} \textbf{shapes\_} Read-only reference to all shapes
-	\item \texttt{const HashMap<shared\_ptr<PointCorrespondence>, bool>\&} \textbf{pointCorrespondences\_} Read-only reference to all point correspondences
-	\item \texttt{const HashMap<shared\_ptr<FaceCorrespondence>, bool>\&} \textbf{faceCorrespondences\_} Read-only reference to all face correspondences
-	\item \texttt{ShapeAnalyzerInterface*} \textbf{shapeAnalyzer\_} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
+	\item \texttt{const HashMap<vtkActor*, shared\_ptr<Shape>>\&} \textbf{\texttt{shapes\_}} Read-only reference to all shapes
+	\item \texttt{const HashMap<shared\_ptr<PointCorrespondence>, bool>\&} \textbf{\texttt{pointCorrespondences\_}} Read-only reference to all point correspondences
+	\item \texttt{const HashMap<shared\_ptr<FaceCorrespondence>, bool>\&} \textbf{\texttt{faceCorrespondences\_}} Read-only reference to all face correspondences
+	\item \texttt{ShapeAnalyzerInterface*} \textbf{\texttt{shapeAnalyzer\_}} Reference to the ShapeAnalyzerInterface, see \ref{sec:ShapeAnalyzerInterface}
 \end{itemize}
 
 \subsection{Qt User Interface}
@@ -231,11 +231,11 @@ In the constructor you have to set up the widget and connect all signals and slo
 In several GUI elements only a string (a QString actually) is stored and then we need to get the right shape using only this string when interaction with this element takes place. The identifier string looks like this: <shapeId>:<shapeName>. Because this is tedious work, the CustomTab class has functions to deal with that: 
 
 \begin{itemize}
-	\item \textbf{QString getShapeIdentifier(Shape*)} returns the identifier in the right form
-	\item \textbf{vtkIdType getIdFromIdentifier(QString)} returns the id from a valid identifier
-	\item \textbf{shared\_ptr<Shape> getShapeFromId(vtkIdType)} returns the shape from an id
-	\item \textbf{QStringList getShapeIdentifierList()} returns a QStringList with all shape identifiers
-	\item \textbf{shared\_ptr<Shape> getShapeFromIdentifier(QString)} returns shape from an identfier
+	\item \textbf{\texttt{QString getShapeIdentifier(Shape*)}} returns the identifier in the right form
+	\item \textbf{\texttt{vtkIdType getIdFromIdentifier(QString)}} returns the id from a valid identifier
+	\item \textbf{\texttt{shared\_ptr<Shape> getShapeFromId(vtkIdType)}} returns the shape from an id
+	\item \textbf{\texttt{QStringList getShapeIdentifierList()}} returns a QStringList with all shape identifiers
+	\item \textbf{\texttt{shared\_ptr<Shape> getShapeFromIdentifier(QString)}} returns shape from an identfier
 \end{itemize}
 
 In the example we get all shape identifiers (\texttt{line 7}) and fill both combo boxes with them (\texttt{line 13 + 14}). The combo boxes are not updated automatically though, that's what done in the abstract functions. 
@@ -271,7 +271,7 @@ In \texttt{CustomClassesRegistry.h} add your menu item to the \texttt{registerCo
 \texttt{CustomContextMenuItemFactory::getInstance()->Register< <NameOfYourClass> > \linebreak
 	\hspace*{2ex}(<UniqueStringIdentifier>, <LabelPath>)}
 	
-where \texttt{<NameOfYourClass>} is the specific class you want to create, for example ColorMetricContextMenuItem<GeodesicMetric>. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes how the menu item should be labeled as well as its path, for example "Coloring>>Metric>>Geodesic" will produce a 3-layered menu (take a look in the application if you can not imagine it). If several menu items have the same path (up to some layer), these will of course be merged.
+where \texttt{<NameOfYourClass>} is the specific class you want to create, for example ColorMetricContextMenuItem<GeodesicMetric>. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes how the menu item should be labeled as well as its path, for example \texttt{"Coloring>>Metric>>Geodesic"} will produce a 3-layered menu (take a look in the application if you can not imagine it). If several menu items have the same path (up to some layer), these will of course be merged.
 
 \subsection{Register a CustomTab}
 \label{subsec:RegisterTab}
@@ -281,4 +281,4 @@ In \texttt{CustomClassesRegistry.h} add your menu item to the \texttt{registerTa
 \texttt{CustomTabFactory::getInstance()->Register< <NameOfYourClass> > \linebreak
 	\hspace*{2ex}(<UniqueStringIdentifier>, <LabelPath>)}
 
-where \texttt{<NameOfYourClass>} is the specific class you want to create, for example CorrespondenceColoringTab. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes the label of the tab and whether it is a correspondence or shape tab, for example "Correspondences>>Correspondence Coloring" or "Shapes>>Mesh Checker". Different from menu items not arbitrary many layers are possible and only Shapes and Correspondences are possible groups. The groups just loosely describe whether the tab deals more with shapes or more with correspondences.
+where \texttt{<NameOfYourClass>} is the specific class you want to create, for example CorrespondenceColoringTab. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes the label of the tab and whether it is a correspondence or shape tab, for example \texttt{"Correspondences>>Correspondence Coloring"} or \texttt{"Shapes>>Mesh Checker"}. Different from menu items not arbitrary many layers are possible and only Shapes and Correspondences are possible groups. The groups just loosely describe whether the tab deals more with shapes or more with correspondences.

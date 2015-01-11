@@ -30,9 +30,8 @@ public:
     /// @param double optional argument controlling the weight of the sparsity penalizer
     /// @param int optional number of iterations
     /// @param bool optional argument controlling whether outlier constraints should be absorbed
-    /// @param double mu optional argument controlling the weight of the outlier absorbtion
+    /// @param double mu optional argument controlling the weight of the outlier absorption
     /// @param function<void(int, double)> optional argument. Lambda expression that is executed on every iteration. The current iteration and the current residual are handed over as parameters.
-    /// @param ostream& optional argument a log output stream to which all the log messages are written. Default is std::cout.
     PetscFunctionalMaps(shared_ptr<Shape> shape1,
                         shared_ptr<Shape> shape2,
                         shared_ptr<PetscLaplaceBeltramiOperator> laplacian1,
@@ -45,15 +44,21 @@ public:
                         int iterations = 300,
                         bool outliers = false,
                         double mu = 0.07,
-                        function<void(int, double)> iterationCallback = [](int, double)->void {},
-                        ostream& log = cout
+                        function<void(int, double)> iterationCallback = [](int, double)->void {}
                         );
     
-    vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f);
+    virtual vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f);
+    
+    virtual void computeCorrespondence();
+    
+    /// \brief Returns the outlier score of constraint i
+    /// @param int index of the constraint that is queried.
+    double getOutlierScore(int i);
     
     /// \brief Virtual destructor.
     ~PetscFunctionalMaps();
 private:
+    
     /// \brief weight of the sparsity penalizer
     PetscScalar lambda_;
     
@@ -82,6 +87,7 @@ private:
     
     /// \brief Computes the matrix Phi^T * M that is used for further computations where Phi is the matrix containing the eigenfunctions as columns and M is the Mass matrix of the respective shape.
     void setupPhiTM(Shape* shape, PetscLaplaceBeltramiOperator* laplacian, Mat* Phi, Mat *PhiTM);
+    
     
     /// \brief Correspondence in Functional Maps representation
     Mat C_;
@@ -117,9 +123,6 @@ private:
     
     /// \brief Lambda expression that is executed on every iteration. The current iteration and the current residual are handed over as parameters.
     function<void(int, double)> iterationCallback_;
-    
-    /// \brief A log output stream to which all the log messages are written.
-    ostream& log_;
 };
 
 

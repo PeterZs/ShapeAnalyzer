@@ -12,6 +12,7 @@
 
 #include <QMessageBox>
 #include <QErrorMessage>
+#include <QScrollBar>
 
 #include "../../domain/Shape.h"
 #include "../../domain/correspondences/PointCorrespondence.h"
@@ -50,6 +51,9 @@ public:
     virtual void onClear();
 private slots:
     virtual void slotTransfer();
+    
+private:
+    void log(string line);
 };
 
 }

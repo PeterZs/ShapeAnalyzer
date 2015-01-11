@@ -6,13 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>781</height>
+    <width>524</width>
+    <height>778</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
     <widget class="QScrollArea" name="scrollArea">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>500</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
@@ -24,7 +36,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
+        <width>498</width>
         <height>835</height>
        </rect>
       </property>
@@ -197,7 +209,7 @@
                      <number>500</number>
                     </property>
                     <property name="value">
-                     <number>197</number>
+                     <number>196</number>
                     </property>
                    </widget>
                   </item>
@@ -482,9 +494,9 @@
            </layout>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBoxOutlierAbsorbtion">
+           <widget class="QGroupBox" name="groupBoxOutlierAbsorption">
             <property name="title">
-             <string>Outlier Absorbtion</string>
+             <string>Outlier Absorption</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -496,14 +508,14 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
-                <widget class="QLabel" name="labelOutlierAbsorbtionWeight">
+                <widget class="QLabel" name="labelOutlierAbsorptionWeight">
                  <property name="text">
                   <string>Weight:</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="doubleSpinBoxOutlierAbsorbtionWeight">
+                <widget class="QDoubleSpinBox" name="doubleSpinBoxOutlierAbsorptionWeight">
                  <property name="decimals">
                   <number>15</number>
                  </property>
@@ -618,7 +630,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QTextBrowser" name="textBrowser">
+       <widget class="QTextBrowser" name="textBrowserLog">
         <property name="baseSize">
          <size>
           <width>0</width>

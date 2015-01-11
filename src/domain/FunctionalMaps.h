@@ -72,6 +72,9 @@ public:
         
     }
     
+    /// \brief Computes correspondence in functional maps representation.
+    virtual void computeCorrespondence() = 0;
+    
     /// \brief Transfers and returns a scalar valued function f from the source to the target shape.
     virtual vtkSmartPointer<vtkDoubleArray> transferFunction(vtkSmartPointer<vtkDataArray> f) = 0;
     

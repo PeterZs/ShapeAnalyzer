@@ -75,9 +75,7 @@ void custom::tabs::IdentityMatchingTab::slotMatch() {
         }
         if(shape1 == shape2) {
             QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_),
-                                 "Error", "The two shapes \"" + QString(shape1->getName().c_str())
-                                 + "\" and \"" + QString(shape2->getName().c_str())
-                                 + "\" have to be different.");
+                                 "Error", "The two selected shapes have to be different.");
             return;
         }
         

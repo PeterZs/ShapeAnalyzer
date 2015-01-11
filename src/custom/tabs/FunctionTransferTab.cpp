@@ -73,15 +73,48 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         metric::GeodesicMetric metricTarget(target);
         
         int numberOfEigenfunctions = max(spinBoxNumberOfEigenfunctions->value(), max(spinBoxWaveKernelSignatureNumberOfEigenfunctions->value(), spinBoxHeatBumpsNumberOfEigenfunctions->value()));
-        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, numberOfEigenfunctions);
-        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, numberOfEigenfunctions);
+
+
+        if(spinBoxWaveKernelSignatureComponentsTo->value() >= spinBoxWaveKernelSignatureComponentsTotalNumber->value()) {
+            QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_),
+                                 "Error", QString::fromStdString("Wave Kernel Signature \"To\" has to be smaller than total number of WKS components (= " + to_string(spinBoxWaveKernelSignatureComponentsTotalNumber->value()) + ")"));
+            return;
+        }
         
+        log("Compute Laplacian of source... ");
+        auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, numberOfEigenfunctions);
+        log("done.\n");
+        
+        log("Compute Laplacian of target... ");
+        auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, numberOfEigenfunctions);
+        log("done.\n");
         
         // Compute landmark correspondences using all available correspondences between shape1 and shape2 and geodesic metric
         // Compute heat diffusion snapshots using the corresponding points.
 
+        vector<pair<int, string>> landmarkCorrespondences;
+        
         for(auto entry : pointCorrespondences_) {
             shared_ptr<PointCorrespondence> corr = entry.first;
+            
+            // make sure that correspondence contains both source and target at the same time (dealing with multicorrespondences)
+            // if yes do nothing. if no jump to next correspondence
+            int count = 0;
+            for(int i = 0; i < corr->size(); i++) {
+                shared_ptr<Shape> shape = corr->getShapes().at(i);
+                if(shape == source) {
+                    count++;
+                }
+                if(shape == target) {
+                    count++;
+                }
+                
+            }
+            if(count != 2) {
+                continue;
+            }
+            
+            log("Add Landmark Correspondence constraints (CID = " + to_string(corr->getId()) + ")... ");
             
             for(int i = 0; i < corr->getShapes().size(); i++) {
                 if(corr->getShapes().at(i) == source) {
@@ -97,6 +130,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                         PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
                         for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
                             constraintsSource.push_back(hdSource.getHeat(t));
+                            landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Heat Bump at t = " + to_string(t)));
                         }
                     }
                         
@@ -104,6 +138,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                     if(checkBoxGeodesicDistanceFunctions->isChecked()) {
                         vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
                         constraintsSource.push_back(distances);
+                        landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Distance function from source = " + to_string(corr->getCorrespondingIds().at(i))));
                     }
                 }
                 
@@ -133,41 +168,64 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                     }
                 }
             }
+            log("done.\n");
         }
         
-
-        
-        // compute wave kernel discriptor on both shapes
-        PetscWaveKernelSignature wksSource(source, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianSource, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
-        PetscWaveKernelSignature wksTarget(target, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianTarget, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
-        
-        
+        vector<int> waveKernelComponents;
         // add wave kernel compontents to contraint vectors
         if(groupBoxWaveKernelSignature->isChecked()) {
-            for(int i = spinBoxWaveKernelSignatureComponentsFrom->value(); i < spinBoxWaveKernelSignatureComponentsTo->value(); i+=spinBoxWaveKernelSignatureComponentsStep->value()) {
+            // compute wave kernel discriptor on both shapes
+            log("Compute Wave Kernel Signature of source... ");
+            PetscWaveKernelSignature wksSource(source, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianSource, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
+            log("done.\n");
+
+            log("Compute Wave Kernel Signature of target... ");
+            PetscWaveKernelSignature wksTarget(target, spinBoxWaveKernelSignatureComponentsTotalNumber->value(), laplacianTarget, spinBoxWaveKernelSignatureNumberOfEigenfunctions->value());
+            log("done.\n");
+            
+            log("Add Wave Kernel Signature components... ");
+            for(int i = spinBoxWaveKernelSignatureComponentsFrom->value(); i <= spinBoxWaveKernelSignatureComponentsTo->value(); i+=spinBoxWaveKernelSignatureComponentsStep->value()) {
                 vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
                 constraintsSource.push_back(wksiSource);
                 
                 vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
                 constraintsTarget.push_back(wksiTarget);
+                waveKernelComponents.push_back(i);
             }
+            log("done.\n");
         }
-        // compute correspondence matrix C
-
-
+        
+        
         function<void(int, double)> iterationCallback = [this](int iteration, double residual)->void {
             lcdNumberCurrentIteration->display(iteration);
             lcdNumberResidual->display(residual);
             
-            QCoreApplication::processEvents();
+            log("    > Iteration " + to_string(iteration) + " (Residual = " + to_string(residual) + ")\n");
         };
         
-        stringstream ss;
-        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, spinBoxNumberOfEigenfunctions->value(), spinBoxStepSize->value(), doubleSpinBoxSparsityPriorWeight->value(), spinBoxNumberOfIterations->value(), groupBoxOutlierAbsorbtion->isChecked(), doubleSpinBoxOutlierAbsorbtionWeight->value(), iterationCallback, ss);
-
+        // compute correspondence matrix C
+        log("Initialize Functional Maps...\n");
+        PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, spinBoxNumberOfEigenfunctions->value(), spinBoxStepSize->value(), doubleSpinBoxSparsityPriorWeight->value(), spinBoxNumberOfIterations->value(), groupBoxOutlierAbsorption->isChecked(), doubleSpinBoxOutlierAbsorptionWeight->value(), iterationCallback);
+        log("done.\n");
         
+        log("Run Functional Maps Forward Backward Splitting...\n");
+        functionalMaps.computeCorrespondence();
+        log("done.\n");
         
-        
+        if(groupBoxOutlierAbsorption->isChecked()) {
+            log("\n\nOutliers scores:\n");
+            int i = 0;
+            for(auto p : landmarkCorrespondences) {
+                log("Correspondence ID " + to_string(p.first) + " => " + p.second + " => Score = " + to_string(functionalMaps.getOutlierScore(i)) + "\n");
+                i++;
+            }
+            
+            i = 0;
+            for(auto v : waveKernelComponents) {
+                log("WKS " + to_string(v) + " => Score = " + to_string(functionalMaps.getOutlierScore(i)) + "\n");
+                i++;
+            }
+        }
         
         if(source->getColoring()->type == Shape::Coloring::Type::PointSegmentation) {
             // find out the number of segments
@@ -235,6 +293,14 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
     }
 }
 
+
+void custom::tabs::FunctionTransferTab::log(string line) {
+    QScrollBar* sb = this->textBrowserLog->verticalScrollBar();
+    
+    this->textBrowserLog->insertPlainText(QString::fromStdString(line));
+    sb->setValue(sb->maximum());
+    QCoreApplication::processEvents();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::FunctionTransferTab::onShapeAdd(Shape* shape) {

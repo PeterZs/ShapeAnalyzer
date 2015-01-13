@@ -9,13 +9,13 @@ void custom::contextMenuItems::SegmentIndicatorContextMenuItem::onClick(
 {
 
     if(shape_->getColoring() == nullptr || shape_->getColoring()->type != Shape::Coloring::Type::PointSegmentation) {
-        QMessageBox::warning(parent, "Error", "Shape \"" + QString(shape_->getName().c_str()) + "\" segmented. Compute a segmentation first.");
+        QMessageBox::warning(parent, "Error", "Shape \"" + QString(shape_->getName().c_str()) + "\" not segmented. Compute a segmentation first.");
         return;
     }
     
     vtkIdType segmentId = shape_->getColoring()->values->GetTuple(pointId)[0];
     
-    vtkSmartPointer<vtkDoubleArray> indicatorFunction = vtkSmartPointer<vtkDoubleArray>::New();
+    vtkSmartPointer<vtkIntArray> indicatorFunction = vtkSmartPointer<vtkIntArray>::New();
     indicatorFunction->SetNumberOfValues(shape_->getPolyData()->GetNumberOfPoints());
     // color 2nd shape
     for(vtkIdType j = 0; j < shape_->getPolyData()->GetNumberOfPoints(); j++) {
@@ -25,5 +25,5 @@ void custom::contextMenuItems::SegmentIndicatorContextMenuItem::onClick(
             indicatorFunction->SetValue(j, 0.0);
         }
     }
-    shape_->setColoring(indicatorFunction, Shape::Coloring::Type::PointScalar);
+    shape_->setColoring(indicatorFunction, Shape::Coloring::Type::PointSegmentation);
 }

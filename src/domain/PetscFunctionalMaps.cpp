@@ -35,40 +35,38 @@ iterationCallback_(iterationCallback)
     MatCreateSeqDense(PETSC_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &A_);
     MatCreateSeqDense(PETSC_COMM_SELF, numberOfConstraints_, numberOfEigenfunctions_, NULL, &B_);
     
+    
+    // Vector representing the function ci_1 defined on the vertices of shape1
+    Vec ci1;
+    
+    // eigenbasis coefficients of contraint function ci_1
+    Vec ai;
+    
+    //get vectors ci1, ai which can be multiplied by PhiTM1 (ci1) and that the matrix vector product PhiTM * ci1 can be stored in (ai)
+    MatGetVecs(PhiTM1_, &ci1, &ai);
+    Vec ci2;
+    Vec bi;
+    MatGetVecs(PhiTM2_, &ci2, &bi);
+    
     for(PetscInt i = 0; i < numberOfConstraints_; i++) {
-        // Vector representing the function ci_1 defined on the vertices of shape1
-        Vec ci1;
-        
-        // eigenbasis coefficients of contraint function ci_1
-        Vec ai;
-        
-        //get vectors ci1, ai which can be multiplied by PhiTM1 (ci1) and that the matrix vector product PhiTM * ci1 can be stored in (ai)
-        MatGetVecs(PhiTM1_, &ci1, &ai);
-        
         //copy contraint c1_ which is of type scalar point attribute into Petsc vector
         PetscHelper::vtkDataArrayToPetscVec(c1_.at(i), ci1);
-        
-        
+
         //compute i-th row (ai) of A^T
         MatMult(PhiTM1_, ci1, ai);
         
         PetscHelper::setRow(A_, ai, i);
-        
-        
-        Vec ci2;
-        Vec bi;
-        MatGetVecs(PhiTM2_, &ci2, &bi);
+
         PetscHelper::vtkDataArrayToPetscVec(c2_.at(i), ci2);
         
         MatMult(PhiTM2_, ci2, bi);
         
         PetscHelper::setRow(B_, bi, i);
-        
-        VecDestroy(&ci1);
-        VecDestroy(&ci2);
-        VecDestroy(&ai);
-        VecDestroy(&bi);
     }
+    VecDestroy(&ci1);
+    VecDestroy(&ci2);
+    VecDestroy(&ai);
+    VecDestroy(&bi);
     
     
     MatAssemblyBegin(A_, MAT_FINAL_ASSEMBLY);
@@ -88,7 +86,7 @@ iterationCallback_(iterationCallback)
     MatCreateSeqDense(PETSC_COMM_SELF, numberOfEigenfunctions_, numberOfEigenfunctions_, NULL, &W_);
     for(PetscInt i = 0; i < numberOfEigenfunctions_; i++) {
         for(PetscInt j = 0; j < numberOfEigenfunctions_; j++) {
-            PetscReal w = min(abs(i - j), 1) * (100.0 - pow((double) min(i, j) / numberOfEigenfunctions_, 4.53) * 100.0);
+            PetscReal w = min(abs(i - j), 1) * (100.0 - pow((double) min(i, j) / numberOfEigenfunctions_, 3.13) * 100.0);
             
             MatSetValue(W_, i, j, w, INSERT_VALUES);
         }
@@ -272,6 +270,7 @@ void PetscFunctionalMaps::computeCorrespondence() {
     }
     VecDestroy(&wi);
     VecDestroy(&ci);
+    VecDestroy(&oi);
     
     MatDestroy(&C);
     

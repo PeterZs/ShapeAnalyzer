@@ -21,7 +21,7 @@ public:
     /// @param vtkSmartPointer<vtkDoubleArray> The initial condition as an array of values each corresponding to the vertex with the same index
     PetscHeatDiffusion(shared_ptr<Shape> shape, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, vtkSmartPointer<vtkDoubleArray> initialCondition);
     /// \brief Virtual destructor.
-    ~PetscHeatDiffusion();
+    virtual ~PetscHeatDiffusion();
     vtkSmartPointer<vtkDoubleArray> getHeat(double t);
 private:
     shared_ptr<PetscLaplaceBeltramiOperator> laplacian_;

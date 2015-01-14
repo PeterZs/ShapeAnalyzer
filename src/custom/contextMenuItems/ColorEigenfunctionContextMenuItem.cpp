@@ -10,14 +10,14 @@ void custom::contextMenuItems::ColorEigenfunctionContextMenuItem::onClick(vtkIdT
                                  "Choose an eigenfunction.",
                                  0,
                                  0,
-                                 std::min((vtkIdType) 99, shape_->getPolyData()->GetNumberOfPoints()),
+                                 std::min((vtkIdType) 299, shape_->getPolyData()->GetNumberOfPoints()),
                                  1,
                                  &ok
                                  );
     // show eigenfunction
     if (ok) {
         try {
-            PetscFEMLaplaceBeltramiOperator laplacian(shape_, 100);
+            PetscFEMLaplaceBeltramiOperator laplacian(shape_, i + 1);
             vtkSmartPointer<vtkDoubleArray> eigenfunction = laplacian.getEigenfunction(i);
             
             shape_->setColoring(eigenfunction, Shape::Coloring::Type::PointScalar);

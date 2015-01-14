@@ -5,7 +5,6 @@
 #include <exception>
 
 #include <QApplication>
-#include <QErrorMessage>
 #include <QMessageBox>
 
 #include "ShapeAnalyzer.h"

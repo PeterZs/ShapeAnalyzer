@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <QMessageBox>
-#include <QErrorMessage>
 #include <QScrollBar>
 
 #include "../../domain/Shape.h"

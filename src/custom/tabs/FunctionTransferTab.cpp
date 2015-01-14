@@ -58,19 +58,14 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "Shape \"" + QString(source->getName().c_str()) + "\" is neither colored with a scalar point map nor a segmentation. Compute scalar point map or a segmentation first.");
         return;
     }
-    
+
     try {
-        
         // initialize lists of corresponding contraints on both shapes. Ordering represents correspondence of contraints. I.e. c1[5] on shape1 corresponds to c2[5] on shape2.
         // corresponds to contraints on shape1
         vector<vtkSmartPointer<vtkDoubleArray>> constraintsSource;
         
         // corresponds to contraints on shape2
         vector<vtkSmartPointer<vtkDoubleArray>> constraintsTarget;
-        
-        
-        metric::GeodesicMetric metricSource(source);
-        metric::GeodesicMetric metricTarget(target);
         
         int numberOfEigenfunctions = max(spinBoxNumberOfEigenfunctions->value(), max(spinBoxWaveKernelSignatureNumberOfEigenfunctions->value(), spinBoxHeatBumpsNumberOfEigenfunctions->value()));
 
@@ -94,10 +89,17 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
 
         vector<pair<int, string>> landmarkCorrespondences;
         
+        shared_ptr<metric::GeodesicMetric> metricSource;
+        shared_ptr<metric::GeodesicMetric> metricTarget;
+        if(checkBoxGeodesicDistanceFunctions->isChecked()) {
+            metricSource = make_shared<metric::GeodesicMetric>(source);
+            metricTarget = make_shared<metric::GeodesicMetric>(target);
+        }
+        
         for(auto entry : pointCorrespondences_) {
             shared_ptr<PointCorrespondence> corr = entry.first;
             
-            // make sure that correspondence contains both source and target at the same time (dealing with multicorrespondences)
+            // make sure that correspondence contains both source and target at the same time (dealing with multi-correspondences)
             // if yes do nothing. if no jump to next correspondence
             int count = 0;
             for(int i = 0; i < corr->size(); i++) {
@@ -114,7 +116,6 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                 continue;
             }
             
-            log("Add Landmark Correspondence constraints (CID = " + to_string(corr->getId()) + ")... ");
             
             for(int i = 0; i < corr->getShapes().size(); i++) {
                 if(corr->getShapes().at(i) == source) {
@@ -127,18 +128,23 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                         }
                         u0s->SetValue(corr->getCorrespondingIds().at(i), doubleSpinBoxHeatBumpsInitialValue->value());
                         
+                        log("Add Landmark Correspondence Heat Bump Constraints (CID = " + to_string(corr->getId()) + ")... ");
                         PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
                         for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
                             constraintsSource.push_back(hdSource.getHeat(t));
                             landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Heat Bump at t = " + to_string(t)));
                         }
+                        log("done\n");
                     }
                         
                     // distance functions
                     if(checkBoxGeodesicDistanceFunctions->isChecked()) {
-                        vtkSmartPointer<vtkDoubleArray> distances = metricSource.getAllDistances(corr->getCorrespondingIds().at(i));
+                        log("Add Landmark Correspondence Distance Function Constraint (CID = " + to_string(corr->getId()) + ")... ");
+                        vtkSmartPointer<vtkDoubleArray> distances = metricSource->getAllDistances(corr->getCorrespondingIds().at(i));
                         constraintsSource.push_back(distances);
                         landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Distance function from source = " + to_string(corr->getCorrespondingIds().at(i))));
+                        
+                        log("done.\n");
                     }
                 }
                 
@@ -162,13 +168,12 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                     
                     // distance functions
                     if(checkBoxGeodesicDistanceFunctions->isChecked()) {
-                        vtkSmartPointer<vtkDoubleArray> distances = metricTarget.getAllDistances(corr->getCorrespondingIds()[i]);
+                        vtkSmartPointer<vtkDoubleArray> distances = metricTarget->getAllDistances(corr->getCorrespondingIds()[i]);
                         constraintsTarget.push_back(distances);
                         
                     }
                 }
             }
-            log("done.\n");
         }
         
         vector<int> waveKernelComponents;
@@ -280,16 +285,10 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             // color 2nd shape
             target->setColoring(Tf, Shape::Coloring::Type::PointScalar);
         }
-        
-
     } catch(metric::MetricError& me) {
-        QErrorMessage msgBox;
-        msgBox.showMessage(QString::fromStdString(me.what()));
-        msgBox.exec();
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", QString::fromStdString(me.what()));
     } catch(laplaceBeltrami::LaplaceBeltramiError& le) {
-        QErrorMessage msgBox;
-        msgBox.showMessage(QString::fromStdString(le.what()));
-        msgBox.exec();
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", QString::fromStdString(le.what()));
     }
 }
 

@@ -33,8 +33,8 @@ signature::PetscWaveKernelSignature::PetscWaveKernelSignature(shared_ptr<Shape> 
         VecCreateSeq(MPI_COMM_SELF, shape_->getPolyData()->GetNumberOfPoints(), &wksi);
         VecSet(wksi, 0.0);
         PetscScalar C = 0;
+        Vec phi;
         for(PetscInt k = 0; k < numberOfEigenfunctions_; k++) {
-            Vec phi;
             laplacian_->getEigenfunction(k, &phi);
             
 // VecPow was introduced in Petsc ver. 3.5.0
@@ -51,8 +51,8 @@ signature::PetscWaveKernelSignature::PetscWaveKernelSignature(shared_ptr<Shape> 
             C += c;
             
             
-            VecDestroy(&phi);
         }
+        VecDestroy(&phi);
         
         VecScale(wksi, C);
         

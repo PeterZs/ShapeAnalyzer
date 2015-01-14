@@ -2051,10 +2051,10 @@ void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {
     
     qvtkWidget->GetRenderWindow()->Render();
 }
+
+
 //////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::showErrorMessage(string description, string error) {
-    QErrorMessage msgBox;
-    msgBox.showMessage(QString::fromStdString(description + string(": ") + error));
-    msgBox.exec();
+    QMessageBox::warning(this, QString::fromStdString(description + string(": ") + error), "Error");
 }
 

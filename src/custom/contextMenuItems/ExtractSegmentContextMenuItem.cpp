@@ -5,7 +5,7 @@
 void custom::contextMenuItems::ExtractSegmentContextMenuItem::onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
     
     if(pointId == -1 || shape_->getColoring() == nullptr || shape_->getColoring()->type != Shape::Coloring::Type::PointSegmentation) {
-        QMessageBox::warning(parent, "Error", "No valid point segment selected.\nDoes shape \"" + QString(shape_->getName().c_str()) + "\" have an active point segmentation? Eventually a point segmentation has to be set first.");
+        QMessageBox::warning(parent, "Error", "No valid point segment selected.\nDoes shape \"" + QString(shape_->getName().c_str()) + "\" have an active point segmentation?.");
         return;
     }
     

@@ -66,7 +66,7 @@ public:
                         u0->SetValue(i, 0.0);
                     }
                 }
-                shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 20);
+                shared_ptr<PetscLaplaceBeltramiOperator> laplacian = make_shared<PetscFEMLaplaceBeltramiOperator>(shape_, 100);
                 
                 PetscHeatDiffusion heatDiffusion(shape_, laplacian, u0);
                 

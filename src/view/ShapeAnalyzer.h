@@ -336,7 +336,7 @@ private:
 
     void clear();
 
-    static void showErrorMessage(string description, string error);
+    void showErrorMessage(string description, string error);
     
     
     /// \brief Maps the vtkActor pointer to a shape pointer.

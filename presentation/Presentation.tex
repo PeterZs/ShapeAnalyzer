@@ -10,8 +10,8 @@
 \usepackage{helvet}
 \usepackage{url}
 \usepackage{listings}
-\usepackage{xcolor}
 \usepackage{color}
+\usepackage{xcolor}
 \usepackage{xspace} % Abstand hinter Variablennamen
 \usepackage{fix-cm}
 %\usepackage[square, sort, numbers, authoryear]{natbib}
@@ -54,7 +54,7 @@
 \author{\href{emanuel.laude@in.tum.de}{Emanuel Laude}\\ \href{laehner@in.tum.de}{Zorah L\"ahner} } 
 %\date{\today}
 \date{January 16, 2015}
-\institute{Technische Universität München}
+\institute{Technische Universit\"at M\"unchen}
 
 % Inhaltsverzeichnis zu Begin von jedem Abschnitt einblenden?
 %\AtBeginSection[]{
@@ -112,24 +112,6 @@
   
   CustomTab?
   \end{center}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
-  
-\begin{lstlisting}[language=C++, numbers=none]
-<@\textcolor{middle-gray}{template<class T = Metric>}@>
-<@\textcolor{middle-gray}{class VoronoiCellsContextMenuItem : public CustomContextMenuItem \{}@>
-<@\textcolor{middle-gray}{public:}@>
-	<@\textcolor{middle-gray}{VoronoiCellsContextMenuItem<T>}@>
-	<@\textcolor{middle-gray}{(shared\_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)}@>
-	 <@\textcolor{middle-gray}{: CustomContextMenuItem(shape, shapeAnalyzer) \{ \}}@>
-    
-    <@\textcolor{middle-gray}{virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) \{}@>
-        <@\textcolor{middle-gray}{(...)    \}}@>
-<@\textcolor{middle-gray}{\};}@>
-\end{lstlisting}
-  
 \end{frame}
 
 \begin{frame}[fragile]
@@ -208,25 +190,208 @@ template<class T = Metric>
   \frametitle{Example: VoronoiCellsContextMenuItem}
   
 \begin{lstlisting}[language=C++, numbers=none]
-virtual void onClick(...) {
-        bool ok;
-        vtkIdType source = QInputDialog::getInt(...);
-        if (!ok) { return; }
-        (...)
-        if(ok) {
-            try {
-                auto m = make_shared<T>(shape_);
-                auto fps = make_shared<FarthestPointSampling>(shape_, m, source, numberOfSegments);
-                VoronoiCellSegmentation segmentation(shape_, m, fps);
-                
-                shape_->setColoring(segmentation.getSegments(), Shape::Coloring::Type::PointSegmentation);
-            } catch(metric::MetricError& e) {
-                QMessageBox::warning(parent, "Exception", e.what());
-            }
-        }
-    }
+<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
+    <@\textcolor{middle-gray}{bool ok;}@>
+    <@\textcolor{middle-gray}{vtkIdType source = QInputDialog::getInt(...);}@>
+    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
+    <@\textcolor{middle-gray}{(...)}@>
+    <@\textcolor{middle-gray}{if(ok) \{}@>
+        <@\textcolor{middle-gray}{try \{}@>
+            <@\textcolor{middle-gray}{auto m = make\_shared<T>(shape\_);}@>
+            <@\textcolor{middle-gray}{auto fps = make\_shared<FarthestPointSampling>(shape\_, m, source, numberOfSegments);}@>
+            <@\textcolor{middle-gray}{VoronoiCellSegmentation segmentation(shape\_, m, fps);}@>
+            <@\textcolor{middle-gray}{shape\_->setColoring(segmentation.getSegments(), }@>
+            	<@\textcolor{middle-gray}{Shape::Coloring::Type::PointSegmentation);}@>
+        <@\textcolor{middle-gray}{\} catch(metric::MetricError\& e) \{}@>
+            <@\textcolor{middle-gray}{QMessageBox::warning(parent, "Exception", e.what());}@>
+        <@\textcolor{middle-gray}{\}
+    \}
+\}}@>
 \end{lstlisting}
   
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
+    <@\textcolor{middle-gray}{bool ok;}@>
+    vtkIdType source = QInputDialog::getInt(...);
+    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
+    <@\textcolor{middle-gray}{(...)}@>
+    <@\textcolor{middle-gray}{if(ok) \{}@>
+        <@\textcolor{middle-gray}{try \{}@>
+            <@\textcolor{middle-gray}{auto m = make\_shared<T>(shape\_);}@>
+            <@\textcolor{middle-gray}{auto fps = make\_shared<FarthestPointSampling>(shape\_, m, source, numberOfSegments);}@>
+            <@\textcolor{middle-gray}{VoronoiCellSegmentation segmentation(shape\_, m, fps);}@>
+            <@\textcolor{middle-gray}{shape\_->setColoring(segmentation.getSegments(), }@>
+            	<@\textcolor{middle-gray}{Shape::Coloring::Type::PointSegmentation);}@>
+        <@\textcolor{middle-gray}{\} catch(metric::MetricError\& e) \{}@>
+            <@\textcolor{middle-gray}{QMessageBox::warning(parent, "Exception", e.what());}@>
+        <@\textcolor{middle-gray}{\}
+    \}
+\}}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
+    <@\textcolor{middle-gray}{bool ok;}@>
+    <@\textcolor{middle-gray}{vtkIdType source = QInputDialog::getInt(...);}@>
+    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
+    <@\textcolor{middle-gray}{(...)}@>
+    <@\textcolor{middle-gray}{if(ok) \{}@>
+        <@\textcolor{middle-gray}{try \{}@>
+            auto m = make_shared<T>(shape_);
+            auto fps = make_shared<FarthestPointSampling>(shape_, m, source, numberOfSegments);
+            VoronoiCellSegmentation segmentation(shape\_, m, fps);
+            <@\textcolor{middle-gray}{shape\_->setColoring(segmentation.getSegments(), }@>
+            	<@\textcolor{middle-gray}{Shape::Coloring::Type::PointSegmentation);}@>
+        <@\textcolor{middle-gray}{\} catch(metric::MetricError\& e) \{}@>
+            <@\textcolor{middle-gray}{QMessageBox::warning(parent, "Exception", e.what());}@>
+        <@\textcolor{middle-gray}{\}
+    \}
+\}}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
+    <@\textcolor{middle-gray}{bool ok;}@>
+    <@\textcolor{middle-gray}{vtkIdType source = QInputDialog::getInt(...);}@>
+    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
+    <@\textcolor{middle-gray}{(...)}@>
+    <@\textcolor{middle-gray}{if(ok) \{}@>
+        <@\textcolor{middle-gray}{try \{}@>
+            <@\textcolor{middle-gray}{auto m = make\_shared<T>(shape\_);}@>
+            <@\textcolor{middle-gray}{auto fps = make\_shared<FarthestPointSampling>(shape\_, m, source, numberOfSegments);}@>
+            <@\textcolor{middle-gray}{VoronoiCellSegmentation segmentation(shape\_, m, fps);}@>
+            shape_->setColoring(segmentation.getSegments(), 
+            	Shape::Coloring::Type::PointSegmentation);
+        <@\textcolor{middle-gray}{\} catch(metric::MetricError\& e) \{}@>
+            <@\textcolor{middle-gray}{QMessageBox::warning(parent, "Exception", e.what());}@>
+        <@\textcolor{middle-gray}{\}
+    \}
+\}}@>
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Shape Coloring}
+	
+	\begin{columns}
+    		\begin{column}{.4\linewidth}
+      		\begin{itemize}
+			\item<1> PointSegmentation
+			\item<1> FaceSegmentation
+			\item<2> PointRGB
+			\item<2> FaceRGB
+			\item<3> PointScalar
+			\item<3> FaceScalar
+		\end{itemize}
+   		\end{column}
+    		\begin{column}{.6\linewidth}
+		
+			 \begin{figure}[h]
+				\centering
+				\only<1-1>{\includegraphics[width=\textwidth]{segmentation.png}}
+				\only<2-2>{\includegraphics[width=\textwidth]<2>{rgb.png}}
+				\only<3-3>{\includegraphics[width=\textwidth]<3>{scalar.png}}
+			\end{figure}
+      
+    		\end{column}
+  	\end{columns}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
+    <@\textcolor{middle-gray}{bool ok;}@>
+    <@\textcolor{middle-gray}{vtkIdType source = QInputDialog::getInt(...);}@>
+    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
+    <@\textcolor{middle-gray}{(...)}@>
+    <@\textcolor{middle-gray}{if(ok) \{}@>
+        try {
+            <@\textcolor{middle-gray}{auto m = make\_shared<T>(shape\_);}@>
+            <@\textcolor{middle-gray}{auto fps = make\_shared<FarthestPointSampling>(shape\_, m, source, numberOfSegments);}@>
+            <@\textcolor{middle-gray}{VoronoiCellSegmentation segmentation(shape\_, m, fps);}@>
+            <@\textcolor{middle-gray}{shape\_->setColoring(segmentation.getSegments(), }@>
+            	<@\textcolor{middle-gray}{Shape::Coloring::Type::PointSegmentation);}@>
+        } catch(metric::MetricError& e) {
+            QMessageBox::warning(parent, "Exception", e.what());
+        }
+   <@\textcolor{middle-gray}{ \}
+\}}@>
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{CustomTab}
+	
+	Demo Time Slide
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{CustomTab}
+	
+	\begin{itemize}
+		\item Constructor signature:
+		\begin{itemize}
+			\item \texttt{HashMap<vtkActor*, shared\_ptr<Shape>>\& \textcolor{blue}{shapes}}
+			\item \texttt{HashMap<shared\_ptr<PointCorrespondence>, bool>\& \textcolor{blue}{pointCorrespondences}}
+			\item \texttt{HashMap<shared\_ptr<FaceCorrespondence>, bool>\& \textcolor{blue}{faceCorrespondences}}
+			\item \texttt{ShapeAnalyzerInterface* \textcolor{blue}{shapeAnalyzer}}
+		\end{itemize}
+		\item Abstract functions:
+		\begin{itemize}
+			\item \texttt{\textcolor{blue}{void} onShapeAdd(Shape* shape)}
+			\item \texttt{\textcolor{blue}{void} onShapeEdit(Shape* shape)}
+			\item \texttt{\textcolor{blue}{void} onShapeDelete(Shape* shape)}
+			\item \texttt{\textcolor{blue}{void} onClear()}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Shape Identifier}
+	
+	\begin{columns}
+    		\begin{column}{.3\linewidth}
+      		\begin{figure}[h]
+				\centering
+				\includegraphics[width=\textwidth]{diagramshape.pdf}
+			\end{figure}
+   		\end{column}
+    		\begin{column}{.7\linewidth}
+		
+			 We use Shape Identifiers of form <id>:<name> 
+			 
+			 \begin{itemize}
+			 	\item<2> \texttt{getShapeIdentifier(Shape*)}
+				\item<2> \texttt{getIdFromIdentifier(QString)}
+				\item<2> \texttt{getShapeFromId(vtkIdType)}
+				\item<2> \texttt{getShapeIdentifierList()}
+				\item<2> \texttt{getShapeFromIdentifier(QString)}
+			 \end{itemize}
+      
+    		\end{column}
+  	\end{columns}
+	
 \end{frame}
 
 \section{Demo Time: Functional Maps}

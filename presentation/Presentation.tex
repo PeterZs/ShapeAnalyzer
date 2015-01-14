@@ -11,6 +11,7 @@
 \usepackage{url}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{color}
 \usepackage{xspace} % Abstand hinter Variablennamen
 \usepackage{fix-cm}
 %\usepackage[square, sort, numbers, authoryear]{natbib}
@@ -38,6 +39,15 @@
     \setlength{\parsep}{\parskip}%
   }%
   \item[]}{\end{list}}
+  
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{middle-gray}{gray}{0.5}
+  
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{columns=fullflexible}
+\lstset{framextopmargin=20pt}
+\lstset{backgroundcolor=\color{white}}
+\lstset{escapeinside={<@}{@>}}
 
 \title{A Flexible Tool for Shape Analysis}
 \subtitle{IDP Presentation}
@@ -104,8 +114,118 @@
   \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{template<class T = Metric>}@>
+<@\textcolor{middle-gray}{class VoronoiCellsContextMenuItem : public CustomContextMenuItem \{}@>
+<@\textcolor{middle-gray}{public:}@>
+	<@\textcolor{middle-gray}{VoronoiCellsContextMenuItem<T>}@>
+	<@\textcolor{middle-gray}{(shared\_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)}@>
+	 <@\textcolor{middle-gray}{: CustomContextMenuItem(shape, shapeAnalyzer) \{ \}}@>
+    
+    <@\textcolor{middle-gray}{virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) \{}@>
+        <@\textcolor{middle-gray}{(...)    \}}@>
+<@\textcolor{middle-gray}{\};}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{template<class T = Metric>}@>
+class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
+<@\textcolor{middle-gray}{public:}@>
+	<@\textcolor{middle-gray}{VoronoiCellsContextMenuItem<T>}@>
+	<@\textcolor{middle-gray}{(shared\_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)}@>
+	 <@\textcolor{middle-gray}{: CustomContextMenuItem(shape, shapeAnalyzer) \{ \}}@>
+    
+    <@\textcolor{middle-gray}{virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) \{}@>
+        <@\textcolor{middle-gray}{(...)    \}}@>
+<@\textcolor{middle-gray}{\};}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+template<class T = Metric>
+<@\textcolor{middle-gray}{class VoronoiCellsContextMenuItem : public CustomContextMenuItem \{}@>
+<@\textcolor{middle-gray}{public:}@>
+	<@\textcolor{middle-gray}{VoronoiCellsContextMenuItem<T>}@>
+	<@\textcolor{middle-gray}{(shared\_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)}@>
+	 <@\textcolor{middle-gray}{: CustomContextMenuItem(shape, shapeAnalyzer) \{ \}}@>
+    
+    <@\textcolor{middle-gray}{virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) \{}@>
+        <@\textcolor{middle-gray}{(...)    \}}@>
+<@\textcolor{middle-gray}{\};}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{template<class T = Metric>}@>
+<@\textcolor{middle-gray}{class VoronoiCellsContextMenuItem : public CustomContextMenuItem \{}@>
+<@\textcolor{middle-gray}{public:}@>
+	VoronoiCellsContextMenuItem<T>
+	 (shared_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)
+	 	: CustomContextMenuItem(shape, shapeAnalyzer) { }
+    
+    <@\textcolor{middle-gray}{virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) \{}@>
+        <@\textcolor{middle-gray}{(...)    \}}@>
+<@\textcolor{middle-gray}{\};}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+<@\textcolor{middle-gray}{template<class T = Metric>}@>
+<@\textcolor{middle-gray}{class VoronoiCellsContextMenuItem : public CustomContextMenuItem \{}@>
+<@\textcolor{middle-gray}{public:}@>
+	<@\textcolor{middle-gray}{VoronoiCellsContextMenuItem<T>}@>
+	<@\textcolor{middle-gray}{(shared\_ptr<Shape> shape, ShapeAnalyzerInterface* shapeAnalyzer)}@>
+	 <@\textcolor{middle-gray}{: CustomContextMenuItem(shape, shapeAnalyzer) \{ \}}@>
+    
+    virtual void onClick(vtkIdType pointId, vtkIdType faceId, QWidget* parent) {
+        (...)    }
+<@\textcolor{middle-gray}{\};}@>
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example: VoronoiCellsContextMenuItem}
+  
+\begin{lstlisting}[language=C++, numbers=none]
+virtual void onClick(...) {
+        bool ok;
+        vtkIdType source = QInputDialog::getInt(...);
+        if (!ok) { return; }
+        (...)
+        if(ok) {
+            try {
+                auto m = make_shared<T>(shape_);
+                auto fps = make_shared<FarthestPointSampling>(shape_, m, source, numberOfSegments);
+                VoronoiCellSegmentation segmentation(shape_, m, fps);
+                
+                shape_->setColoring(segmentation.getSegments(), Shape::Coloring::Type::PointSegmentation);
+            } catch(metric::MetricError& e) {
+                QMessageBox::warning(parent, "Exception", e.what());
+            }
+        }
+    }
+\end{lstlisting}
   
 \end{frame}
 

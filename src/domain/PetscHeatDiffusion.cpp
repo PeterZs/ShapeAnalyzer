@@ -53,8 +53,8 @@ vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
     VecCreateSeq(PETSC_COMM_SELF, m, &utv);
     VecSet(utv, 0.0);
     
-    Vec phi;
     for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
+        Vec phi;
         PetscScalar lambda;
         laplacian_->getEigenpair(i, &phi, &lambda);
         PetscScalar y;
@@ -62,9 +62,8 @@ vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
         
         //Y = aX + Y (ut = exp(lambda * t) * y * phi + ut)
         VecAXPY(utv, exp(lambda * t) * y, phi);
+        VecDestroy(&phi);
     }
-    
-    VecDestroy(&phi);
     
     vtkSmartPointer<vtkDoubleArray> ut = PetscHelper::petscVecToVtkDoubleArray(utv);
 

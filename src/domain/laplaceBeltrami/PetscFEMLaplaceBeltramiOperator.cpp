@@ -49,7 +49,6 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperat
     ierr = EPSDestroy(&eps_);
     ierr = MatDestroy(&L_);
     ierr = MatDestroy(&M_);
-    ierr = STDestroy(&st_);
 }
 
 

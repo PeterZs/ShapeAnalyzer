@@ -26,6 +26,9 @@ namespace signature {
         /// @param double Optional paramter controlling the variance.
         PetscWaveKernelSignature(shared_ptr<Shape> shape, int dimension, shared_ptr<PetscLaplaceBeltramiOperator> laplacian, int numberOfEigenfunctions, double wksVariance = 6.0);
         
+        virtual ~PetscWaveKernelSignature() {
+            cout << "destroy" <<endl;
+        }
     private:
         double wksVariance_;
     };

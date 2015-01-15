@@ -13,8 +13,10 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
         colIdx[j] = j;
     }
     
+    
     MatSetValues(A, 1, &i, size, colIdx, row, INSERT_VALUES);
     delete [] colIdx;
+    delete [] row;
 }
 
 
@@ -31,9 +33,13 @@ void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
     for(PetscInt j = 0; j < m; j++) {
         idx[j] = j;
     }
+
     VecSetValues(ai, m, idx, row, INSERT_VALUES);
     VecAssemblyBegin(ai);
     VecAssemblyEnd(ai);
+    
+    delete [] idx;
+    delete [] row;
 }
 
 
@@ -52,6 +58,7 @@ void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     
     MatSetValues(A, size, rowIdx, 1, &i, column, INSERT_VALUES);
     delete [] rowIdx;
+    delete [] column;
 }
 
 
@@ -110,6 +117,7 @@ void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
     
     delete [] colIdx;
     delete [] rowIdx;
+    delete [] values;
 }
 
 
@@ -137,7 +145,9 @@ vtkSmartPointer<vtkDoubleArray> PetscHelper::petscVecToVtkDoubleArray(Vec& vec) 
     PetscInt size;
     VecGetSize(vec, &size);
     
-    return petscScalarArrayToVtkDoubleArray(arr, size);
+    vtkSmartPointer<vtkDoubleArray> res = petscScalarArrayToVtkDoubleArray(arr, size);
+    delete [] arr;
+    return res;
 }
 
 

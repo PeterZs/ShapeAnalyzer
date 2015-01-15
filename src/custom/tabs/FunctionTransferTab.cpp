@@ -66,7 +66,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         
         // corresponds to contraints on shape2
         vector<vtkSmartPointer<vtkDoubleArray>> constraintsTarget;
-        
+
         int numberOfEigenfunctions = max(spinBoxNumberOfEigenfunctions->value(), max(spinBoxWaveKernelSignatureNumberOfEigenfunctions->value(), spinBoxHeatBumpsNumberOfEigenfunctions->value()));
 
 
@@ -76,6 +76,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             return;
         }
         
+
         log("Compute Laplacian of source... ");
         auto laplacianSource = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(source, numberOfEigenfunctions);
         log("done.\n");
@@ -83,6 +84,8 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         log("Compute Laplacian of target... ");
         auto laplacianTarget = make_shared<laplaceBeltrami::PetscFEMLaplaceBeltramiOperator>(target, numberOfEigenfunctions);
         log("done.\n");
+
+        
         
         // Compute landmark correspondences using all available correspondences between shape1 and shape2 and geodesic metric
         // Compute heat diffusion snapshots using the corresponding points.
@@ -191,15 +194,15 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             log("Add Wave Kernel Signature components... ");
             for(int i = spinBoxWaveKernelSignatureComponentsFrom->value(); i <= spinBoxWaveKernelSignatureComponentsTo->value(); i+=spinBoxWaveKernelSignatureComponentsStep->value()) {
                 vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-                constraintsSource.push_back(wksiSource);
+                //constraintsSource.push_back(wksiSource);
                 
-                vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-                constraintsTarget.push_back(wksiTarget);
-                waveKernelComponents.push_back(i);
+                //vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+                //constraintsTarget.push_back(wksiTarget);
+                //waveKernelComponents.push_back(i);
             }
             log("done.\n");
         }
-        
+        return;
         
         function<void(int, double)> iterationCallback = [this](int iteration, double residual)->void {
             lcdNumberCurrentIteration->display(iteration);
@@ -212,6 +215,8 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         log("Initialize Functional Maps...\n");
         PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, spinBoxNumberOfEigenfunctions->value(), spinBoxStepSize->value(), doubleSpinBoxSparsityPriorWeight->value(), spinBoxNumberOfIterations->value(), groupBoxOutlierAbsorption->isChecked(), doubleSpinBoxOutlierAbsorptionWeight->value(), iterationCallback);
         log("done.\n");
+        
+        return;
         
         log("Run Functional Maps Forward Backward Splitting...\n");
         functionalMaps.computeCorrespondence();

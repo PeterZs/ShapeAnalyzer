@@ -30,6 +30,7 @@ signature::PetscWaveKernelSignature::PetscWaveKernelSignature(shared_ptr<Shape> 
     Vec wksi;
     VecCreateSeq(MPI_COMM_SELF, shape_->getPolyData()->GetNumberOfPoints(), &wksi);
     for(PetscInt i = 0; i < dimension_; i++) {
+        //i-th component of wks
         VecSet(wksi, 0.0);
         PetscScalar C = 0;
         
@@ -49,6 +50,7 @@ signature::PetscWaveKernelSignature::PetscWaveKernelSignature(shared_ptr<Shape> 
             PetscScalar c = exp( -pow(e[i] - logLambda[k], 2.0) / ( 2.0 * sigma * sigma ));
             VecAXPY(wksi, c, phi);
             C += c;
+            
             VecDestroy(&phi);
         }
         

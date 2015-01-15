@@ -13,6 +13,8 @@ signature::PetscLaplaceBeltramiSignature::PetscLaplaceBeltramiSignature(shared_p
 ///////////////////////////////////////////////////////////////////////////////
 signature::PetscLaplaceBeltramiSignature::~PetscLaplaceBeltramiSignature() {
     MatDestroy(&signature_);
+    
+    cout << "PetscLaplaceaBeltramiSignature Destructor \n";
 }
 
 

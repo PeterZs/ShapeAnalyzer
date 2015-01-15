@@ -313,40 +313,6 @@ template<class T = Metric>
 	
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
-
-\begin{lstlisting}[language=C++,keywordstyle=\color{blue},
-                stringstyle=\color{red},
-                commentstyle=\color{green},  numbers=none]
-<@\textcolor{middle-gray}{virtual void onClick(...) \{}@>
-    <@\textcolor{middle-gray}{bool ok;}@>
-    <@\textcolor{middle-gray}{vtkIdType source = QInputDialog::getInt(...);}@>
-    <@\textcolor{middle-gray}{if (!ok) \{ return; \}}@>
-    <@\textcolor{middle-gray}{(...)}@>
-    <@\textcolor{middle-gray}{if(ok) \{}@>
-        try {
-            <@\textcolor{middle-gray}{auto m = make\_shared<T>(shape\_);}@>
-            <@\textcolor{middle-gray}{auto fps = make\_shared<FarthestPointSampling>(shape\_, m, source, numberOfSegments);}@>
-            <@\textcolor{middle-gray}{VoronoiCellSegmentation segmentation(shape\_, m, fps);}@>
-            <@\textcolor{middle-gray}{shape\_->setColoring(segmentation.getSegments(), }@>
-            	<@\textcolor{middle-gray}{Shape::Coloring::Type::PointSegmentation);}@>
-        } catch(metric::MetricError& e) {
-            QMessageBox::warning(parent, "Exception", e.what());
-        }
-   <@\textcolor{middle-gray}{ \}
-\}}@>
-\end{lstlisting}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{CustomTab}
-	
-	\bf{Demo Time}
-	
-\end{frame}
-
 \begin{frame}
 	\frametitle{CustomTab}
 	
@@ -367,35 +333,6 @@ template<class T = Metric>
 		\end{itemize}
 	\end{itemize}
 \end{frame}
-
-\begin{frame}
-	\frametitle{Shape Identifier}
-	
-	\begin{columns}
-    		\begin{column}{.3\linewidth}
-      		\begin{figure}[h]
-				\centering
-				\includegraphics[width=\textwidth]{diagramshape.pdf}
-			\end{figure}
-   		\end{column}
-    		\begin{column}{.7\linewidth}
-		
-			 We use Shape Identifiers of form <id>:<name> 
-			 
-			 \begin{itemize}
-			 	\item<2> \texttt{getShapeIdentifier(Shape*)}
-				\item<2> \texttt{getIdFromIdentifier(QString)}
-				\item<2> \texttt{getShapeFromId(vtkIdType)}
-				\item<2> \texttt{getShapeIdentifierList()}
-				\item<2> \texttt{getShapeFromIdentifier(QString)}
-			 \end{itemize}
-      
-    		\end{column}
-  	\end{columns}
-	
-\end{frame}
-
-\section{Demo Time: Functional Maps}
 
 \begin{frame}[fragile]
 \frametitle{Connect Custom Classes}
@@ -492,7 +429,7 @@ static void registerTabs() {
 \end{figure}
 \end{frame}
 
-\section{PETSc and SLEPc: A Linear algebra library}
+\section{PETSc and SLEPc}
 \begin{frame}
 \frametitle{PETSc and SLEPc: A Linear algebra library}
 \begin{itemize}
@@ -612,13 +549,11 @@ try {
 \end{frame}
 
 \section{A Function Transfer Tab}
-\subsection{Demo time}
 \begin{frame}[fragile]
 \frametitle{A Function Transfer Tab}
 \bf{Demo time}
 \end{frame}
 
-\subsection{A brief Introduction to functional maps}
 \begin{frame}
 \frametitle{Functional maps: Intro}
 Goal: Transfer a function $f_M:V_M \to \mathbb{R}$ from shape $M$ to shape $N$. (Note: $M = (V_M:=\{v_1, v_2, \dots, v_n\}, T_M)$ and therefore $f \in \mathbb{R}^n$)\\
@@ -714,4 +649,12 @@ $$
 $$
 where $\|O\|_{2,1}:= \sum_{i=1}^l \|o_i^\top \|_2$
 \end{frame}
+
+\section*{}
+
+\begin{frame}
+\frametitle{Questions?}
+\bf{Thank you for your attention!}
+\end{frame}
+
 \end{document}

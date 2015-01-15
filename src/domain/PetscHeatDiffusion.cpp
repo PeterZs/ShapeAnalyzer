@@ -16,6 +16,7 @@ PetscHeatDiffusion::PetscHeatDiffusion(shared_ptr<Shape> shape, shared_ptr<Petsc
     MatCreateSeqDense(MPI_COMM_SELF, numberOfPoints, laplacian_->getNumberOfEigenfunctions(), NULL, &Phi);
     laplacian_->getEigenfunctionMatrix(&Phi);
     
+    // Phi transposed
     Mat PhiT;
     MatTranspose(Phi, MAT_INITIAL_MATRIX, &PhiT);
     MatDestroy(&Phi);
@@ -53,6 +54,7 @@ vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
     VecCreateSeq(PETSC_COMM_SELF, m, &utv);
     VecSet(utv, 0.0);
     
+    //Vec phi;
     for(PetscInt i = 0; i < laplacian_->getNumberOfEigenfunctions(); i++) {
         Vec phi;
         PetscScalar lambda;
@@ -64,6 +66,8 @@ vtkSmartPointer<vtkDoubleArray> PetscHeatDiffusion::getHeat(double t) {
         VecAXPY(utv, exp(lambda * t) * y, phi);
         VecDestroy(&phi);
     }
+    
+    //VecDestroy(&phi);
     
     vtkSmartPointer<vtkDoubleArray> ut = PetscHelper::petscVecToVtkDoubleArray(utv);
 

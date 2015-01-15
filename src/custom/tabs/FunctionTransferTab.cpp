@@ -48,7 +48,7 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         }
     }
     if(source == target) {
-        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The shapes source and target have to be diffrent.");
+        QMessageBox::warning(dynamic_cast<QWidget*>(shapeAnalyzer_), "Error", "The shapes source and target have to be different.");
         return;
     }
     
@@ -202,7 +202,6 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             }
             log("done.\n");
         }
-        return;
         
         function<void(int, double)> iterationCallback = [this](int iteration, double residual)->void {
             lcdNumberCurrentIteration->display(iteration);
@@ -215,8 +214,6 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
         log("Initialize Functional Maps...\n");
         PetscFunctionalMaps functionalMaps(source, target, laplacianSource, laplacianTarget, constraintsSource, constraintsTarget, spinBoxNumberOfEigenfunctions->value(), spinBoxStepSize->value(), doubleSpinBoxSparsityPriorWeight->value(), spinBoxNumberOfIterations->value(), groupBoxOutlierAbsorption->isChecked(), doubleSpinBoxOutlierAbsorptionWeight->value(), iterationCallback);
         log("done.\n");
-        
-        return;
         
         log("Run Functional Maps Forward Backward Splitting...\n");
         functionalMaps.computeCorrespondence();

@@ -46,10 +46,10 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
 laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
-    ierr = STDestroy(&st_);
     ierr = EPSDestroy(&eps_);
     ierr = MatDestroy(&L_);
     ierr = MatDestroy(&M_);
+    ierr = STDestroy(&st_);
 }
 
 

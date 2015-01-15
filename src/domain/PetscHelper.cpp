@@ -15,8 +15,9 @@ void PetscHelper::setRow(Mat &A, Vec &ai, PetscInt i) {
     
     
     MatSetValues(A, 1, &i, size, colIdx, row, INSERT_VALUES);
+
+    VecRestoreArray(ai, &row);
     delete [] colIdx;
-    delete [] row;
 }
 
 
@@ -38,8 +39,8 @@ void PetscHelper::getRow(Vec& ai, Mat& A, PetscInt i) {
     VecAssemblyBegin(ai);
     VecAssemblyEnd(ai);
     
+    MatRestoreRow(A, i, NULL, NULL, &row);
     delete [] idx;
-    delete [] row;
 }
 
 
@@ -57,8 +58,8 @@ void PetscHelper::setColumn(Mat &A, Vec &ai, PetscInt i) {
     }
     
     MatSetValues(A, size, rowIdx, 1, &i, column, INSERT_VALUES);
+    VecRestoreArray(ai, &column);
     delete [] rowIdx;
-    delete [] column;
 }
 
 
@@ -91,7 +92,7 @@ void PetscHelper::setBlock(Mat &A, Mat &B, PetscInt i, PetscInt j) {
     }
     
     MatSetValues(A, m, rowIdx, n, colIdx, values, INSERT_VALUES);
-    
+
     delete [] values;
     delete [] colIdx;
     delete [] rowIdx;
@@ -115,9 +116,9 @@ void PetscHelper::reshape(Mat &B, Vec &b, PetscInt m, PetscInt n) {
     MatAssemblyBegin(B, MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(B, MAT_FINAL_ASSEMBLY);
     
+    VecRestoreArray(b, &values);
     delete [] colIdx;
     delete [] rowIdx;
-    delete [] values;
 }
 
 
@@ -146,7 +147,7 @@ vtkSmartPointer<vtkDoubleArray> PetscHelper::petscVecToVtkDoubleArray(Vec& vec) 
     VecGetSize(vec, &size);
     
     vtkSmartPointer<vtkDoubleArray> res = petscScalarArrayToVtkDoubleArray(arr, size);
-    delete [] arr;
+    VecRestoreArray(vec, &arr);
     return res;
 }
 

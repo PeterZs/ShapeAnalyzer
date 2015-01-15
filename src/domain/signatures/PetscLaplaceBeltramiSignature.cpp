@@ -29,6 +29,7 @@ vtkSmartPointer<vtkDoubleArray> signature::PetscLaplaceBeltramiSignature::getCom
     for(vtkIdType i = 0; i < shape_->getPolyData()->GetNumberOfPoints(); i++) {
         component->SetValue(i, row[i]);
     }
+    MatRestoreRow(signature_, i, NULL, NULL, &row);
     
     return component;
 }

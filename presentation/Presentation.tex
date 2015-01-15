@@ -347,13 +347,36 @@ template<class T = Metric>
 \begin{lstlisting}
 template<class T, class... Args>
 class Factory { ... }
+<@\textcolor{middle-gray}{typedef Factory<CustomContextMenuItem, shared\_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;}@>
 
-typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;
+<@\textcolor{middle-gray}{typedef Factory<CustomTab, const HashMap<vtkActor*>, shared\_ptr<Shape>>\&,}@>
+    <@\textcolor{middle-gray}{const HashMap<shared\_ptr<PointCorrespondence>, bool>\&,}@>
+    <@\textcolor{middle-gray}{const HashMap<shared\_ptr<FaceCorrespondence>, bool>\&,}@>
+    <@\textcolor{middle-gray}{ShapeAnalyzerInterface*> CustomTabFactory;}@>
+\end{lstlisting}
 
-typedef Factory<CustomTab, const HashMap<vtkActor*, 
-    shared_ptr<Shape>>&, 
-    const HashMap<shared_ptr<PointCorrespondence>, bool>&, 
-    const HashMap<shared_ptr<FaceCorrespondence>, bool>&, 
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Connect Custom Classes}
+
+\lstset{language=C++,
+                keywordstyle=\color{blue},
+                stringstyle=\color{red},
+                commentstyle=\color{green},
+                morecomment=[l][\color{magenta}]{\#},
+                numbers=none
+}
+\begin{lstlisting}
+<@\textcolor{middle-gray}{template<class T, class... Args>}@>
+<@\textcolor{middle-gray}{class Factory \{ ... \}}@>
+
+typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;}@>
+
+typedef Factory<CustomTab, const HashMap<vtkActor*,
+    shared_ptr<Shape>>&,}@>
+    const HashMap<shared_ptr<PointCorrespondence>, bool>&,
+    const HashMap<shared_ptr<FaceCorrespondence>, bool>&,
     ShapeAnalyzerInterface*> CustomTabFactory;
 \end{lstlisting}
 
@@ -384,7 +407,7 @@ struct CustomClassesRegistry {
 
 
 \begin{frame}[fragile]
-\frametitle{Connect CustomContextMenuItems}
+\frametitle{Connect Custom Menu Items}
 \lstset{language=C++,
                 keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -408,7 +431,7 @@ static void registerContextMenuItems() {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Connect CustomTabs}
+\frametitle{Connect Custom Tabs}
 \lstset{language=C++,
                 keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -431,7 +454,7 @@ static void registerTabs() {
 
 \section{PETSc and SLEPc}
 \begin{frame}
-\frametitle{PETSc and SLEPc: A Linear algebra library}
+\frametitle{PETSc and SLEPc}
 \begin{itemize}
 	\item PETSc: (Sparse) linear algebra (e.g. matrix vector multiplication, linear systems, ...)
 	\item SLEPc: (Sparse) eigenvalue solver (builds up on PETSc)
@@ -552,8 +575,13 @@ try {
 
 \begin{frame}
 \frametitle{Functional maps: Intro}
-Goal: Transfer a function $f_M:V_M \to \mathbb{R}$ from shape $M$ to shape $N$. (Note: $M = (V_M:=\{v_1, v_2, \dots, v_n\}, T_M)$ and therefore $f \in \mathbb{R}^n$)\\
-Assumption: $M$ and $N$ are related by an \emph{isometry}
+Goal: Transfer a function $f:V_M \to \mathbb{R}$ from shape $M$ to shape $N$. (Please note: $M = (V_M:=\{v_1, v_2, \dots, v_n\}, T_M)$ and therefore $f \in \mathbb{R}^n$)\\
+Assumption: $M$ and $N$ are related by an \emph{isometry} \\
+(Ovsjanikov et al. 2012)
+  \begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{fm.pdf}
+\end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -563,19 +591,16 @@ $$
 $$
 First guess (Canonical basis of $\mathbb{R}^n$): $\phi_i := \delta_{ij}$ \\
 
-\begin{block}{}
-Q: Is this really a good idea? A: Nope!
-\begin{itemize}
-	\item Both shapes are required to have same number of vertices ($m=n$)
-	\item Transferring a function $f$ from $M$ to $N$ requires correspondence Matrix $C\in \mathbb{R}^{n \times n}$ (But that is what we are looking for)
-\end{itemize}
+\begin{block}{Question}
+Is this really a good idea? Answer: Nope! \\
+Transferring a function $f$ from $M$ to $N$ requires the correspondence Matrix $C\in \mathbb{R}^{n \times n}$ (But that is what we are looking for)
 \end{block}
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Functional maps: ONB}
 Better choice:
-Eigenvectors $\{\phi^M_i\}_{i=1}^n \subset \mathbb{R}^n$ and $\{\phi^N_i\}_{i=1}^m \subset \mathbb{R}^m$ of the Laplace-Beltrami operators $\Delta_M=M_M^{-1} \cdot L_M \in \mathbb{R}^{n \times n}$ and $\Delta_N=M_N^{-1} \cdot L_N \in \mathbb{R}^{m \times m}$
+Eigenvectors $\{\phi^M_i\}_{i=1}^n \subset \mathbb{R}^n$ and $\{\phi^N_i\}_{i=1}^n \subset \mathbb{R}^n$ of the Laplace-Beltrami operators $\Delta_M=M_M^{-1} \cdot L_M \in \mathbb{R}^{n \times n}$ and $\Delta_N=M_N^{-1} \cdot L_N \in \mathbb{R}^{n \times n}$
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{Michael.eps}
@@ -589,26 +614,36 @@ Eigenvectors $\{\phi^M_i\}_{i=1}^n \subset \mathbb{R}^n$ and $\{\phi^N_i\}_{i=1}
 
 \begin{frame}[fragile]
 \frametitle{Functional maps: ONB}
-\begin{block}{Property}
+\begin{block}{Property 1}
 If two shapes $M, N$ are related by a perfect isometry, their Laplace-Beltrami eigenvectors are the same up two sign flip.
 \end{block}
+\begin{block}{Property 2}
+If the signal $f$ is sufficiently smooth we can represent it accurately (enough) by the first $20$ eigenvectors:
+$$
+	f \approx \sum_{i=1}^{20} a_i\phi_i \in \mathbb{R}^n
+$$
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Functional maps: ONB}
 \begin{block}{Idea}
-Transfer $f$ from $M$ to $N$ by projecting it onto Laplace-Beltrami eigenbasis $\{\phi_i\}_{i=1}^{20}$ and flip signs of coefficients accordingly:
+Transfer $f$ from $M$ to $N$ by projecting it onto Laplace-Beltrami eigenbasis $\{\phi_i^M\}_{i=1}^{20}$ and flip signs of coefficients accordingly:
 $$
-	 \langle \phi_i^M, f \rangle = \langle \phi_i^M, \sum_{j=1}^{20} a_j\phi_j^M \rangle = \sum_{j=1}^{20} a_j \langle \phi_i^M, \phi_j^M  \rangle = a_i 
+	 \langle \phi_i^M, f \rangle_{M_M} = \langle \phi_i^M, \sum_{j=1}^{20} a_j\phi_j^M \rangle_{M_M} = \sum_{j=1}^{20} a_j \langle \phi_i^M, \phi_j^M  \rangle_{M_M} = a_i 
 $$
 $$
-	t(f) = \sum_{i=1}^{20} b_i \phi_i^N = \sum_{i=1}^{20} c_{ii} a_i \phi_i^N \quad \text{with } c_{ii} \in \{-1, 1\} 
+	t(f) = \sum_{i=1}^{20} b_i \phi_i^N = \sum_{i=1}^{20} \underbrace{c_{ii} a_i}_{b_i} \phi_i^N \quad \text{with } c_{ii} \in \{-1, 1\} 
+$$
+$$
+	t(f) = \underbrace{C \cdot a}_{=b} \cdot \Phi^N \quad \text{with } C \in \mathbb{R}^{20 \times 20}, C \text{ diagonal} 
 $$
 \end{block}
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Functional maps: Idea}
-$$
-	t(f) = \sum_{i=1}^{20} c_{ii} a_i \phi_i^N = \underbrace{C \cdot a}_{=b} \cdot \Phi^N \quad \text{with } C \in \mathbb{R}^{20 \times 20}, C \text{ diagonal} 
-$$
-Since we never deal with perfect isometries $C$ is not perfectly diagonal:
+Caveat: Since we never deal with perfect isometries, $C$ is not perfectly diagonal:
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.3\textwidth]{C.png}
@@ -618,16 +653,23 @@ Since we never deal with perfect isometries $C$ is not perfectly diagonal:
 \begin{frame}[fragile]
 \frametitle{Functional maps: Compute C}
 Assume we are given a set of corresponding constraint functions represented as 20-dimensional vectors of coefficients $a_i^\top,b_i^\top \in \mathbb{R}^{20}$:
+\begin{figure}[htp]
+  \begin{center}
+    \subfigure{\includegraphics[scale=0.11]{heat_bump50.pdf}}
+    \subfigure{\includegraphics[scale=0.11]{heat_bump200.pdf}} 
+    \subfigure{\includegraphics[scale=0.11]{wave_kernel.pdf}}
+  \end{center}
+\end{figure}
 $$
-	\min_C \frac{1}{2} \| B - CA \|_F^2 + \lambda |W \circ C|_1
+	\min_C \underbrace{\frac{1}{2} \| B - CA \|_F^2}_{\text{data term}} + \lambda \underbrace{|W \circ C|_1}_{\text{regularizer}}
 $$
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{Functional maps: Define W}
-First guess: Squared distance from diagonal: $C_{ij}:=10 \cdot (i-j)^2$\\
+First guess: Squared distance from diagonal: $W_{ij}:=10 \cdot (i-j)^2$\\
 Better:
 $$
-	C_{ij} :=\min\{|i - j|, 1\} \cdot (100 - \left(\frac{\min\{i, j\}}{20}\right)^3 \cdot 100)
+	W_{ij} :=\min\{|i - j|, 1\} \cdot (100 - \left(\frac{\min\{i, j\}}{20}\right)^3 \cdot 100)
 $$
 \begin{figure}[htp]
   \begin{center}
@@ -643,7 +685,18 @@ $$
 $$
 	\min_{C,O} \frac{1}{2} \| B - CA -O \|_F^2 + \lambda |W \circ C|_1 + \mu \|O\|_{2,1}
 $$
-where $\|O\|_{2,1}:= \sum_{i=1}^l \|o_i^\top \|_2$
+where $\|O\|_{2,1}:= \sum_{i=1}^l \|o_i^\top \|_2$ (Pokrass et al. 2013)
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Functional maps: Optimization}
+$$
+	\min_{C,O} \underbrace{\frac{1}{2} \| B - CA -O \|_F^2}_{\text{differentiable}} +\underbrace{\lambda |W \circ C|_1 + \mu \|O\|_{2,1}}_{\text{not differentiable}}
+$$
+\begin{itemize}
+\item Whole function convex
+\item Optimization by Forward-Backward Splitting (Generalized projected gradient descent)
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]

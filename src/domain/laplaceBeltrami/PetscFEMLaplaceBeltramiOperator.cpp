@@ -44,7 +44,6 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
 
 ///////////////////////////////////////////////////////////////////////////////
 laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperator() {
-    cout <<"Destroy Laplace"<<endl;
     PetscErrorCode ierr;
     
     ierr = EPSDestroy(&eps_);

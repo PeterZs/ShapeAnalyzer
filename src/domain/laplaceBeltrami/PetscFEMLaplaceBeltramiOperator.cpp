@@ -23,9 +23,9 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
     vtkIdType numberOfPoints = shape_->getPolyData()->GetNumberOfPoints();
     
     EPSSetDimensions(eps_, min((vtkIdType) numberOfEigenfunctions_, numberOfPoints), PETSC_DECIDE, PETSC_DECIDE);
-    ST st;
-    EPSGetST(eps_, &st);
-    STSetType(st, STSINVERT);
+
+    ierr = EPSGetST(eps_, &st_);
+    STSetType(st_, STSINVERT);
     //BV bv;
     //EPSGetBV(eps_, &bv);
     //BVSetOrthogonalization(bv, BV_ORTHOG_CGS, BV_ORTHOG_REFINE_IFNEEDED, 0.7071);
@@ -46,6 +46,7 @@ laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::PetscFEMLaplaceBeltramiOperato
 laplaceBeltrami::PetscFEMLaplaceBeltramiOperator::~PetscFEMLaplaceBeltramiOperator() {
     PetscErrorCode ierr;
     
+    ierr = STDestroy(&st_);
     ierr = EPSDestroy(&eps_);
     ierr = MatDestroy(&L_);
     ierr = MatDestroy(&M_);

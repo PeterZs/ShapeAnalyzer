@@ -68,6 +68,8 @@ namespace laplaceBeltrami {
         
         /// \brief Eigenproblem solver context
         EPS eps_;
+        
+        ST st_;
     };
 }
 

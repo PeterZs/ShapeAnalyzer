@@ -90,18 +90,18 @@
 \section{Class Overview}
 
 \begin{frame}
-  \frametitle{Class Diagram: View}
-  \begin{figure}[h]
-	\centering
-	\includegraphics[width=\textwidth]{diagram.pdf}
-\end{figure}
-\end{frame}
-
-\begin{frame}
   \frametitle{Class Diagram: Domain}
   \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{diagram2.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Class Diagram: View}
+  \begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{diagram.pdf}
 \end{figure}
 \end{frame}
 
@@ -124,7 +124,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -144,7 +144,7 @@ class VoronoiCellsContextMenuItem : public CustomContextMenuItem {
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -164,7 +164,7 @@ template<class T = Metric>
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -184,7 +184,7 @@ template<class T = Metric>
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -205,7 +205,7 @@ template<class T = Metric>
 
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -232,7 +232,7 @@ template<class T = Metric>
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -259,7 +259,7 @@ template<class T = Metric>
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Example: VoronoiCellsContextMenuItem}
+  \frametitle{Example Menu Item}
   
 \begin{lstlisting}[language=C++, keywordstyle=\color{blue},
                 stringstyle=\color{red},
@@ -371,10 +371,10 @@ class Factory { ... }
 <@\textcolor{middle-gray}{template<class T, class... Args>}@>
 <@\textcolor{middle-gray}{class Factory \{ ... \}}@>
 
-typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;}@>
+typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;
 
 typedef Factory<CustomTab, const HashMap<vtkActor*,
-    shared_ptr<Shape>>&,}@>
+    shared_ptr<Shape>>&,
     const HashMap<shared_ptr<PointCorrespondence>, bool>&,
     const HashMap<shared_ptr<FaceCorrespondence>, bool>&,
     ShapeAnalyzerInterface*> CustomTabFactory;
@@ -456,12 +456,12 @@ static void registerTabs() {
 \begin{frame}
 \frametitle{PETSc and SLEPc}
 \begin{itemize}
-	\item PETSc: (Sparse) linear algebra (e.g. matrix vector multiplication, linear systems, ...)
-	\item SLEPc: (Sparse) eigenvalue solver (builds up on PETSc)
-	\item Heavily used in the "Computational Science and Engineering" community for solving PDEs (e.g. Computational Fluid Dynamics)
-	\item Based on MPI (therefore well suited for distributed HPCs)
-	\item Can also be used with CUDA and cuBLAS (instead of MPI).
-	\item Drawback: Coding is kinda' low level :(
+	\item<1-> PETSc: (Sparse) linear algebra (e.g. matrix vector multiplication, linear systems, ...)
+	\item<2-> SLEPc: (Sparse) eigenvalue solver (builds up on PETSc)
+	\item<3-> Heavily used in the "Computational Science and Engineering" community for solving PDEs (e.g. Computational Fluid Dynamics)
+	\item<4-> Based on MPI (therefore well suited for distributed HPCs)
+	\item<5-> Can also be used with CUDA and cuBLAS (instead of MPI).
+	\item<6-> Drawback: Coding is kinda' low level :(
 \end{itemize}
 \end{frame}
 
@@ -591,10 +591,10 @@ $$
 $$
 First guess (Canonical basis of $\mathbb{R}^n$): $\phi_i := \delta_{ij}$ \\
 
-\begin{block}{Question}
+\only<2-2>{\begin{block}{Question}
 Is this really a good idea? Answer: Nope! \\
 Transferring a function $f$ from $M$ to $N$ requires the correspondence Matrix $C\in \mathbb{R}^{n \times n}$ (But that is what we are looking for)
-\end{block}
+\end{block}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -617,12 +617,12 @@ Eigenvectors $\{\phi^M_i\}_{i=1}^n \subset \mathbb{R}^n$ and $\{\phi^N_i\}_{i=1}
 \begin{block}{Property 1}
 If two shapes $M, N$ are related by a perfect isometry, their Laplace-Beltrami eigenvectors are the same up two sign flip.
 \end{block}
-\begin{block}{Property 2}
+\only<2-2>{\begin{block}{Property 2}
 If the signal $f$ is sufficiently smooth we can represent it accurately (enough) by the first $20$ eigenvectors:
 $$
 	f \approx \sum_{i=1}^{20} a_i\phi_i \in \mathbb{R}^n
 $$
-\end{block}
+\end{block}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -635,9 +635,9 @@ $$
 $$
 	t(f) = \sum_{i=1}^{20} b_i \phi_i^N = \sum_{i=1}^{20} \underbrace{c_{ii} a_i}_{b_i} \phi_i^N \quad \text{with } c_{ii} \in \{-1, 1\} 
 $$
-$$
+\only<2-2>{$$
 	t(f) = \underbrace{C \cdot a}_{=b} \cdot \Phi^N \quad \text{with } C \in \mathbb{R}^{20 \times 20}, C \text{ diagonal} 
-$$
+$$}
 \end{block}
 \end{frame}
 

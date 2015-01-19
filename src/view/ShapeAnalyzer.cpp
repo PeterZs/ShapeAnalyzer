@@ -726,6 +726,7 @@ void ShapeAnalyzer::slotOpenScene() {
     
     qvtkWidget->GetRenderWindow()->Render();
     qtUpdateLabelVisibleCorrespondences();
+    qvtkWidget->GetRenderWindow()->Render();
 }
 
 

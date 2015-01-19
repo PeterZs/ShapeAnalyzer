@@ -3,29 +3,54 @@
 
 \chapter{Classes}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\textwidth]{images/diagram.pdf}
-\end{figure}
+All classes are organized in 3 folders: domain, view and custom. Domain contains all classes that purely contain some algorithm logic. View contains classes that are responsible for the GUI and custom also contains GUI classes, but only menu items and tabs which are created by the Factory. Each folder has its own namespace.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{images/diagram2.pdf}
+	\includegraphics[width=\textwidth]{images/diagram.pdf}
+	\caption{UML diagram of the most important classes in view and custom.}
 \end{figure}
 
 \section{ShapeAnalyzer}
 \label{sec:ShapeAnalyzer}
 
-Blub.
+The ShapeAnalyzer is the main application and manages all user input as well as the existing Shapes and Correspondences. The ShapeAnalyzer should only be changed if really necessary. It is also a QWidget, so it can (and should) be used as the parent for further QWidgets or Qt objects that have a parent widget input. All new Shapes and Correspondences have to be added through this main application and not by directly adding them into the data structures (which is not possible most of the time anyway) in order to keep the whole application up-to-date.
 
 \subsection{ShapeAnalyzerInterface}
 \label{subsec:ShapeAnalyzerInterface}
 
+The ShapeAnalyzerInterface is an interface that provides functions to add new Shapes, Correspondences and Render the GUI, basically everything that the custom objects are allowed to do. The custom objects only get a reference to the interface. Theoretically the ShapeAnalyzerInterface can be forcefullly cast into a ShapeAnalyzer object but you should think about whether there might be a different solution. It also prevents cyclic dependencies.
+
 \section{Shape}
 \label{sec:Shape}
 
+A Shape contains the mesh data as well several VTK related objects. It has a unique id and a (not necessarily unique) name. The data (\href{http://www.vtk.org/doc/nightly/html/classvtkPolyData.html}{vtkPolyData} object) can be obtained through \texttt{getPolyData()}. Additionally to some self-explanatory functions the surface can be colored with \texttt{setColoring}, see \ref{subsec:Coloring}.
+
+\subsection{Coloring}
+\label{subsec:Coloring}
+
+Coloring is a struct in the Shape class. It contains a Type and a vtkDataArray. Either Type is possible as Point or Face. Then the vtkDataArray has to have as many entries as the shape has vertices or faces respectively and every vertex or face will be colored with the value(s) in the same row as their id. It is not possible (to my knowledge) to leave some vertices or faces uncolored. The possible Types are:
+
+\begin{itemize}
+	\item \texttt{\textbf{Coloring::Type::PointScalar/FaceScalar} vtkDoubleArray} The minimum value will be blue, the maximum red and all values inbetween have a smooth color gradient.
+	\item \texttt{\textbf{Coloring::Type::PointRGB/FaceRGB} vtkUnsignedCharArray} Set the number of components of the array to 3 with \texttt{SetNumberOfComponents(3)}, the components will be interpreted the R, G and B parts and have to be values between 0 and 255. 
+	\item \texttt{\textbf{Coloring::Type::PointSegmentation/FaceSegmentation} vtkIntArray} Every integer denotes one region that will be colored in the same color. VTK will automatically color in a way that allows to differ separate regions. If the coloring is set to an segmentation, the region can be extracted as a new shape in the GUI.
+\end{itemize}
+
+These are just the standard behaviors of each type. The vtkMapper and vtkLookUpTable of every Shape have more options that can be explored. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\textwidth]{images/scalar.png}
+	\includegraphics[width=0.3\textwidth]{images/rgb.png}
+	\includegraphics[width=0.3\textwidth]{images/segmentation.png}
+	\caption{(i) PointScalar, (ii) PointRGB using the coordinates as RGB values, (iii) PointSegmentation}
+\end{figure}
+
 \section{Correspondence}
 \label{sec:Correspondence}
+
+A Correspondence is a set of tupels, each containing a shape and an id. There are PointCorrespondences and FaceCorrespondences, the id either belonging to a vertex or a face. The tupels are realized as two vectors where objects in the same row belong to the same tupel. Correspondences can be visualized in the GUI with corresponding VisualCorrespondence objects which are organized (and created) by the ShapeAnalyzer. 
 
 \section{Factory}
 \label{sec:Factory}
@@ -88,5 +113,24 @@ Register<VoronoiCellsContextMenuItem<GeodesicMetric>>
 \end{lstlisting}
 
 The label parameter allows to create layered menus. For menu items the label will be separated at every \texttt{>>}, creating a new sub menu. Menu items that have the same label up to some level will be put in the same sub menu. For tabs the label has to start with \texttt{"Shapes>>"} or \texttt{"Correspondences>>"} and no further sub menus will be created. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/menu.png}
+	\caption{The label "\texttt{This>>is>>my>>menu path>>My item 1}" will produce a menu like this.}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/diagram2.pdf}
+	\caption{Subset of classes in the domain folder.}
+\end{figure}
+
+\section{Domain}
+
+The domain folder consists of several subfolders which contain different kinds of classes that inherit from the same abstract class or belong together somehow. Feel free to add more folders if you think it makes sense. Each folder has its own namespace and Error class (see \ref{sec:Errors}).
+
+
+
 
 

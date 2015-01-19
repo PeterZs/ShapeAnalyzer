@@ -148,6 +148,11 @@ public:
         return mapper_->GetLookupTable();
     }
     
+    /// \brief Returns the mapper for this shape.
+    vtkSmartPointer<vtkMapper> getMapper() {
+        return mapper_;
+    }
+    
     ///@}
     
     /// \brief This function has to be called after polyData was modified.

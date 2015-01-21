@@ -271,7 +271,7 @@ In \texttt{CustomClassesRegistry.h} add your menu item to the \texttt{registerCo
 \texttt{CustomContextMenuItemFactory::getInstance()->Register< <NameOfYourClass> > \linebreak
 	\hspace*{2ex}(<UniqueStringIdentifier>, <LabelPath>)}
 	
-where \texttt{<NameOfYourClass>} is the specific class you want to create, for example ColorMetricContextMenuItem<GeodesicMetric>. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes how the menu item should be labeled as well as its path, for example \texttt{"Coloring>>Metric>>Geodesic"} will produce a 3-layered menu (take a look in the application if you can not imagine it). If several menu items have the same path (up to some layer), these will of course be merged.
+where \texttt{<NameOfYourClass>} is the specific class you want to create, for example ColorMetricContextMenuItem<GeodesicMetric>. \texttt{<UniqueStringIdentifier>} is a string that should be meaningful and not identical to any other string in the registry list. \texttt{<LabelPath>} is a string that describes how the menu item should be labeled as well as its path, for example \texttt{"Coloring>>Metric>>Geodesic"} will produce a 3-layered menu (see Figure \ref{fig:MenuPath} for an example). If several menu items have the same path (up to some layer), these will of course be merged.
 
 \subsection{Register a CustomTab}
 \label{subsec:RegisterTab}

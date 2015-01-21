@@ -1,5 +1,5 @@
 # ShapeAnalyzer
-A Flexible Tool for Shape Analysis
+A Flexible Tool for 3D Shape Analysis
 
 Compilation instructions
 ========================

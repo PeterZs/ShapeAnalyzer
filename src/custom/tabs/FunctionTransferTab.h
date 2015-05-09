@@ -53,6 +53,7 @@ private slots:
     
 private:
     void log(string line);
+    void normalize(vtkSmartPointer<vtkDoubleArray> array, vtkSmartPointer<vtkDoubleArray> result, double norm);
 };
 
 }

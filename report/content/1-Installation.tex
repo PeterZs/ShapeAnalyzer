@@ -4,8 +4,8 @@
 \chapter{Installation}
 % remove text and replace it with your real introduction
 
-\emph{ShapeAnalyzer} is completely written in \texttt{C++} heavily making use of the recent \texttt{C++11} standart in the code. Moreover it builds up on the frameworks \texttt{VTK} version 6.1.0 or greater and \texttt{Qt} version 5.0 or greater for the visualization and rendering of the shapes and the creation of the graphical user interface respectively. For all matrix and vector related computations including the computation of the Laplace-Beltrami eigenvectors the libraries \texttt{Petsc} (basic linear algebra including basic solvers for linear systems) and \texttt{Slepc} (sparse eigensolver) are used. (Petsc and Slepsc - the funny dogs. This sounds like the names of funny cartoon series characters for kids.)\\
-In order to compile \emph{ShapeAnalyzer} it has be ensured that both, a recent \texttt{C++} compiler that fully supports the \texttt{C++11} standard (e.g. \texttt{gcc} 4.7 or newer) as well as \texttt{cmake} version greater ? is available . Furthermore all the aforementioned libraries and frameworks have to be installed.
+\emph{ShapeAnalyzer} is completely written in \texttt{C++} heavily making use of the recent \texttt{C++11} standart in the code. Moreover it builds up on the frameworks \texttt{VTK} version 6.1.0 or greater and \texttt{Qt} version 5.0 or greater for the visualization and rendering of the shapes and the creation of the graphical user interface respectively. For all matrix and vector related computations including the computation of the Laplace-Beltrami eigenvectors the libraries \texttt{PETSc} (basic linear algebra including basic solvers for linear systems) and \texttt{SLEPc} (sparse eigensolver) are used. (PETSc and SLEPc - the funny dogs. This sounds like the names of funny cartoon series characters for kids.)\\
+In order to compile \emph{ShapeAnalyzer} it has to be ensured that both, a recent \texttt{C++} compiler that supports the major part of the \texttt{C++11} standard (e.g. \texttt{gcc} 4.7 or newer) as well as \texttt{cmake} version greater $2.8$ is available . Furthermore all the aforementioned libraries and frameworks have to be installed.
 
 
 \section{Installation of Qt5}
@@ -20,14 +20,107 @@ Hint: In case the installation file cannot be opened and executed you may have t
 \end{mdframed}
 
 \section{Installation of VTK}
-As it is the case for Qt the most recent version of VTK currently (Dezember 2014) available via apt-get on Ubuntu is less than 6.1. Therefore it is recommended to compile and install VTK 6.1 or newer from source.
+As it is the case for Qt the most recent version of VTK currently (Dezember 2014) available via apt-get on Ubuntu is less than 6.1. Therefore it is recommended to compile and install \texttt{VTK} version 6.1.0 or newer from source. It is also important that VTK is compiled with a link to your Qt version. 
+\begin{itemize}
+\item First download the source code and extract it via
+\begin{lstlisting}[language=bash, numbers=none]
+cd ~/Downloads
+wget http://www.vtk.org/files/release/6.1/VTK-6.1.0.tar.gz
+tar xvf VTK-6.1.0.tar.gz
+cd ./VTK-6.1.0
+\end{lstlisting}
+\item Execute \texttt{CMake} using the following options:
+\begin{lstlisting}[language=bash, numbers=none]
+cmake -DVTK_QT_VERSION:STRING=5 \
+      -DQT_QMAKE_EXECUTABLE:PATH=~/Qt/5.4/gcc_64/bin/qmake \
+      -DVTK_Group_Qt:BOOL=ON \
+      -DCMAKE_PREFIX_PATH:PATH=~/Qt/5.4/gcc_64/lib/cmake \
+      -DBUILD_SHARED_LIBS:BOOL=ON \
+      ~/Downloads/VTK-6.1.0
+\end{lstlisting}
+\item Compile the code via
+\begin{lstlisting}[language=bash, numbers=none]
+make
+\end{lstlisting}
+\end{itemize}
 
-\section{Installation of Petsc}
 
-\section{Installation of Slepc}
-asdf
+\section{Installation of PETSc}
+Since PETSc is designed for the usage with \texttt{MPI} it has to be compiled explicitly without \texttt{MPI}.
+\begin{itemize}
+\item First download the source code and extract it via
+\begin{lstlisting}[language=bash, numbers=none]
+cd ~/Downloads
+wget http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.5.2.tar.gz
+tar xvf petsc-3.5.2.tar.gz
+cd ./petsc-3.5.2
+\end{lstlisting}
+\item Execute the configure script as follows (By setting the option \verb|--with-mpi=0| we tell the compiler that \texttt{PETSc} is used without \texttt{MPI} in single-processor-mode)
+\begin{lstlisting}[language=bash, numbers=none]
+./configure --with-fc=0 --download-f2cblaslapack --with-mpi=0
+\end{lstlisting}
+
+\item The code is compiled via
+\begin{lstlisting}[language=bash, numbers=none]
+make PETSC_DIR=~/Downloads/petsc-3.5.2 PETSC_ARCH=arch-linux2-c-debug all
+make PETSC_DIR=~/Downloads/petsc-3.5.2 PETSC_ARCH=arch-linux2-c-debug test
+\end{lstlisting}
+If this does not work, follow the instructions given by PetsC.
+
+\item Finally the following environment variables have to be set (e.g. in \verb|~/.pam_environment|)
+\begin{lstlisting}[language=bash, numbers=none]
+export PETSC_DIR=~/Downloads/petsc-3.5.2
+export PETSC_ARCH=arch-linux2-c-debug
+\end{lstlisting}
+\end{itemize}
+
+
+\section{Installation of SLEPc}
+\texttt{SLEPc} is an add-on for \texttt{PETSc} and, as stated in the beginning, it is responsible for solving sparse eigenvalue problems. Therefore \texttt{SLEPc} can only be installed after \texttt{PETSc} has been installed.
+\begin{itemize}
+\item First download the source code and extract it via
+\begin{lstlisting}[language=bash, numbers=none]
+cd ~/Downloads
+wget http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.3.tar.gz -O slepc-3.5.3.tar.gz
+tar xvf slepc-3.5.3.tar.gz
+cd ./slepc-3.5.3
+\end{lstlisting}
+\item Execute the configure script
+\begin{lstlisting}[language=bash, numbers=none]
+./configure
+\end{lstlisting}
+
+\item The code is compiled via
+\begin{lstlisting}[language=bash, numbers=none]
+make SLEPC_DIR=$PWD PETSC_DIR=~/Downloads/petsc-3.5.2 PETSC_ARCH=arch-linux2-c-debug
+\end{lstlisting}
+If this does not work, follow the instructions given by SlepC.
+
+\item Finally the following environment variables have to be set (e.g. in \verb|~/.pam_environment|)
+\begin{lstlisting}[language=bash, numbers=none]
+export SLEPC_DIR=~/Downloads/slepc-3.5.3
+\end{lstlisting}
+\end{itemize}
+
 
 
 \section{Compiling the project}
-Finally follow these steps to compile ShapeAnalyzer
+\begin{itemize}
+\item First download the source code from the CVPR SVN repository.
+\item Create a directory for the build and execute \texttt{CMake} using the following options:
+\begin{lstlisting}[language=bash, numbers=none]
+cd ./src
+mkdir build
+cd ./build
+cmake -DVTK_DIR:PATH=~/Downloads/VTK-6.1.0 \
+      -DQT_QMAKE_EXECUTABLE:FILEPATH=~/Qt/5.4/gcc_64/bin/qmake \
+      -DCMAKE_PREFIX_PATH:PATH=~/Qt/5.4/gcc_64/lib/cmake \
+      ..
+\end{lstlisting}
+\item Compile the code via
+\begin{lstlisting}[language=bash, numbers=none]
+make
+\end{lstlisting}
+\item Have fun!
+\end{itemize}
 

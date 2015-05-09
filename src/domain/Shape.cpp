@@ -298,7 +298,8 @@ vtkIdType Shape::getRandomPoint() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void Shape::setColoring(vtkSmartPointer<vtkDataArray> values, Coloring::Type type) {
-    // release old shared_ptr. Decrements ref count and if there is no other object referencing the coloring it will be destroyed.
+    // release old shared_ptr. Decrements ref count and if there is no other object
+    // referencing the coloring it will be destroyed.
     coloring_.reset();
     coloring_ = unique_ptr<Coloring>(new Coloring);
     coloring_->values = values;

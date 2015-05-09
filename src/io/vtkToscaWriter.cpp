@@ -40,8 +40,12 @@ void io::vtkToscaWriter::WriteData() {
     
     std::ostream& vertoutfile = *vertoutfilep;
     
-    std::regex reg(".vert$", std::regex_constants::ECMAScript | std::regex_constants::icase);
-    std::string FileNameTri = std::regex_replace(std::string(FileName), reg, std::string(".tri"));
+    //std::regex reg(".vert$", std::regex_constants::ECMAScript | std::regex_constants::icase);
+    //std::string FileNameTri = std::regex_replace(std::string(FileName), reg, std::string(".tri"));
+    std::string FileNameTri = std::string(this->FileName);
+    FileNameTri.erase(FileNameTri.find_last_of("."), std::string::npos);
+    FileNameTri.append(".tri");
+    
     vtkDebugMacro(<<"Opening tri file for writing...");
     ostream *trioutfilep = new ofstream(FileNameTri, ios::out);
     if (trioutfilep->fail()) {

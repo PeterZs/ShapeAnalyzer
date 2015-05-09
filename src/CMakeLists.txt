@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
- 
+
 if(POLICY CMP0020)
   cmake_policy(SET CMP0020 NEW)
 endif()
@@ -8,12 +8,10 @@ PROJECT(ShapeAnalyzer)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
+set(CMAKE_CXX_FLAGS "-std=c++11")
+
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
-
-#set(CMAKE_CXX_FLAGS "-v")
-
-set(CMAKE_CXX_FLAGS "-std=c++11")
 
 if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   # Instruct CMake to run moc automatically when needed.
@@ -43,6 +41,7 @@ file(GLOB DOMAIN_COLORING domain/coloring/*.* )
 file(GLOB DOMAIN_SEGMENTATION domain/segmentation/*.* )
 file(GLOB DOMAIN_LAPLACEBELTRAMI domain/laplaceBeltrami/*.* )
 file(GLOB DOMAIN_SIGNATURES domain/signatures/* )
+file(GLOB DOMAIN_TETGEN domain/3rdparty/tetgen/* )
 file(GLOB DOMAIN domain/* )
 
 file(GLOB IO io/*.* )
@@ -71,7 +70,7 @@ if(${VTK_VERSION} VERSION_GREATER "6" AND VTK_QT_VERSION VERSION_GREATER "4")
   qt5_wrap_ui(UISrcs ${UI_FILES} )
 # qt5_wrap_cpp(ShapeAnalyzerMocs ${HEADERS_HAVING_Q_OBJECT})
 # CMAKE_AUTOMOC in ON so the MocHdrs will be automatically wrapped.
-add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_LAPLACEBELTRAMI} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN} ${IO} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
+add_executable(ShapeAnalyzer MACOSX_BUNDLE ${UISrcs} ${DOMAIN_METRIC_3RDPARTY_GEODESIC} ${DOMAIN_METRIC} ${DOMAIN_SAMPLINGS} ${DOMAIN_CORRESPONDENCES} ${DOMAIN_ATTRIBUTES} ${DOMAIN_COLORING} ${DOMAIN_LAPLACEBELTRAMI} ${DOMAIN_SEGMENTATION} ${DOMAIN_SIGNATURES} ${DOMAIN_TETGEN} ${DOMAIN} ${IO} ${VIEW} ${UTIL} ${CUSTOM} ${CUSTOM_TABS} ${CUSTOM_CONTEXTMENUITEMS})
   qt5_use_modules(ShapeAnalyzer Core Gui)
   target_link_libraries(ShapeAnalyzer ${VTK_LIBRARIES} ${PETSC_LIBRARIES} ${SLEPC_LIBRARIES})
 else()
@@ -104,6 +103,7 @@ source_group("domain\\coloring" FILES ${DOMAIN_COLORING})
 source_group("domain\\segmentation" FILES ${DOMAIN_SEGMENTATION})
 source_group("domain\\signatures" FILES ${DOMAIN_SIGNATURES})
 source_group("domain\\laplaceBeltrami" FILES ${DOMAIN_LAPLACEBELTRAMI})
+source_group("domain\\3rdparty\\tetgen" FILES ${DOMAIN_TETGEN})
 source_group("domain" FILES ${DOMAIN})
 
 source_group("io" FILES ${IO})

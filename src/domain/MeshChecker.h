@@ -34,6 +34,15 @@ public:
     /// @param borders Optional. If a pointer is given, the border segments will be returned as pairs of vertices.
     /// @return true if the shape has borders, false otherwise
     bool checkForBorders(vector<pair<vtkIdType, vtkIdType> >* borders = nullptr);
+    /// \brief Checks the shape for inconsistent half-edge structure.
+    /// \details Orientation mistakes are found by checking the symmetry of the halfedge structure.
+    /// If the half edge structure does not exist, it will be created which is quite
+    /// time consuming.
+    /// The halfedge structure counts the directed edges between all vertices. An edge is considered
+    /// inconsistent if the total sum of directed edges between two vertices greater than 2.
+    /// @param inconsistent Optional. If a pointer is given, the inconsistent segments will be returned as pairs of vertices.
+    /// @return true if the shape has wrongly oriented edges, false otherwise
+    bool checkInconsistency(vector<pair<vtkIdType, vtkIdType> >* inconsistent = nullptr);
     /// \brief Checks the shape for wrongly orientied edges.
     /// \details Orientation mistakes are found by checking the symmetry of the halfedge structure.
     /// If the half edge structure does not exist, it will be created which is quite

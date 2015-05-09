@@ -38,7 +38,7 @@ void io::vtkOFFWriter::WriteData() {
     std::ostream& outfile = *outfilep;
     
     outfile << "OFF"<<endl;
-    outfile << input->GetNumberOfPoints() <<" "<<input->GetNumberOfCells()<<"0"<<endl;
+    outfile << input->GetNumberOfPoints() <<" "<<input->GetNumberOfCells()<< " " << "0"<<endl;
     
     for(vtkIdType i = 0; i < input->GetNumberOfPoints(); i++) {
         double p[3];

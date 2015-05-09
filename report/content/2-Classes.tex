@@ -75,7 +75,7 @@ class Factory {
 };
 \end{lstlisting}
 
-Due to the Singleton pattern there is only one Factory instance of every type. You can retrieve it by calling Factory<T, Args...>::getInstance() with the right template parameters. For example for CustomContextMenuItems there exist this Factory: 
+Due to the Singleton pattern there is only one Factory instance of every type. You can retrieve it by calling Factory<T, Args...>::getInstance() with the right template parameters. For example for CustomContextMenuItems there exists this Factory: 
 
 \begin{lstlisting}[style=lstStyleCpp, numbers=none]
 typedef Factory<CustomContextMenuItem, shared_ptr<Shape>, ShapeAnalyzerInterface*> CustomContextMenuItemFactory;

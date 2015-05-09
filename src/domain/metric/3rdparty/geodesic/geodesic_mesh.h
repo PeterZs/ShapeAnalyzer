@@ -264,7 +264,8 @@ inline void Mesh::build_adjacencies()
 
 		e.length() = e.adjacent_vertices()[0]->distance(e.adjacent_vertices()[1]);
 		if(!(e.length() > 1e-100)){		//algorithm works well with non-degenerate meshes only
-            throw geodesic_error("Mesh is degenerated.");
+            string errormsg = "Mesh is degenerated at (" + to_string(e.adjacent_vertices()[0]->id()) + ", " + to_string(e.adjacent_vertices()[1]->id()) +  ").";
+            throw geodesic_error(errormsg);
         }
         
 		if(i != half_edges.size()-1 && half_edges[i] == half_edges[i+1])	//double edge
@@ -346,7 +347,7 @@ inline void Mesh::build_adjacencies()
 
 			double angle = angle_from_edges(abc[0], abc[1], abc[2]);
 			if(!(angle>1e-5)){
-                throw geodesic_error("Mesh is degenerated.");
+                throw geodesic_error("Mesh is degenerated, angle too small at face " + to_string(i) + ".");
             }//algorithm works well with non-degenerate meshes only
 
 			f.corner_angles()[j] = angle;

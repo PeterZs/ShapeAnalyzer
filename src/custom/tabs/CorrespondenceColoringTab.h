@@ -9,6 +9,8 @@
 #include <QStringList>
 #include <QWidget>
 
+#include <memory>
+
 #include <vtkActor.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>

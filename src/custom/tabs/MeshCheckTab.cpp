@@ -102,6 +102,7 @@ void custom::tabs::MeshCheckTab::slotCheckMesh() {
                 tupel.append(to_string(e.second));
                 tupel.append(") ");
                 textBrowserOutput->insertPlainText(QString::fromStdString(tupel));
+                
             }
             textBrowserOutput->insertHtml(QString::fromStdString("<br />"));
         } else {
@@ -131,6 +132,31 @@ void custom::tabs::MeshCheckTab::slotCheckMesh() {
             textBrowserOutput->insertHtml(QString::fromStdString("<br />"));
         } else {
             textBrowserOutput->insertPlainText(QString::fromStdString("- No Borders."));
+            textBrowserOutput->insertHtml(QString::fromStdString("<br />"));
+        }
+    }
+    
+    // orientation checking
+    if (checkBoxInconsistency->isChecked()) {
+        vector<pair<vtkIdType, vtkIdType> > inconsistentEdges;
+        bool isInconsistent = check.checkInconsistency(&inconsistentEdges);
+        
+        // output
+        if(isInconsistent) {
+            textBrowserOutput->insertPlainText(QString::fromStdString("- Half-edge structure inconsistent at: "));
+            // list of all border edges
+            for (auto e : inconsistentEdges) {
+                string tupel = "(";
+                tupel.append(to_string(e.first));
+                tupel.append(", ");
+                tupel.append(to_string(e.second));
+                tupel.append(") ");
+                textBrowserOutput->insertPlainText(QString::fromStdString(tupel));
+                
+            }
+            textBrowserOutput->insertHtml(QString::fromStdString("<br />"));
+        } else {
+            textBrowserOutput->insertPlainText(QString::fromStdString("- Half-edge structure is consistent."));
             textBrowserOutput->insertHtml(QString::fromStdString("<br />"));
         }
     }

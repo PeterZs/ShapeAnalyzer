@@ -54,9 +54,15 @@ int io::vtkToscaReader::RequestData(vtkInformation *vtkNotUsed(request),
     }
     vtkDebugMacro(<< "Reading vert file");
 
+    // Regular Expressions are broken in gcc until 4.9
+    //  this is the prettier solution though, maybe change it again when 4.9 is updated in the lab
+    // and in the writer too
+    //std::regex reg(".vert$", std::regex_constants::ECMAScript | std::regex_constants::icase);
+    //std::string fileNameTri = std::regex_replace(std::string(FileName), reg, std::string(".tri"));
+    std::string fileNameTri = std::string(this->FileName);
+    fileNameTri.erase(fileNameTri.find_last_of("."), std::string::npos);
+    fileNameTri.append(".tri");
     
-    std::regex reg(".vert$", std::regex_constants::ECMAScript | std::regex_constants::icase);
-    std::string fileNameTri = std::regex_replace(std::string(FileName), reg, std::string(".tri"));
     std::ifstream tri(fileNameTri);
     if (!tri) {
         vtkErrorMacro(<< "Tri file " << fileNameTri << " not found");

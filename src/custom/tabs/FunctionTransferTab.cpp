@@ -32,6 +32,8 @@ custom::tabs::FunctionTransferTab::FunctionTransferTab(
 
 ///////////////////////////////////////////////////////////////////////////////
 void custom::tabs::FunctionTransferTab::slotTransfer() {
+    this->textBrowserLog->clear();
+    
     vtkIdType sid = getIdFromIdentifier(comboBoxSourceShape->currentText());
     vtkIdType tid = getIdFromIdentifier(comboBoxTargetShape->currentText());
 
@@ -134,7 +136,9 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                         log("Add Landmark Correspondence Heat Bump Constraints (CID = " + to_string(corr->getId()) + ")... ");
                         PetscHeatDiffusion hdSource(source, laplacianSource, u0s);
                         for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
-                            constraintsSource.push_back(hdSource.getHeat(t));
+                            vtkSmartPointer<vtkDoubleArray> normHeat = vtkSmartPointer<vtkDoubleArray>::New();
+                            normalize(hdSource.getHeat(t), normHeat, 1.0);
+                            constraintsSource.push_back(normHeat);
                             landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Heat Bump at t = " + to_string(t)));
                         }
                         log("done\n");
@@ -144,7 +148,9 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                     if(checkBoxGeodesicDistanceFunctions->isChecked()) {
                         log("Add Landmark Correspondence Distance Function Constraint (CID = " + to_string(corr->getId()) + ")... ");
                         vtkSmartPointer<vtkDoubleArray> distances = metricSource->getAllDistances(corr->getCorrespondingIds().at(i));
-                        constraintsSource.push_back(distances);
+                        vtkSmartPointer<vtkDoubleArray> normDist = vtkSmartPointer<vtkDoubleArray>::New();
+                        normalize(distances, normDist, 1.0);
+                        constraintsSource.push_back(normDist);
                         landmarkCorrespondences.push_back(make_pair<int, string>(corr->getId(), "Distance function from source = " + to_string(corr->getCorrespondingIds().at(i))));
                         
                         log("done.\n");
@@ -165,14 +171,18 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
                         
                         PetscHeatDiffusion hdTarget(source, laplacianSource, u0t);
                         for(double t = doubleSpinBoxHeatBumpsFrom->value(); t <= doubleSpinBoxHeatBumpsTo->value(); t+=doubleSpinBoxHeatBumpsStep->value()) {
-                            constraintsTarget.push_back(hdTarget.getHeat(t));
+                            vtkSmartPointer<vtkDoubleArray> normHeat = vtkSmartPointer<vtkDoubleArray>::New();
+                            normalize(hdTarget.getHeat(t), normHeat, 1.0);
+                            constraintsTarget.push_back(normHeat);
                         }
                     }
                     
                     // distance functions
                     if(checkBoxGeodesicDistanceFunctions->isChecked()) {
                         vtkSmartPointer<vtkDoubleArray> distances = metricTarget->getAllDistances(corr->getCorrespondingIds()[i]);
-                        constraintsTarget.push_back(distances);
+                        vtkSmartPointer<vtkDoubleArray> normDist = vtkSmartPointer<vtkDoubleArray>::New();
+                        normalize(distances, normDist, 1.0);
+                        constraintsTarget.push_back(normDist);
                         
                     }
                 }
@@ -194,11 +204,15 @@ void custom::tabs::FunctionTransferTab::slotTransfer() {
             log("Add Wave Kernel Signature components... ");
             for(int i = spinBoxWaveKernelSignatureComponentsFrom->value(); i <= spinBoxWaveKernelSignatureComponentsTo->value(); i+=spinBoxWaveKernelSignatureComponentsStep->value()) {
                 vtkSmartPointer<vtkDoubleArray> wksiSource = wksSource.getComponent(i);
-                //constraintsSource.push_back(wksiSource);
+                vtkSmartPointer<vtkDoubleArray> normWaveS = vtkSmartPointer<vtkDoubleArray>::New();
+                normalize(wksiSource, normWaveS, 1.0);
+                constraintsSource.push_back(normWaveS);
                 
-                //vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
-                //constraintsTarget.push_back(wksiTarget);
-                //waveKernelComponents.push_back(i);
+                vtkSmartPointer<vtkDoubleArray> wksiTarget = wksTarget.getComponent(i);
+                vtkSmartPointer<vtkDoubleArray> normWaveT = vtkSmartPointer<vtkDoubleArray>::New();
+                normalize(wksiTarget, normWaveT, 1.0);
+                constraintsTarget.push_back(normWaveT);
+                waveKernelComponents.push_back(i);
             }
             log("done.\n");
         }
@@ -301,6 +315,31 @@ void custom::tabs::FunctionTransferTab::log(string line) {
     this->textBrowserLog->insertPlainText(QString::fromStdString(line));
     sb->setValue(sb->maximum());
     QCoreApplication::processEvents();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void custom::tabs::FunctionTransferTab::normalize(
+                                                  vtkSmartPointer<vtkDoubleArray> array,
+                                                  vtkSmartPointer<vtkDoubleArray> result,
+                                                  double norm
+                                                  ) {
+    result->SetNumberOfComponents(1);
+    result->SetNumberOfTuples(array->GetNumberOfTuples());
+    
+    double sum = 0;
+    
+    for (int i = 0; i < array->GetNumberOfTuples(); i++) {
+        double value;
+        array->GetTuple(i, &value);
+        sum = sum + value;
+    }
+    
+    for (int i = 0; i < array->GetNumberOfTuples(); i++) {
+        double value = 0;
+        array->GetTuple(i, &value);
+        value = value / sum;
+        result->SetTuple(i, &value);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

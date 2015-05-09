@@ -75,6 +75,31 @@ bool MeshChecker::checkOrientation(vector<pair<vtkIdType, vtkIdType> >*  unorien
     return unorientedEdgeFound;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+bool MeshChecker::checkInconsistency(vector<pair<vtkIdType, vtkIdType> >*  inconsistentEdges) {
+    if(halfEdges_.empty()) {
+        createHalfEdgeStructure();
+    }
+    
+    bool inconsistentEdgeFound = false;
+    
+    for (int i = 0; i < halfEdges_.size(); i++) {
+        for (int j = 0; j < i; j++) {
+            // symmetry if the sum of symmetric entries is 2
+            if(((*(halfEdges_[i]))[j] + (*(halfEdges_[j]))[i] > 2)) {
+                inconsistentEdgeFound = true;
+                
+                // add ids if requested
+                if (inconsistentEdges != nullptr) {
+                    inconsistentEdges->push_back(make_pair(i, j));
+                }
+            }
+        }
+    }
+    
+    return inconsistentEdgeFound;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 bool MeshChecker::checkTriangulation(vector<pair<vtkIdType, vtkIdType> >*  nonTriangles) {

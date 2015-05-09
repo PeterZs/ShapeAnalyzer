@@ -70,6 +70,7 @@
 #include "../util/HashMap.h"
 
 #include "../domain/Shape.h"
+#include "../domain/VolumetricShape.h"
 #include "../domain/correspondences/Correspondence.h"
 
 #include "../io/SceneWriterReader.h"
@@ -327,6 +328,7 @@ private:
     void importShape(vtkAlgorithmOutput* reader, string name);
     void addShape(shared_ptr<Shape> shape);
     void deleteShape(int i);
+    void deleteFace(Shape* shape, vtkIdType faceId);
     void deleteCorrespondence(int i);
     void hideCorrespondence(int i);
     void hideCorrespondences();

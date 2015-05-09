@@ -353,6 +353,7 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     myMenu.addSeparator();
     QAction* renameAction   = myMenu.addAction("Rename");
     QAction* deleteAction   = myMenu.addAction("Delete");
+    QAction* volumAction    = myMenu.addAction("Create Tetrahedralized Shape");
     QAction* exportAction   = myMenu.addAction("Export Shape");
     myMenu.addSeparator();
 
@@ -363,6 +364,9 @@ void ShapeAnalyzer::qtShowContextMenuShapes(const QPoint &pos, vtkIdType pointId
     QAction* selectedItem = myMenu.exec(pos);
     if (selectedItem == deleteAction) {
         deleteShape(this->listShapes->currentRow());
+    } else if (selectedItem == volumAction) {
+        VolumetricShape test = VolumetricShape(((CustomListWidgetItem<Shape> *)
+                                                this->listShapes->currentItem())->getItem().get());
     } else if (selectedItem == clearAction) {
         ((CustomListWidgetItem<Shape>*) this->listShapes->currentItem())->getItem()->clearColoring();
     } else if (selectedItem == renameAction) {
@@ -1374,6 +1378,8 @@ void ShapeAnalyzer::importShape(vtkAlgorithmOutput* output, string name) {
     //Remove all isolated points.
     if(ui.checkBoxDegeneratedElements->isChecked()) {
         cleanPolyData->SetInputConnection(output);
+        //cleanPolyData->ToleranceIsAbsoluteOn();
+        //cleanPolyData->SetAbsoluteTolerance(0.00005);
         cleanPolyData->Update();
         output = cleanPolyData->GetOutputPort();
     }
@@ -1876,6 +1882,17 @@ void ShapeAnalyzer::pickCorrespondence() {
 
     qtUpdateLabelVisibleCorrespondences();
 }
+                   
+                   
+///////////////////////////////////////////////////////////////////////////////
+void ShapeAnalyzer::deleteFace(Shape* shape, vtkIdType faceId) {
+    vtkSmartPointer<vtkPolyData> polyData = shape->getPolyData();
+    //if(faceId > polyData->GetNumberOfCells()) { return; }
+    
+    polyData->DeleteCell(faceId);
+    
+    this->qvtkWidget->GetRenderWindow()->Render();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2056,6 +2073,6 @@ void ShapeAnalyzer::addShape(shared_ptr<Shape> shape) {
 
 //////////////////////////////////////////////////////////////////////////////
 void ShapeAnalyzer::showErrorMessage(string description, string error) {
-    QMessageBox::warning(this, QString::fromStdString(description + string(": ") + error), "Error");
+    QMessageBox::warning(this, "Error", QString::fromStdString(description + string(": ") + error));
 }
 

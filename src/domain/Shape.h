@@ -31,13 +31,13 @@
 #include <vtkType.h>
 #include <vtkVertexGlyphFilter.h>
 
+#include <memory>
 #include <math.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 
 #include "PetscHelper.h"
-
 
 using namespace std;
 
@@ -216,7 +216,7 @@ public:
     /// the only overwritten function is the calculation of the color for each face.
     void colorFacesCoordinates();
 
-private:
+protected:
     /// \brief Unique id of the shape
     /// \details Although the ShapeAnalyzer only assigns unique ids, the uniqueness is not
     /// forced unconditionally
